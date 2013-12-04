@@ -1,0 +1,16 @@
+import com.proteusframework.build.Property
+
+// Check required properties
+def props = [
+    new Property(name:'repo_venturetech_username',description:'Username to access the artifact repository'),
+    new Property(name:'repo_venturetech_password',description:'Password to access the artifact repository'),
+    new Property(name:'publish_venturetech_username',description:'Username to upload to the artifact repository', required:false),
+    new Property(name:'publish_venturetech_password',description:'Password to upload to the artifact repository', required:false),
+];
+
+settings.gradle.projectsLoaded( {
+    props.each({it.test(settings)})
+})
+
+
+

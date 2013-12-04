@@ -1,0 +1,126 @@
+import com.proteusframework.build.*
+import org.ajoberstar.gradle.git.tasks.*
+
+ext.aspectjVersion = '1.7.3'
+
+// Compilation
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'aspectj-weave'
+
+// Publishing
+apply plugin: 'maven'
+apply plugin: 'artifactory'
+
+sourceCompatibility = 1.7
+version = new com.proteusframework.build.Version(app_version, project)
+
+final repoURL = "${repo_venture_tech_url}/${repo_venture_tech_key}"
+buildscript {
+    final buildRepoURL = "${repo_venture_tech_url}/${repo_venture_tech_key}"
+    repositories {
+        maven {
+            credentials {
+                username "${repo_venturetech_username}"
+                password "${repo_venturetech_password?:''}"
+            }
+            url buildRepoURL
+        }
+    }
+    dependencies {
+        // aspectj-weave plugin for our use of Spring @Configurable
+        classpath 'com.i2rd:gradle-aspectj-weave:1.0',
+                  'org.jfrog.buildinfo:build-info-extractor-gradle:2.2+',
+                  'org.ajoberstar:gradle-git:0.6.3'
+        //'org.hibernate:hibernate-gradle-plugin:4.2.8' - waiting to show up in release repos
+    }
+}
+
+task populateGitInfo(type: GitBranchList) {
+    // If not in the root, change the repoPath
+    //repoPath = new File(project.rootProject.projectDir, "..")
+}
+populateGitInfo << {
+    def branch = getWorkingBranch();
+    branch.name;
+    def commit = branch.commit
+    project.ext {
+        gitinfo = [
+                branch: branch.name,
+                ref: branch.refName,
+                commit: commit.id,
+                author: "${commit.author.name} <${commit.author.email}>"
+        ]
+    }
+}
+try{
+    populateGitInfo.execute()
+}catch(def e){
+    logger.warn('Unable to retrieve GIT info. Is this in GIT?')
+}
+
+repositories {
+    ivy {
+        credentials {
+            username repo_venturetech_username
+            password repo_venturetech_password
+        }
+        url repoURL
+    }
+    maven {
+        credentials {
+            username repo_venturetech_username
+            password repo_venturetech_password
+        }
+        url repoURL
+    }
+}
+jar {
+    manifest {
+        attributes 'Implementation-Title': "${project.name.capitalize()} Application",
+                   'Implementation-Version': version,
+                   'VCS-Revision': (hasProperty('gitinfo') ? gitinfo.commit : '')
+    }
+}
+configurations {
+    published
+    runtimeaspects { transitive = false }
+    compiletimeaspects { transitive = false }
+}
+// Add the APT generated folder to the java sourceSet for Intellij IDEA
+sourceSets {
+    main {
+        java {srcDirs '.apt_generated'}
+        groovy { srcDirs 'buildSrc/src/main/groovy' }
+    }
+    test { java {srcDirs '.apt_generated_tests'} }
+}
+def aptGenPath = project.file("${project.projectDir}/.apt_generated").absolutePath
+def aptFilter = { p -> !p.path.startsWith(aptGenPath) }
+// Remove files in .apt_generated paths as we would have dups otherwise
+compileJava { source = source.filter(aptFilter) }
+compileTestJava { source = source.filter(aptFilter) }
+
+
+dependencies {
+    runtimeaspects 'org.springframework:spring-instrument:3+', "org.aspectj:aspectjweaver:${aspectjVersion}"
+    compiletimeaspects 'org.springframework:spring-aspects:3+', "org.aspectj:aspectjtools:${aspectjVersion}"
+    // For this build script in Intellij IDEA - we reference the API of the plugin
+    compile 'org.ajoberstar:gradle-git:0.6.3'
+
+    // App dependencies
+    compile 'net.proteusframework:proteusframework:1+'
+}
+
+task wrapper(type: Wrapper) { gradleVersion = '1.9' }
+task createRuntimeAspectsLibs(type: Copy) {
+    from configurations.runtimeaspects
+    into "runtime-aspects"
+    rename { "${it.substring(0, it.lastIndexOf('-'))}.jar" }
+}
+task createCompiletimeAspectsLibs(type: Copy) {
+    from configurations.compiletimeaspects
+    into "compiletime-aspects"
+    rename { "${it.substring(0, it.lastIndexOf('-'))}.jar" }
+}
+gradle.projectsEvaluated { createRuntimeAspectsLibs.execute();  createCompiletimeAspectsLibs.execute(); }

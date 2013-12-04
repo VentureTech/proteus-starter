@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: hibernate-validator-5.1.0.Alpha1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hibernate/hibernate-validator/5.1.0.Alpha1/2b34c97956a8aec1b3a5af27e7dd6a3a88825580/hibernate-validator-5.1.0.Alpha1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hibernate/hibernate-validator/5.1.0.Alpha1/42565ae904981c3bc5226e7ab910c1b699c09ea0/hibernate-validator-5.1.0.Alpha1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

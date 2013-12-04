@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="App with LTW" type="Application" factoryName="Application" singleton="true">
+    <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+    <option name="MAIN_CLASS_NAME" value="com.i2rd.cms.controller.Cms" />
+    <option name="VM_PARAMETERS" value="-javaagent:$PROJECT_DIR$/runtime-aspects/spring-instrument.jar -javaagent:$PROJECT_DIR$/runtime-aspects/aspectjweaver.jar -Dorg.aspectj.weaver.showWeaveInfo=true -Xmx1024M -XX:MaxPermSize=368m -Duser.timezone=UTC -server -Djava.awt.headless=true -Xverify:none -Djava.util.logging.config.file=&quot;$PROJECT_DIR$/web/docroot/WEB-INF/logging/logging-dev.properties&quot; -Dlog4j.configuration=&quot;$PROJECT_DIR$/web/docroot/WEB-INF/logging/log4j-dev.xml&quot; -Dspring.properties=&quot;file://$PROJECT_DIR$/web/docroot/WEB-INF/contexts/development.properties&quot; -Dcom.i2rd.java.ecommerce.CleanupPartialDataRunnable=disable -Djava.io.tmpdir=/tmp/exampleapp -Dqrelay.autostart=false -DRebuildSessionFactoryDelay=1 -Dfilesystem.native.lock=false -DStaticKeyDataConfig=true" />
+    <option name="PROGRAM_PARAMETERS" value="" />
+    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+    <option name="ALTERNATIVE_JRE_PATH" value="" />
+    <option name="ENABLE_SWING_INSPECTOR" value="false" />
+    <option name="ENV_VARIABLES" />
+    <option name="PASS_PARENT_ENVS" value="true" />
+    <module name="example-app" />
+    <envs />
+    <method />
+  </configuration>
+</component>
