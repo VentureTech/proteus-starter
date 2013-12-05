@@ -1,0 +1,12 @@
+If you do not have compile-time weaving enabled in your environment, you
+can use run-time weaving instead.
+
+To enable run-time weaving of aspects, include the following in the VM
+arguments of your launch configs.
+
+  -javaagent:${project_loc:proteus}/runtime-aspects/spring-instrument.jar 
+  -javaagent:${project_loc:proteus}/runtime-aspects/aspectjweaver.jar
+  
+  
+To update the jars, just select the "Gradle -> Refresh All" option on the proteus project
+in eclipse or run "gradle -p proteus" on the command line. 

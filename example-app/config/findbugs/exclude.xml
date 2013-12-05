@@ -1,0 +1,59 @@
+<!--
+  ~ Copyright (c) Interactive Information R & D (I2RD) LLC.
+  ~ All Rights Reserved.
+  ~
+  ~ This software is confidential and proprietary information of
+  ~ I2RD LLC ("Confidential Information"). You shall not disclose
+  ~ such Confidential Information and shall use it only in
+  ~ accordance with the terms of the license agreement you entered
+  ~ into with I2RD.
+  -->
+
+<FindBugsFilter>
+    <Match>
+        <!-- We currently don't rely on serialization working, so we'll ignore the error for now -->
+        <Bug pattern="SE_BAD_FIELD"/>
+    </Match>
+    <Match>
+        <Bug pattern="SE_BAD_FIELD_STORE"/>
+    </Match>
+
+    <Match>
+        <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+    </Match>
+    <Match>
+        <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+    </Match>
+    <Match>
+        <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+    </Match>
+    <Match>
+        <Bug pattern="BC_UNCONFIRMED_CAST"/>
+    </Match>
+    <Match>
+        <Bug pattern="VA_FORMAT_STRING_USES_NEWLINE"/>
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Bug pattern="CN_IDIOM_NO_SUPER_CALL"/>
+    </Match>
+    <Match>
+        <Bug category="EXPERIMENTAL"/>
+    </Match>
+    <!-- LOK.equals needs to be fixed and then tested. -->
+    <Match>
+        <Class name="net.proteusframework.core.locale.LocalizedObjectKey"/>
+    </Match>
+    <!-- Plan on removing com.i2rd.db - not going to fix issues -->
+    <Match>
+        <Package name="~com\.i2rd\.db.*"/>
+    </Match>
+    <Match>
+        <Package name="~com\.i2rd\.qrelay.*"/>
+    </Match>
+</FindBugsFilter>
