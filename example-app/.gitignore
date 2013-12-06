@@ -5,3 +5,4 @@
 /build
 /buildSrc/.gradle
 /buildSrc/build
+*.iml
