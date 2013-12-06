@@ -6,3 +6,5 @@
 /buildSrc/.gradle
 /buildSrc/build
 *.iml
+/compiletime-aspects
+/runtime-aspects
