@@ -15,6 +15,10 @@ apply plugin: 'ivy-publish'
 apply plugin: 'maven-publish'
 apply plugin: 'artifactory-publish'
 
+
+ext.isIDEA = System.getProperties().containsKey('idea.active') || plugins.any({it.class.name == 'JetGradlePlugin'})
+ext.isEclipse = System.getProperties().containsKey('eclipse.product')
+
 buildDir = 'build/gradle'
 sourceCompatibility = 1.7
 version = new com.proteusframework.build.Version(app_version, project)
@@ -66,8 +70,6 @@ try{
     }
 }
 
-ext.isIDEA = System.getProperties().containsKey('idea.active') || plugins.any({it.class.name == 'JetGradlePlugin'})
-ext.isEclipse = System.getProperties().containsKey('eclipse.product')
 
 repositories {
     maven {
