@@ -66,6 +66,9 @@ try{
     }
 }
 
+ext.isIDEA = System.getProperties().containsKey('idea.active') || plugins.any({it.class.name == 'JetGradlePlugin'})
+ext.isEclipse = System.getProperties().containsKey('eclipse.product')
+
 repositories {
     maven {
         credentials {

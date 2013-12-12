@@ -50,6 +50,9 @@ class Version
 
     String getTimestamp()
     {
+        // version is incorporated into iml files - keep simple for VCS
+        if(project.isIDEA) return 'SNAPSHOT'
+
         // Convert local file timestamp to UTC
         def format = new SimpleDateFormat('yyyyMMddHHmmss')
         format.setCalendar(Calendar.getInstance(TimeZone.getTimeZone('Etc/UTC')));
