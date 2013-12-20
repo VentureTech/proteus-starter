@@ -33,7 +33,6 @@
     <orderEntry type="library" exported="" name="Gradle: jsch.agentproxy.sshagent-0.0.6" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.osgi-3.9.1.v20130814-1242" level="project" />
     <orderEntry type="library" exported="" name="Gradle: hibernate-ehcache-4.2.8.Final" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-context-support-3.2.5.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: itext-2.1.7" level="project" />
     <orderEntry type="library" exported="" name="Gradle: dom4j-1.6.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.core.filesystem-1.4.0.v20130514-1240" level="project" />
@@ -73,7 +72,6 @@
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.datatools.enablement.ibm.informix-1.0.1.v201107221502" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.equinox.preferences-3.5.100.v20130422-1538" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.apache.batik.dom-1.6.0" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-test-3.2.5.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.datatools.enablement.mysql.dbdefinition-1.0.4.v201109022331" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.mozilla.javascript-1.7.2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.datatools.enablement.mysql-1.0.4.v201212120617" level="project" />
@@ -100,7 +98,6 @@
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.datatools.modelbase.sql.query-1.1.4.v201212120619" level="project" />
     <orderEntry type="library" exported="" name="Gradle: groovy-all-2.1.9-indy" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-fileupload-1.3" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-expression-3.2.5.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.objectweb.asm-3.3.1.v201105211655" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.datatools.enablement.msft.sqlserver.dbdefinition-1.0.1.v201201240505" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.emf.ecore-2.9.1.v20130827-0309" level="project" />
@@ -113,19 +110,16 @@
     <orderEntry type="library" exported="" name="Gradle: org.apache.xerces-2.9.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.apache.batik.bridge-1.6.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.datatools.enablement.postgresql-1.1.1.v201205252207" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-aspects-3.2.5.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.datatools.connectivity.apache.derby-1.0.103.v201212070447" level="project" />
     <orderEntry type="library" exported="" name="Gradle: imaging-01012005" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.datatools.enablement.msft.sqlserver-1.0.2.v201212120617" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.apache.batik.svggen-1.6.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-collections-3.2" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: aspectjrt-1.7.3" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.emf.ecore.change-2.9.0.v20130827-0309" level="project" />
     <orderEntry type="library" exported="" name="Gradle: aspectjweaver-1.7.2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jsch.agentproxy.jsch-0.0.6" level="project" />
     <orderEntry type="library" exported="" name="Gradle: icu4j-51.2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.apache.xml.serializer-2.7.1" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-beans-3.2.5.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.core.expressions-3.4.500.v20130515-1343" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-codec-1.6" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.datatools.enablement.hsqldb-1.0.0.v201107221502" level="project" />
@@ -133,37 +127,30 @@
     <orderEntry type="library" exported="" name="Gradle: annotations-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jsoup-1.6.3" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jsch.agentproxy.pageant-0.0.6" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-instrument-3.2.5.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-tx-3.2.5.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.apache.batik.parser-1.6.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: javax.xml.stream-1.0.1.v201004272200" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.datatools.enablement.postgresql.dbdefinition-1.0.2.v201110070445" level="project" />
     <orderEntry type="library" exported="" name="Gradle: gradle-git-0.6.3" level="project" />
     <orderEntry type="library" exported="" name="Gradle: oro-2.0.8" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jsch.agentproxy.core-0.0.6" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-context-3.2.5.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: bcprov-jdk14-138" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-logging-1.1.3" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.core.runtime-3.9.0.v20130326-1255" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-el-2.0.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.apache.batik.ext.awt-1.6.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: cli-parser-1.1.1" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-jdbc-3.2.5.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.datatools.connectivity.oda.profile-3.2.9.v201307270622" level="project" />
     <orderEntry type="library" exported="" name="Gradle: acegi-security-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.datatools.enablement.ibm.db2.luw-1.0.2.v201107221502" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.orbit.mongodb-2.10.1.v20130422-1135" level="project" />
     <orderEntry type="library" exported="" name="Gradle: xmlbeans-2.3.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: hibernate-validator-5.1.0.Alpha1" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-aop-3.2.5.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.datatools.enablement.oracle-1.0.0.v201107221506" level="project" />
     <orderEntry type="library" exported="" name="Gradle: guava-15.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: tagsoup-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: aopalliance-1.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: cracklib-0.5.3" level="project" />
     <orderEntry type="library" exported="" name="Gradle: slf4j-api-1.7.5" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-core-3.2.5.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: aws-java-sdk-1.6.8" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.datatools.enablement.ibm.informix.dbdefinition-1.0.4.v201107221502" level="project" />
     <orderEntry type="library" exported="" name="Gradle: hibernate-jpa-2.0-api-1.0.1.Final" level="project" />
     <orderEntry type="library" exported="" name="Gradle: cssparser-0.9.11" level="project" />
@@ -171,7 +158,6 @@
     <orderEntry type="library" exported="" name="Gradle: activation-1.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.w3c.dom.smil-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: classmate-0.8.0" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-web-3.2.5.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: hibernate-commons-annotations-4.0.2.Final" level="project" />
     <orderEntry type="library" exported="" name="Gradle: Tidy-1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.apache.xml.resolver-1.2.0" level="project" />
@@ -184,7 +170,6 @@
     <orderEntry type="library" exported="" name="Gradle: mail-1.5.0-b01" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jna-3.4.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-cli-1.0" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-orm-3.2.5.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jetty-all-8.1.14.v20131031" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.apache.batik.pdf-1.6.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.datatools.connectivity.console.profile-1.0.10.v201109250955" level="project" />
@@ -210,18 +195,33 @@
     <orderEntry type="library" exported="" name="Gradle: jsp-api-2.2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jsch-0.1.49" level="project" />
     <orderEntry type="library" exported="" name="Gradle: xuggler-5.4.0" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-core-1.0-20131206203845" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-data-1.0-20131206203845" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-ui-1.0-20131206203846" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-management-1.0-20131206203845" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-communication-1.0-20131206203845" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-1.0-20131206203844" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-users-1.0-20131206203846" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-cms-1.0-20131206203845" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-internet-1.0-20131206203845" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-processes-1.0-20131206203846" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-commerce-1.0-20131206203845" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-lang-2.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-beans-3.2.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-instrument-3.2.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-orm-3.2.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-jdbc-3.2.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-context-support-3.2.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-context-3.2.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-test-3.2.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: aspectjrt-1.7.4" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-tx-3.2.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-core-3.2.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-expression-3.2.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-aspects-3.2.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-aop-3.2.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-web-3.2.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-commerce-1.0-20131220155610" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-processes-1.0-20131220155610" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-cms-1.0-20131220155610" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-communication-1.0-20131220155610" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-internet-1.0-20131220155610" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-users-1.0-20131220155610" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-ui-1.0-20131220155610" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-core-1.0-20131220155610" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-management-1.0-20131220155610" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-1.0-20131220155609" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-data-1.0-20131220155610" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: aws-java-sdk-1.6.9.1" level="project" />
   </component>
 </module>
 
