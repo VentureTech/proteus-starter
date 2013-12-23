@@ -11,9 +11,9 @@
 
 package com.example.app;
 
-import net.proteusframework.core.CommandUtil;
-
 import java.io.IOException;
+
+import net.proteusframework.core.CommandUtil;
 
 /**
  * Just an example.
@@ -23,6 +23,16 @@ import java.io.IOException;
  */
 public class ExampleMain
 {
+
+    private Object _object;
+
+    /**
+     * Constructor.
+     */
+    public ExampleMain()
+    {
+        super();
+    }
 
     /**
      * Command line.

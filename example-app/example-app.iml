@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$" external.system.id="GRADLE" external.system.module.group="" external.system.module.version="1.0-SNAPSHOT" type="JAVA_MODULE" version="4">
+<module external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$" external.system.id="GRADLE" external.system.module.group="com.i2rd.example-app" external.system.module.version="1.0-SNAPSHOT" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="AspectJ" name="AspectJ">
       <configuration>
@@ -221,7 +221,7 @@
     <orderEntry type="library" exported="" name="Gradle: proteusframework-management-1.0-20131220155610" level="project" />
     <orderEntry type="library" exported="" name="Gradle: proteusframework-1.0-20131220155609" level="project" />
     <orderEntry type="library" exported="" name="Gradle: proteusframework-data-1.0-20131220155610" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: aws-java-sdk-1.6.9.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: aws-java-sdk-1.6.10" level="project" />
   </component>
 </module>
 

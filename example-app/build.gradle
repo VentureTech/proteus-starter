@@ -3,12 +3,17 @@ import org.ajoberstar.gradle.git.tasks.*
 
 import java.text.SimpleDateFormat
 
-ext.aspectjVersion = '1.7.3'
+ext.aspectjVersion = '1.7.4'
+ext.springVersion = '3.2.+'
 
 // Compilation
 apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'aspectj-weave'
+
+// Code Inspection
+apply plugin: 'findbugs'
+apply plugin: 'checkstyle'
 
 // Publishing
 apply plugin: 'ivy-publish'
@@ -21,7 +26,8 @@ ext.isEclipse = System.getProperties().containsKey('eclipse.product')
 
 buildDir = 'build/gradle'
 sourceCompatibility = 1.7
-version = new com.proteusframework.build.Version(app_version, project)
+version = new Version(app_version, project)
+group = app_group
 
 final repoURL = "${repo_venture_tech_url}/${repo_venture_tech_key}"
 buildscript {
@@ -107,16 +113,26 @@ compileTestJava { source = source.filter(aptFilter) }
 
 
 dependencies {
-    runtimeaspects 'org.springframework:spring-instrument:3+', "org.aspectj:aspectjweaver:${aspectjVersion}"
-    compiletimeaspects 'org.springframework:spring-aspects:3+', "org.aspectj:aspectjtools:${aspectjVersion}"
-    // For this build script in Intellij IDEA - we reference the API of the plugin
-    compile 'org.ajoberstar:gradle-git:0.6.3'
+    runtimeaspects "org.springframework:spring-instrument:${springVersion}", "org.aspectj:aspectjweaver:${aspectjVersion}"
+    compiletimeaspects "org.springframework:spring-aspects:${springVersion}", "org.aspectj:aspectjtools:${aspectjVersion}"
 
     // App dependencies
     compile 'net.proteusframework:proteusframework:1+'
+
+    // Most apps use spring.
+    compile "org.springframework:spring-core:${springVersion}",
+        "org.springframework:spring-beans:${springVersion}",
+        "org.springframework:spring-jdbc:${springVersion}",
+        "org.springframework:spring-aop:${springVersion}",
+        "org.springframework:spring-context:${springVersion}",
+        "org.springframework:spring-orm:${springVersion}",
+        "org.springframework:spring-web:${springVersion}",
+        "org.springframework:spring-test:${springVersion}",
+        "org.springframework:spring-instrument:${springVersion}",
+        "org.springframework:spring-aspects:${springVersion}"
 }
 
-task wrapper(type: Wrapper) { gradleVersion = '1.9' }
+task wrapper(type: Wrapper) { gradleVersion = '1.10' }
 task createRuntimeAspectsLibs(type: Copy) {
     from configurations.runtimeaspects
     into "runtime-aspects"
@@ -222,4 +238,28 @@ artifactory {
 
     clientConfig.info.vcsRevision = gitinfo.commit
 
+}
+
+
+// We will selectively enable code analysis
+[Checkstyle, FindBugs].each {
+    tasks.withType(it) {
+        ignoreFailures = true
+        enabled = false
+    }
+}
+
+findbugsMain {
+    enabled = true
+    excludeFilter = new File("${rootProject.projectDir}/config/findbugs/exclude.xml")
+    reports {
+        xml.enabled = true
+        html.enabled = false
+    }
+}
+
+checkstyleMain {
+    enabled = true
+    configFile = new File("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
+    classpath += configurations.compile // To avoid class loading errors when checking javadoc
 }
