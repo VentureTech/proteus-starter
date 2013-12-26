@@ -262,4 +262,5 @@ checkstyleMain {
     enabled = true
     configFile = new File("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
     classpath += configurations.compile // To avoid class loading errors when checking javadoc
+    source = 'src/main/java' // Do not include generated sources
 }
