@@ -20,6 +20,7 @@ apply plugin: 'ivy-publish'
 apply plugin: 'maven-publish'
 apply plugin: 'artifactory-publish'
 
+apply plugin: 'war'
 
 ext.isIDEA = System.getProperties().containsKey('idea.active') || plugins.any({it.class.name == 'JetGradlePlugin'})
 ext.isEclipse = System.getProperties().containsKey('eclipse.product')
@@ -86,13 +87,13 @@ repositories {
         url repoURL
     }
 }
-jar {
-    manifest {
-        attributes 'Implementation-Title': "${project.name.capitalize()} Application",
-                   'Implementation-Version': version,
-                   'Commit-ID': (hasProperty('gitinfo') ? gitinfo.commit : '')
-    }
+ext.sharedManifest = manifest {
+    attributes 'Implementation-Title': "${project.name.replace('-', ' ').capitalize()} Application",
+        'Implementation-Version': version,
+        'Commit-ID': (hasProperty('gitinfo') ? gitinfo.commit : '')
 }
+jar { manifest = sharedManifest }
+war { manifest = sharedManifest }
 configurations {
     runtimeaspects { transitive = false }
     compiletimeaspects { transitive = false }
