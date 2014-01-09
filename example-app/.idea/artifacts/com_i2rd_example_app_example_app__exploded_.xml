@@ -197,17 +197,17 @@
           <element id="library" level="project" name="Gradle: tomcat-jdbc-7.0.50" />
           <element id="library" level="project" name="Gradle: aws-java-sdk-1.6.12" />
           <element id="library" level="project" name="Gradle: tomcat-juli-7.0.50" />
-          <element id="library" level="project" name="Gradle: proteusframework-ui-1.0-20140109155032" />
-          <element id="library" level="project" name="Gradle: proteusframework-data-1.0-20140109155032" />
-          <element id="library" level="project" name="Gradle: proteusframework-commerce-1.0-20140109155031" />
-          <element id="library" level="project" name="Gradle: proteusframework-1.0-20140109155031" />
-          <element id="library" level="project" name="Gradle: proteusframework-core-1.0-20140109155032" />
-          <element id="library" level="project" name="Gradle: proteusframework-internet-1.0-20140109155032" />
-          <element id="library" level="project" name="Gradle: proteusframework-cms-1.0-20140109155031" />
-          <element id="library" level="project" name="Gradle: proteusframework-communication-1.0-20140109155031" />
-          <element id="library" level="project" name="Gradle: proteusframework-management-1.0-20140109155032" />
-          <element id="library" level="project" name="Gradle: proteusframework-users-1.0-20140109155032" />
-          <element id="library" level="project" name="Gradle: proteusframework-processes-1.0-20140109155032" />
+          <element id="library" level="project" name="Gradle: proteusframework-commerce-1.0-20140109165424" />
+          <element id="library" level="project" name="Gradle: proteusframework-processes-1.0-20140109165425" />
+          <element id="library" level="project" name="Gradle: proteusframework-1.0-20140109165424" />
+          <element id="library" level="project" name="Gradle: proteusframework-cms-1.0-20140109165424" />
+          <element id="library" level="project" name="Gradle: proteusframework-communication-1.0-20140109165424" />
+          <element id="library" level="project" name="Gradle: proteusframework-data-1.0-20140109165424" />
+          <element id="library" level="project" name="Gradle: proteusframework-ui-1.0-20140109165425" />
+          <element id="library" level="project" name="Gradle: proteusframework-management-1.0-20140109165424" />
+          <element id="library" level="project" name="Gradle: proteusframework-internet-1.0-20140109165424" />
+          <element id="library" level="project" name="Gradle: proteusframework-users-1.0-20140109165425" />
+          <element id="library" level="project" name="Gradle: proteusframework-core-1.0-20140109165424" />
         </element>
       </element>
       <element id="directory" name="META-INF">

@@ -220,17 +220,17 @@
     <orderEntry type="library" exported="" name="Gradle: tomcat-jdbc-7.0.50" level="project" />
     <orderEntry type="library" exported="" name="Gradle: aws-java-sdk-1.6.12" level="project" />
     <orderEntry type="library" exported="" name="Gradle: tomcat-juli-7.0.50" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-ui-1.0-20140109155032" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-data-1.0-20140109155032" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-commerce-1.0-20140109155031" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-1.0-20140109155031" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-core-1.0-20140109155032" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-internet-1.0-20140109155032" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-cms-1.0-20140109155031" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-communication-1.0-20140109155031" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-management-1.0-20140109155032" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-users-1.0-20140109155032" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-processes-1.0-20140109155032" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-commerce-1.0-20140109165424" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-processes-1.0-20140109165425" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-1.0-20140109165424" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-cms-1.0-20140109165424" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-communication-1.0-20140109165424" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-data-1.0-20140109165424" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-ui-1.0-20140109165425" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-management-1.0-20140109165424" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-internet-1.0-20140109165424" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-users-1.0-20140109165425" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-core-1.0-20140109165424" level="project" />
   </component>
 </module>
 
