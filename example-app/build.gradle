@@ -118,7 +118,7 @@ dependencies {
     compiletimeaspects "org.springframework:spring-aspects:${springVersion}", "org.aspectj:aspectjtools:${aspectjVersion}"
 
     // App dependencies
-    compile 'net.proteusframework:proteusframework:1+'
+    compile 'net.proteusframework:proteusframework:0+'
 
     // Most apps use spring.
     compile "org.springframework:spring-core:${springVersion}",
