@@ -11,7 +11,7 @@ The example app (*/proteus-examples/example-app*) is a gradle project with depen
 * Download and unpack the project.
 * Open the project in your IDE of choice. 
 * Rename the project to match your needs - both project name and directory name unless the directory will become the root of the git repo.
-* Open gradle.properties and make necessary updates. You'll want to copy the read access properties for the artifact repo to your */home/$USER/.gradle/gradle.properties* file.
+* Open gradle.properties and make necessary updates. You'll want to copy the read access properties for the artifact repo to your */home/$USER/.gradle/gradle.properties* file. Read the file for any other settings you may want to make account-wide.
 * If using Intellij IDEA then import the standard settings (File->Import Settings) from */proteus-examples/example-app/config/idea/settings.jar*. Make sure the __i2rd__ Code Style scheme is selected in the IDEA settings dialog.
 * Create a git repo where you host your code such as github and push the project up.
 * Code!
