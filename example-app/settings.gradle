@@ -10,6 +10,7 @@ def props = [
 
 settings.gradle.projectsLoaded( {
     props.each({it.test(settings)})
+    settings.gradle.rootProject.ext.hasLocalRepo = settings.hasProperty('local_repo');
 })
 
 
