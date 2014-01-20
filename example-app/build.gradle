@@ -34,6 +34,7 @@ final repoURL = "${repo_venture_tech_url}/${repo_venture_tech_key}"
 buildscript {
     final buildRepoURL = "${repo_venture_tech_url}/${repo_venture_tech_key}"
     repositories {
+        if(hasLocalRepo){ maven { url = local_repo } }
         maven {
             credentials {
                 username "${repo_venturetech_username}"
@@ -79,6 +80,7 @@ try{
 
 
 repositories {
+    if(hasLocalRepo){ maven { url = local_repo } }
     maven {
         credentials {
             username repo_venturetech_username
@@ -118,7 +120,7 @@ dependencies {
     compiletimeaspects "org.springframework:spring-aspects:${springVersion}", "org.aspectj:aspectjtools:${aspectjVersion}"
 
     // App dependencies
-    compile 'net.proteusframework:proteusframework:1+'
+    compile 'net.proteusframework:proteusframework:0.1+'
 
     // Most apps use spring.
     compile "org.springframework:spring-core:${springVersion}",
@@ -133,7 +135,7 @@ dependencies {
         "org.springframework:spring-aspects:${springVersion}"
 }
 
-task wrapper(type: Wrapper) { gradleVersion = '1.10' }
+task wrapper(type: Wrapper) { gradleVersion = '1.8' }
 task createRuntimeAspectsLibs(type: Copy) {
     from configurations.runtimeaspects
     into "runtime-aspects"

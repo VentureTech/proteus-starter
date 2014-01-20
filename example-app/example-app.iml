@@ -11,6 +11,13 @@
         <webroots>
           <root url="file://$MODULE_DIR$/src/main/webapp" relative="" />
         </webroots>
+        <sourceRoots>
+          <root url="file://$MODULE_DIR$/.apt_generated" />
+          <root url="file://$MODULE_DIR$/src/main/groovy" />
+          <root url="file://$MODULE_DIR$/buildSrc/src/main/groovy" />
+          <root url="file://$MODULE_DIR$/src/main/java" />
+          <root url="file://$MODULE_DIR$/src/main/resources" />
+        </sourceRoots>
       </configuration>
     </facet>
   </component>
