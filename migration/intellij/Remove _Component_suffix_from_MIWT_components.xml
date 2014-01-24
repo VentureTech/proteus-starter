@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<migrationMap>
+  <name value="Remove 'Component' suffix from MIWT components" />
+  <description value="Changes class names, e.g. from PushButtonComponent to PushButton" />
+  <entry oldName="net.proteusframework.ui.miwt.component.AbstractButtonComponent" newName="net.proteusframework.ui.miwt.component.AbstractButton" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.AbstractComponent" newName="net.proteusframework.ui.miwt.component.ComponentImpl" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.CalendarComponent" newName="net.proteusframework.ui.miwt.component.Calendar" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.CalendarDateRangeComponent" newName="net.proteusframework.ui.miwt.component.CalendarDateRange" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.CheckBoxComponent" newName="net.proteusframework.ui.miwt.component.Checkbox" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.CollapsableContainer" newName="net.proteusframework.ui.miwt.component.CollapsibleContainer" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.CollapsableContainerDisplay" newName="net.proteusframework.ui.miwt.component.CollapsibleContainerDisplay" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.input.CollapsableStateEvent" newName="net.proteusframework.ui.miwt.input.CollapsibleStateEvent" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.ComboBoxComponent" newName="net.proteusframework.ui.miwt.component.ComboBox" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.DoubleEntryFieldComponent" newName="net.proteusframework.ui.miwt.component.DoubleEntryField" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.FieldComponent" newName="net.proteusframework.ui.miwt.component.Field" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.FileFieldComponent" newName="net.proteusframework.ui.miwt.component.FileField" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.ImageComponent" newName="net.proteusframework.ui.miwt.component.Image" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.ImageMapComponent" newName="net.proteusframework.ui.miwt.component.ImageMap" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.ListComponent" newName="net.proteusframework.ui.miwt.component.List" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.MediaComponent" newName="net.proteusframework.ui.miwt.component.Media" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.MenuBarComponent" newName="net.proteusframework.ui.miwt.component.MenuBar" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.MenuComponent" newName="net.proteusframework.ui.miwt.component.Menu" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.MenuItemComponent" newName="net.proteusframework.ui.miwt.component.MenuItem" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.PagingComponent" newName="net.proteusframework.ui.miwt.component.Pager" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.PopupMenuComponent" newName="net.proteusframework.ui.miwt.component.PopupMenu" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.PushButtonComponent" newName="net.proteusframework.ui.miwt.component.PushButton" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.RadioButtonComponent" newName="net.proteusframework.ui.miwt.component.RadioButton" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.ResetButtonComponent" newName="net.proteusframework.ui.miwt.component.ResetButton" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.RichListComponent" newName="net.proteusframework.ui.miwt.component.RichList" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.SearchableComboBoxComponent" newName="net.proteusframework.ui.miwt.component.SearchableComboBox" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.SeparatorComponent" newName="net.proteusframework.ui.miwt.component.Separator" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.SpaceComponent" newName="net.proteusframework.ui.miwt.component.Space" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.TabComponentImpl" newName="net.proteusframework.ui.miwt.component.Tabs" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.TabComponent" newName="net.proteusframework.ui.miwt.component.Tabs" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.TableComponent" newName="net.proteusframework.ui.miwt.component.Table" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.TextButtonComponent" newName="net.proteusframework.ui.miwt.component.TextButton" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.TextComponent" newName="net.proteusframework.ui.miwt.component.Label" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.ToggleButtonComponent" newName="net.proteusframework.ui.miwt.component.ToggleButton" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.TreeComponent" newName="net.proteusframework.ui.miwt.component.Tree" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.URIComponent" newName="net.proteusframework.ui.miwt.component.URILink" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.composite.CommandBarComponent" newName="net.proteusframework.ui.miwt.component.composite.CommandBar" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.composite.DateFormatTextComponent" newName="net.proteusframework.ui.miwt.component.composite.DateFormatLabel" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.composite.EmptyTableHiderComponent" newName="net.proteusframework.ui.miwt.component.composite.EmptyTableHider" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.composite.QuickTableSearchComponent" newName="net.proteusframework.ui.miwt.component.composite.QuickTableSearch" type="class" />
+  
+    <entry oldName="net.proteusframework.ui.mcolumn.MTableComponent" newName="net.proteusframework.ui.mcolumn.MTable" type="class" />
+  
+  <entry oldName="net.proteusframework.ui.miwt.component.composite.daterange" newName="com.i2rd.miwt.component.composite.daterange" type="package" recursive="true" />
+</migrationMap>
+
