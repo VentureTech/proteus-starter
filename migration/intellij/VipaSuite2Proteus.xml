@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<migrationMap>
+  <name value="VipaSuite2Proteus" />
+  <description value="Package and class name mapping for moving to Proteus Framework" />
+  <entry oldName="com.i2rd.cms.HtmlDoctype" newName="net.proteusframework.core.html.HTMLDoctype" type="class" />
+  <entry oldName="com.i2rd.java.html.IHTMLElement" newName="net.proteusframework.core.html.Element" type="class" />
+  <entry oldName="com.i2rd.java.html.IHTMLContext" newName="net.proteusframework.core.html.Context" type="class" />
+  <entry oldName="com.i2rd.java.html.HTMLElement" newName="net.proteusframework.core.html.HTMLElement" type="class" />
+  <entry oldName="com.i2rd.java.miwt.medium.html.IDoctype" newName="net.proteusframework.core.html.Doctype" type="class" />
+  <entry oldName="com.i2rd.java.html.HTMLContext" newName="net.proteusframework.core.html.ContextImpl" type="class" />
+  <entry oldName="com.i2rd.cms.scripts.Scriptable" newName="com.i2rd.lib.Parameterized" type="class" />
+  <entry oldName="com.i2rd.java.miwt.DefaultAction" newName="net.proteusframework.ui.miwt.ReflectiveAction" type="class" />
+  <entry oldName="com.i2rd.java.acegi.model.processor.PrincipalProcessor" newName="net.proteusframework.users.model.dao.PrincipalDAO" type="class" />
+  <entry oldName="com.i2rd.cms.dao.SiteManager" newName="net.proteusframework.cms.dao.CmsFrontendDAO" type="class" />
+  <entry oldName="com.i2rd.java.miwt.component.composite.MessageType" newName="net.proteusframework.core.notification.NotificationType" type="class" />
+  <entry oldName="com.i2rd.java.miwt.component.composite.TabbedContainer2" newName="net.proteusframework.ui.miwt.component.composite.TabbedContainerImpl" type="class" />
+  <entry oldName="com.i2rd.java.acegi.model.AbstractAuditableEntity" newName="net.proteusframework.users.model.AbstractAuditableEntity" type="class" />
+  <entry oldName="net.proteusframework.ui.search.IPropertyConstraint" newName="net.proteusframework.ui.search.PropertyConstraint" type="class" />
+  <entry oldName="net.proteusframework.ui.search.DefaultQLBuilder" newName="net.proteusframework.ui.search.QLBuilderImpl" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.DefaultAction" newName="net.proteusframework.ui.miwt.ReflectiveAction" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.IHistory" newName="net.proteusframework.ui.miwt.History" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.composite.editor.IValueEditor" newName="net.proteusframework.ui.miwt.component.composite.editor.ValueEditor" type="class" />
+  <entry oldName="net.proteusframework.ui.search.ISearchUIOperationHandler" newName="net.proteusframework.ui.search.SearchUIOperationHandler" type="class" />
+  <entry oldName="net.proteusframework.ui.search.SearchModel" newName="net.proteusframework.ui.search.SearchModelImpl" type="class" />
+  <entry oldName="net.proteusframework.ui.search.SearchResultColumn" newName="net.proteusframework.ui.search.SearchResultColumnImpl" type="class" />
+  <entry oldName="net.proteusframework.ui.search.SearchSupplier" newName="net.proteusframework.ui.search.SearchSupplierImpl" type="class" />
+  <entry oldName="net.proteusframework.ui.search.SearchUI" newName="net.proteusframework.ui.search.SearchUIImpl" type="class" />
+  <entry oldName="net.proteusframework.core.notification.INotification" newName="net.proteusframework.core.notification.NotificationImpl" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.composite.TabbedContainer2" newName="net.proteusframework.ui.miwt.component.composite.TabbedContainerImpl" type="class" />
+  <entry oldName="net.proteusframework.internet.http.resource.IResourceManager" newName="net.proteusframework.internet.http.resource.ResourceManager" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.IComponent" newName="net.proteusframework.ui.miwt.component.Component" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.composite.editor.IValueEditor" newName="net.proteusframework.ui.miwt.component.composite.editor.ValueEditor" type="class" />
+  <entry oldName="com.i2rd.java.hibernate" newName="net.proteusframework.core.hibernate" type="package" recursive="true" />
+  <entry oldName="com.i2rd.java.hibernate.processor" newName="net.proteusframework.core.hibernate.dao" type="package" recursive="true" />
+  <entry oldName="com.i2rd.dynamic.search" newName="net.proteusframework.ui.search" type="package" recursive="true" />
+  <entry oldName="com.i2rd.java.locale" newName="net.proteusframework.core.locale" type="package" recursive="true" />
+  <entry oldName="com.i2rd.java.miwt" newName="net.proteusframework.ui.miwt" type="package" recursive="true" />
+  <entry oldName="com.i2rd.java.spring.ApplicationContextUtils" newName="net.proteusframework.core.spring.ApplicationContextUtils" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.hibernate.LocalizedObjectKeyUserType" newName="com.i2rd.hibernate.usertype.LocalizedObjectKeyUserType" type="class" />
+  <entry oldName="net.proteusframework.core.hibernate.filesystem" newName="net.proteusframework.data.filesystem" type="package" recursive="true" />
+  <entry oldName="com.i2rd.java.acegi.PrincipalContactUtil" newName="net.proteusframework.users.PrincipalContactUtil" type="class" />
+  <entry oldName="com.i2rd.cms.miwt" newName="net.proteusframework.ui.mcolumn" type="package" recursive="true" />
+  <entry oldName="com.i2rd.java.hr" newName="com.i2rd.hr" type="package" recursive="true" />
+  <entry oldName="com.i2rd.java.hr.miwt" newName="com.i2rd.hr.miwt" type="package" recursive="true" />
+  <entry oldName="com.i2rd.java.acegi.model" newName="net.proteusframework.users.model" type="package" recursive="true" />
+  <entry oldName="com.i2rd.java.acegi.model.processor" newName="com.i2rd.java.acegi.model.dao" type="package" recursive="true" />
+  <entry oldName="com.i2rd.java.util.GloballyUniqueStringGenerator" newName="net.proteusframework.core.GloballyUniqueStringGenerator" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.util.Notifiable" newName="net.proteusframework.core.notification.Notifiable" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.validation.CommonValidationText" newName="net.proteusframework.core.validation.CommonValidationText" type="class" />
+  <entry oldName="com.i2rd.cms.miwt.workspace" newName="net.proteusframework.ui.workspace" type="package" recursive="true" />
+  <entry oldName="com.i2rd.cms.miwt.BlankColumn" newName="net.proteusframework.ui.mcolumn.FixedValueColumn" type="class" />
+  <entry oldName="com.i2rd.java.util.JunctionOperator" newName="net.proteusframework.core.JunctionOperator" type="class" />
+  <entry oldName="com.i2rd.cms.automation.CommandUtil" newName="net.proteusframework.core.CommandUtil" type="class" />
+  <entry oldName="net.proteusframework.core.hibernate.HibernateUtilContext" newName="com.i2rd.hibernate.HibernateUtilContext" type="class" />
+  <entry oldName="net.proteusframework.users.model.dao.AuthenticationDomainProcessor" newName="net.proteusframework.users.model.dao.AuthenticationDomainDAO" type="class" />
+  <entry oldName="com.i2rd.java.acegi.ApplicationContextBean" newName="net.proteusframework.users.ApplicationContextBean" type="class" />
+  <entry oldName="net.proteusframework.data.filesystem.FileSystemProcessor" newName="net.proteusframework.data.filesystem.FileSystemDAO" type="class" />
+  <entry oldName="net.proteusframework.core.hibernate.util.HibernateUtil" newName="com.i2rd.hibernate.util.HibernateUtil" type="class" />
+  <entry oldName="com.i2rd.java.util.StringFactory" newName="net.proteusframework.core.StringFactory" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.composite.editor.IValueEditor" newName="net.proteusframework.ui.miwt.component.composite.editor.ValueEditor" type="class" />
+  <entry oldName="net.proteusframework.ui.workspace.DefaultWorkspace" newName="net.proteusframework.ui.workspace.WorkspaceImpl" type="class" />
+  <entry oldName="com.i2rd.java.mail.EmailAddressValidator" newName="net.proteusframework.core.mail.EmailAddressValidator" type="class" />
+  <entry oldName="net.proteusframework.ui.mcolumn.SiteAwareMiwtApplication" newName="com.i2rd.cms.miwt.SiteAwareMIWTApplication" type="class" />
+  <entry oldName="com.i2rd.emailmanagement.EmailTemplateManager" newName="com.i2rd.emailmanagement.EmailTemplateDAO" type="class" />
+  <entry oldName="com.i2rd.java.mail" newName="net.proteusframework.core.mail" type="package" recursive="true" />
+  <entry oldName="com.i2rd.cms.page.Link" newName="net.proteusframework.internet.http.Link" type="class" />
+  <entry oldName="net.proteusframework.ui.mcolumn.LinkSelector" newName="com.i2rd.cms.miwt.LinkSelector" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.Request" newName="net.proteusframework.internet.http.Request" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.Response" newName="net.proteusframework.internet.http.Response" type="class" />
+  <entry oldName="com.i2rd.cms.controller.CmsUrl" newName="net.proteusframework.internet.http.ResponseURL" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.HtmlRenderContext" newName="net.proteusframework.ui.miwt.HTMLRenderContext" type="class" />
+  <entry oldName="com.i2rd.labs.profile.ProfileManager" newName="com.i2rd.labs.profile.ProfileDAO" type="class" />
+  <entry oldName="com.i2rd.labs.profile.PrincipalInfoManager" newName="com.i2rd.labs.profile.PrincipalInfoDAO" type="class" />
+  <entry oldName="com.i2rd.java.spring.scheduling.GroupedRunnable" newName="com.i2rd.spring.scheduling.GroupedRunnable" type="class" />
+  <entry oldName="net.proteusframework.ui.miwt.component.UriComponent" newName="net.proteusframework.ui.miwt.component.URIComponent" type="class" />
+  <entry oldName="com.i2rd.cms.CmsValidationException" newName="net.proteusframework.cms.CmsValidationException" type="class" />
+  <entry oldName="com.i2rd.cms.util.ImageFileUtil" newName="net.proteusframework.cms.support.ImageFileUtil" type="class" />
+  <entry oldName="com.i2rd.hibernate.usertype.LocalizedObjectKeyUserType" newName="net.proteusframework.core.usertype.LocalizedObjectKeyUserType" type="class" />
+  <entry oldName="com.i2rd.cms.CmsSite" newName="net.proteusframework.cms.CmsSite" type="class" />
+  <entry oldName="com.i2rd.cms.dao.CmsFrontendDAO" newName="net.proteusframework.cms.dao.CmsFrontendDAO" type="class" />
+  <entry oldName="com.i2rd.cms.Site" newName="net.proteusframework.cms.CmsSite" type="class" />
+  <entry oldName="net.proteusframework.internet.http.IRequest" newName="net.proteusframework.internet.http.Request" type="class" />
+  <entry oldName="com.i2rd.cms.miwt.CommonCmsText" newName="net.proteusframework.cms.support.CommonCmsText" type="class" />
+  <entry oldName="com.i2rd.cms.FileSystemDirectory" newName="net.proteusframework.cms.FileSystemDirectory" type="class" />
+  <entry oldName="com.i2rd.cms.CmsException" newName="net.proteusframework.cms.CmsException" type="class" />
+  <entry oldName="net.proteusframework.users.PrincipalContactUtil" newName="net.proteusframework.users.model.dao.PrincipalContactUtil" type="class" />
+  <entry oldName="com.i2rd.hr" newName="net.proteusframework.users.model" type="package" recursive="true" />
+  <entry oldName="net.proteusframework.ui.mcolumn.SiteAwareMIWTApplication" newName="com.i2rd.cms.miwt.SiteAwareMIWTApplication" type="class" />
+  <entry oldName="com.i2rd.componentfactory.form.FormDefinition" newName="net.proteusframework.form.FormDefinition" type="class" />
+  <entry oldName="com.i2rd.componentfactory.form.FormProcess" newName="net.proteusframework.form.FormProcess" type="class" />
+  <entry oldName="net.proteusframework.users.model.miwt.AddressForm" newName="com.i2rd.hr.miwt.AddressForm" type="class" />
+  <entry oldName="net.proteusframework.users.model.miwt.HumanResourcesUIConfig" newName="com.i2rd.hr.miwt.HumanResourcesUIConfig" type="class" />
+  <entry oldName="net.proteusframework.users.model.miwt.PhoneNumberForm" newName="com.i2rd.hr.miwt.PhoneNumberForm" type="class" />
+  <entry oldName="com.i2rd.emailmanagement" newName="net.proteusframework.email" type="package" recursive="true" />
+  <entry oldName="com.i2rd.cms.bean.AbstractCmsBean" newName="net.proteusframework.cms.component.AbstractContentElement" type="class" />
+  <entry oldName="com.i2rd.cms.bean.util.SimpleContentBuilder" newName="net.proteusframework.cms.component.content.ContentBuilder" type="class" />
+  <entry oldName="com.i2rd.cms.controller.LinkExternalizer" newName="net.proteusframework.cms.controller.LinkExternalizer" type="class" />
+  <entry oldName="com.i2rd.cms.generator.Generator" newName="net.proteusframework.cms.component.generator.Generator" type="class" />
+  <entry oldName="com.i2rd.cms.generator.MIWTGenerator" newName="net.proteusframework.cms.component.generator.MIWTGenerator" type="class" />
+  <entry oldName="com.i2rd.cms.page.PageElement" newName="net.proteusframework.cms.PageElement" type="class" />
+  <entry oldName="com.i2rd.cms.controller.Request" newName="net.proteusframework.cms.controller.CmsRequest" type="class" />
+  <entry oldName="com.i2rd.cms.editor.EditorUI" newName="net.proteusframework.cms.component.editor.EditorUI" type="class" />
+  <entry oldName="com.i2rd.cms.editor.SimpleContentBuilderBasedEditor" newName="net.proteusframework.cms.component.editor.ContentBuilderBasedEditor" type="class" />
+  <entry oldName="net.proteusframework.internet.http.IResponse" newName="net.proteusframework.internet.http.Response" type="class" />
+  <entry oldName="com.i2rd.cms.PageElementConfiguration" newName="net.proteusframework.cms.PageElementModelConfiguration" type="class" />
+  <entry oldName="com.i2rd.cms.category.Categorized" newName="net.proteusframework.cms.category.Categorized" type="class" />
+  <entry oldName="com.i2rd.cms.category.CmsCategory" newName="net.proteusframework.cms.category.CmsCategory" type="class" />
+  <entry oldName="com.i2rd.cms.controller.Response" newName="net.proteusframework.cms.controller.CmsResponse" type="class" />
+  <entry oldName="net.proteusframework.email.ProgrammaticEmailConfigurationType" newName="net.proteusframework.email.config.ProgrammaticEmailConfigType" type="class" />
+</migrationMap>
+
