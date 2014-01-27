@@ -16,7 +16,6 @@
   <entry oldName="net.proteusframework.ui.miwt.component.FileFieldComponent" newName="net.proteusframework.ui.miwt.component.FileField" type="class" />
   <entry oldName="net.proteusframework.ui.miwt.component.ImageComponent" newName="net.proteusframework.ui.miwt.component.Image" type="class" />
   <entry oldName="net.proteusframework.ui.miwt.component.ImageMapComponent" newName="net.proteusframework.ui.miwt.component.ImageMap" type="class" />
-  <entry oldName="net.proteusframework.ui.miwt.component.ListComponent" newName="net.proteusframework.ui.miwt.component.List" type="class" />
   <entry oldName="net.proteusframework.ui.miwt.component.MediaComponent" newName="net.proteusframework.ui.miwt.component.Media" type="class" />
   <entry oldName="net.proteusframework.ui.miwt.component.MenuBarComponent" newName="net.proteusframework.ui.miwt.component.MenuBar" type="class" />
   <entry oldName="net.proteusframework.ui.miwt.component.MenuComponent" newName="net.proteusframework.ui.miwt.component.Menu" type="class" />
