@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="AutomationServlet with LTW" type="Application" factoryName="Application">
+    <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     <option name="MAIN_CLASS_NAME" value="com.i2rd.cms.automation.AutomationServlet" />
     <option name="VM_PARAMETERS" value="-javaagent:$PROJECT_DIR$/../../products-labs/runtime-aspects/spring-instrument.jar -javaagent:$PROJECT_DIR$/../../products-labs/runtime-aspects/aspectjweaver.jar -Dorg.aspectj.weaver.showWeaveInfo=true -Xmx1024m -XX:PermSize=512m -XX:MaxPermSize=512m -Duser.timezone=UTC -server -Xverify:none -Dspring.context.location=&quot;file://$PROJECT_DIR$/../../products-labs/web/docroot/WEB-INF/automationContext.spring.xml&quot; -Dspring.properties=&quot;file://$PROJECT_DIR$/../../products-labs/web/docroot/WEB-INF/contexts/development.properties&quot;" />
     <option name="PROGRAM_PARAMETERS" value="-port 7080 -address localhost -browser none" />

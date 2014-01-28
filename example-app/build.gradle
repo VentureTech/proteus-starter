@@ -1,5 +1,5 @@
-import com.proteusframework.build.*
-import org.ajoberstar.gradle.git.tasks.*
+import com.proteusframework.build.Version
+import org.ajoberstar.gradle.git.tasks.GitBranchList
 
 import java.text.SimpleDateFormat
 
@@ -120,7 +120,7 @@ dependencies {
     compiletimeaspects "org.springframework:spring-aspects:${springVersion}", "org.aspectj:aspectjtools:${aspectjVersion}"
 
     // App dependencies
-    compile 'net.proteusframework:proteusframework:0.1+'
+    compile 'net.proteusframework:proteusframework:0.3.0-+'
 
     // Most apps use spring.
     compile "org.springframework:spring-core:${springVersion}",
@@ -136,7 +136,7 @@ dependencies {
 }
 
 task wrapper(type: Wrapper) { gradleVersion = '1.8' }
-task createRuntimeAspectsLibs(type: com.sun.org.apache.xalan.internal.xsltc.compiler.Copy) {
+task createRuntimeAspectsLibs(type: Copy) {
     from configurations.runtimeaspects
     into "runtime-aspects"
     rename { "${it.substring(0, it.lastIndexOf('-'))}.jar" }
@@ -234,7 +234,7 @@ artifactory {
     }
 
     resolve {
-        repoKey = 'libs-release'
+        repoKey = 'repo'
         username = repo_venturetech_username
         password = repo_venturetech_password
     }
@@ -267,3 +267,14 @@ checkstyleMain {
     classpath += configurations.compile // To avoid class loading errors when checking javadoc
     source = 'src/main/java' // Do not include generated sources
 }
+
+configurations.all {
+  resolutionStrategy {
+    // cache dynamic versions for ...
+    cacheDynamicVersionsFor 0, 'seconds'
+    // cache changing modules for ...
+    cacheChangingModulesFor 0, 'seconds'
+  }
+}
+
+
