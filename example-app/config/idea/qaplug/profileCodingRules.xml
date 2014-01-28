@@ -68,6 +68,7 @@
       </module>
       <module name="JavadocMethod">
         <property name="severity" value="error" QAPlugSeverity="blocker" />
+        <property name="allowThrowsTagsForSubclasses" value="true" />
         <property name="allowUndeclaredRTE" value="true" />
         <property name="logLoadErrors" value="true" />
         <property name="tokens" value="METHOD_DEF, CTOR_DEF" />
@@ -662,7 +663,7 @@
       <Bug pattern="FI_USELESS" />
     </Match>
     <Match>
-      <!--QAPlug severity=critical-->
+      <!--QAPlug severity=minor-->
       <Bug pattern="FL_MATH_USING_FLOAT_PRECISION" />
     </Match>
     <Match>
