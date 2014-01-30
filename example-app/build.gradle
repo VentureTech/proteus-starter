@@ -133,6 +133,8 @@ dependencies {
         "org.springframework:spring-test:${springVersion}",
         "org.springframework:spring-instrument:${springVersion}",
         "org.springframework:spring-aspects:${springVersion}"
+
+    testCompile 'junit:junit:4.11'
 }
 
 task wrapper(type: Wrapper) { gradleVersion = '1.8' }
