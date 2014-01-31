@@ -102,10 +102,7 @@ configurations {
 }
 // Add the APT generated folder to the java sourceSet for Intellij IDEA
 sourceSets {
-    main {
-        java {srcDirs '.apt_generated'}
-        groovy { srcDirs 'buildSrc/src/main/groovy' }
-    }
+    main { java {srcDirs '.apt_generated'} }
     test { java {srcDirs '.apt_generated_tests'} }
 }
 def aptGenPath = project.file("${project.projectDir}/.apt_generated").absolutePath
@@ -229,7 +226,7 @@ artifactory {
         }
         defaults {
             publications ('ivyPub', 'mavenPub')
-            properties = ['build.status': version.status ]
+            properties = ['dd.status': version.status ]
         }
     }
 
