@@ -11,12 +11,6 @@
         <webroots>
           <root url="file://$MODULE_DIR$/src/main/webapp" relative="" />
         </webroots>
-        <sourceRoots>
-          <root url="file://$MODULE_DIR$/.apt_generated" />
-          <root url="file://$MODULE_DIR$/src/main/groovy" />
-          <root url="file://$MODULE_DIR$/src/main/java" />
-          <root url="file://$MODULE_DIR$/src/main/resources" />
-        </sourceRoots>
       </configuration>
     </facet>
   </component>
@@ -213,7 +207,6 @@
     <orderEntry type="library" exported="" name="Gradle: hibernate-validator-5.1.0.Beta1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jboss-transaction-api_1.2_spec-1.0.0.Final" level="project" />
     <orderEntry type="library" exported="" name="Gradle: hibernate-ehcache-4.3.1.Final" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-0.3.0-20140131155031" level="project" />
     <orderEntry type="library" exported="" name="Gradle: spring-core-3.2.7.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: spring-beans-3.2.7.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: spring-jdbc-3.2.7.RELEASE" level="project" />
@@ -235,17 +228,18 @@
     <orderEntry type="library" exported="" name="Gradle: jetty-jsp-8.1.14.v20131031" level="project" />
     <orderEntry type="library" exported="" name="Gradle: spring-expression-3.2.7.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: spring-tx-3.2.7.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-core-0.3.0-20140131155032" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-users-0.3.0-20140131155032" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-internet-0.3.0-20140131155032" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-data-0.3.0-20140131155032" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-ui-0.3.0-20140131155032" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-cms-0.3.0-20140131155031" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-communication-0.3.0-20140131155032" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-processes-0.3.0-20140131155032" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-management-0.3.0-20140131155032" level="project" />
     <orderEntry type="library" exported="" name="Gradle: postgresql-9.1-902.jdbc4" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: proteusframework-commerce-0.3.0-20140131155032" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-0.3.0-20140131184250" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-core-0.3.0-20140131184251" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-users-0.3.0-20140131184251" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-internet-0.3.0-20140131184251" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-data-0.3.0-20140131184251" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-ui-0.3.0-20140131184251" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-cms-0.3.0-20140131184250" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-communication-0.3.0-20140131184251" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-processes-0.3.0-20140131184251" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-management-0.3.0-20140131184251" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: proteusframework-commerce-0.3.0-20140131184251" level="project" />
   </component>
 </module>
 

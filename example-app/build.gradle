@@ -45,7 +45,7 @@ buildscript {
     }
     dependencies {
         // aspectj-weave plugin for our use of Spring @Configurable
-        classpath 'com.i2rd:gradle-aspectj-weave:1.0',
+        classpath 'com.i2rd:gradle-aspectj-weave:1.1',
                   'org.jfrog.buildinfo:build-info-extractor-gradle:2.2+',
                   'org.ajoberstar:gradle-git:0.6.3'
         //'org.hibernate:hibernate-gradle-plugin:4.2.8' - waiting to show up in release repos
