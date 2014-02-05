@@ -1,0 +1,42 @@
+<!--
+  ~ Copyright (c) Interactive Information R & D (I2RD) LLC.
+  ~ All Rights Reserved.
+  ~
+  ~ This software is confidential and proprietary information of
+  ~ I2RD LLC ("Confidential Information"). You shall not disclose
+  ~ such Confidential Information and shall use it only in
+  ~ accordance with the terms of the license agreement you entered
+  ~ into with I2RD.
+  -->
+
+<aspectj>
+
+    <!-- definitions of aspects available to the weaver, and which
+         ones should be used or not used -->
+    <aspects>
+    </aspects>
+
+    <!-- control over the weaver itself and the types that will be woven -->
+
+    <!--<weaver options="-showWeaveInfo -->
+        <!---XmessageHandlerClass:org.springframework.aop.aspectj.AspectJWeaverMessageHandler-->
+        <!---Xset:overWeaving=true">-->
+        <!--<exclude within="com.i2rd..*" />-->
+        <!--<exclude within="com.proteusframework..*" />-->
+        <!--<exclude within="net.proteusframework..*" />-->
+    <!---->
+        <!--&lt;!&ndash; Include Your Packages Here &ndash;&gt;-->
+        <!--<include within="com.example..*"/>-->
+    <!--</weaver>-->
+
+    <weaver options="-Xset:overWeaving=true">
+        <!-- Exclude Proteus Unless You Have Your Own Aspects -->
+        <exclude within="com.i2rd..*" />
+        <exclude within="com.proteusframework..*" />
+        <exclude within="net.proteusframework..*" />
+
+        <!-- Include Your Packages Here For Spring Aspects -->
+        <include within="com.example..*"/>
+    </weaver>
+
+</aspectj>

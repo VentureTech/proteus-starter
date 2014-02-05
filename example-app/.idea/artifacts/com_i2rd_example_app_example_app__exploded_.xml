@@ -8,7 +8,6 @@
           <element id="module-output" name="example-app" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="Gradle: antlr-2.7.7" />
           <element id="library" level="project" name="Gradle: milton-api-1.5.0" />
           <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity.db.generic-1.0.1.v201107221459" />
           <element id="library" level="project" name="Gradle: jcaptcha-1.0" />
@@ -98,7 +97,6 @@
           <element id="library" level="project" name="Gradle: icu4j-51.2" />
           <element id="library" level="project" name="Gradle: org.apache.xml.serializer-2.7.1" />
           <element id="library" level="project" name="Gradle: org.eclipse.core.expressions-3.4.500.v20130515-1343" />
-          <element id="library" level="project" name="Gradle: commons-codec-1.6" />
           <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.hsqldb-1.0.0.v201107221502" />
           <element id="library" level="project" name="Gradle: gson-2.2.4" />
           <element id="library" level="project" name="Gradle: annotations-2.0.1" />
@@ -157,23 +155,9 @@
           <element id="library" level="project" name="Gradle: org.eclipse.emf.common-2.9.1.v20130827-0309" />
           <element id="library" level="project" name="Gradle: org.eclipse.emf.ecore.xmi-2.9.1.v20130827-0309" />
           <element id="library" level="project" name="Gradle: drools-2.1.0" />
-          <element id="library" level="project" name="Gradle: postgresql-9.1-901-1.jdbc4" />
           <element id="library" level="project" name="Gradle: jsch-0.1.49" />
           <element id="library" level="project" name="Gradle: xuggler-5.4.0" />
-          <element id="library" level="project" name="Gradle: spring-beans-3.2.6.RELEASE" />
-          <element id="library" level="project" name="Gradle: spring-instrument-3.2.6.RELEASE" />
-          <element id="library" level="project" name="Gradle: spring-orm-3.2.6.RELEASE" />
-          <element id="library" level="project" name="Gradle: spring-jdbc-3.2.6.RELEASE" />
-          <element id="library" level="project" name="Gradle: spring-context-support-3.2.6.RELEASE" />
-          <element id="library" level="project" name="Gradle: spring-context-3.2.6.RELEASE" />
-          <element id="library" level="project" name="Gradle: spring-test-3.2.6.RELEASE" />
           <element id="library" level="project" name="Gradle: aspectjrt-1.7.4" />
-          <element id="library" level="project" name="Gradle: spring-tx-3.2.6.RELEASE" />
-          <element id="library" level="project" name="Gradle: spring-core-3.2.6.RELEASE" />
-          <element id="library" level="project" name="Gradle: spring-expression-3.2.6.RELEASE" />
-          <element id="library" level="project" name="Gradle: spring-aspects-3.2.6.RELEASE" />
-          <element id="library" level="project" name="Gradle: spring-aop-3.2.6.RELEASE" />
-          <element id="library" level="project" name="Gradle: spring-web-3.2.6.RELEASE" />
           <element id="library" level="project" name="Gradle: groovy-all-2.2.1-indy" />
           <element id="library" level="project" name="Gradle: annotations-133.193" />
           <element id="library" level="project" name="Gradle: joda-time-2.3" />
@@ -199,17 +183,41 @@
           <element id="library" level="project" name="Gradle: hibernate-validator-5.1.0.Beta1" />
           <element id="library" level="project" name="Gradle: jboss-transaction-api_1.2_spec-1.0.0.Final" />
           <element id="library" level="project" name="Gradle: hibernate-ehcache-4.3.1.Final" />
-          <element id="library" level="project" name="Gradle: proteusframework-0.3.0-20140128215511" />
-          <element id="library" level="project" name="Gradle: proteusframework-core-0.3.0-20140128215512" />
-          <element id="library" level="project" name="Gradle: proteusframework-users-0.3.0-20140128215512" />
-          <element id="library" level="project" name="Gradle: proteusframework-internet-0.3.0-20140128215512" />
-          <element id="library" level="project" name="Gradle: proteusframework-data-0.3.0-20140128215512" />
-          <element id="library" level="project" name="Gradle: proteusframework-ui-0.3.0-20140128215512" />
-          <element id="library" level="project" name="Gradle: proteusframework-cms-0.3.0-20140128215511" />
-          <element id="library" level="project" name="Gradle: proteusframework-communication-0.3.0-20140128215511" />
-          <element id="library" level="project" name="Gradle: proteusframework-processes-0.3.0-20140128215512" />
-          <element id="library" level="project" name="Gradle: proteusframework-management-0.3.0-20140128215512" />
-          <element id="library" level="project" name="Gradle: proteusframework-commerce-0.3.0-20140128215511" />
+          <element id="library" level="project" name="Gradle: spring-core-3.2.7.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-beans-3.2.7.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-jdbc-3.2.7.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-aop-3.2.7.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-context-3.2.7.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-orm-3.2.7.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-web-3.2.7.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-test-3.2.7.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-instrument-3.2.7.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-aspects-3.2.7.RELEASE" />
+          <element id="library" level="project" name="Gradle: javax.servlet-3.0.0.v201112011016" />
+          <element id="library" level="project" name="Gradle: javax.servlet.jsp-2.2.0.v201112011158" />
+          <element id="library" level="project" name="Gradle: org.apache.jasper.glassfish-2.2.2.v201112011158" />
+          <element id="library" level="project" name="Gradle: javax.servlet.jsp.jstl-1.2.0.v201105211821" />
+          <element id="library" level="project" name="Gradle: org.apache.taglibs.standard.glassfish-1.2.0.v201112081803" />
+          <element id="library" level="project" name="Gradle: javax.el-2.2.0.v201108011116" />
+          <element id="library" level="project" name="Gradle: com.sun.el-2.2.0.v201108011116" />
+          <element id="library" level="project" name="Gradle: org.eclipse.jdt.core-3.7.1" />
+          <element id="library" level="project" name="Gradle: jetty-jsp-8.1.14.v20131031" />
+          <element id="library" level="project" name="Gradle: spring-expression-3.2.7.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-tx-3.2.7.RELEASE" />
+          <element id="library" level="project" name="Gradle: postgresql-9.1-902.jdbc4" />
+          <element id="library" level="project" name="Gradle: proteusframework-0.3.0-20140131184250" />
+          <element id="library" level="project" name="Gradle: proteusframework-core-0.3.0-20140131184251" />
+          <element id="library" level="project" name="Gradle: proteusframework-users-0.3.0-20140131184251" />
+          <element id="library" level="project" name="Gradle: proteusframework-internet-0.3.0-20140131184251" />
+          <element id="library" level="project" name="Gradle: proteusframework-data-0.3.0-20140131184251" />
+          <element id="library" level="project" name="Gradle: proteusframework-ui-0.3.0-20140131184251" />
+          <element id="library" level="project" name="Gradle: proteusframework-cms-0.3.0-20140131184250" />
+          <element id="library" level="project" name="Gradle: proteusframework-communication-0.3.0-20140131184251" />
+          <element id="library" level="project" name="Gradle: proteusframework-processes-0.3.0-20140131184251" />
+          <element id="library" level="project" name="Gradle: proteusframework-management-0.3.0-20140131184251" />
+          <element id="library" level="project" name="Gradle: proteusframework-commerce-0.3.0-20140131184251" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/artifacts-26/filestore/commons-codec/commons-codec/1.6/jar/b7f0fc8f61ecadeb3695f0b9464755eee44374d4/commons-codec-1.6.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/artifacts-26/filestore/antlr/antlr/2.7.7/jar/83cd2cd674a217ade95a4bb83a8a14f351f48bd0/antlr-2.7.7.jar" />
         </element>
       </element>
       <element id="directory" name="META-INF">

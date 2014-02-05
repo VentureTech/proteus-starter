@@ -2,7 +2,7 @@
   <configuration default="false" name="App with LTW" type="Application" factoryName="Application" singleton="true">
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     <option name="MAIN_CLASS_NAME" value="net.proteusframework.cms.controller.Cms" />
-    <option name="VM_PARAMETERS" value="-javaagent:$PROJECT_DIR$/runtime-aspects/spring-instrument.jar -javaagent:$PROJECT_DIR$/runtime-aspects/aspectjweaver.jar -Dorg.aspectj.weaver.showWeaveInfo=true -Xmx1024M -XX:MaxPermSize=368m -Duser.timezone=UTC -server -Djava.awt.headless=true -Xverify:none -Djava.util.logging.config.file=&quot;$PROJECT_DIR$/src/main/webapp/META-INF/resources/logging/logging-dev.properties&quot; -Dspring.properties=&quot;file://$PROJECT_DIR$/src/main/webapp/META-INF/resources/contexts/development.properties&quot; -Dcom.i2rd.java.ecommerce.CleanupPartialDataRunnable=disable -Djava.io.tmpdir=/tmp/exampleapp -Dqrelay.autostart=false -DRebuildSessionFactoryDelay=1 -Dfilesystem.native.lock=false -DStaticKeyDataConfig=true" />
+    <option name="VM_PARAMETERS" value="-Dorg.aspectj.weaver.showWeaveInfo=true -Dspring.config=com.example.app.config.MyAppConfig -javaagent:$PROJECT_DIR$/../../products-labs/runtime-aspects/spring-instrument.jar -javaagent:$PROJECT_DIR$/runtime-aspects/aspectjweaver.jar -Xmx1024M -XX:MaxPermSize=368m -Duser.timezone=UTC -server -Djava.awt.headless=true -Xverify:none -Djava.util.logging.config.file=&quot;$PROJECT_DIR$/src/main/webapp/META-INF/resources/logging/logging-dev.properties&quot; -Dspring.properties=&quot;file://$PROJECT_DIR$/src/main/webapp/META-INF/resources/contexts/development.properties&quot; -Dcom.i2rd.java.ecommerce.CleanupPartialDataRunnable=disable -Djava.io.tmpdir=/tmp/exampleapp -Dqrelay.autostart=false -DRebuildSessionFactoryDelay=1 -Dfilesystem.native.lock=false -DStaticKeyDataConfig=true" />
     <option name="PROGRAM_PARAMETERS" value="" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -17,7 +17,9 @@
       <option name="TRANSPORT" value="0" />
       <option name="LOCAL" value="true" />
     </RunnerSettings>
+    <RunnerSettings RunnerId="Run" />
     <ConfigurationWrapper RunnerId="Debug" />
+    <ConfigurationWrapper RunnerId="Run" />
     <method />
   </configuration>
 </component>

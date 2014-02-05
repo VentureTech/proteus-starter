@@ -45,7 +45,7 @@ buildscript {
     }
     dependencies {
         // aspectj-weave plugin for our use of Spring @Configurable
-        classpath 'com.i2rd:gradle-aspectj-weave:1.0',
+        classpath 'com.i2rd:gradle-aspectj-weave:1.1',
                   'org.jfrog.buildinfo:build-info-extractor-gradle:2.2+',
                   'org.ajoberstar:gradle-git:0.6.3'
         //'org.hibernate:hibernate-gradle-plugin:4.2.8' - waiting to show up in release repos
@@ -102,10 +102,7 @@ configurations {
 }
 // Add the APT generated folder to the java sourceSet for Intellij IDEA
 sourceSets {
-    main {
-        java {srcDirs '.apt_generated'}
-        groovy { srcDirs 'buildSrc/src/main/groovy' }
-    }
+    main { java {srcDirs '.apt_generated'} }
     test { java {srcDirs '.apt_generated_tests'} }
 }
 def aptGenPath = project.file("${project.projectDir}/.apt_generated").absolutePath
@@ -231,7 +228,7 @@ artifactory {
         }
         defaults {
             publications ('ivyPub', 'mavenPub')
-            properties = ['build.status': version.status ]
+            properties = ['dd.status': version.status ]
         }
     }
 

@@ -11,17 +11,22 @@
 
 package com.example.app.config;
 
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.Ordered;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.i2rd.hibernate.util.LocationQualifier;
 
-import static com.i2rd.hibernate.util.LocationQualifier.Type.*;
+import static com.i2rd.hibernate.util.LocationQualifier.Type.entity_location;
+import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
 
 /**
  * Example configuration class.
@@ -29,8 +34,8 @@ import static com.i2rd.hibernate.util.LocationQualifier.Type.*;
  * @author Russ Tennant (russ@i2rd.com)
  */
 @Configuration
-// @EnableAsync
-// @EnableScheduling
+@EnableAsync
+@EnableScheduling
 @EnableSpringConfigured
 // Scan for spring components in my package hierarchy
 @ComponentScan({"com.example"})
@@ -42,7 +47,7 @@ import static com.i2rd.hibernate.util.LocationQualifier.Type.*;
         "classpath:/net/proteusframework/config/default.properties", // Proteus default
         "classpath:/com/example/app/config/default.properties", // My App default.
         "${spring.properties}"}) // Launch properties
-public class MyAppConfig implements Ordered
+public class MyAppConfig implements Ordered, ApplicationListener
 {
 
     /*
@@ -74,6 +79,8 @@ public class MyAppConfig implements Ordered
          */
     //    }
 
+
+
     /**
      * Scan com.example for HBM XML files.
      * @return bean.
@@ -96,6 +103,21 @@ public class MyAppConfig implements Ordered
         return "com.example";
     }
 
+
+    /**
+     * Example to test if weaving is working.
+     * @param event the event.
+     */
+
+    @Override
+    public void onApplicationEvent(ApplicationEvent event)
+    {
+        if(event instanceof ContextRefreshedEvent)
+        {
+            System.err.println("Load-time or Compile-time Weaving Is Working? " + new AspectWeavingTest().isConfigured());
+        }
+
+    }
 
     @Override
     public int getOrder()
