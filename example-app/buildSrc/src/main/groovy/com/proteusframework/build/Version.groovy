@@ -136,42 +136,59 @@ public final class ProjectInformation
     /** Status: release, milestone, integration. */
     private final static String _status = "${status}";
 
-
     /**
      * Get the project name.
      * @return the name.
      */
-    public static String getName() { return _name; }
+    public static String getName() 
+    { 
+        return _name; 
+    }
 
     /**
      * Get the project group.
      * @return the group.
      */
-    public static String getGroup() { return _group; }
+    public static String getGroup() 
+    { 
+        return _group; 
+    }
 
     /**
      * Get the project version.
      * @return the version.
      */
-    public static String getVersion() { return _version; }
+    public static String getVersion() 
+    { 
+        return _version; 
+    }
 
     /**
      * Get the commit id.
      * @return the commit id.
      */
-    public static String getCommit() { return _commit; }
+    public static String getCommit() 
+    { 
+        return _commit; 
+    }
 
     /**
      * Get the branch.
      * @return the branch.
      */
-    public static String getBranch() { return _branch; }
+    public static String getBranch() 
+    { 
+        return _branch; 
+    }
 
     /**
      * Get the project status.
      * @return the status.
      */
-    public static String getStatus() { return _status; }
+    public static String getStatus() 
+    { 
+        return _status; 
+    }
 
     /**
      * Get the major version number.
@@ -179,7 +196,11 @@ public final class ProjectInformation
      * @throws NumberFormatException if version is in the wrong format.
      * @throws IndexOutOfBoundsException if version is in the wrong format.
      */
-    public static int getMajorVersion() { return Integer.parseInt(getVersion().substring(0, getVersion().indexOf('.'))); }
+    public static int getMajorVersion() 
+    { 
+        return Integer.parseInt(getVersion().substring(0, getVersion().indexOf('.'))); 
+    }
+    
 }
 
 """
