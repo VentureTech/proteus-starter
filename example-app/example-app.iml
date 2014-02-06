@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$" external.system.id="GRADLE" external.system.module.group="com.i2rd.example-app" external.system.module.version="1.0-SNAPSHOT" type="JAVA_MODULE" version="4">
+<module external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$" external.system.id="GRADLE" external.system.module.group="com.example" external.system.module.version="1.0-SNAPSHOT" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="AspectJ" name="AspectJ">
       <configuration>
@@ -44,7 +44,6 @@
     <orderEntry type="library" exported="" name="Gradle: jcaptcha-api-1.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: bcmail-jdk14-1.38" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.update.configurator-3.3.200.v20130326-1319" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: slf4j-log4j12-1.7.5" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.datatools.connectivity.sqm.core-1.2.7.v201308160952" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.core.resources-3.8.101.v20130717-0806" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-io-2.2" level="project" />
@@ -148,7 +147,6 @@
     <orderEntry type="library" exported="" name="Gradle: tagsoup-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: aopalliance-1.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: cracklib-0.5.3" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: slf4j-api-1.7.5" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.datatools.enablement.ibm.informix.dbdefinition-1.0.4.v201107221502" level="project" />
     <orderEntry type="library" exported="" name="Gradle: poi-3.9" level="project" />
     <orderEntry type="library" exported="" name="Gradle: activation-1.1" level="project" />
@@ -240,6 +238,8 @@
     <orderEntry type="library" exported="" name="Gradle: proteusframework-processes-0.3.0-20140131184251" level="project" />
     <orderEntry type="library" exported="" name="Gradle: proteusframework-management-0.3.0-20140131184251" level="project" />
     <orderEntry type="library" exported="" name="Gradle: proteusframework-commerce-0.3.0-20140131184251" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: slf4j-api-1.7.6" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: slf4j-log4j12-1.7.6" level="project" />
   </component>
 </module>
 

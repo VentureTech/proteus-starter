@@ -29,6 +29,7 @@ buildDir = 'build/gradle'
 sourceCompatibility = 1.7
 version = new Version(app_version, project)
 group = app_group
+ext[Version.PROJECT_INFORMATION_PACKAGE] = 'com.example.app.config'
 
 final repoURL = "${repo_venture_tech_url}/${repo_venture_tech_key}"
 buildscript {
@@ -145,7 +146,11 @@ task createCompiletimeAspectsLibs(type: Copy) {
     into "compiletime-aspects"
     rename { "${it.substring(0, it.lastIndexOf('-'))}.jar" }
 }
-gradle.projectsEvaluated { createRuntimeAspectsLibs.execute();  createCompiletimeAspectsLibs.execute(); }
+gradle.projectsEvaluated {
+    createRuntimeAspectsLibs.execute()
+    createCompiletimeAspectsLibs.execute()
+    version.generateProjectInformationClass()
+}
 
 
 
