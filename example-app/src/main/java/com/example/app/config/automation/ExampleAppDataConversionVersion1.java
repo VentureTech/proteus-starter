@@ -46,7 +46,7 @@ import net.proteusframework.core.automation.TaskQualifier;
 @Lazy
 public class ExampleAppDataConversionVersion1
 {
-    // !!! PLEASE PUT THE LATEST conversion at the stop so it is easy to determine the next version #
+    // !!! PLEASE PUT THE LATEST conversion at the top so it is easy to determine the next version #
     /** Data Conversion Identifier. */
     private static final String IDENTIFIER = "example-app";
 
