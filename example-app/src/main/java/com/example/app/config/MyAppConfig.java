@@ -25,6 +25,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.i2rd.hibernate.util.LocationQualifier;
 
+import net.proteusframework.config.ProteusWebAppConfig;
+
 import static com.i2rd.hibernate.util.LocationQualifier.Type.entity_location;
 import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
 
@@ -41,6 +43,7 @@ import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
 @ComponentScan({"com.example"})
 // Add spring xml files if you'd like to register spring beans with XML.
 //@ImportResource("classpath:/spring/*.spring.xml")
+@Import(ProteusWebAppConfig.class)
 @PropertySource(
     name = "my-app-props",
     value = {
