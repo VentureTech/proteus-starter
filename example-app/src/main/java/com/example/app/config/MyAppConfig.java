@@ -11,15 +11,20 @@
 
 package com.example.app.config;
 
+import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextException;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
+import org.springframework.context.event.ApplicationContextEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.core.Ordered;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -35,6 +40,7 @@ import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
  *
  * @author Russ Tennant (russ@i2rd.com)
  */
+@SuppressWarnings("SameReturnValue")
 @Configuration
 @EnableAsync
 @EnableScheduling
@@ -45,14 +51,17 @@ import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
 //@ImportResource("classpath:/spring/*.spring.xml")
 @Import(ProteusWebAppConfig.class)
 @PropertySource(
-    name = "my-app-props",
+    name = "proteus-props",
     value = {
-        "classpath:/net/proteusframework/config/default.properties", // Proteus default
-        "classpath:/com/example/app/config/default.properties", // My App default.
-        "${spring.properties}"}) // Launch properties
-public class MyAppConfig implements Ordered, ApplicationListener
+        ProteusWebAppConfig.PROTEUSFRAMEWORK_CONFIG_DEFAULT_PROPERTIES,
+        "classpath:/com/example/app/config/default.properties",
+        ProteusWebAppConfig.PROTEUSFRAMEWORK_SPRING_PROPERTIES_PLACEHOLDER,
+    }
+)
+public class MyAppConfig implements ApplicationListener
 {
-
+    /** Logger. */
+    private final static Logger _logger = Logger.getLogger(MyAppConfig.class);
     /*
      * If you would like to setup your own servlets or filters either
      *
@@ -117,16 +126,25 @@ public class MyAppConfig implements Ordered, ApplicationListener
     {
         if(event instanceof ContextRefreshedEvent)
         {
-            System.err.println("Load-time or Compile-time Weaving Is Working? " + new AspectWeavingTest().isConfigured());
+            if(!new AspectWeavingTest().isConfigured())
+            {
+                ApplicationContextEvent ace = (ApplicationContextEvent) event;
+                ApplicationContext applicationContext = ace.getApplicationContext();
+                try
+                {
+                    if(applicationContext instanceof AbstractApplicationContext)
+                        ((AbstractApplicationContext)applicationContext).close();
+                }
+                finally
+                {
+                    ApplicationContextException ex = new ApplicationContextException(
+                        "AspectJ weaving is not working. Configure compile-time or load-time weaving.");
+                    _logger.fatal("AspectJ weaving misconfiguration.", ex);
+                }
+                System.exit(1);
+            }
         }
 
-    }
-
-    @Override
-    public int getOrder()
-    {
-        // Proteus is LOWEST_PRECEDENCE. This is higher.
-        return LOWEST_PRECEDENCE - 1; // OR -> HIGHEST_PRECEDENCE;
     }
 
 }
