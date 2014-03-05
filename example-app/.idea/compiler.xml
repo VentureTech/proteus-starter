@@ -5,7 +5,7 @@
     <option name="explicitAspectPath" value="true" />
     <option name="aspectPath">
       <projectLibrary>
-        <option name="name" value="Gradle: spring-aspects-3.2.7.RELEASE" />
+        <option name="name" value="Gradle: spring-aspects-3.2.8.RELEASE" />
       </projectLibrary>
     </option>
     <option name="delegateToJavac" value="true" />
