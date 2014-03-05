@@ -9,7 +9,7 @@
  * into with I2RD.
  */
  
-package org.example;
+package com.example.app;
 
 import org.junit.Test;
 

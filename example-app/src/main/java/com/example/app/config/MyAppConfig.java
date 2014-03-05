@@ -11,6 +11,8 @@
 
 package com.example.app.config;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextException;
@@ -46,12 +48,12 @@ import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
 @EnableScheduling
 @EnableSpringConfigured
 // Scan for spring components in my package hierarchy
-@ComponentScan({"com.example"})
+@ComponentScan({"com.example.app"})
 // Add spring xml files if you'd like to register spring beans with XML.
 //@ImportResource("classpath:/spring/*.spring.xml")
 @Import(ProteusWebAppConfig.class)
 @PropertySource(
-    name = "proteus-props",
+    name = ProteusWebAppConfig.PROTEUSFRAMEWORK_PROPERTY_SOURCE_NAME,
     value = {
         ProteusWebAppConfig.PROTEUSFRAMEWORK_CONFIG_DEFAULT_PROPERTIES,
         "classpath:/com/example/app/config/default.properties",
@@ -112,7 +114,7 @@ public class MyAppConfig implements ApplicationListener
     @LocationQualifier(entity_location)
     public String annotatedEntityScanComExample()
     {
-        return "com.example";
+        return "com.example.app";
     }
 
 
@@ -120,7 +122,7 @@ public class MyAppConfig implements ApplicationListener
      * Example to test if weaving is working.
      * @param event the event.
      */
-
+    @SuppressFBWarnings("DM_EXIT")
     @Override
     public void onApplicationEvent(ApplicationEvent event)
     {

@@ -179,7 +179,6 @@
           <element id="library" level="project" name="Gradle: cglib-2.2.2" />
           <element id="library" level="project" name="Gradle: spring-shell-1.0.0.RELEASE" />
           <element id="library" level="project" name="Gradle: postgresql-9.3-1100-jdbc41" />
-          <element id="library" level="project" name="Gradle: proteusframework-0.4.7" />
           <element id="library" level="project" name="Gradle: spring-core-3.2.8.RELEASE" />
           <element id="library" level="project" name="Gradle: spring-beans-3.2.8.RELEASE" />
           <element id="library" level="project" name="Gradle: spring-jdbc-3.2.8.RELEASE" />
@@ -200,16 +199,6 @@
           <element id="library" level="project" name="Gradle: tomcat-jdbc-7.0.52" />
           <element id="library" level="project" name="Gradle: hibernate-validator-5.1.0.Final" />
           <element id="library" level="project" name="Gradle: groovy-all-2.2.2-indy" />
-          <element id="library" level="project" name="Gradle: proteusframework-core-0.4.7" />
-          <element id="library" level="project" name="Gradle: proteusframework-users-0.4.7" />
-          <element id="library" level="project" name="Gradle: proteusframework-internet-0.4.7" />
-          <element id="library" level="project" name="Gradle: proteusframework-data-0.4.7" />
-          <element id="library" level="project" name="Gradle: proteusframework-ui-0.4.7" />
-          <element id="library" level="project" name="Gradle: proteusframework-cms-0.4.7" />
-          <element id="library" level="project" name="Gradle: proteusframework-communication-0.4.7" />
-          <element id="library" level="project" name="Gradle: proteusframework-processes-0.4.7" />
-          <element id="library" level="project" name="Gradle: proteusframework-management-0.4.7" />
-          <element id="library" level="project" name="Gradle: proteusframework-commerce-0.4.7" />
           <element id="library" level="project" name="Gradle: javax.servlet-api-3.0.1" />
           <element id="library" level="project" name="Gradle: jsp-api-2.2" />
           <element id="library" level="project" name="Gradle: javax.servlet-3.0.0.v201112011016" />
@@ -221,6 +210,17 @@
           <element id="library" level="project" name="Gradle: com.sun.el-2.2.0.v201108011116" />
           <element id="library" level="project" name="Gradle: org.eclipse.jdt.core-3.7.1" />
           <element id="library" level="project" name="Gradle: jetty-jsp-8.1.14.v20131031" />
+          <element id="library" level="project" name="Gradle: proteusframework-0.4.8" />
+          <element id="library" level="project" name="Gradle: proteusframework-core-0.4.8" />
+          <element id="library" level="project" name="Gradle: proteusframework-users-0.4.8" />
+          <element id="library" level="project" name="Gradle: proteusframework-internet-0.4.8" />
+          <element id="library" level="project" name="Gradle: proteusframework-data-0.4.8" />
+          <element id="library" level="project" name="Gradle: proteusframework-ui-0.4.8" />
+          <element id="library" level="project" name="Gradle: proteusframework-cms-0.4.8" />
+          <element id="library" level="project" name="Gradle: proteusframework-communication-0.4.8" />
+          <element id="library" level="project" name="Gradle: proteusframework-commerce-0.4.8" />
+          <element id="library" level="project" name="Gradle: proteusframework-processes-0.4.8" />
+          <element id="library" level="project" name="Gradle: proteusframework-management-0.4.8" />
           <element id="file-copy" path="$USER_HOME$/.gradle/caches/artifacts-26/filestore/antlr/antlr/2.7.7/jar/83cd2cd674a217ade95a4bb83a8a14f351f48bd0/antlr-2.7.7.jar" />
           <element id="file-copy" path="$USER_HOME$/.gradle/caches/artifacts-26/filestore/commons-codec/commons-codec/1.6/jar/b7f0fc8f61ecadeb3695f0b9464755eee44374d4/commons-codec-1.6.jar" />
           <element id="file-copy" path="$USER_HOME$/.gradle/caches/artifacts-26/filestore/org.eclipse.jetty.orbit/org.objectweb.asm/3.3.1.v201105211655/orbit/b95d8d7d1a57cf46d9f0e924f8864f94159bffd3/org.objectweb.asm-3.3.1.v201105211655.orbit" />
