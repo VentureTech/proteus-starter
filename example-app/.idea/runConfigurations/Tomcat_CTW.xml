@@ -1,0 +1,79 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Tomcat CTW" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 7.0.47" ALTERNATIVE_JRE_ENABLED="false" ALTERNATIVE_JRE_PATH="">
+    <option name="COMMON_VM_ARGUMENTS" value="-Xmx1024M -XX:MaxPermSize=368m -Duser.timezone=UTC -server -Djava.awt.headless=true -Xverify:none -Djava.util.logging.config.file=&quot;$PROJECT_DIR$/src/main/webapp/META-INF/resources/logging/logging-dev.properties&quot; -Dspring.properties=&quot;file://$PROJECT_DIR$/src/main/webapp/META-INF/resources/contexts/development.properties&quot; -Dcom.i2rd.java.ecommerce.CleanupPartialDataRunnable=disable -Djava.io.tmpdir=/tmp/exampleapp -Dqrelay.autostart=false -DRebuildSessionFactoryDelay=1 -Dfilesystem.native.lock=false -DStaticKeyDataConfig=true -Dorg.mortbay.util.FileResource.checkAliases=false -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true -Dorg.apache.tomcat.util.http.ServerCookie.ALWAYS_ADD_EXPIRES=false -Dorg.apache.catalina.core.StandardHostValve.ACCESS_SESSION=true -Dtomcat.util.scan.DefaultJarScanner.jarsToSkip=&quot;groovy-all-2.2.2-indy.jar&quot;" />
+    <option name="UPDATING_POLICY" value="restart-server" />
+    <deployment>
+      <artifact name="com.example:example-app (exploded)">
+        <settings>
+          <option name="CONTEXT_PATH" value="/" />
+        </settings>
+      </artifact>
+    </deployment>
+    <server-settings>
+      <option name="BASE_DIRECTORY_NAME" value="Unnamed_example-app_2" />
+    </server-settings>
+    <predefined_log_file id="Tomcat" enabled="true" />
+    <predefined_log_file id="Tomcat Catalina" enabled="true" />
+    <predefined_log_file id="Tomcat Manager" enabled="false" />
+    <predefined_log_file id="Tomcat Host Manager" enabled="false" />
+    <predefined_log_file id="Tomcat Localhost Access" enabled="false" />
+    <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+    <RunnerSettings RunnerId="Cover" />
+    <RunnerSettings RunnerId="Debug">
+      <option name="DEBUG_PORT" value="50417" />
+      <option name="TRANSPORT" value="0" />
+      <option name="LOCAL" value="true" />
+    </RunnerSettings>
+    <RunnerSettings RunnerId="Run" />
+    <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+      <option name="USE_ENV_VARIABLES" value="true" />
+      <STARTUP>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </STARTUP>
+      <SHUTDOWN>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </SHUTDOWN>
+    </ConfigurationWrapper>
+    <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+      <option name="USE_ENV_VARIABLES" value="true" />
+      <STARTUP>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </STARTUP>
+      <SHUTDOWN>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </SHUTDOWN>
+    </ConfigurationWrapper>
+    <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+      <option name="USE_ENV_VARIABLES" value="true" />
+      <STARTUP>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </STARTUP>
+      <SHUTDOWN>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </SHUTDOWN>
+    </ConfigurationWrapper>
+    <method>
+      <option name="BuildArtifacts" enabled="true">
+        <artifact name="com.example:example-app (exploded)" />
+      </option>
+    </method>
+  </configuration>
+</component>
