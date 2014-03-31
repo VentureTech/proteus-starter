@@ -8,220 +8,220 @@
           <element id="module-output" name="example-app" />
         </element>
         <element id="directory" name="lib">
+          <element id="library" level="project" name="Gradle: milton-api-1.5.0" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity.db.generic-1.0.1.v201107221459" />
+          <element id="library" level="project" name="Gradle: jcaptcha-1.0" />
+          <element id="library" level="project" name="Gradle: commons-math-1.2" />
+          <element id="library" level="project" name="Gradle: jbcrypt-0.3m" />
+          <element id="library" level="project" name="Gradle: jsch.agentproxy.sshagent-0.0.6" />
+          <element id="library" level="project" name="Gradle: org.eclipse.osgi-3.9.1.v20130814-1242" />
+          <element id="library" level="project" name="Gradle: itext-2.1.7" />
+          <element id="library" level="project" name="Gradle: dom4j-1.6.1" />
+          <element id="library" level="project" name="Gradle: org.eclipse.core.filesystem-1.4.0.v20130514-1240" />
+          <element id="library" level="project" name="Gradle: jcaptcha-api-1.0" />
+          <element id="library" level="project" name="Gradle: bcmail-jdk14-1.38" />
+          <element id="library" level="project" name="Gradle: org.eclipse.update.configurator-3.3.200.v20130326-1319" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity.sqm.core-1.2.7.v201308160952" />
+          <element id="library" level="project" name="Gradle: org.eclipse.core.resources-3.8.101.v20130717-0806" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity-1.2.9.v201307261105" />
+          <element id="library" level="project" name="Gradle: org.eclipse.birt.runtime-4.3.1" />
+          <element id="library" level="project" name="Gradle: org.apache.batik.util-1.6.0" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.hsqldb.dbdefinition-1.0.0.v201107221502" />
+          <element id="library" level="project" name="Gradle: org.apache.batik.css-1.6.0" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity.oda.design-3.3.6.v201212070447" />
+          <element id="library" level="project" name="Gradle: mime-util-2.1.1" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity.oda.flatfile-3.1.6.v201308131104" />
+          <element id="library" level="project" name="Gradle: poi-ooxml-schemas-3.9" />
+          <element id="library" level="project" name="Gradle: ecs-1.4.2" />
+          <element id="library" level="project" name="Gradle: org.eclipse.jgit-2.2.0.201212191850-r" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.modelbase.derby-1.0.0.v201107221519" />
+          <element id="library" level="project" name="Gradle: bcmail-jdk14-138" />
+          <element id="library" level="project" name="Gradle: org.w3c.dom.svg-1.1.0" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity.apache.derby.dbdefinition-1.0.2.v201107221459" />
+          <element id="library" level="project" name="Gradle: jboss-logging-3.1.3.GA" />
+          <element id="library" level="project" name="Gradle: poi-ooxml-3.9" />
+          <element id="library" level="project" name="Gradle: org.eclipse.equinox.registry-3.5.301.v20130717-1549" />
+          <element id="library" level="project" name="Gradle: jsch.agentproxy.usocket-jna-0.0.6" />
+          <element id="library" level="project" name="Gradle: bcprov-jdk14-1.38" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.oda.xml-1.2.5.v201305031101" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.modelbase.sql-1.0.6.v201208230744" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.ibm.informix-1.0.1.v201107221502" />
+          <element id="library" level="project" name="Gradle: org.eclipse.equinox.preferences-3.5.100.v20130422-1538" />
+          <element id="library" level="project" name="Gradle: org.apache.batik.dom-1.6.0" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.mysql.dbdefinition-1.0.4.v201109022331" />
+          <element id="library" level="project" name="Gradle: org.mozilla.javascript-1.7.2" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.mysql-1.0.4.v201212120617" />
+          <element id="library" level="project" name="Gradle: flute-1.3" />
+          <element id="library" level="project" name="Gradle: jdom-1.0" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity.oda-3.4.1.v201308160907" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.oracle.dbdefinition-1.0.103.v201206010214" />
+          <element id="library" level="project" name="Gradle: opencsv-2.3" />
+          <element id="library" level="project" name="Gradle: freemarker-2.3.20" />
+          <element id="library" level="project" name="Gradle: org.eclipse.equinox.app-1.3.100.v20130327-1442" />
+          <element id="library" level="project" name="Gradle: log4j-1.2.17" />
+          <element id="library" level="project" name="Gradle: rome-1.0" />
+          <element id="library" level="project" name="Gradle: rome-modules-1.0" />
+          <element id="library" level="project" name="Gradle: org.eclipse.emf-2.6.0.v20130902-0605" />
+          <element id="library" level="project" name="Gradle: org.eclipse.osgi.services-3.3.100.v20130513-1956" />
+          <element id="library" level="project" name="Gradle: jsr250-api-1.0" />
+          <element id="library" level="project" name="Gradle: platform-3.4.0" />
+          <element id="library" level="project" name="Gradle: jackson-databind-2.1.1" />
+          <element id="library" level="project" name="Gradle: bctsp-jdk14-1.38" />
+          <element id="library" level="project" name="Gradle: org.apache.commons.codec-1.3.0" />
+          <element id="library" level="project" name="Gradle: org.apache.batik.dom.svg-1.6.0" />
+          <element id="library" level="project" name="Gradle: sac-1.3" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.modelbase.sql.query-1.1.4.v201212120619" />
+          <element id="library" level="project" name="Gradle: commons-fileupload-1.3" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.msft.sqlserver.dbdefinition-1.0.1.v201201240505" />
+          <element id="library" level="project" name="Gradle: org.eclipse.emf.ecore-2.9.1.v20130827-0309" />
+          <element id="library" level="project" name="Gradle: validation-api-1.1.0.Final" />
+          <element id="library" level="project" name="Gradle: jscalendar-1.0.1" />
+          <element id="library" level="project" name="Gradle: javassist-3.18.1-GA" />
+          <element id="library" level="project" name="Gradle: org.apache.batik.transcoder-1.6.0" />
+          <element id="library" level="project" name="Gradle: org.eclipse.equinox.common-3.6.200.v20130402-1505" />
+          <element id="library" level="project" name="Gradle: org.apache.xerces-2.9.0" />
+          <element id="library" level="project" name="Gradle: org.apache.batik.bridge-1.6.0" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.postgresql-1.1.1.v201205252207" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity.apache.derby-1.0.103.v201212070447" />
+          <element id="library" level="project" name="Gradle: imaging-01012005" />
+          <element id="library" level="project" name="Gradle: org.apache.batik.svggen-1.6.0" />
+          <element id="library" level="project" name="Gradle: commons-collections-3.2" />
+          <element id="library" level="project" name="Gradle: org.eclipse.emf.ecore.change-2.9.0.v20130827-0309" />
+          <element id="library" level="project" name="Gradle: jsch.agentproxy.jsch-0.0.6" />
+          <element id="library" level="project" name="Gradle: icu4j-51.2" />
+          <element id="library" level="project" name="Gradle: org.apache.xml.serializer-2.7.1" />
+          <element id="library" level="project" name="Gradle: org.eclipse.core.expressions-3.4.500.v20130515-1343" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.hsqldb-1.0.0.v201107221502" />
+          <element id="library" level="project" name="Gradle: annotations-2.0.1" />
+          <element id="library" level="project" name="Gradle: jsoup-1.6.3" />
+          <element id="library" level="project" name="Gradle: jsch.agentproxy.pageant-0.0.6" />
+          <element id="library" level="project" name="Gradle: org.apache.batik.parser-1.6.0" />
+          <element id="library" level="project" name="Gradle: javax.xml.stream-1.0.1.v201004272200" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.postgresql.dbdefinition-1.0.2.v201110070445" />
+          <element id="library" level="project" name="Gradle: gradle-git-0.6.3" />
+          <element id="library" level="project" name="Gradle: oro-2.0.8" />
+          <element id="library" level="project" name="Gradle: jsch.agentproxy.core-0.0.6" />
+          <element id="library" level="project" name="Gradle: bcprov-jdk14-138" />
+          <element id="library" level="project" name="Gradle: commons-logging-1.1.3" />
+          <element id="library" level="project" name="Gradle: org.eclipse.core.runtime-3.9.0.v20130326-1255" />
+          <element id="library" level="project" name="Gradle: commons-el-2.0.0" />
+          <element id="library" level="project" name="Gradle: org.apache.batik.ext.awt-1.6.0" />
+          <element id="library" level="project" name="Gradle: cli-parser-1.1.1" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity.oda.profile-3.2.9.v201307270622" />
+          <element id="library" level="project" name="Gradle: acegi-security-1.0.1" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.ibm.db2.luw-1.0.2.v201107221502" />
+          <element id="library" level="project" name="Gradle: org.eclipse.orbit.mongodb-2.10.1.v20130422-1135" />
+          <element id="library" level="project" name="Gradle: xmlbeans-2.3.0" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.oracle-1.0.0.v201107221506" />
+          <element id="library" level="project" name="Gradle: guava-15.0" />
+          <element id="library" level="project" name="Gradle: tagsoup-1.2.0" />
+          <element id="library" level="project" name="Gradle: aopalliance-1.0" />
+          <element id="library" level="project" name="Gradle: cracklib-0.5.3" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.ibm.informix.dbdefinition-1.0.4.v201107221502" />
+          <element id="library" level="project" name="Gradle: poi-3.9" />
+          <element id="library" level="project" name="Gradle: activation-1.1" />
+          <element id="library" level="project" name="Gradle: org.w3c.dom.smil-1.0.0" />
+          <element id="library" level="project" name="Gradle: Tidy-1" />
+          <element id="library" level="project" name="Gradle: org.apache.xml.resolver-1.2.0" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity.oda.consumer-3.2.6.v201305170644" />
+          <element id="library" level="project" name="Gradle: org.eclipse.jgit.ui-2.2.0.201212191850-r" />
+          <element id="library" level="project" name="Gradle: jackson-core-2.1.1" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity.dbdefinition.genericJDBC-1.0.1.v201107221459" />
+          <element id="library" level="project" name="Gradle: mail-1.5.0-b01" />
+          <element id="library" level="project" name="Gradle: jna-3.4.0" />
+          <element id="library" level="project" name="Gradle: commons-cli-1.0" />
+          <element id="library" level="project" name="Gradle: org.apache.batik.pdf-1.6.0" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity.console.profile-1.0.10.v201109250955" />
+          <element id="library" level="project" name="Gradle: com.lowagie.text-2.1.7" />
+          <element id="library" level="project" name="Gradle: org.apache.batik.xml-1.6.0" />
+          <element id="library" level="project" name="Gradle: org.apache.batik.util.gui-1.6.0" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.oda.ws-1.2.6.v201307051812" />
+          <element id="library" level="project" name="Gradle: org.eclipse.core.contenttype-3.4.200.v20130326-1255" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.ibm.db2.luw.dbdefinition-1.0.4.v201107221502" />
+          <element id="library" level="project" name="Gradle: jackson-annotations-2.1.1" />
+          <element id="library" level="project" name="Gradle: javax.wsdl-1.5.1" />
+          <element id="library" level="project" name="Gradle: derby-10.5.1000001" />
+          <element id="library" level="project" name="Gradle: parboiled-0.9.7.2" />
+          <element id="library" level="project" name="Gradle: org.eclipse.datatools.modelbase.dbdefinition-1.0.2.v201107221519" />
+          <element id="library" level="project" name="Gradle: fredck-fckeditor-4.1.3" />
+          <element id="library" level="project" name="Gradle: org.eclipse.emf.common-2.9.1.v20130827-0309" />
+          <element id="library" level="project" name="Gradle: org.eclipse.emf.ecore.xmi-2.9.1.v20130827-0309" />
+          <element id="library" level="project" name="Gradle: drools-2.1.0" />
+          <element id="library" level="project" name="Gradle: jsch-0.1.49" />
+          <element id="library" level="project" name="Gradle: xuggler-5.4.0" />
+          <element id="library" level="project" name="Gradle: jetty-all-8.1.14.v20131031" />
+          <element id="library" level="project" name="Gradle: aws-java-sdk-1.6.12" />
+          <element id="library" level="project" name="Gradle: jandex-1.1.0.Final" />
+          <element id="library" level="project" name="Gradle: classmate-1.0.0" />
+          <element id="library" level="project" name="Gradle: cssparser-0.9.13" />
+          <element id="library" level="project" name="Gradle: hibernate-core-4.3.1.Final" />
+          <element id="library" level="project" name="Gradle: hibernate-jpa-2.1-api-1.0.0.Final" />
+          <element id="library" level="project" name="Gradle: ehcache-2.8.0" />
+          <element id="library" level="project" name="Gradle: jboss-logging-annotations-1.2.0.Beta1" />
+          <element id="library" level="project" name="Gradle: hibernate-commons-annotations-4.0.4.Final" />
+          <element id="library" level="project" name="Gradle: jboss-transaction-api_1.2_spec-1.0.0.Final" />
+          <element id="library" level="project" name="Gradle: hibernate-ehcache-4.3.1.Final" />
+          <element id="library" level="project" name="Gradle: slf4j-api-1.7.6" />
+          <element id="library" level="project" name="Gradle: slf4j-log4j12-1.7.6" />
+          <element id="library" level="project" name="Gradle: spring-context-support-3.1.2.RELEASE" />
+          <element id="library" level="project" name="Gradle: jline-1.0.S2-B" />
+          <element id="library" level="project" name="Gradle: jansi-1.8" />
+          <element id="library" level="project" name="Gradle: commons-io-2.3" />
+          <element id="library" level="project" name="Gradle: asm-3.3.1" />
+          <element id="library" level="project" name="Gradle: cglib-2.2.2" />
+          <element id="library" level="project" name="Gradle: spring-shell-1.0.0.RELEASE" />
+          <element id="library" level="project" name="Gradle: postgresql-9.3-1100-jdbc41" />
+          <element id="library" level="project" name="Gradle: httpcore-4.3.2" />
+          <element id="library" level="project" name="Gradle: httpclient-4.3.3" />
+          <element id="library" level="project" name="Gradle: httpmime-4.3.3" />
+          <element id="library" level="project" name="Gradle: hibernate-validator-5.1.0.Final" />
+          <element id="library" level="project" name="Gradle: groovy-all-2.2.2-indy" />
+          <element id="library" level="project" name="Gradle: javax.servlet-api-3.0.1" />
+          <element id="library" level="project" name="Gradle: jsp-api-2.2" />
+          <element id="library" level="project" name="Gradle: javax.servlet-3.0.0.v201112011016" />
+          <element id="library" level="project" name="Gradle: javax.servlet.jsp-2.2.0.v201112011158" />
+          <element id="library" level="project" name="Gradle: org.apache.jasper.glassfish-2.2.2.v201112011158" />
+          <element id="library" level="project" name="Gradle: javax.servlet.jsp.jstl-1.2.0.v201105211821" />
+          <element id="library" level="project" name="Gradle: org.apache.taglibs.standard.glassfish-1.2.0.v201112081803" />
+          <element id="library" level="project" name="Gradle: javax.el-2.2.0.v201108011116" />
+          <element id="library" level="project" name="Gradle: com.sun.el-2.2.0.v201108011116" />
+          <element id="library" level="project" name="Gradle: org.eclipse.jdt.core-3.7.1" />
+          <element id="library" level="project" name="Gradle: jetty-jsp-8.1.14.v20131031" />
+          <element id="library" level="project" name="Gradle: annotations-13.0" />
+          <element id="library" level="project" name="Gradle: tomcat-juli-7.0.53" />
+          <element id="library" level="project" name="Gradle: tomcat-jdbc-7.0.53" />
+          <element id="library" level="project" name="Gradle: aspectjrt-1.8.0.M1" />
+          <element id="library" level="project" name="Gradle: proteusframework-0.5.0" />
+          <element id="library" level="project" name="Gradle: spring-core-4.0.3.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-beans-4.0.3.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-jdbc-4.0.3.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-aop-4.0.3.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-context-4.0.3.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-orm-4.0.3.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-web-4.0.3.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-test-4.0.3.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-instrument-4.0.3.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-aspects-4.0.3.RELEASE" />
+          <element id="library" level="project" name="Gradle: spring-expression-4.0.3.RELEASE" />
+          <element id="library" level="project" name="Gradle: aspectjweaver-1.8.0.M1" />
+          <element id="library" level="project" name="Gradle: spring-tx-4.0.3.RELEASE" />
+          <element id="library" level="project" name="Gradle: proteusframework-core-0.5.0" />
+          <element id="library" level="project" name="Gradle: proteusframework-users-0.5.0" />
+          <element id="library" level="project" name="Gradle: proteusframework-internet-0.5.0" />
+          <element id="library" level="project" name="Gradle: proteusframework-data-0.5.0" />
+          <element id="library" level="project" name="Gradle: proteusframework-ui-0.5.0" />
+          <element id="library" level="project" name="Gradle: proteusframework-cms-0.5.0" />
+          <element id="library" level="project" name="Gradle: proteusframework-communication-0.5.0" />
+          <element id="library" level="project" name="Gradle: proteusframework-processes-0.5.0" />
+          <element id="library" level="project" name="Gradle: proteusframework-commerce-0.5.0" />
+          <element id="library" level="project" name="Gradle: proteusframework-management-0.5.0" />
           <element id="library" level="project" name="Gradle: commons-lang-2.0" />
           <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.msft.sqlserver-1.0.2.v201212120617" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.aspectj/aspectjrt/1.8.0.M1/231d251ff58914f39169c53d12c82e81559769c0/aspectjrt-1.8.0.M1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.proteusframework/proteusframework/0.5.0/1b91e72136ce31930888e03bd302d8e94d515f33/proteusframework-0.5.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-core/4.0.3.RELEASE/138d28200d97f4affe9ccaa47fab54718b438319/spring-core-4.0.3.RELEASE.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-beans/4.0.3.RELEASE/41eabd53fd4ba5ba2b2d8af6c256a3741f65c2f3/spring-beans-4.0.3.RELEASE.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-jdbc/4.0.3.RELEASE/5c86b94f15523b3b125c35861aeb4ca85897231a/spring-jdbc-4.0.3.RELEASE.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-aop/4.0.3.RELEASE/dcedf5329d7092d66cc9d2496687a5f29d883eb6/spring-aop-4.0.3.RELEASE.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-context/4.0.3.RELEASE/782a71a312dc307fa531023aa66247b9b4a109d/spring-context-4.0.3.RELEASE.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-orm/4.0.3.RELEASE/92220b99c3a8b576286c10edd1726f837450bc2c/spring-orm-4.0.3.RELEASE.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-web/4.0.3.RELEASE/4d5066f31ea4b9c58957bf8c0c213b13ed44c1c5/spring-web-4.0.3.RELEASE.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-test/4.0.3.RELEASE/76b870a5aa132b4c0dd78cd061feb3e1652cddd1/spring-test-4.0.3.RELEASE.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-instrument/4.0.3.RELEASE/9d9d1b145eb79a668c174e0bd8dd7c0b7c3c2587/spring-instrument-4.0.3.RELEASE.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-aspects/4.0.3.RELEASE/e0a8f3dbaffe501cc95f12365ea6751e629237c6/spring-aspects-4.0.3.RELEASE.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-jsp/8.1.14.v20131031/87dc1723a32113d74be2420d940f6825e3b6af42/jetty-jsp-8.1.14.v20131031.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.shell/spring-shell/1.0.0.RELEASE/eccd75d836dfa46fabfcdfb6e3ff1892013bc7e8/spring-shell-1.0.0.RELEASE.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hibernate/hibernate-core/4.3.1.Final/73618cbf2dd1fa989a13d9444d4f025cfc51ec10/hibernate-core-4.3.1.Final.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.lowagie/itext/2.1.7/892bfb3e97074a61123b3b2d7caa2db112750864/itext-2.1.7.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.proteusframework/proteusframework-ui/0.5.0/46c82f4161b806a80099f7ab419faad9f29d9ce/proteusframework-ui-0.5.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.proteusframework/proteusframework-cms/0.5.0/d9e12a4edb608f6cc4f8279d02e7adae4b20fea3/proteusframework-cms-0.5.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jsoup/jsoup/1.6.3/5cf4f55a71ae352d9c13ede8388974527540e506/jsoup-1.6.3.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freemarker/freemarker/2.3.20/5ad6bea46b5af666d88c260c8acc6a03408723c8/freemarker-2.3.20.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient/4.3.3/18f4247ff4572a074444572cee34647c43e7c9c7/httpclient-4.3.3.jar" />
           <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.2.4/a60a5e993c98c864010053cb901b7eab25306568/gson-2.2.4.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.mail/mail/1.5.0-b01/c128515e42609622ce3f7dc0b431026d80bdb688/mail-1.5.0-b01.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpmime/4.3.3/e02368d7b56c0c376f227378a4f77de62864d020/httpmime-4.3.3.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.opencsv/opencsv/2.3/c23708cdb9e80a144db433e23344a788a1fd6599/opencsv-2.3.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.proteusframework/proteusframework-processes/0.5.0/db5cf877cda8b36bc6c13edce59ef30146d51864/proteusframework-processes-0.5.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.i2rd.spullara.cli-parser/cli-parser/1.1.1/30d916e0a499d3e538044697e4aa4a8cf4d074f/cli-parser-1.1.1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.proteusframework/proteusframework-data/0.5.0/d6d2ab3668a2c3b04bddcc9c9654f237e33077a5/proteusframework-data-0.5.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.proteusframework/proteusframework-communication/0.5.0/1620ff0a717cdfcad6687f046f4ad3f936700fe0/proteusframework-communication-0.5.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.proteusframework/proteusframework-commerce/0.5.0/a67f0c07d95cb44ac8b6dfc9eaa6dfccf51c4339/proteusframework-commerce-0.5.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.proteusframework/proteusframework-core/0.5.0/66876207782415e01bcb2d8214238f8b305b57/proteusframework-core-0.5.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.6/562424e36df3d2327e8e9301a76027fca17d54ea/slf4j-api-1.7.6.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.postgresql/postgresql/9.3-1100-jdbc41/968077372764b8ac5c22a4c0f9bd6bc62878b252/postgresql-9.3-1100-jdbc41.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.proteusframework/proteusframework-internet/0.5.0/bf46d933876403a09998bc38310cca4f69135196/proteusframework-internet-0.5.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.i2rd.cowan.tagsoup/tagsoup/1.2.0/8e6975c68c5e03ae3c4accc85ddade3bf925d3a7/tagsoup-1.2.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.proteusframework/proteusframework-users/0.5.0/5b6292d66394976224d6ae15333b741e843c04c8/proteusframework-users-0.5.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.ibm.icu/icu4j/51.2/3afa6c786e9c3e0f51532f7365605c3f50f66400/icu4j-51.2.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.tomcat/tomcat-jdbc/7.0.53/6381a0af7065b5eec5939c70304e95cd4bb257d9/tomcat-jdbc-7.0.53.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.acegisecurity/acegi-security/1.0.1/e9b06e5740e4c484212fc1cbb97c05cfc1b459b7/acegi-security-1.0.1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/annotations/2.0.1/9ef6656259841cebfb9fb0697bb122ada4485498/annotations-2.0.1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.17/5af35056b4d257e4b64b9e8069c0746e8b08629f/log4j-1.2.17.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.proteusframework/proteusframework-management/0.5.0/1fd9a899b6b5a8d58c04df7d1082b54477392e30/proteusframework-management-0.5.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hibernate/hibernate-ehcache/4.3.1.Final/404ad22fbd2a2e472198a0890ad729ffd8ed8f57/hibernate-ehcache-4.3.1.Final.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.ehcache/ehcache/2.8.0/ad811324057fee5c6558d172344cca2a375b79ca/ehcache-2.8.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hibernate/hibernate-validator/5.1.0.Final/61779cebe47c8d893f63d99854becea92a83c0c8/hibernate-validator-5.1.0.Final.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/15.0/ed727a8d9f247e2050281cb083f1c77b09dcb5cd/guava-15.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.servlet/javax.servlet-api/3.0.1/6bf0ebb7efd993e222fc1112377b5e92a13b38dd/javax.servlet-api-3.0.1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ajoberstar/gradle-git/0.6.3/fb15c98cb2ecc6925677ca288da2d475d2e14ddf/gradle-git-0.6.3.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-log4j12/1.7.6/6953717b9850aeb26d1b8375ca07dbd9c50eca4e/slf4j-log4j12-1.7.6.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.2.2/b9bf4b39c09afb24d043e15c50044986a4436edd/groovy-all-2.2.2-indy.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.1.3/f6f66e966c70a83ffbdb6f17a0919eaf7c8aca7f/commons-logging-1.1.3.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-tx/4.0.3.RELEASE/83dfa294b89feda22caba2842cdc32729554dd86/spring-tx-4.0.3.RELEASE.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/aopalliance/aopalliance/1.0/235ba8b489512805ac13a8f9ea77a1ca5ebe3e8/aopalliance-1.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-expression/4.0.3.RELEASE/40b25b3a693cb4cc382ddf2e69ff1b29c75a2e7d/spring-expression-4.0.3.RELEASE.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.aspectj/aspectjweaver/1.8.0.M1/11921213a04f5bfd43713a065b2a273f04affb43/aspectjweaver-1.8.0.M1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.orbit/javax.servlet.jsp/2.2.0.v201112011158/80b4ffe7c26ee97313bea2ddda5835fd38812ee4/javax.servlet.jsp-2.2.0.v201112011158.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.orbit/org.apache.jasper.glassfish/2.2.2.v201112011158/3945afe6a042228a92da320aec3fa1bc1308183b/org.apache.jasper.glassfish-2.2.2.v201112011158.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.orbit/javax.servlet.jsp.jstl/1.2.0.v201105211821/db594f1c8fc00d536f6d135bd7f8a9a99a6b8eea/javax.servlet.jsp.jstl-1.2.0.v201105211821.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.orbit/org.apache.taglibs.standard.glassfish/1.2.0.v201112081803/2c4baa72af1d3aae3a1e029d4f8ca07498dabbe0/org.apache.taglibs.standard.glassfish-1.2.0.v201112081803.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.orbit/javax.el/2.2.0.v201108011116/ec8944c11833d84b0283a5afbad0fafb264f86a9/javax.el-2.2.0.v201108011116.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.orbit/com.sun.el/2.2.0.v201108011116/15f7774c3fa514835a371f47c152317704ea411a/com.sun.el-2.2.0.v201108011116.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.orbit/org.eclipse.jdt.core/3.7.1/5b79bfee0852ca685e33cab74496fa3400271b5b/org.eclipse.jdt.core-3.7.1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-context-support/3.1.2.RELEASE/7873812d2c36b7478bf885a82834d6740de83c9d/spring-context-support-3.1.2.RELEASE.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.jline/jline/1.0.S2-B/bcdfd4466c3317117e93b194b438e31f053e3016/jline-1.0.S2-B.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.fusesource.jansi/jansi/1.8/81da0c3980e30744184bec4706cf6f4508d3d7ea/jansi-1.8.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.3/cd8d6ffc833cc63c30d712a180f4663d8f55799b/commons-io-2.3.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/cglib/cglib/2.2.2/a47a971686474124562bdd4a7ccbd8ac8c3e8b11/cglib-2.2.2.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jboss.logging/jboss-logging/3.1.3.GA/64499e907f19e5e1b3fdc02f81440c1832fe3545/jboss-logging-3.1.3.GA.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jboss.logging/jboss-logging-annotations/1.2.0.Beta1/2f437f37bb265d9f8f1392823dbca12d2bec06d6/jboss-logging-annotations-1.2.0.Beta1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jboss.spec.javax.transaction/jboss-transaction-api_1.2_spec/1.0.0.Final/1f9fef7a9fcbb41cc390fc370a291cf30729e094/jboss-transaction-api_1.2_spec-1.0.0.Final.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/dom4j/dom4j/1.6.1/5d3ccc056b6f056dbf0dddfdf43894b9065a8f94/dom4j-1.6.1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hibernate.common/hibernate-commons-annotations/4.0.4.Final/f1af75eca4e13ac0578750a497159695feceebfc/hibernate-commons-annotations-4.0.4.Final.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hibernate.javax.persistence/hibernate-jpa-2.1-api/1.0.0.Final/5e731d961297e5a07290bfaf3db1fbc8bbbf405a/hibernate-jpa-2.1-api-1.0.0.Final.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.javassist/javassist/3.18.1-GA/d9a09f7732226af26bf99f19e2cffe0ae219db5b/javassist-3.18.1-GA.jar" />
           <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/antlr/antlr/2.7.7/83cd2cd674a217ade95a4bb83a8a14f351f48bd0/antlr-2.7.7.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jboss/jandex/1.1.0.Final/e84a2122e76f0b6503be78094ddf2108057ac15f/jandex-1.1.0.Final.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/bouncycastle/bcmail-jdk14/138/14ff2dfec8578f5f6838c4d6a77a86789afe5382/bcmail-jdk14-138.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/bouncycastle/bcprov-jdk14/138/de366c3243a586eb3c0e2bcde1ed9bb1bfb985ff/bcprov-jdk14-138.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.i2rd.jscalendar/jscalendar/1.0.1/f591b49f3d6ebd3fe26ee9d9cd897e0e3115d07f/jscalendar-1.0.1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-fileupload/commons-fileupload/1.3/c89e540e4a12cb034fb973e12135839b5de9a87e/commons-fileupload-1.3.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi/3.9/5d5e41354e88322e4bc590b31f3d2d1d52b3e6ac/poi-3.9.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.i2rd.parboiled/parboiled/0.9.7.2/b16e23d6d558f180becd387e96656a8e030285c3/parboiled-0.9.7.2.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.aggregate/jetty-all/8.1.14.v20131031/9910846eacd4c889797a569e7cfc98ae82382ffc/jetty-all-8.1.14.v20131031.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-math/commons-math/1.2/3955b41fe9f3c0469bd873331940674812d09bd2/commons-math-1.2.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.i2rd/fredck-fckeditor/4.1.3/668a69f1141951159a251a64aa80abfad07c2fb7/fredck-fckeditor-4.1.3.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.w3c.css/sac/1.3/cdb2dcb4e22b83d6b32b93095f644c3462739e82/sac-1.3.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.annotation/jsr250-api/1.0/5025422767732a1ab45d93abfea846513d742dcf/jsr250-api-1.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/rome/rome/1.0/22b33347f315833e9348cec2751af1a5d5656e4/rome-1.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/eu.medsea.mimeutil/mime-util/2.1.1/9fbbb6ddd330872f1b3c8ee7b09da073843a5f05/mime-util-2.1.1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.cssparser/cssparser/0.9.13/be59b8e492327e69ef1571266f1a34d83d7b2417/cssparser-0.9.13.jar" />
           <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.orbit/org.objectweb.asm/3.3.1.v201105211655/b95d8d7d1a57cf46d9f0e924f8864f94159bffd3/org.objectweb.asm-3.3.1.v201105211655.orbit" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.i2rd.commons/commons-el/2.0.0/ec915cde8f9a704d9a38ac8858947676fc938b37/commons-el-2.0.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.birt.runtime/4.3.1/dfa1f259761c3fb19984ff503fcea0e90d55e748/org.eclipse.birt.runtime-4.3.1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.servlet.jsp/jsp-api/2.2/5bf0c26ef77df58c7c28be2d9d52246f2b437a54/jsp-api-2.2.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.rometools/rome-modules/1.0/d4d035650bfd7fe3a0b84e29b2edcec7399f1a21/rome-modules-1.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk/1.6.12/49979bc04cb1cb23d7ea0d299f92c71b160a8c56/aws-java-sdk-1.6.12.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.i2rd.org.apache.xmlbeans/xmlbeans/2.3.0/3d63dcab0c9cffe2b6dc1c99f4d52392b9d75e13/xmlbeans-2.3.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.i2rd/milton-api/1.5.0/71b5fbd3eb90419bf5f5fb7e67c325bce1f0a50b/milton-api-1.5.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpcore/4.3.2/31fbbff1ddbf98f3aa7377c94d33b0447c646b6e/httpcore-4.3.2.jar" />
           <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.6/b7f0fc8f61ecadeb3695f0b9464755eee44374d4/commons-codec-1.6.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.activation/activation/1.1/e6cb541461c2834bdea3eb920f1884d1eb508b50/activation-1.1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.i2rd/org.apache.batik.pdf/1.6.0/d0fb5faa313511b6261ec2f526bab0ce0a7bebc4/org.apache.batik.pdf-1.6.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.i2rd.drools/drools/2.1.0/6358e92cca801bceda11483f3e143bf1d1210ad/drools-2.1.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.xuggle/xuggler/5.4.0/a9c9be30765a1f948c0cd16805107904d4ae347a/xuggler-5.4.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache/ecs/1.4.2/f9bc5fdde56d60876c1785087ce2a301b4e4a676/ecs-1.4.2.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.octo.captcha/jcaptcha/1.0/fc28c75b6e4ab3c50fadc7503defc50886c4dfa/jcaptcha-1.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mindrot/jbcrypt/0.3m/fe2d9c5f23767d681a7e38fc8986b812400ec583/jbcrypt-0.3m.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.i2rd.org.solinger/cracklib/0.5.3/ba76e12aa7e8f9e511a826fb7535c8d529126a4/cracklib-0.5.3.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.tomcat/tomcat-juli/7.0.53/feb1a445ed7282fa4dfbfcb5462b0f4271ca73fd/tomcat-juli-7.0.53.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/oro/oro/2.0.8/5592374f834645c4ae250f4c9fbb314c9369d698/oro-2.0.8.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.validation/validation-api/1.1.0.Final/8613ae82954779d518631e05daa73a6a954817d5/validation-api-1.1.0.Final.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml/classmate/1.0.0/434efef28c81162b17c540e634cffa3bd9b09b4c/classmate-1.0.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jcraft/jsch.agentproxy.pageant/0.0.6/a4b88191bed87d3210d9666071b15b98e0447484/jsch.agentproxy.pageant-0.0.6.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jcraft/jsch.agentproxy.usocket-jna/0.0.6/e5e027a2d77296a89088820d5b3ffd2705f513f1/jsch.agentproxy.usocket-jna-0.0.6.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jgit/org.eclipse.jgit.ui/2.2.0.201212191850-r/19f6a7bcc19505a8bdd1436bd383755303c6736a/org.eclipse.jgit.ui-2.2.0.201212191850-r.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jcraft/jsch.agentproxy.sshagent/0.0.6/c552a54fece150f69350fa11b9c28d0e455bcf4b/jsch.agentproxy.sshagent-0.0.6.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jgit/org.eclipse.jgit/2.2.0.201212191850-r/97d0761b9dd618d1f9f6c16c35c3ddf045ba536c/org.eclipse.jgit-2.2.0.201212191850-r.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jcraft/jsch.agentproxy.jsch/0.0.6/aee40b481ad104a578584335b4859e49d4be4f7a/jsch.agentproxy.jsch-0.0.6.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.orbit/javax.servlet/3.0.0.v201112011016/aaaa85845fb5c59da00193f06b8e5278d8bf3f8/javax.servlet-3.0.0.v201112011016.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/asm/asm/3.3.1/1d5f20b4ea675e6fab6ab79f1cd60ec268ddc015/asm-3.3.1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bctsp-jdk14/1.38/4821122f8390d15f4b5ee652621e2a2bb1f1bf16/bctsp-jdk14-1.38.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/jdom/jdom/1.0/a2ac1cd690ab4c80defe7f9bce14d35934c35cec/jdom-1.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.connectivity/1.2.9.v201307261105/a833897b7f0cfb0bd61d3943929196218419043f/org.eclipse.datatools.connectivity-1.2.9.v201307261105.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.enablement.oda.ws/1.2.6.v201307051812/209b31b5181dcd592183332166664087670345c0/org.eclipse.datatools.enablement.oda.ws-1.2.6.v201307051812.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.core.resources/3.8.101.v20130717-0806/5fc550dca872450b3929ff0d5903cc1b1950d03d/org.eclipse.core.resources-3.8.101.v20130717-0806.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.emf.ecore.change/2.9.0.v20130827-0309/d0de68f13da035e4e5172c764b204d6deebf0e2d/org.eclipse.emf.ecore.change-2.9.0.v20130827-0309.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.connectivity.oda.flatfile/3.1.6.v201308131104/6528656dded10c15f72471765ae9761c8aeb120e/org.eclipse.datatools.connectivity.oda.flatfile-3.1.6.v201308131104.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.equinox.registry/3.5.301.v20130717-1549/e6a70177c0acdcd6ac1545082ec5671816bcf8c9/org.eclipse.equinox.registry-3.5.301.v20130717-1549.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.emf.common/2.9.1.v20130827-0309/2c268cc441822b35f3713af9b8f9de9446648bb5/org.eclipse.emf.common-2.9.1.v20130827-0309.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.emf.ecore/2.9.1.v20130827-0309/690fc86a8e039e92434a9d9f3872a20dd16fffcc/org.eclipse.emf.ecore-2.9.1.v20130827-0309.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.emf/2.6.0.v20130902-0605/bf164e595e1a29ac17e1490cfe9f9ed4b6157c71/org.eclipse.emf-2.6.0.v20130902-0605.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.emf.ecore.xmi/2.9.1.v20130827-0309/7efc48c6bab366f5851b424e596ad05842e41d4c/org.eclipse.emf.ecore.xmi-2.9.1.v20130827-0309.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.osgi/3.9.1.v20130814-1242/cd3f11bd163003f0883aa53f029810afc41e9035/org.eclipse.osgi-3.9.1.v20130814-1242.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.connectivity.oda/3.4.1.v201308160907/785f5e1b16ffe224500da7554870cb4aa607f37f/org.eclipse.datatools.connectivity.oda-3.4.1.v201308160907.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.connectivity.sqm.core/1.2.7.v201308160952/51c24b79134728bd66014ce5580ce659b9f227ec/org.eclipse.datatools.connectivity.sqm.core-1.2.7.v201308160952.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.connectivity.oda.profile/3.2.9.v201307270622/f41f63fdd1f2bd800a8707e214a98a23e0d87022/org.eclipse.datatools.connectivity.oda.profile-3.2.9.v201307270622.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.core.runtime/3.9.0.v20130326-1255/47eedfa6e872020604db4b2e1949aa6ca273ac6a/org.eclipse.core.runtime-3.9.0.v20130326-1255.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/org.w3c.dom.smil/1.0.0/674bdda9162b48419741da833e445e190f33a58a/org.w3c.dom.smil-1.0.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.enablement.hsqldb.dbdefinition/1.0.0.v201107221502/aa3214296e97b4dfd14345acea23f2c92e992c36/org.eclipse.datatools.enablement.hsqldb.dbdefinition-1.0.0.v201107221502.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.core.contenttype/3.4.200.v20130326-1255/9a032a98b4b139fa91522b10fdc61ffa9864414/org.eclipse.core.contenttype-3.4.200.v20130326-1255.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.modelbase.derby/1.0.0.v201107221519/93018a0f0e585dd4ceb70e849570d6143034273a/org.eclipse.datatools.modelbase.derby-1.0.0.v201107221519.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/org.apache.batik.parser/1.6.0/5e6dd459704dd6bd168f1b030cb739872e994339/org.apache.batik.parser-1.6.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.equinox.common/3.6.200.v20130402-1505/550778d95ea4d5f2fee765e85eb799cec21067e0/org.eclipse.equinox.common-3.6.200.v20130402-1505.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/org.apache.batik.util.gui/1.6.0/6afa9107935bdeede0487c770bb0537b1a341c81/org.apache.batik.util.gui-1.6.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/javax.xml.stream/1.0.1.v201004272200/3a4f0067058e2aa9af1c6e463bc8a147a99681c0/javax.xml.stream-1.0.1.v201004272200.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.enablement.ibm.informix/1.0.1.v201107221502/8c1d7354580604905a00c7d9acce3fbc5696b537/org.eclipse.datatools.enablement.ibm.informix-1.0.1.v201107221502.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/derby/10.5.1000001/566a30778917a22fd426f73d2e4ead31010c82a8/derby-10.5.1000001.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/org.apache.batik.svggen/1.6.0/5cb65af57bdfd093c47b3cf7bc8bb57e10f5451/org.apache.batik.svggen-1.6.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.equinox.app/1.3.100.v20130327-1442/cfe0deab8c3c4f4caea3767bc8bbaa4789b8f782/org.eclipse.equinox.app-1.3.100.v20130327-1442.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-cli/commons-cli/1.0/6dac9733315224fc562f6268df58e92d65fd0137/commons-cli-1.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.connectivity.dbdefinition.genericJDBC/1.0.1.v201107221459/1ee4dc13d331d13f2be2f1cb1b62b789c25db9cc/org.eclipse.datatools.connectivity.dbdefinition.genericJDBC-1.0.1.v201107221459.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/org.apache.batik.dom/1.6.0/e9fe8d31ea04c6cd566e35f61524e561821bbe57/org.apache.batik.dom-1.6.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/org.apache.batik.css/1.6.0/1e54558f0ad4b78f907f3461c14c7a7a91aecab2/org.apache.batik.css-1.6.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.enablement.ibm.db2.luw/1.0.2.v201107221502/3e9920ed389a8eba9ba8ce46d0c0e8ac6da5b41d/org.eclipse.datatools.enablement.ibm.db2.luw-1.0.2.v201107221502.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.connectivity.oda.consumer/3.2.6.v201305170644/45205c69d334dec54f76f8e2a5cacab8accde588/org.eclipse.datatools.connectivity.oda.consumer-3.2.6.v201305170644.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.connectivity.oda.design/3.3.6.v201212070447/bce1829458bb7c58200cb72c045d48e82702d0a8/org.eclipse.datatools.connectivity.oda.design-3.3.6.v201212070447.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml/3.9/bbe83c739d22eecfacd06d7e0b99ba13277040ed/poi-ooxml-3.9.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.enablement.mysql/1.0.4.v201212120617/b8862d790cf4715ce8b1a5c54d9fa9ee2557154f/org.eclipse.datatools.enablement.mysql-1.0.4.v201212120617.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml-schemas/3.9/4c514498f0e82cccfdd3208b9caff2f45158db4a/poi-ooxml-schemas-3.9.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.connectivity.db.generic/1.0.1.v201107221459/4dd3c5554bea2302448e4201167e36e2bf11d383/org.eclipse.datatools.connectivity.db.generic-1.0.1.v201107221459.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.enablement.hsqldb/1.0.0.v201107221502/5f987f4588c989290c038bd70460c36caa972c0b/org.eclipse.datatools.enablement.hsqldb-1.0.0.v201107221502.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.enablement.msft.sqlserver.dbdefinition/1.0.1.v201201240505/d18a0cca80deb6331f1caffea5abc8fa34e2060e/org.eclipse.datatools.enablement.msft.sqlserver.dbdefinition-1.0.1.v201201240505.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/org.apache.xml.resolver/1.2.0/7c9c22053b04772e81dc62d665b202eeae82ae47/org.apache.xml.resolver-1.2.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.enablement.ibm.informix.dbdefinition/1.0.4.v201107221502/1587982c1ed42ca42e1fe02f1a3baf1faa4bcbb2/org.eclipse.datatools.enablement.ibm.informix.dbdefinition-1.0.4.v201107221502.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.modelbase.sql/1.0.6.v201208230744/731de727a1154c562038b045fa247716f68e93fe/org.eclipse.datatools.modelbase.sql-1.0.6.v201208230744.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/org.w3c.dom.svg/1.1.0/9c6413ed43b4e9ba56982a554e03bd012cc44ed9/org.w3c.dom.svg-1.1.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/org.apache.batik.dom.svg/1.6.0/ce507ddef394d6c6771bc8692c7db6afb1da4fa0/org.apache.batik.dom.svg-1.6.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/org.apache.batik.ext.awt/1.6.0/4df20bee143553a89b26bc06411eb4dcf44ec18e/org.apache.batik.ext.awt-1.6.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/org.mozilla.javascript/1.7.2/b520e18bd357a47deb2e902ce49533564236219b/org.mozilla.javascript-1.7.2.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.enablement.postgresql/1.1.1.v201205252207/ddd733b059a41aa86aceed5344d1b4799802f5c0/org.eclipse.datatools.enablement.postgresql-1.1.1.v201205252207.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/org.apache.batik.transcoder/1.6.0/fc5d9326a3195f15781d2fcea862ec1767e30ebf/org.apache.batik.transcoder-1.6.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.enablement.ibm.db2.luw.dbdefinition/1.0.4.v201107221502/7ba2ad3443244862426b20f2da73bb78c7223287/org.eclipse.datatools.enablement.ibm.db2.luw.dbdefinition-1.0.4.v201107221502.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.connectivity.apache.derby.dbdefinition/1.0.2.v201107221459/be66d744ac0e8f011055c37eb6c0b0b8de2d0978/org.eclipse.datatools.connectivity.apache.derby.dbdefinition-1.0.2.v201107221459.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.equinox.preferences/3.5.100.v20130422-1538/bc48b6b0c00898d5eb2cbd6024fc0235ae04f3d2/org.eclipse.equinox.preferences-3.5.100.v20130422-1538.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.enablement.oracle/1.0.0.v201107221506/5628f462cfa241fff7b11f1df4c21802f174dd08/org.eclipse.datatools.enablement.oracle-1.0.0.v201107221506.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.core.expressions/3.4.500.v20130515-1343/97cc20cce87af191fc620562ab74b1cde95947fd/org.eclipse.core.expressions-3.4.500.v20130515-1343.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/org.apache.batik.util/1.6.0/74aafd6361820f7e67474e78b16fd4365d1a58a/org.apache.batik.util-1.6.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.enablement.oracle.dbdefinition/1.0.103.v201206010214/af90f9d09101fb165a260896477c01385b6c8fd1/org.eclipse.datatools.enablement.oracle.dbdefinition-1.0.103.v201206010214.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/org.apache.batik.xml/1.6.0/8b3fbec88190a39eae4de5088a1199f23526258e/org.apache.batik.xml-1.6.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/org.apache.xml.serializer/2.7.1/a8508e22414c8e12cdfdc42b25a7c7efa4004556/org.apache.xml.serializer-2.7.1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/org.apache.xerces/2.9.0/615a1b724b88b81e8a040ec148fd25368f7b48e5/org.apache.xerces-2.9.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.modelbase.sql.query/1.1.4.v201212120619/663bfc41efd6030a37f7e6e7baf3b259606c1bcc/org.eclipse.datatools.modelbase.sql.query-1.1.4.v201212120619.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.modelbase.dbdefinition/1.0.2.v201107221519/725b5a9cbd280b8e6c9a6fd32cbe44bf1aae10a3/org.eclipse.datatools.modelbase.dbdefinition-1.0.2.v201107221519.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.enablement.mysql.dbdefinition/1.0.4.v201109022331/7b1abc387591d4a9427bb13344243a220a5d751b/org.eclipse.datatools.enablement.mysql.dbdefinition-1.0.4.v201109022331.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.update.configurator/3.3.200.v20130326-1319/4375455f2f0bd4f014e79758bbb3d4b7340e2943/org.eclipse.update.configurator-3.3.200.v20130326-1319.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.orbit.mongodb/2.10.1.v20130422-1135/98f0232dc80679a3f5c1effe15344dc7ceac98dc/org.eclipse.orbit.mongodb-2.10.1.v20130422-1135.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/javax.wsdl/1.5.1/29ec6b1964b05d6ff9728226d2a1e61fab3ac95c/javax.wsdl-1.5.1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.osgi.services/3.3.100.v20130513-1956/1d73531fac5372870373a06193985611b1239f0c/org.eclipse.osgi.services-3.3.100.v20130513-1956.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/Tidy/1/63b1e38f4ca630dbac3d2072cda2a9336914d10c/Tidy-1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.enablement.postgresql.dbdefinition/1.0.2.v201110070445/8021bc614192f060a880cc407aba8adcfea6fb7f/org.eclipse.datatools.enablement.postgresql.dbdefinition-1.0.2.v201110070445.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.enablement.oda.xml/1.2.5.v201305031101/b5be50518c251d4c022959aeb6f871d6fea33fcc/org.eclipse.datatools.enablement.oda.xml-1.2.5.v201305031101.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.milyn/flute/1.3/b7d59dc172005598b55699b1a75605b13c14f1fd/flute-1.3.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.connectivity.apache.derby/1.0.103.v201212070447/2257789d5761585d498d13bb2269c180c970f28d/org.eclipse.datatools.connectivity.apache.derby-1.0.103.v201212070447.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.datatools.connectivity.console.profile/1.0.10.v201109250955/2c338e35fc23603cea9ebaf5177a0c042f38eea1/org.eclipse.datatools.connectivity.console.profile-1.0.10.v201109250955.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/org.apache.commons.codec/1.3.0/72c73f3729b4ca49dac8691fb5adb194e8595799/org.apache.commons.codec-1.3.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/com.lowagie.text/2.1.7/18d4c7c2014447eacfd00c65c717b3cfc422407b/com.lowagie.text-2.1.7.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime.3_7_1/org.apache.batik.bridge/1.6.0/e2db6eb9029356884f123a60e9b72a51919e9a6f/org.apache.batik.bridge-1.6.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.birt.runtime/org.eclipse.core.filesystem/1.4.0.v20130514-1240/e26398a301d91db6516debe38664239481d4b309/org.eclipse.core.filesystem-1.4.0.v20130514-1240.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.1.1/82ad1c5f92f6dcc6291f5c46ebacb975eaa844de/jackson-core-2.1.1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.1.1/38d2b3c0c89af5b937fd98c3e558bf6b58c14aa2/jackson-databind-2.1.1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.1.1/b01cc83e745fc4425a3968fafbf8e5b8254a6dd/jackson-annotations-2.1.1.jar" />
           <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.3/56498efd17752898cfcc3868c1b6211a07b12b8f/joda-time-2.3.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.octo.captcha/jcaptcha-api/1.0/ff18fc63ff3871f11f5d59d929630c34ea793069/jcaptcha-api-1.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jhlabs/imaging/01012005/a56c8146f654e4473c6ff1b12b22dd51bcef81ca/imaging-01012005.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jcraft/jsch.agentproxy.core/0.0.6/fb27d5a19479c7617c74aaca4f1d38063ac7a25e/jsch.agentproxy.core-0.0.6.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.java.dev.jna/jna/3.4.0/803ff252fedbd395baffd43b37341dc4a150a554/jna-3.4.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.java.dev.jna/platform/3.4.0/e3f70017be8100d3d6923f50b3d2ee17714e9c13/platform-3.4.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcprov-jdk14/1.38/de366c3243a586eb3c0e2bcde1ed9bb1bfb985ff/bcprov-jdk14-1.38.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcmail-jdk14/1.38/14ff2dfec8578f5f6838c4d6a77a86789afe5382/bcmail-jdk14-1.38.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-collections/commons-collections/3.2/f951934aa5ae5a88d7e6dfaa6d32307d834a88be/commons-collections-3.2.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jcraft/jsch/0.1.49/5c46cae7d01e845379beac44512e25eb11017159/jsch-0.1.49.jar" />
           <element id="library" level="project" name="Gradle: antlr-2.7.7" />
           <element id="library" level="project" name="Gradle: commons-codec-1.6" />
           <element id="library" level="project" name="Gradle: gson-2.2.4" />

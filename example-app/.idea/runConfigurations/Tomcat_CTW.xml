@@ -18,6 +18,7 @@
     <predefined_log_file id="Tomcat Host Manager" enabled="false" />
     <predefined_log_file id="Tomcat Localhost Access" enabled="false" />
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+    <RunnerSettings RunnerId="Chronon" />
     <RunnerSettings RunnerId="Cover" />
     <RunnerSettings RunnerId="Debug">
       <option name="DEBUG_PORT" value="50417" />
@@ -25,6 +26,21 @@
       <option name="LOCAL" value="true" />
     </RunnerSettings>
     <RunnerSettings RunnerId="Run" />
+    <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Chronon">
+      <option name="USE_ENV_VARIABLES" value="true" />
+      <STARTUP>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </STARTUP>
+      <SHUTDOWN>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </SHUTDOWN>
+    </ConfigurationWrapper>
     <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
       <option name="USE_ENV_VARIABLES" value="true" />
       <STARTUP>
