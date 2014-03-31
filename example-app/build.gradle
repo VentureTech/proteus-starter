@@ -269,12 +269,12 @@ artifactory {
 [Checkstyle, FindBugs].each {
     tasks.withType(it) {
         ignoreFailures = true
-        enabled = false // Waiting on Java 8 support
+        enabled = false
     }
 }
 
 findbugsMain {
-    enabled = true
+    enabled = false // Waiting on Java 8 support
     excludeFilter = new File("${rootProject.projectDir}/config/findbugs/exclude.xml")
     reports {
         xml.enabled = true
