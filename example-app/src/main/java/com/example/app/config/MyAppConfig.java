@@ -33,6 +33,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import com.i2rd.hibernate.util.LocationQualifier;
 
 import net.proteusframework.config.ProteusWebAppConfig;
+import net.proteusframework.core.locale.xml.StaticKeyDataConfig;
 
 import static com.i2rd.hibernate.util.LocationQualifier.Type.entity_location;
 import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
@@ -52,10 +53,16 @@ import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
 // Add spring xml files if you'd like to register spring beans with XML.
 //@ImportResource("classpath:/spring/*.spring.xml")
 @Import(ProteusWebAppConfig.class)
+// SPLIT PropertySource -> https://jira.spring.io/browse/SPR-11637
 @PropertySource(
     name = ProteusWebAppConfig.PROTEUSFRAMEWORK_PROPERTY_SOURCE_NAME,
     value = {
-        ProteusWebAppConfig.PROTEUSFRAMEWORK_CONFIG_DEFAULT_PROPERTIES,
+        ProteusWebAppConfig.PROTEUSFRAMEWORK_CONFIG_DEFAULT_PROPERTIES
+    }
+)
+@PropertySource(
+    name = "your-app-props",
+    value = {
         "classpath:/com/example/app/config/default.properties",
         ProteusWebAppConfig.PROTEUSFRAMEWORK_SPRING_PROPERTIES_PLACEHOLDER,
     }
@@ -94,6 +101,17 @@ public class MyAppConfig implements ApplicationListener
     //    }
 
 
+    /**
+     * Static key config.
+     * @return bean.
+     */
+    @Bean()
+    public StaticKeyDataConfig staticKeyDataConfig()
+    {
+        StaticKeyDataConfig config = new StaticKeyDataConfig();
+        config.addScanPackage("com.example.app");
+        return config;
+    }
 
     /**
      * Scan com.example for HBM XML files.
@@ -103,7 +121,7 @@ public class MyAppConfig implements ApplicationListener
     @LocationQualifier(orm_location)
     public String ormLocationComExample()
     {
-        return "classpath*:com/example/**/*.hbm.xml";
+        return "classpath*:com/example/app/**/*.hbm.xml";
     }
 
     /**

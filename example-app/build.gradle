@@ -3,8 +3,7 @@ import org.ajoberstar.gradle.git.tasks.GitBranchList
 
 import java.text.SimpleDateFormat
 
-ext.aspectjVersion = '1.7.4'
-ext.springVersion = '3.2.+'
+ext.aspectjVersion = '1.8.0.M1'
 
 // Compilation
 apply plugin: 'java'
@@ -26,7 +25,7 @@ ext.isIDEA = System.getProperties().containsKey('idea.active') || plugins.any({i
 ext.isEclipse = System.getProperties().containsKey('eclipse.product')
 
 buildDir = 'build/gradle'
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
 version = new Version(app_version, project)
 group = app_group
 ext[Version.PROJECT_INFORMATION_PACKAGE] = 'com.example.app.config'
@@ -122,23 +121,23 @@ compileTestJava { source = source.filter(aptFilter) }
 
 
 dependencies {
-    runtimeaspects "org.springframework:spring-instrument:${springVersion}", "org.aspectj:aspectjweaver:${aspectjVersion}"
-    compiletimeaspects "org.springframework:spring-aspects:${springVersion}", "org.aspectj:aspectjtools:${aspectjVersion}"
+    runtimeaspects "org.springframework:spring-instrument:${version_spring}", "org.aspectj:aspectjweaver:${aspectjVersion}"
+    compiletimeaspects "org.springframework:spring-aspects:${version_spring}", "org.aspectj:aspectjtools:${aspectjVersion}"
 
     // App dependencies
-    compile 'net.proteusframework:proteusframework:0.4.+'
+    compile "net.proteusframework:proteusframework:${version_proteus}"
 
     // Most apps use spring.
-    compile "org.springframework:spring-core:${springVersion}",
-        "org.springframework:spring-beans:${springVersion}",
-        "org.springframework:spring-jdbc:${springVersion}",
-        "org.springframework:spring-aop:${springVersion}",
-        "org.springframework:spring-context:${springVersion}",
-        "org.springframework:spring-orm:${springVersion}",
-        "org.springframework:spring-web:${springVersion}",
-        "org.springframework:spring-test:${springVersion}",
-        "org.springframework:spring-instrument:${springVersion}",
-        "org.springframework:spring-aspects:${springVersion}"
+    compile "org.springframework:spring-core:${version_spring}",
+        "org.springframework:spring-beans:${version_spring}",
+        "org.springframework:spring-jdbc:${version_spring}",
+        "org.springframework:spring-aop:${version_spring}",
+        "org.springframework:spring-context:${version_spring}",
+        "org.springframework:spring-orm:${version_spring}",
+        "org.springframework:spring-web:${version_spring}",
+        "org.springframework:spring-test:${version_spring}",
+        "org.springframework:spring-instrument:${version_spring}",
+        "org.springframework:spring-aspects:${version_spring}"
 
     testCompile 'junit:junit:4.11'
 
@@ -153,7 +152,7 @@ dependencies {
     }
 }
 
-task wrapper(type: Wrapper) { gradleVersion = '1.8' }
+task wrapper(type: Wrapper) { gradleVersion = '1.11' } // Requires Intellij 13.1.x
 task createRuntimeAspectsLibs(type: Copy) {
     from configurations.runtimeaspects
     into "runtime-aspects"
@@ -198,10 +197,10 @@ javadoc {
 //    options.footer = """<p id="copyright" align="center";>&copy; ${year} Interactive Information R&amp;D LLC</p>"""
     options.links = [
             'http://jsr-305.googlecode.com/svn/trunk/javadoc/', 'http://docs.oracle.com/javaee/7/api/',
-            'http://docs.oracle.com/javase/7/docs/api/',
+            'http://docs.oracle.com/javase/8/docs/api/',
             'http://docs.jboss.org/hibernate/orm/4.3/javadocs/', 'http://docs.jboss.org/hibernate/validator/5.0/api/',
             'http://docs.jboss.org/hibernate/annotations/3.5/api/', 'http://docs.jboss.org/hibernate/core/4.3/javadocs/',
-            'http://docs.spring.io/spring/docs/3.2.4.RELEASE/javadoc-api/',
+            "http://docs.spring.io/spring/docs/${version_spring}/javadoc-api/",
             'http://docs.guava-libraries.googlecode.com/git-history/release/javadoc/'
     ]
 }
@@ -270,7 +269,7 @@ artifactory {
 [Checkstyle, FindBugs].each {
     tasks.withType(it) {
         ignoreFailures = true
-        enabled = false
+        enabled = false // Waiting on Java 8 support
     }
 }
 
@@ -284,19 +283,26 @@ findbugsMain {
 }
 
 checkstyleMain {
-    enabled = true
+    enabled = false // Waiting on Java 8 support
     configFile = new File("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
     classpath += configurations.compile // To avoid class loading errors when checking javadoc
     source = 'src/main/java' // Do not include generated sources
 }
 
 configurations.all {
-  resolutionStrategy {
-    // cache dynamic versions for ...
-    cacheDynamicVersionsFor 0, 'seconds'
-    // cache changing modules for ...
-    cacheChangingModulesFor 0, 'seconds'
-  }
+    exclude group: 'xml-apis'
+    resolutionStrategy {
+        eachDependency {DependencyResolveDetails details ->
+            if (details.requested.group == 'org.aspectj' && details.requested.name == 'aspectjweaver')
+            {
+                details.useVersion aspectjVersion
+            }
+        }
+        // cache dynamic versions for ...
+        //cacheDynamicVersionsFor 0, 'seconds'
+        // cache changing modules for ...
+        //cacheChangingModulesFor 0, 'seconds'
+    }
 }
 
 
