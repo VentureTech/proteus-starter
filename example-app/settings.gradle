@@ -11,6 +11,7 @@ def props = [
 settings.gradle.projectsLoaded( {
     props.each({it.test(settings)})
     settings.gradle.rootProject.ext.hasLocalRepo = settings.hasProperty('local_repo');
+    settings.gradle.rootProject.ext.useMavenLocal = settings.hasProperty('use_maven_local') && settings.use_maven_local.toBoolean();
 })
 
 

@@ -34,6 +34,7 @@ final repoURL = "${repo_venture_tech_url}/${repo_venture_tech_key}"
 buildscript {
     final buildRepoURL = "${repo_venture_tech_url}/${repo_venture_tech_key}"
     repositories {
+        if(useMavenLocal){ mavenLocal() }
         if(hasLocalRepo){ maven { url = local_repo } }
         maven {
             credentials {
@@ -80,6 +81,7 @@ try{
 
 
 repositories {
+    if(useMavenLocal){ mavenLocal() }
     if(hasLocalRepo){ maven { url = local_repo } }
     maven {
         credentials {
