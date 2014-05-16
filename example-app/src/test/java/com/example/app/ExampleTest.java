@@ -13,7 +13,10 @@ package com.example.app;
 
 import org.junit.Test;
 
-/** This example is to prevent Jenkins build from failing due to no unit tests. */
+/**
+ * This example is to prevent Jenkins build from failing due to no unit tests.
+ * @author Joe Developer
+ */
 public class ExampleTest 
 {
 
@@ -21,6 +24,7 @@ public class ExampleTest
     @Test
     public void test() 
     {
+        // Implement a test
     }
     
 }
