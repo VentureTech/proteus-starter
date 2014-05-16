@@ -80,6 +80,7 @@ try{
 
 
 repositories {
+    mavenLocal()
     if(hasLocalRepo){ maven { url = local_repo } }
     maven {
         credentials {

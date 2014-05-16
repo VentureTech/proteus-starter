@@ -5,8 +5,8 @@
 CONFIG_CLASS=com.example.app.config.MyAppConfig
 PROPERTIES="file:///srv/tomcat/proteus-worker/conf/stage.properties"
 
-java -Dspring.config=$CONFIG_CLASS \
-  -Dspring.properties=$PROPERTIES \
+java -Dspring.config=${CONFIG_CLASS} \
+  -Dspring.properties=${PROPERTIES} \
   -javaagent:$HOME/src/runtime-aspects/spring-instrument.jar \
   -javaagent:$HOME/src/runtime-aspects/aspectjweaver.jar \
   -cp "$HOME/deployed-war/WEB-INF/lib/*:$HOME/provided-libs/*" \
