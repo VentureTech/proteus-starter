@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import com.i2rd.media.ICodec;
 import com.i2rd.media.IMediaMetaData;
@@ -39,10 +41,13 @@ import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.TextSources;
 import net.proteusframework.core.metric.PixelMetric;
+import net.proteusframework.data.filesystem.FileEntity;
+import net.proteusframework.ui.miwt.Image;
 import net.proteusframework.ui.miwt.component.Component;
 import net.proteusframework.ui.miwt.component.Container;
 import net.proteusframework.ui.miwt.component.Field;
 import net.proteusframework.ui.miwt.component.HTMLComponent;
+import net.proteusframework.ui.miwt.component.ImageComponent;
 import net.proteusframework.ui.miwt.component.Label;
 import net.proteusframework.ui.miwt.component.Media;
 import net.proteusframework.ui.miwt.component.URILink;
@@ -251,6 +256,15 @@ public class UserProfileViewer extends Container
                 aboutMeVideo = videoLinkComponent;
             }
         }
+        ImageComponent picture = null;
+        final FileEntity userProfilePicture = userProfile.getPicture();
+        if(userProfilePicture != null)
+        {
+            picture = new ImageComponent(new Image(userProfilePicture));
+            picture.setImageCaching(userProfilePicture.getLastModifiedTime().before(
+                new Date(System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(60))
+            ));
+        }
 
         // Now that we've initialized most of the content, we'll add all the components to this View
         /// using the standard HTML structure for a property viewer.
@@ -369,7 +383,8 @@ public class UserProfileViewer extends Container
             }
         }
 
-        if(!StringFactory.isEmptyString(aboutMeProse.getText()) || aboutMeVideo != null)
+        final boolean hasAboutMeProse = StringFactory.isEmptyString(aboutMeProse.getText());
+        if(!hasAboutMeProse || aboutMeVideo != null)
         {
             Container aboutMe = of(
                 HTMLElement.section,
@@ -377,20 +392,35 @@ public class UserProfileViewer extends Container
                 new Label(TextSources.create("About Me")).setHTMLElement(HTMLElement.h1)
             );
             add(aboutMe);
-            if(aboutMeProse.getText() != null)
+            if(picture != null)
+            {
+                aboutMe.add(of(
+                    HTMLElement.div,
+                    "prop picture",
+                    TextSources.create("Picture"),
+                    picture
+                ));
+            }
+            if(hasAboutMeProse)
+            {
                 aboutMe.add(of(
                     HTMLElement.div,
                     "prop prose",
                     TextSources.create("Professional Information, Hobbies, Interests..."),
                     aboutMeProse
                 ));
+            }
             if(aboutMeVideo != null)
+            {
+                Label label = new Label(TextSources.create("Video")).setHTMLElement(HTMLElement.label);
+                label.addClassName("vl");
                 aboutMe.add(of(
                     HTMLElement.div,
                     "prop video",
-                    TextSources.create("Video"),
+                    label,
                     aboutMeVideo
                 ));
+            }
 
         }
     }

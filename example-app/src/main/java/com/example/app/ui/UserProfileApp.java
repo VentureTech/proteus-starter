@@ -15,12 +15,12 @@ import com.example.app.model.UserProfile;
 import com.example.app.model.UserProfileDAO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Configurable;
 
-import com.i2rd.cms.bean.MIWTBeanConfig;
 import com.i2rd.cms.miwt.TimeAuditableColumn;
+import com.i2rd.contentmodel.miwt.PropertyEditor;
 
+import net.proteusframework.cms.CmsSite;
 import net.proteusframework.core.JunctionOperator;
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.core.html.HTMLElement;
@@ -31,8 +31,8 @@ import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
 import net.proteusframework.core.notification.NotificationImpl;
+import net.proteusframework.internet.http.SiteLoader;
 import net.proteusframework.ui.mcolumn.FixedValueColumn;
-import net.proteusframework.ui.miwt.MIWTException;
 import net.proteusframework.ui.miwt.MIWTSession;
 import net.proteusframework.ui.miwt.ReflectiveAction;
 import net.proteusframework.ui.miwt.component.Component;
@@ -41,12 +41,11 @@ import net.proteusframework.ui.miwt.component.Label;
 import net.proteusframework.ui.miwt.component.PushButton;
 import net.proteusframework.ui.miwt.component.composite.CustomCellRenderer;
 import net.proteusframework.ui.miwt.component.composite.DateFormatLabel;
-import net.proteusframework.ui.miwt.component.composite.MessageContainer;
 import net.proteusframework.ui.miwt.data.SortOrder;
-import net.proteusframework.ui.miwt.event.ActionListener;
 import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
 import net.proteusframework.ui.miwt.util.CommonColumnText;
+import net.proteusframework.ui.search.ActionColumn;
 import net.proteusframework.ui.search.JoinedQLBuilder;
 import net.proteusframework.ui.search.QLBuilder;
 import net.proteusframework.ui.search.QLBuilderImpl;
@@ -81,9 +80,7 @@ import static net.proteusframework.ui.search.SearchUIImpl.Options;
         @I18N(symbol = "SearchSupplier.Description", l10n = @L10N("Default User Profile Search"))
     }
 )
-@MIWTBeanConfig(displayName = "User Profile Example Application",
-    applicationClass = UserProfileApp.class)
-@Scope(BeanDefinition.SCOPE_PROTOTYPE)
+@Configurable
 public class UserProfileApp extends SearchUIApp
 {
     /** Logger. */
@@ -92,6 +89,9 @@ public class UserProfileApp extends SearchUIApp
     /** Mock Data Access Object. */
     @Autowired
     private UserProfileDAO _userProfileDAO;
+    /** Site Loader. */
+    @Autowired
+    private SiteLoader _siteLoader;
 
 
     /**
@@ -149,7 +149,9 @@ public class UserProfileApp extends SearchUIApp
      */
     void addUserProfile()
     {
-        setupEditor(new UserProfile());
+        final UserProfile userProfile = new UserProfile();
+        userProfile.setSite((CmsSite) _siteLoader.getOperationalSite());
+        setupEditor(userProfile);
     }
 
     /**
@@ -160,114 +162,82 @@ public class UserProfileApp extends SearchUIApp
      */
     void setupEditor(final UserProfile userProfile)
     {
-        // The editor View's responsibility is to provide data capture. It's the
-        /// implementer's (this application) responsibility to handle persistence. We'll
-        /// setup the editor view by adding a title and buttons to save / cancel changes.
-
-        // To facilitate styling of the content, we use a standard structure for the HTML we output.
-        /// Starter stylesheets are provided for the standard HTML structure, so your UI can look good right away.
-        /// Refer to https://developer.i2rd.com/standards/property-viewers for detailed information
-        /// on HTML structure and the starter CSS.
-
-        // We're going to wrap the property editor in a DIV so our title is outside the property editor.
-        /// This is part of the standard HTML structure and Container.of(...) is a common way to create
-        /// containers for this structure. The syntax encourages you to specify the HTMLElement
-        /// as well as specify a class name.
-        final Container editorWrapper = Container.of(HTMLElement.div, "property-wrapper");
-        UserProfileEditor editor = new UserProfileEditor(userProfile);
-        // CommonActions provides code to create many standard buttons. Its use is recommended
-        /// since it takes care of common boilerplate code and allows changes to be made to all
-        /// buttons created within a context i.e. an application.
-        PushButton saveBtnTop = CommonActions.SAVE.push();
-        PushButton cancelBtnTop = CommonActions.CANCEL.push();
-        // We're going to create buttons at the top of the property editor and
-        /// the bottom of the property editor.
-        Container actions = Container.of(HTMLElement.div, "actions top persistence-actions", saveBtnTop, cancelBtnTop);
-        // We're adding the actions to the editor *before* it is initialized,
-        /// so the "actions" container will appear at the top of the editor.
-        editor.add(actions);
-        // MessageContainers are used to display messages. We're going to use
-        /// it to display validation errors when the user tries to save changes.
-        MessageContainer notifiable = new MessageContainer();
-        // Layout the content of the editorWrapper: Title, Messages, then the editor.
-        editorWrapper.add(new Label(TextSources.create("User Profile")).setHTMLElement(HTMLElement.h1));
-        editorWrapper.add(notifiable);
-        editorWrapper.add(editor);
-
-
-        // We are creating the action logic after creating the UI components
-        /// so we can reference the component variables in the actions.
-        final ActionListener cancelAction = event -> {
-            // When the cancelAction is executed, close the editor UI
-            /// the switch to the viewer UI.
-
-            // If we want to warn the user about unsaved changes, then
-            /// we could check the ModificationState of the editor before
-            /// proceeding.
-
-            editorWrapper.close();
-            setupViewer(EntityRetriever.getInstance().reattachIfNecessary(userProfile));
-        };
-        final ActionListener saveAction = event -> {
-            // If the user presses one of the save buttons, then
-            /// validate that the data captured in the UI is valid
-            /// before attempting to save the changes.
-            /// Any validation errors will be added to the notifiable.
-            notifiable.clearNotifications();
-            if (editor.validateUIValue(notifiable))
-            {
-                try
-                {
-                    if (editor.getModificationState().isModified())
-                    {
-                        // Editor indicated data is valid, commit the UI
-                        /// data to the UserProfile and attempt to save it.
-                        final UserProfile commitValue = editor.commitValue();
-                        assert commitValue != null;
-                        _userProfileDAO.saveUserProfile(commitValue);
-                        // Save was successful. We're executing the cancelAction
-                        /// since it switches us to the viewer UI.
-                        cancelAction.actionPerformed(event);
-                    }
-                }
-                catch (MIWTException e)
-                {
-                    _logger.error("Unexpected error committing changes", e);
-                    // Let the user know that something bad happened.
-                    notifiable.sendNotification(NotificationImpl.create(e, "I'm sorry, we Unable to save"));
-                }
-            }
-        };
-
-        // A Component can only be in the UI in one place at a time.
-        /// We need to create new buttons for the action buttons at the
-        /// bottom of the editor.
-        PushButton saveBtnBottom = CommonActions.SAVE.push();
-        PushButton cancelBtnBottom = CommonActions.CANCEL.push();
-        actions = Container.of(HTMLElement.div, "actions bottom persistence-actions", saveBtnBottom, cancelBtnBottom);
-
-        // Since the UserProfileEditor was already initialized above <_appFrame.add(editorWrapper)>
-        /// we can add the actions and they will appear at the bottom
-        /// of the editor. This behavior is dependent on the implementation.
-        /// Since we are writing both implementations, it is safe to make
-        /// that assumption. If we were using reusable code, we wouldn't
-        /// want to make that assumption. It would need to be specified in the
-        /// contract of the code for us to do this style of UI building.
-        editor.add(actions);
-
-        // Add action listeners to action buttons.
-        cancelBtnTop.addActionListener(cancelAction);
-        saveBtnTop.addActionListener(saveAction);
-        cancelBtnBottom.addActionListener(cancelAction);
-        saveBtnBottom.addActionListener(saveAction);
-
-        if (isEmptyString(userProfile.getName().getFirst()))
+        getActiveSearchUI().getWorkspace().addUITask(new AbstractUITask("upe#" + userProfile.getId())
         {
-            // Since the First name is required we can assume this is the initial case and
-            // hide the cancel buttons.
-            cancelBtnTop.setVisible(false);
-            cancelBtnBottom.setVisible(false);
-        }
+            @Override
+            public LocalizedText getLabel(LocaleContext localeContext)
+            {
+                return new LocalizedText("User Profile - " + _getName(
+                    EntityRetriever.getInstance().reattachIfNecessary(userProfile)
+                ));
+            }
+
+            @Override
+            public Component createTaskUI(LocaleContext localeContext)
+            {
+
+                ReflectiveAction saveAction = CommonActions.SAVE.defaultAction();
+                ReflectiveAction cancelAction = CommonActions.CANCEL.defaultAction();
+                PropertyEditor<UserProfile> propertyEditor = new PropertyEditor<>();
+                propertyEditor.setTitle(new Label(TextSources.create("User Profile")).setHTMLElement(HTMLElement.h2));
+                propertyEditor.setValueEditor(new UserProfileEditor(userProfile));
+                propertyEditor.setPersistenceActions(saveAction, cancelAction);
+
+                // We are creating the action logic after creating the UI components
+                /// so we can reference the component variables in the actions.
+                cancelAction.setActionListener(event -> {
+                    // When the cancelAction is executed, close the editor UI
+                    /// the switch to the viewer UI.
+
+                    // If we want to warn the user about unsaved changes, then
+                    /// we could check the ModificationState of the editor before
+                    /// proceeding.
+
+                    propertyEditor.close();
+                    setupViewer(EntityRetriever.getInstance().reattachIfNecessary(userProfile));
+                });
+
+                saveAction.setActionListener(event -> {
+                    // If the user presses one of the save buttons, then
+                    /// validate that the data captured in the UI is valid
+                    /// before attempting to save the changes.
+                    /// Any validation errors will be added to the notifiable.
+                    if (propertyEditor.validateValue())
+                    {
+                        boolean success = false;
+                        try
+                        {
+                            if (propertyEditor.getModificationState().isModified())
+                            {
+                                // Editor indicated data is valid, commit the UI
+                                /// data to the UserProfile and attempt to save it.
+                                final UserProfile commitValue = propertyEditor.commitValue();
+                                assert commitValue != null;
+                                _userProfileDAO.saveUserProfile(commitValue);
+                                success = true;
+                            }
+                            else success=true;
+                        }
+                        catch (Exception e)
+                        {
+                            _logger.error("Unexpected error committing changes", e);
+                            // Let the user know that something bad happened.
+                            propertyEditor.getNotifiable()
+                                .sendNotification(NotificationImpl.create(e, "I'm sorry, I was unable to save."));
+                        }
+
+                        if(success)
+                        {
+                            // Save was successful. We're executing the cancelAction
+                            /// since it switches us to the viewer UI.
+                            cancelAction.actionPerformed(event);
+                        }
+                    }
+                });
+
+                return propertyEditor;
+            }
+        });
     }
 
     /**
@@ -390,6 +360,9 @@ public class UserProfileApp extends SearchUIApp
                 .withTableCellRenderer(DateFormatLabel.createFriendlyInstance(null))
                 .withOrderBy(new QLOrderByImpl("lastModTime"))
         );
+        final ActionColumn actionColumn = new ActionColumn();
+        actionColumn.setIncludeCopy(false);
+        searchModel.getResultColumns().add(actionColumn);
 
         SearchSupplierImpl searchSupplier = new SearchSupplierImpl();
         searchSupplier.setName(UserProfileAppLOK.SEARCHSUPPLIER_NAME());

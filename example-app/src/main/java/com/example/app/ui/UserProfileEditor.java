@@ -53,7 +53,7 @@ import static net.proteusframework.ui.miwt.component.Field.InputType;
  *
  * @author Russ Tennant (russ@i2rd.com)
  */
-@Configurable
+@Configurable(preConstruction = true)
 public class UserProfileEditor extends Container
 
     // We are implementing the ValueEditor API which provides a
@@ -110,6 +110,8 @@ public class UserProfileEditor extends Container
     private TextEditor _aboutMeProse;
     /** About Me. */
     private TextEditor _aboutMeVideoLink;
+    /** Picture. */
+    private PictureEditor _picture;
 
     /**
      * Create a new editor.
@@ -208,6 +210,10 @@ public class UserProfileEditor extends Container
             _facebookLink = (TextEditor) _createURLEditor("Facebook Link", value.getFacebookLink()).addClassName("facebook"),
             _linkedInLink = (TextEditor) _createURLEditor("LinkedIn Link", value.getLinkedInLink()).addClassName("linkedin")
         ));
+        _picture = new PictureEditor();
+        _picture.setValue(value.getPicture());
+        _picture.setLabel(TextSources.create("Picture"));
+        _picture.addClassName("picture");
 
         _aboutMeProse = new TextEditor(TextSources.create("Professional Information, Hobbies, Interests..."),
             value.getAboutMeProse());
@@ -217,6 +223,7 @@ public class UserProfileEditor extends Container
         add(of(HTMLElement.section,
             "about_me",
             new Label(TextSources.create("About Me")).setHTMLElement(HTMLElement.h1),
+            _picture,
             _aboutMeProse.addClassName("prose"),
             _aboutMeVideoLink = (TextEditor) _createURLEditor("Video Link", value.getAboutMeVideoLink()).addClassName("video")
         ));
@@ -263,14 +270,16 @@ public class UserProfileEditor extends Container
     public UserProfile commitValue() throws MIWTException
     {
         UserProfile profile = getValue();
-        _updateUserProfileFromUI(profile);
+        if(profile != null)
+            _updateUserProfileFromUI(profile);
         return profile;
     }
 
     @Override
     public UserProfile getUIValue(Level logErrorLevel)
     {
-        UserProfile profile = new UserProfile(getValue());
+        final UserProfile toCopy = getValue();
+        UserProfile profile = toCopy == null ? new UserProfile() : new UserProfile(toCopy);
         _updateUserProfileFromUI(profile);
         return profile;
     }
@@ -317,7 +326,8 @@ public class UserProfileEditor extends Container
         {
             Component c = cti.next();
             if (c == this) continue;
-            if (c instanceof ValueEditor<?>) consumer.accept(ValueEditor.class.cast(c));
+            if (c instanceof ValueEditor<?>)
+                consumer.accept(ValueEditor.class.cast(c));
         }
     }
 
@@ -350,6 +360,9 @@ public class UserProfileEditor extends Container
         profile.setLinkedInLink(_createURL(_linkedInLink.commitValue()));
         profile.setAboutMeProse(_aboutMeProse.commitValue());
         profile.setAboutMeVideoLink(_createURL(_aboutMeVideoLink.commitValue()));
+        // NOTE : if we ever allowed someone to clear/remove their profile picture, then we'd need to delete the file.
+        profile.setPicture(_picture.commitValue());
+
     }
 
     /**
@@ -357,7 +370,7 @@ public class UserProfileEditor extends Container
      *
      * @param value the value.
      */
-    private void _updateUI(UserProfile value)
+    private void _updateUI(@Nullable UserProfile value)
     {
         if (value == null)
         {
@@ -388,7 +401,7 @@ public class UserProfileEditor extends Container
             _linkedInLink.setValue(_userProfileDAO.toString(value.getLinkedInLink()));
             _aboutMeProse.setValue(value.getAboutMeProse());
             _aboutMeVideoLink.setValue(_userProfileDAO.toString(value.getAboutMeVideoLink()));
-
+            _picture.setValue(value.getPicture());
         }
     }
 
