@@ -54,6 +54,7 @@ public class ExampleAppDataConversionVersion1
 
     /**
      * User Profile Entity
+     *
      * @return Bean.
      */
     @TaskQualifier(TaskQualifier.Type.data_conversion)
@@ -61,17 +62,25 @@ public class ExampleAppDataConversionVersion1
     public DataConversion userProfileEntityDataConversion3()
     {
         List<SQLStatement> ddl = new ArrayList<>();
-        ddl.add(new SQLStatement("create table UserProfile (userprofile_id int8 not null, aboutmeprose varchar(255), "
-            + " aboutmevideolink varchar(255), createtime timestamp, emailaddress varchar(255), facebooklink varchar(255), "
-            + " lastmodtime timestamp, linkedinlink varchar(255), phonenumber varchar(255), twitterlink varchar(255), "
-            + " name_id int8, picture_id int8, postaladdress_id int8, primary key (userprofile_id))",null));
-        ddl.add(new SQLStatement("alter table UserProfile add constraint FK_mrdqdc1atkriccxn00383la4u foreign key (name_id) "
-            + "references personname",null));
-        ddl.add(new SQLStatement("alter table UserProfile add constraint FK_njox9f67ws67qbuo2x8mv6qyu foreign key (picture_id) "
-            + "references FileSystemEntity",null));
-        ddl.add(new SQLStatement("alter table UserProfile add constraint FK_3s1hv4k1gnvfe6j2fqtsjcj4f foreign key "
-            + "(postaladdress_id) references address",null));
-        ddl.add(new SQLStatement("create sequence userprofile_seq",null));
+        ddl.add(new SQLStatement(
+            "create table UserProfile (userprofile_id int8 not null, aboutmeprose varchar(4000), aboutmevideolink varchar(255), "
+                + "createtime timestamp, emailaddress varchar(255), facebooklink varchar(255), lastmodtime timestamp, "
+                + "linkedinlink varchar(255), phonenumber varchar(255), twitterlink varchar(255), name_id int8, picture_id int8, "
+                + "postaladdress_id int8, site_id int8, primary key (userprofile_id))",
+            null));
+        ddl.add(new SQLStatement(
+            "alter table UserProfile add constraint FK_mrdqdc1atkriccxn00383la4u foreign key (name_id) references personname",
+            null));
+        ddl.add(new SQLStatement(
+            "alter table UserProfile add constraint FK_njox9f67ws67qbuo2x8mv6qyu foreign key (picture_id) references "
+                + "FileSystemEntity", null ));
+        ddl.add(new SQLStatement(
+            "alter table UserProfile add constraint FK_3s1hv4k1gnvfe6j2fqtsjcj4f foreign key (postaladdress_id) references address",
+            null));
+        ddl.add(new SQLStatement(
+            "alter table UserProfile add constraint FK_l51qbba4pla782w3b862hhxl7 foreign key (site_id) references site", null));
+        ddl.add(new SQLStatement("create sequence userprofile_seq", null));
+
         return SQLDataConversion.createSchemaUpdate("example-app", "User Profile Entity", 3, false, ddl);
     }
 
@@ -81,6 +90,7 @@ public class ExampleAppDataConversionVersion1
 
     /**
      * Example data conversion.
+     *
      * @return data conversion.
      */
     @Bean
@@ -126,7 +136,7 @@ public class ExampleAppDataConversionVersion1
                 final Map<TaskArgument, String> validationMap = new HashMap<>();
                 final String sign = arguments[0].getArgument().toString().toUpperCase();
                 final int foundIndex = Arrays.binarySearch(signs, sign);
-                if(foundIndex < 0)
+                if (foundIndex < 0)
                     validationMap.put(arguments[0], "That's not your sign fool.");
                 return validationMap;
             }
@@ -140,7 +150,7 @@ public class ExampleAppDataConversionVersion1
             @Override
             public String validateResult(SQLStatement stmt, int index, ResultSet result) throws SQLException
             {
-                if(result.next())
+                if (result.next())
                 {
                     long count = result.getLong(1);
                     return count == 1 ? null : "Received incorrect record count: " + count;
@@ -154,6 +164,7 @@ public class ExampleAppDataConversionVersion1
 
     /**
      * Example data conversion.
+     *
      * @return data conversion.
      */
     @Bean
@@ -163,7 +174,8 @@ public class ExampleAppDataConversionVersion1
         return new SQLDataConversion(IDENTIFIER, "Example of a data conversion", 1,
             Arrays.asList(
                 new SQLStatement("SELECT 1", "This data conversion is just an example. It does not do anything.")
-            ));
+            )
+        );
     }
 
 }
