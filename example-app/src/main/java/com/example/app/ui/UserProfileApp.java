@@ -71,6 +71,26 @@ import static net.proteusframework.ui.search.SearchUIImpl.Options;
  * Example application to demonstrate how to create and handle
  * UI views.
  *
+ * You'll want to attach the following files to the page this is on:
+ * <ul>
+ *     <li>form-elements-buttons.css</li>
+ *     <li>tables-trees.css</li>
+ *     <li>messages.css</li>
+ *     <li>shared-search.css</li>
+ *     <li>workspace.css</li>
+ *     <li>UserProfileExample1.css *</li>
+ *     <li>jquery.Jcrop.css *</li>
+ *     <li>img-cropper.css *</li>
+ * </ul>
+ * The correct version of Jquery comes packaged with Jcrop.
+ * <ul>
+ *     <li>jquery.min.js *</li>
+ *     <li>jquery.color.js *</li>
+ *     <li>jquery.Jcrop.min.js *</li>
+ *     <li>dnd-file.js *</li>
+ *     <li>img-cropper.js *</li>
+ * </ul>
+ *
  * @author Russ Tennant (russ@i2rd.com)
  */
 @I18NFile(
