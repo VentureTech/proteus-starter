@@ -14,8 +14,6 @@ package com.example.app.ui;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Nullable;
 import java.beans.PropertyChangeEvent;
@@ -23,14 +21,14 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.List;
 
+import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.data.filesystem.FileEntity;
 import net.proteusframework.data.filesystem.TemporaryFileEntity;
 import net.proteusframework.data.filesystem.http.FileEntityFileItem;
-import net.proteusframework.data.filesystem.http.FileSystemEntityResourceFactory;
 import net.proteusframework.internet.http.resource.ClassPathResourceLibraryHelper;
 import net.proteusframework.internet.http.resource.FactoryBasedResource;
-import net.proteusframework.internet.http.resource.ResourceManager;
 import net.proteusframework.ui.miwt.Image;
+import net.proteusframework.ui.miwt.MIWTException;
 import net.proteusframework.ui.miwt.component.Component;
 import net.proteusframework.ui.miwt.component.FileField;
 import net.proteusframework.ui.miwt.component.ImageComponent;
@@ -41,7 +39,6 @@ import net.proteusframework.ui.miwt.component.composite.editor.AbstractSimpleVal
  *
  * @author Russ Tennant (russ@i2rd.com)
  */
-@Configurable
 public class PictureEditor extends AbstractSimpleValueEditor<FileEntity>
 {
     /** Logger. */
@@ -53,14 +50,12 @@ public class PictureEditor extends AbstractSimpleValueEditor<FileEntity>
     private final ImageComponent _picture = new ImageComponent();
     /** UI Value - UI state isn't held in component. */
     private FileItem _uiValue;
-    /** Resource Manager. */
-    @Autowired
-    private ResourceManager _resourceManager;
-    /** FileSystemEntityResourceFactory. */
-    @Autowired
-    private FileSystemEntityResourceFactory _fileSystemEntityResourceFactory;
     /** Default Profile Picture. */
-    private FactoryBasedResource _defaultProfilePicture;
+    private final FactoryBasedResource _defaultProfilePicture;
+    /** Preserver File Entity. */
+    private boolean _preserveFileEntity;
+    /** Modified Flag. */
+    private boolean _modified;
 
     /**
      * Create an instance.
@@ -81,6 +76,7 @@ public class PictureEditor extends AbstractSimpleValueEditor<FileEntity>
                 {
                     _uiValue = files.get(0);
                     _picture.setImage(new Image(_uiValue));
+                    _modified = true;
                 }
                 _fileField.resetFile();
             }
@@ -88,6 +84,26 @@ public class PictureEditor extends AbstractSimpleValueEditor<FileEntity>
 
         final ClassPathResourceLibraryHelper helper = ClassPathResourceLibraryHelper.getInstance();
         _defaultProfilePicture = helper.createResource(helper.createLibrary("default-profile-picture.png"));
+    }
+
+    /**
+     * Test if we should preserve the original file entity.
+     * If true, a temporary file entity will be created that references the original file entity.
+     * @return true or false.
+     */
+    public boolean isPreserveFileEntity()
+    {
+        return _preserveFileEntity;
+    }
+
+    /**
+     * Set flag to determine if we should preserve the original file entity.
+     * If true, a temporary file entity will be created that references the original file entity.
+     * @param preserveFileEntity true or false.
+     */
+    public void setPreserveFileEntity(boolean preserveFileEntity)
+    {
+        _preserveFileEntity = preserveFileEntity;
     }
 
     @Override
@@ -118,8 +134,21 @@ public class PictureEditor extends AbstractSimpleValueEditor<FileEntity>
             _uiValue = new FileEntityFileItem(value);
             _picture.setImage(new Image(value));
         }
+        _modified = false;
     }
 
+    @Override
+    public ModificationState getModificationState()
+    {
+        return (_modified) ? ModificationState.CHANGED : ModificationState.UNCHANGED;
+    }
+
+    @Override
+    public FileEntity commitValue() throws MIWTException
+    {
+        _modified = false;
+        return super.commitValue();
+    }
 
     @Nullable
     @Override
@@ -129,7 +158,14 @@ public class PictureEditor extends AbstractSimpleValueEditor<FileEntity>
             return null;
         if(_uiValue instanceof FileEntityFileItem)
             return ((FileEntityFileItem)_uiValue).getFileEntity();
-        TemporaryFileEntity tfe = new TemporaryFileEntity();
+        TemporaryFileEntity tfe;
+        if(isPreserveFileEntity() && getInternalValue() != null)
+        {
+            final FileEntity fileEntity = EntityRetriever.getInstance().reattachIfNecessary(getInternalValue());
+            tfe = new TemporaryFileEntity(fileEntity);
+        }
+        else
+            tfe = new TemporaryFileEntity();
         tfe.setContentType(_uiValue.getContentType());
         tfe.setName(_uiValue.getName());
         try
