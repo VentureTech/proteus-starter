@@ -336,7 +336,7 @@ public class UserProfile implements TimeAuditable
      *
      * @return the picture.
      */
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.REMOVE}/*cascade persist will be handled in the DAO.*/)
     public FileEntity getPicture()
     {
         return _picture;
