@@ -231,20 +231,8 @@
     <orderEntry type="library" exported="" name="Gradle: commons-lang-2.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.datatools.enablement.msft.sqlserver-1.0.2.v201212120617" level="project" />
     <orderEntry type="library" exported="" name="Gradle: proteusframework-0.8.0" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-core-4.0.4.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-beans-4.0.4.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-jdbc-4.0.4.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-aop-4.0.4.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-context-4.0.4.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-orm-4.0.4.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-web-4.0.4.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-test-4.0.4.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-instrument-4.0.4.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-aspects-4.0.4.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: aspectjrt-1.8.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jetty-jsp-8.1.15.v20140411" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-expression-4.0.4.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: spring-tx-4.0.4.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: slf4j-api-1.7.7" level="project" />
     <orderEntry type="library" exported="" name="Gradle: hibernate-validator-5.1.1.Final" level="project" />
     <orderEntry type="library" exported="" name="Gradle: slf4j-log4j12-1.7.7" level="project" />
@@ -260,6 +248,18 @@
     <orderEntry type="library" exported="" name="Gradle: proteusframework-processes-0.8.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: proteusframework-commerce-0.8.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: proteusframework-management-0.8.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-core-4.0.5.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-beans-4.0.5.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-jdbc-4.0.5.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-aop-4.0.5.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-context-4.0.5.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-orm-4.0.5.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-web-4.0.5.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-test-4.0.5.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-instrument-4.0.5.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-aspects-4.0.5.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-expression-4.0.5.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: spring-tx-4.0.5.RELEASE" level="project" />
   </component>
 </module>
 
