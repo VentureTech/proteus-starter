@@ -211,6 +211,7 @@ public class UserProfileEditor extends Container
             _linkedInLink = (TextEditor) _createURLEditor("LinkedIn Link", value.getLinkedInLink()).addClassName("linkedin")
         ));
         _picture = new PictureEditor();
+        _picture.setPreserveFileEntity(true);
         _picture.setValue(value.getPicture());
         _picture.setLabel(TextSources.create("Picture"));
         _picture.addClassName("picture");
