@@ -49,10 +49,21 @@ do
 	esac
 done
 
+set -o errexit
+set -o nounset
 set -x 
+
 cd "$ROOT"
 sudo proteus-service worker stop
+
+if stat -t deployed-war/* >/dev/null 2>&1; then
+        zip -r ${ROOT}/backups/deployed-war-$(date +%Y%m%d%H%M%S) ${DEPLOYED_WAR}/*
+fi
+if [ $(ls ${ROOT}/backups/ | wc -l) -gt 5 ]; then
+        rm "${ROOT}/backups/$(ls -t ${ROOT}/backups | tail -n 1)"
+fi
 rm -rf ${ROOT}/${DEPLOYED_WAR}/*
+
 cd "${ROOT}/${SRC}"
 if [ ! -z "$updateSource" ]; then
 	git pull
@@ -62,8 +73,10 @@ unzip -d "${ROOT}/${DEPLOYED_WAR}" build/gradle/libs/*.war
 if [ ! -z "$runShell" ]; then
 	proteus-shell
 fi
-./gradlew clean
-./gradlew # Create the jars for load-time weaving
+
+./gradlew -q clean
+./gradlew -q # Create the jars for load-time weaving
+
 cd "$ROOT"
 sudo proteus-service worker start
 
