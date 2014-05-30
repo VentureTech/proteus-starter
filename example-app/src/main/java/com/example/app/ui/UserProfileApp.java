@@ -314,7 +314,7 @@ public class UserProfileApp extends SearchUIApp
     {
         SearchModelImpl searchModel = new SearchModelImpl();
         searchModel.setName("UserProfile Search");
-        searchModel.setDisplayNameKey(UserProfileAppLOK.SEARCHSUPPLIER_NAME());
+        searchModel.setDisplayName(UserProfileAppLOK.SEARCHSUPPLIER_NAME());
         searchModel.getConstraints().add(new SimpleConstraint("keyword")
             {
                 @Override
