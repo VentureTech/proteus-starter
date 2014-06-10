@@ -32,7 +32,7 @@ import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
 import net.proteusframework.core.notification.NotificationImpl;
 import net.proteusframework.internet.http.SiteLoader;
-import net.proteusframework.ui.mcolumn.FixedValueColumn;
+import net.proteusframework.ui.column.FixedValueColumn;
 import net.proteusframework.ui.miwt.MIWTSession;
 import net.proteusframework.ui.miwt.ReflectiveAction;
 import net.proteusframework.ui.miwt.component.Component;
