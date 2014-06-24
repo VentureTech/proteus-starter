@@ -42,7 +42,11 @@
   <entry oldName="net.proteusframework.ui.miwt.component.composite.EmptyTableHiderComponent" newName="net.proteusframework.ui.miwt.component.composite.EmptyTableHider" type="class" />
   <entry oldName="net.proteusframework.ui.miwt.component.composite.QuickTableSearchComponent" newName="net.proteusframework.ui.miwt.component.composite.QuickTableSearch" type="class" />
   
-    <entry oldName="net.proteusframework.ui.mcolumn.MTableComponent" newName="net.proteusframework.ui.mcolumn.MTable" type="class" />
+  <entry oldName="net.proteusframework.ui.mcolumn.MTableComponent" newName="net.proteusframework.ui.column.DataColumnTable" type="class" />
+  <entry oldName="net.proteusframework.ui.mcolumn.MTreeComponent" newName="net.proteusframework.ui.column.DataColumnTree" type="class" />
+  <entry oldName="net.proteusframework.ui.mcolumn.MColumn" newName="net.proteusframework.ui.column.DataColumn" type="class" />
+  <entry oldName="net.proteusframework.ui.mcolumn.MTableColumn" newName="net.proteusframework.ui.column.TableDataColumn" type="class" />
+  <entry oldName="net.proteusframework.ui.mcolumn.MTreeColumn" newName="net.proteusframework.ui.column.TreeDataColumn" type="class" />
   
   <entry oldName="net.proteusframework.ui.miwt.component.composite.daterange" newName="com.i2rd.miwt.component.composite.daterange" type="package" recursive="true" />
 </migrationMap>
