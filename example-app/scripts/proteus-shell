@@ -10,5 +10,5 @@ java -Dspring.config=${CONFIG_CLASS} \
   -javaagent:$HOME/src/runtime-aspects/spring-instrument.jar \
   -javaagent:$HOME/src/runtime-aspects/aspectjweaver.jar \
   -cp "$HOME/deployed-war/WEB-INF/lib/*:$HOME/provided-libs/*" \
-  net.proteusframework.shell.ProteusShell
+  net.proteusframework.shell.ProteusShell "$@"
 
