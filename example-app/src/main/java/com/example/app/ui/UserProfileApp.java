@@ -25,7 +25,7 @@ import net.proteusframework.core.JunctionOperator;
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.LocaleContext;
-import net.proteusframework.core.locale.LocalizedText;
+import net.proteusframework.core.locale.TextSource;
 import net.proteusframework.core.locale.TextSources;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
@@ -185,9 +185,9 @@ public class UserProfileApp extends SearchUIApp
         getActiveSearchUI().getWorkspace().addUITask(new AbstractUITask("upe#" + userProfile.getId())
         {
             @Override
-            public LocalizedText getLabel(LocaleContext localeContext)
+            public TextSource getLabel()
             {
-                return new LocalizedText("User Profile - " + _getName(
+                return TextSources.create("User Profile - " + _getName(
                     EntityRetriever.getInstance().reattachIfNecessary(userProfile)
                 ));
             }
@@ -272,9 +272,9 @@ public class UserProfileApp extends SearchUIApp
         getActiveSearchUI().getWorkspace().addUITask(new AbstractUITask("up#" + userProfile.getId())
         {
             @Override
-            public LocalizedText getLabel(LocaleContext localeContext)
+            public TextSource getLabel()
             {
-                return new LocalizedText("User Profile - " + _getName(
+                return TextSources.create("User Profile - " + _getName(
                     EntityRetriever.getInstance().reattachIfNecessary(userProfile)
                 ));
             }
