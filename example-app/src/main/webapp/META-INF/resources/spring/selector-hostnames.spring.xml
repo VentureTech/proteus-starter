@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) Interactive Information R & D (I2RD) LLC.
+  ~ All Rights Reserved.
+  ~
+  ~ This software is confidential and proprietary information of
+  ~ I2RD LLC ("Confidential Information"). You shall not disclose
+  ~ such Confidential Information and shall use it only in
+  ~ accordance with the terms of the license agreement you entered
+  ~ into with I2RD.
+  -->
+
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+    >
+    <!--
+     Hostname configurations used by HostnameSelector defined in InternetConfig.
+    -->
+
+    <bean class="net.proteusframework.internet.http.resource.WeightedHostnameImpl">
+        <property name="hostname" value="static1.#{systemProperties[DEFAULT_DOMAIN]}"></property>
+        <property name="weights">
+            <list>
+                <bean class="net.proteusframework.internet.http.resource.FactoryResourceWeight">
+                    <property name="factoryID" value="crf"></property>
+                    <property name="matchWeight" value="10"></property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean class="net.proteusframework.internet.http.resource.WeightedHostnameImpl">
+        <property name="hostname" value="static2.#{systemProperties[DEFAULT_DOMAIN]}"></property>
+    </bean>
+
+    <bean class="net.proteusframework.internet.http.resource.WeightedHostnameImpl">
+        <property name="hostname" value="static3.#{systemProperties[DEFAULT_DOMAIN]}"></property>
+    </bean>
+
+    <bean class="net.proteusframework.internet.http.resource.WeightedHostnameImpl">
+        <property name="hostname" value="static4.#{systemProperties[DEFAULT_DOMAIN]}"></property>
+    </bean>
+
+</beans>
