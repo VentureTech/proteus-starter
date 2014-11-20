@@ -1,0 +1,111 @@
+/*
+ * Copyright (c) Interactive Information R & D (I2RD) LLC.
+ * All Rights Reserved.
+ *
+ * This software is confidential and proprietary information of
+ * I2RD LLC ("Confidential Information"). You shall not disclose
+ * such Confidential Information and shall use it only in
+ * accordance with the terms of the license agreement you entered
+ * into with I2RD.
+ */
+/**
+css for Info-UI
+*/
+#header{
+    background:#E1FFFF;
+}
+.menu{
+    background:#008080;
+}
+#e-content{
+    background:#E1FFFF;
+}
+#body{
+    background:#E1FFFF;
+}
+.menuitemlabel{
+    margin:0px 0px 0px 1850px;
+}
+.message-container{
+    font-weight:bold;
+}
+.even
+{
+    font-weight:bold;
+    margin: 0px 0px 10px 10px;
+    border:1px dashed #000; height:15px;width:360px;border-color:orange;
+}
+.odd
+{
+    font-weight:bold;
+    margin: 0px 0px 10px 10px;
+    border:1px dashed #000; height:15px;width:360px;border-color:orange;
+}
+.property_viewer{
+    margin: 30px 0px 0px 0px;
+}
+
+.prop-tytle{
+    font-size: 20Px;
+    font-weight: bold;
+    margin: -20px 0px 10px 0px;
+    color:green;
+}
+
+.btn2{
+    margin:0px 0px 10px 8px;
+}
+.prop-fName{
+    margin: 0px 0px 10px 10px;
+    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+}
+
+.prop-lName{
+    margin:0px 0px 10px 10px;
+    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+}
+
+.prop-rank{
+    margin:0px 0px 10px 10px;
+    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+}
+
+.prop-res{
+    margin:0px 0px 10px 10px;
+    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+}
+
+.prop-jDate{
+    margin:0px 0px 10px 10px;
+    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+}
+
+.prop-sab{
+    margin:0px 0px 10px 10px;
+    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+}
+
+.lab1{
+    margin:0px 20px 0px 10px;
+    font-weight:bold;
+}
+
+.lab{
+    margin:0px 30px 0px 10px;
+    font-weight:bold;
+}
+
+#footer{
+    background:#E1FFFF;
+}
+
+/**
+css for SearchUI
+*/
+.Add{
+    margin:12px 0px 0px 0px;
+}
+.image{
+    margin:0px 0px 10px 10px;
+    border:1px dashed #000; height:100px;width:360px;border-color:orange;
+}

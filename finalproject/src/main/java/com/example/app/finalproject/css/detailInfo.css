@@ -1,0 +1,59 @@
+/**
+css for detailInfo page
+*/
+.localhost{
+    background:#E1FFFF
+}
+.menuitemlabel{
+    margin:0px 0px 0px 1850px;
+    background:#008080;
+}
+.inlinewindow{
+    margin: 60px 0px 0px -320px;
+}
+.btn{
+    margin: 10px 0px 10px -45px;
+    padding: 5px 5px 5px 5px;
+}
+.image{
+    margin:0px 0px 10px 10px;
+    border:1px dashed #000; height:90px;width:360px;border-color:orange;
+}
+.prop-fName{
+    margin: 0px 0px 10px 10px;
+    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+}
+
+.prop-lName{
+    margin:0px 0px 10px 10px;
+    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+}
+
+.prop-rank{
+    margin:0px 0px 10px 10px;
+    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+}
+
+.prop-res{
+    margin:0px 0px 10px 10px;
+    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+}
+
+.prop-jDate{
+    margin:0px 0px 10px 10px;
+    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+}
+
+.prop-sab{
+    margin:0px 0px 10px 10px;
+    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+}
+.lab1{
+    margin:0px 20px 0px 10px;
+    font-weight:bold;
+}
+
+.lab{
+    margin:0px 30px 0px 10px;
+    font-weight:bold;
+}
