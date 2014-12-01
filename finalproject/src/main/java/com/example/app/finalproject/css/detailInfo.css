@@ -1,6 +1,4 @@
-/**
-css for detailInfo page
-*/
+/** css for detailInfo page*/
 .localhost{
     background:#E1FFFF
 }
@@ -17,36 +15,36 @@ css for detailInfo page
 }
 .image{
     margin:0px 0px 10px 10px;
-    border:1px dashed #000; height:90px;width:360px;border-color:orange;
+    border:1px dashed #000; height:90px;width:360px;border-color:green;
 }
 .prop-fName{
     margin: 0px 0px 10px 10px;
-    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+    border:1px dashed #000; height:30px;width:360px;border-color:green;
 }
 
 .prop-lName{
     margin:0px 0px 10px 10px;
-    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+    border:1px dashed #000; height:30px;width:360px;border-color:green;
 }
 
 .prop-rank{
     margin:0px 0px 10px 10px;
-    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+    border:1px dashed #000; height:30px;width:360px;border-color:green;
 }
 
 .prop-res{
     margin:0px 0px 10px 10px;
-    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+    border:1px dashed #000; height:30px;width:360px;border-color:green;
 }
 
 .prop-jDate{
     margin:0px 0px 10px 10px;
-    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+    border:1px dashed #000; height:30px;width:360px;border-color:green;
 }
 
 .prop-sab{
     margin:0px 0px 10px 10px;
-    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+    border:1px dashed #000; height:30px;width:360px;border-color:green;
 }
 .lab1{
     margin:0px 20px 0px 10px;
@@ -56,4 +54,24 @@ css for detailInfo page
 .lab{
     margin:0px 30px 0px 10px;
     font-weight:bold;
+}
+.labs{
+    margin:0px 20px 0px 10px;
+    font-weight:bold;
+}
+.lab1:before{
+    content:'*';
+    color:red;
+}
+.lab1{
+    font-weight:bold;
+    margin: 0px 32px 0px 4px;
+}
+.lab2{
+    font-weight:bold;
+    margin: 0px 34px 0px 4px;
+}
+.lab2:before{
+    content:'*';
+    color:red;
 }

@@ -15,7 +15,6 @@ import com.example.app.finalproject.model.FacultyMemberDao;
 import com.example.app.finalproject.model.FacultyMemberProfile;
 import com.example.app.finalproject.util.DetailInfoContentBuilder;
 import com.example.app.finalproject.util.DetailInfoEditor;
-import com.example.app.finalproject.util.DetailInfoProperties;
 import com.example.app.finalproject.util.ImageResource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +22,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.net.URI;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.i2rd.cms.bean.contentmodel.CmsModelDataSet;
@@ -63,7 +60,7 @@ import net.proteusframework.ui.search.QLBuilder;
     i18n = {
         @I18N(symbol = "Component Name", l10n = @L10N("FacultyMemberListUI")),
         @I18N(symbol = "error_info", l10n = @L10N("There isn't a faculty.")),
-        @I18N(symbol = "tytle", l10n = @L10N("Welcome To FacultyMember Page")),
+        @I18N(symbol = "title", l10n = @L10N("Welcome To FacultyMember Page")),
     })
 @org.springframework.stereotype.Component
 @org.springframework.context.annotation.Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -73,13 +70,11 @@ public class FacultyMemberListUI extends MIWTPageElementModelContainer
     public final static String RESOURCE_NAME ="com.example.app.finalproject.ui.FacultyMemberListUI";
     /** Logger */
     private final static Logger _logger = Logger.getLogger(FacultyMemberListUI.class);
-    /** id */
-    private Long id = 0L;
+    /** Slug */
+    private String _slug;
     /** Dao */
     @Autowired
     private FacultyMemberDao _facultyMemberDao;
-    /** URI map */
-    private Map<DetailInfoProperties, URI> _map;
     /** Message container. */
     private MessageContainer _msgCon;
     /** DetailInfoContentBuilder */
@@ -93,35 +88,29 @@ public class FacultyMemberListUI extends MIWTPageElementModelContainer
         setName(FacultyMemberListUILOK.COMPONENT_NAME());
         addCategory(CmsCategory.ClientBackend);
     }
+
     @Override
     public void init()
     {
         super.init();
-        _setupUI();
-    }
-    /**
-     * set the task UI
-     */
-    public void _setupUI()
-    {
         removeAllComponents();
         _msgCon = new MessageContainer(TimeUnit.SECONDS.toMillis(60));
         _msgCon.clearMessages();
-
         QLBuilder facultyQB=_facultyMemberDao.getAllFacultyQB();
-        List<FacultyMemberProfile> facultyMembers=facultyQB.getQueryResolver().list();
-        if(facultyMembers.isEmpty())
+        int size = facultyQB.getQueryResolver().list().size();
+        if(size<=0)
         {
             _msgCon.sendNotification(new Message(NotificationType.ERROR,getLocaleContext().getLocalizedText(FacultyMemberListUILOK
                 .ERROR_INFO())));
             return;
         }
-        final Label title = new Label(FacultyMemberListUILOK.TYTLE());
+        final Label title = new Label(FacultyMemberListUILOK.TITLE());
         title.setHTMLElement(HTMLElement.h1);
 
         Container imageCon=new Container();
         add(Container.of("prop-mainCon",
             Container.of("top", title),imageCon));
+        List<FacultyMemberProfile> facultyMembers=facultyQB.getQueryResolver().list();
         for(FacultyMemberProfile facultyMember:facultyMembers)
         {
             final PushButton nameLink = new PushButton();
@@ -131,10 +120,10 @@ public class FacultyMemberListUI extends MIWTPageElementModelContainer
                 @Override
                 public void actionPerformed(ActionEvent ev)
                 {
-                    String _slug = nameLink.getLabel().getText(getLocaleContext()).toString();
-                    id = _facultyMemberDao.getId(facultyMember,id,_slug);
+                    String slug = nameLink.getLabel().getText(getLocaleContext()).toString();
+                    _slug = _facultyMemberDao.getFacultyMemberProfile(slug).getSlug();
                     Response response = Event.getResponse();
-                    response.redirect(response.createURL(_contentBuilder.getDetailInfoPage()).addParameter("id", id));
+                    response.redirect(response.createURL(_contentBuilder.getDetailInfoPage()).addParameter("slug", _slug));
 
                 }
             });
@@ -148,21 +137,22 @@ public class FacultyMemberListUI extends MIWTPageElementModelContainer
                 }
                 catch (IOException e)
                 {
-                    _logger.error("Something is wrong when you get the picture!", e);
+                    _logger.error("Something is wrong when get the picture!", e);
                 }
                 ImageComponent imageCom=new ImageComponent(image);
 
-                imageCon.addHorizontalFlowRight(Container.of("prop-image",
+                imageCon.add(Container.of("prop-image",
                     Container.of("prop-imageCom",imageCom),
                     Container.of("prop-name",nameLink)));
             }
             else
             {
-                imageCon.addHorizontalFlowRight(Container.of("prop-image",
+                imageCon.add(Container.of("prop-image",
                     Container.of("prop-nameLink", nameLink)));
             }
         }
     }
+
     @Nullable
     @Override
     public Editor getEditor()

@@ -15,21 +15,17 @@ import com.example.app.finalproject.model.FacultyMemberDao;
 import com.example.app.finalproject.model.FacultyMemberProfile;
 import com.example.app.finalproject.model.Rank;
 import com.google.common.base.Supplier;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 
 import com.i2rd.cms.bean.MIWTBeanConfig;
 import com.i2rd.cms.bean.MIWTStateEvent;
@@ -63,7 +59,6 @@ import net.proteusframework.ui.search.ComboBoxConstraint;
 import net.proteusframework.ui.search.DateConstraint;
 import net.proteusframework.ui.search.PropertyConstraint;
 import net.proteusframework.ui.search.QLBuilder;
-import net.proteusframework.ui.search.QLOrderByImpl;
 import net.proteusframework.ui.search.SearchModelImpl;
 import net.proteusframework.ui.search.SearchResultColumnImpl;
 import net.proteusframework.ui.search.SearchSupplierImpl;
@@ -115,21 +110,15 @@ public class FacultyMemberSearchUI extends HistoryContainer implements SearchUIO
 {
     /** RESOURCE_NAME */
     public final static String RESOURCE_NAME = "com.example.app.finalproject.ui.FacultyMemberSearchUI";
-    /** Logger */
-    private final static Logger _logger = Logger.getLogger(FacultyMemberSearchUI.class);
     /** SearchUI */
     private SearchUIImpl _searchUI;
-    /** The principal */
-    private Principal _createUser;
     /** Main container */
     private Container _mainCon = new Container();
     /** Tasks Container */
     private CardContainer _taskContainer;
-    /** Locale Context. */
-    private LocaleContext _lc;
     /** Workspace */
     private WorkspaceImpl _workspace;
-    /** New a instance*/
+    /** New a instance */
     @Autowired
     private FacultyMemberDao _facultyMemberDao;
 
@@ -137,21 +126,15 @@ public class FacultyMemberSearchUI extends HistoryContainer implements SearchUIO
      *  Constructor
      */
     public FacultyMemberSearchUI(){}
+
     /**
      * Create components
      */
     public void init()
     {
         super.init();
-        _setupUI();
-    }
-    /**
-     * Set up the SearchUI
-     */
-    public void _setupUI()
-    {
         _mainCon.removeAllComponents();
-        _lc = getLocaleContext();
+        getLocaleContext();
 
         final MessageContainer notifiable = new MessageContainer(TimeUnit.SECONDS.toMillis(60));
         _taskContainer = new CardContainer();
@@ -202,10 +185,11 @@ public class FacultyMemberSearchUI extends HistoryContainer implements SearchUIO
             @Override
             protected TextSource getCellValueAsText(@Nullable Object value)
             {
+                FacultyMemberProfile facultyMemberProfile = (FacultyMemberProfile) value;
+                facultyMemberProfile = _facultyMemberDao.getAttachedFacultyMemberProfile(facultyMemberProfile);
                 if (value instanceof FacultyMemberProfile)
                 {
-                    FacultyMemberProfile facultyMember = (FacultyMemberProfile) value;
-                    _createUser = facultyMember.getCreateUser();
+                    Principal _createUser = facultyMemberProfile.getCreateUser();
                     Contact contact = _createUser.getContact();
                     if (contact!=null)
                     {
@@ -213,9 +197,9 @@ public class FacultyMemberSearchUI extends HistoryContainer implements SearchUIO
                         {
                             contact.getEmailAddresses();
                         }
-                        catch (IndexOutOfBoundsException e)
+                        catch (Exception e)
                         {
-                            _logger.error("Get emailAddress error.", e);
+                            e.printStackTrace();
                         }
                         return TextSources.create(contact.getEmailAddresses().get(0).getEmail());
                     }
@@ -230,22 +214,6 @@ public class FacultyMemberSearchUI extends HistoryContainer implements SearchUIO
         final SearchResultColumnImpl joinDateColumn = new SearchResultColumnImpl();
         joinDateColumn.setTableColumn(joinDateProp);
         searchModel.getResultColumns().add(joinDateColumn);
-        joinDateColumn.setTableCellRenderer(new Label()
-        {
-
-            protected String getCellValueAsString(Object value)
-            {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-                if (value != null)
-                {
-                    FacultyMemberProfile pro = (FacultyMemberProfile) value;
-                    Date date = pro.getJoinDate();
-                    if (date != null) return dateFormat.format(date);
-                }
-                return getCellValueAsString(value);
-            }
-        });
-        joinDateColumn.setOrderBy(new QLOrderByImpl("joinDate"));
 
         ActionColumn actionColumn = new ActionColumn();
         actionColumn.setIncludeCopy(false);
@@ -330,7 +298,7 @@ public class FacultyMemberSearchUI extends HistoryContainer implements SearchUIO
             @Override
             public void actionPerformed(ActionEvent ev)
             {
-                FacultyMemberEditorUI addCon = new FacultyMemberEditorUI(null, true);
+                FacultyMemberEditorUI addCon = new FacultyMemberEditorUI(null,true);
                 navigateBackOnClose(addCon);
                 getHistory().add(new HistoryElement(addCon));
             }
@@ -340,7 +308,6 @@ public class FacultyMemberSearchUI extends HistoryContainer implements SearchUIO
         _mainCon.add(_workspace.getUITaskManager().getComponent());
         _mainCon.add(_taskContainer);
         setDefaultComponent(_mainCon);
-
     }
 
     @Override
@@ -398,7 +365,7 @@ public class FacultyMemberSearchUI extends HistoryContainer implements SearchUIO
     @Override
     public WorkspaceHandlerResult handle(WorkspaceEvent event, WorkspaceHandlerContext context)
     {
-        if (event instanceof EntityWorkspaceEvent && ((EntityWorkspaceEvent<?>) event).getEntityClass() == FacultyMemberProfile.class)
+        if (event instanceof EntityWorkspaceEvent && ((EntityWorkspaceEvent<?>) event).getEntityClass().equals(FacultyMemberProfile.class))
         {
             EntityWorkspaceEvent<FacultyMemberProfile> ewe = (EntityWorkspaceEvent<FacultyMemberProfile>) event;
             StandardEventType type = (StandardEventType) ewe.getType();
@@ -412,10 +379,10 @@ public class FacultyMemberSearchUI extends HistoryContainer implements SearchUIO
                     _searchUI.doAction(SearchUIAction.search);
                     return new WorkspaceHandlerResult().setEventHandled(true);
                 case modification:
-                    ui = new FacultyMemberEditorUI(facultyMemberProfile,true);
+                    ui = new FacultyMemberEditorUI(facultyMemberProfile,false);
                     break;
                 case selection:
-                    ui = new FacultyMemberEditorUI(facultyMemberProfile,false);
+                    ui = new FacultyMemberViewerUI(facultyMemberProfile);
                     break;
                 default:
                     return new WorkspaceHandlerResult().setEventHandled(false);

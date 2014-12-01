@@ -33,63 +33,78 @@ css for Info-UI
 {
     font-weight:bold;
     margin: 0px 0px 10px 10px;
-    border:1px dashed #000; height:15px;width:360px;border-color:orange;
+    border:1px dashed #000; height:15px;width:360px;border-color:green;
 }
 .odd
 {
     font-weight:bold;
     margin: 0px 0px 10px 10px;
-    border:1px dashed #000; height:15px;width:360px;border-color:orange;
+    border:1px dashed #000; height:15px;width:360px;border-color:green;
 }
 .property_viewer{
     margin: 30px 0px 0px 0px;
 }
 
-.prop-tytle{
+.prop-title{
     font-size: 20Px;
     font-weight: bold;
-    margin: -20px 0px 10px 0px;
+    margin: -30px 0px 10px 0px;
     color:green;
 }
 
 .btn2{
-    margin:0px 0px 10px 8px;
+    margin:0px 0px 3px 3px;
 }
 .prop-fName{
     margin: 0px 0px 10px 10px;
-    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+    border:1px dashed #000; height:30px;width:360px;border-color:green;
 }
 
 .prop-lName{
     margin:0px 0px 10px 10px;
-    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+    border:1px dashed #000; height:30px;width:360px;border-color:green;
 }
 
 .prop-rank{
     margin:0px 0px 10px 10px;
-    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+    border:1px dashed #000; height:30px;width:360px;border-color:green;
 }
 
 .prop-res{
     margin:0px 0px 10px 10px;
-    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+    border:1px dashed #000; height:30px;width:360px;border-color:green;
 }
 
 .prop-jDate{
     margin:0px 0px 10px 10px;
-    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+    border:1px dashed #000; height:30px;width:360px;border-color:green;
 }
 
 .prop-sab{
     margin:0px 0px 10px 10px;
-    border:1px dashed #000; height:30px;width:360px;border-color:orange;
+    border:1px dashed #000; height:30px;width:360px;border-color:green;
 }
 
-.lab1{
+.labs{
     margin:0px 20px 0px 10px;
     font-weight:bold;
 }
-
+.lab1:before{
+    content:'*';
+    color:red;
+}
+.lab1{
+    font-weight:bold;
+    margin: 0px 32px 0px 4px;
+}
+.lab2{
+    font-weight:bold;
+    margin: 0px 34px 0px 4px;
+}
+.lab2:before{
+    content:'*';
+    color:red;
+}
 .lab{
     margin:0px 30px 0px 10px;
     font-weight:bold;
@@ -102,10 +117,25 @@ css for Info-UI
 /**
 css for SearchUI
 */
-.Add{
-    margin:12px 0px 0px 0px;
-}
+
 .image{
-    margin:0px 0px 10px 10px;
-    border:1px dashed #000; height:100px;width:360px;border-color:orange;
+    margin:-10px 0px 4px 10px;
+    border:1px dashed #000; height:92px;width:360px;border-color:green;
+}
+#js-bx124-696-c-8{
+    border:1px dashed #000;height:100%;width:2100px;border-color:green;border-bottom:0px;border-left:0px;
+}
+.pager-search-results{
+    border:1px dashed #000;height:100%;width:2100px;border-color:green;border-bottom:0px;border-left:0px;
+}
+
+table{
+    border: 1px dashed green; border-collapse:collapse; margin:5px;
+}
+.pageable th
+{
+    background:green;
+    border-style: dashed;
+    border-right-width: 1px;
+    border-left-width: 1px;
 }

@@ -11,16 +11,14 @@
 
 package com.example.app.finalproject.model;
 
-import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
-import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import com.i2rd.hibernate.AbstractProcessor;
 
-import net.proteusframework.core.spring.ApplicationContextUtils;
 import net.proteusframework.ui.search.JoinedQLBuilder;
 import net.proteusframework.ui.search.PropertyConstraint;
 import net.proteusframework.ui.search.QLBuilder;
@@ -37,16 +35,8 @@ import net.proteusframework.users.model.PasswordCredentials;
 public class FacultyMemberDao extends AbstractProcessor<FacultyMemberProfile>
 {
     public static final String RESOURCE_NAME = "com.example.app.finalproject.model.FacultyMemberDao";
-    /** Logger */
-    private final static Logger _logger = Logger.getLogger(FacultyMemberDao.class);
-
-    /**
-     * @return the RESOURCE_NAME
-     */
-    public static FacultyMemberDao getInstance()
-    {
-        return (FacultyMemberDao) ApplicationContextUtils.getInstance().getContext().getBean(RESOURCE_NAME);
-    }
+    /** FacultyMemberProfile */
+    private FacultyMemberProfile _facultyMemberProfile;
 
     /**
      * get all the facultyMemberProfile that is not deleted
@@ -61,6 +51,7 @@ public class FacultyMemberDao extends AbstractProcessor<FacultyMemberProfile>
         cred.appendCriteria("class", PropertyConstraint.Operator.eq, PasswordCredentials.class.getName());
         return qb;
     }
+
     /**
      * Save an entity
      * @param facultyMemberProfile the entity to save
@@ -76,9 +67,9 @@ public class FacultyMemberDao extends AbstractProcessor<FacultyMemberProfile>
             session.saveOrUpdate(facultyMemberProfile);
             success = true;
         }
-        catch (NullPointerException e)
+        catch (Exception e)
         {
-            _logger.error("Save FacultyMemberProfile error.", e);
+            e.printStackTrace();
         }
         finally
         {
@@ -89,31 +80,67 @@ public class FacultyMemberDao extends AbstractProcessor<FacultyMemberProfile>
         }
         return success;
     }
+
     @Override
     public Class<FacultyMemberProfile> getEntityType()
     {
       return FacultyMemberProfile.class;
     }
 
-    public Long getId(FacultyMemberProfile facultyMemberProfile,Long id,String slug)
+    /**
+     * To get the specified facultyMemberProfile when click one of the listing members
+     * @param slug
+     * @return the _facultyMemberProfile
+     */
+    public FacultyMemberProfile getFacultyMemberProfile(String slug)
     {
         QLBuilder proQB = getAllFacultyQB();
         List<FacultyMemberProfile> facultyMemberProfileList=proQB.getQueryResolver().list();
-        for (int index=0;index<facultyMemberProfileList.size();index++)
+        Iterator<FacultyMemberProfile> profileIterator = facultyMemberProfileList.iterator();
+        while(profileIterator.hasNext())
         {
-            if(facultyMemberProfileList.get(index).getSlug().equals(slug))
+            _facultyMemberProfile = profileIterator.next();
+            if(_facultyMemberProfile.getSlug().equals(slug))
             {
-                id = facultyMemberProfileList.get(index).getId();
+                return _facultyMemberProfile;
             }
-
-            else
-            {
-                continue;
-            }
-
-            break;
         }
-        return id;
+        return _facultyMemberProfile;
     }
 
+    /**
+     * To create a new FacultyMemberProfile if it doesn't provide one
+     *
+     * @return FacultyMemberProfile
+     */
+    public FacultyMemberProfile getAttachedFacultyMemberProfile(FacultyMemberProfile facultyMemberProfile)
+    {
+        if (facultyMemberProfile==null)
+        {
+            facultyMemberProfile = new FacultyMemberProfile();
+            return facultyMemberProfile;
+        }
+        return facultyMemberProfile;
+    }
+
+    /**
+     * To judge whether a name already exists when add a new member
+     * @param slug
+     * @return <code>true</code> if exist.
+     */
+    public boolean getFlag(String slug)
+    {
+        QLBuilder proQB = getAllFacultyQB();
+        List<FacultyMemberProfile> facultyMemberProfileList=proQB.getQueryResolver().list();
+        Iterator<FacultyMemberProfile> profileIterator = facultyMemberProfileList.iterator();
+        while(profileIterator.hasNext())
+        {
+            _facultyMemberProfile = profileIterator.next();
+            if(_facultyMemberProfile.getSlug().equals(slug))
+            {
+                return true;
+            }
+        }
+        return true;
+    }
 }

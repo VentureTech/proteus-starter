@@ -16,7 +16,6 @@ package com.example.app.finalproject.model;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -24,7 +23,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -34,8 +32,6 @@ import java.util.Date;
 
 import net.proteusframework.data.filesystem.FileEntity;
 import net.proteusframework.users.model.AbstractAuditableEntity;
-
-import static org.hibernate.annotations.CascadeType.*;
 
 /**
  * Model for FacultyMember
@@ -47,7 +43,6 @@ import static org.hibernate.annotations.CascadeType.*;
 @Table(
     name = "FacultyMemberProfile",
     uniqueConstraints = {@UniqueConstraint(columnNames ="slug")})
-
 public class FacultyMemberProfile extends AbstractAuditableEntity
 {
     /** The id */
@@ -212,7 +207,7 @@ public class FacultyMemberProfile extends AbstractAuditableEntity
      * Set the sabbatical
       * @param sabbatical-the sabbatical
      */
-    public void setSabbatical(Boolean sabbatical)
+    public void setSabbatical(boolean sabbatical)
     {
         _sabbatical = sabbatical;
     }
@@ -221,7 +216,7 @@ public class FacultyMemberProfile extends AbstractAuditableEntity
      * Get the sabbatical
       * @return the sabbatical
      */
-    public Boolean getSabbatical()
+    public boolean getSabbatical()
     {
         return _sabbatical;
     }
@@ -230,17 +225,16 @@ public class FacultyMemberProfile extends AbstractAuditableEntity
      * Set the deleted
      * @param deleted-the deleted
      */
-    public void setDeleted(Boolean deleted)
+    public void setDeleted(boolean deleted)
     {
         _deleted = deleted;
     }
-
 
     /**
      * Get the deleted
       * @return the deleted
      */
-    public Boolean getDeleted()
+    public boolean getDeleted()
     {
         return _deleted;
     }
@@ -258,10 +252,8 @@ public class FacultyMemberProfile extends AbstractAuditableEntity
      * Get the slug
       * @return the slug
      */
-    @Column(name="slug")
     public String getSlug()
     {
         return  _slug;
     }
-
 }

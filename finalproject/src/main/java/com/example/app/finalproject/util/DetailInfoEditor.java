@@ -41,7 +41,6 @@ import net.proteusframework.ui.miwt.component.composite.Message;
     @I18N(symbol = "error_page", l10n = @L10N("Error Page")),
     @I18N(symbol = "pageConfig_first", l10n = @L10N("Please config the page links first.")),
 })
-
 public class DetailInfoEditor extends ContentBuilderBasedEditor<DetailInfoContentBuilder>
 {
     /** SerialVersionUID. */
@@ -58,6 +57,7 @@ public class DetailInfoEditor extends ContentBuilderBasedEditor<DetailInfoConten
     private final LinkSelector _cancelPage = new LinkSelector();
     /** Error Page link selector. */
     private final LinkSelector _errorPage = new LinkSelector();
+
     /**
      * Constructor.
      */

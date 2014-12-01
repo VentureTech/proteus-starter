@@ -23,11 +23,11 @@ public enum Rank
     /** Rank type lecturer */
     lecture,
     /** Rank type adjunct professor */
-    adjunct_Professor,
+    adjunctProfessor,
     /** Rank type assistant professor*/
-    assistant_Professor,
+    assistantProfessor,
     /** Rank type associate professor */
-    associate_Professor,
+    associateProfessor,
     /** Rank type professor */
     professor
 }

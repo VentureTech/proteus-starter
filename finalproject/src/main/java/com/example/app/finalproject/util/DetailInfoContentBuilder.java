@@ -20,7 +20,7 @@ import net.proteusframework.cms.component.content.ContentBuilder;
 import net.proteusframework.internet.http.Link;
 
 /**
- * DataModel for Content builder of ContentElement.
+ * to config the listFaculty page,detailInfo page,save page,cancel page and error page.
  *
  * @author Fajie Han (fhan@venturetechasia.net)
  * @since 14-11-17 ??7:49
@@ -36,6 +36,7 @@ public class DetailInfoContentBuilder extends ContentBuilder<DetailInfoPropertie
     {
         return ContentBuilder.load(configurationData, DetailInfoContentBuilder.class, true);
     }
+
     /**
      * Constructor
      */
@@ -52,6 +53,7 @@ public class DetailInfoContentBuilder extends ContentBuilder<DetailInfoPropertie
      * @param listFacultyPage the listFaculty page
      */
     void setListFacultyPage(Link listFacultyPage){ setLinkPropertyValue(DetailInfoProperties.listFaculty_page,listFacultyPage);}
+
     /**
      * Get the detailInfoPage
      * @return-detailInfo_page
@@ -63,6 +65,7 @@ public class DetailInfoContentBuilder extends ContentBuilder<DetailInfoPropertie
      * @param detailInfoPage the detailInfo page
      */
     void setDetailInfoPage(Link detailInfoPage){ setLinkPropertyValue(DetailInfoProperties.detailInfo_page,detailInfoPage);}
+
     /**
      * Get save page.
      *
@@ -72,7 +75,6 @@ public class DetailInfoContentBuilder extends ContentBuilder<DetailInfoPropertie
     {
         return getLinkPropertyValue(DetailInfoProperties.save_page, null);
     }
-
 
     /**
      * Set save page.
@@ -115,5 +117,4 @@ public class DetailInfoContentBuilder extends ContentBuilder<DetailInfoPropertie
      * @param error_page the error page
      */
     void setError_page(Link error_page){ setLinkPropertyValue(DetailInfoProperties.error_page,error_page);}
-
 }

@@ -21,21 +21,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 
-
 import javax.annotation.Nullable;
 
 import java.util.List;
 
-
-
-
 import com.i2rd.cms.bean.contentmodel.CmsModelDataSet;
 import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelContainer;
 
-
 import net.proteusframework.cms.category.CmsCategory;
 import net.proteusframework.cms.component.editor.Editor;
-import net.proteusframework.cms.controller.CmsResponse;
 import net.proteusframework.core.locale.TextSources;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
@@ -54,8 +48,7 @@ import net.proteusframework.ui.search.PropertyConstraint;
 import net.proteusframework.ui.search.QLBuilder;
 
 /**
- *detailInfo of facultyMember
- *
+ *{@link com.example.app.finalproject.model.FacultyMemberProfile facultyMemberProfile}
  * @author Fajie Han (fhan@venturetechasia.net)
  * @since 14-11-17 ??3:49
  */
@@ -70,17 +63,13 @@ public  class FacultyMemberDetail_Info extends MIWTPageElementModelContainer
 {
     /** Resource Name. */
     public final static String RESOURCE_NAME = "com.example.app.finalproject.ui.FacultyMemberDetail_Info";
-    /** Logger */
-    private final static Logger _logger = Logger.getLogger(FacultyMemberDetail_Info.class);
     /** Dao */
     @Autowired
     private FacultyMemberDao _facultyMemberDao;
-    /** id */
-    private String _id;
-    /** response */
-    private CmsResponse _response;
     /** DetailInfoContentBuilder */
     private DetailInfoContentBuilder _contentBuilder;
+    /** Slug */
+    private String _slug;
 
     /**
      * create an instance
@@ -91,6 +80,7 @@ public  class FacultyMemberDetail_Info extends MIWTPageElementModelContainer
         setName(FacultyMemberDetail_InfoLOK.COMPONENT_NAME());
         addCategory(CmsCategory.ClientBackend);
     }
+
     /**
      * {@inheritDoc}
      */
@@ -98,13 +88,13 @@ public  class FacultyMemberDetail_Info extends MIWTPageElementModelContainer
     public void preRenderProcess(Request request, Response response, RendererEditorState<?> state)
     {
         super.preRenderProcess(request,response,state);
-        if (!request.isPartial() && isInited())
+        if (!request.isPartial())
             EventQueue.queue(new EventQueueElement()
             {
                 @Override
                 public void fire()
                 {
-                    _id=request.getParameter("id");
+                    _slug=request.getParameter("slug");
                     _setupUI();
                 }
                 @Override
@@ -113,8 +103,8 @@ public  class FacultyMemberDetail_Info extends MIWTPageElementModelContainer
                     return 0;
                 }
             });
-
     }
+
     /**
      * Setup the task search UI
      */
@@ -122,9 +112,9 @@ public  class FacultyMemberDetail_Info extends MIWTPageElementModelContainer
     {
         removeAllComponents();
         QLBuilder proQB=_facultyMemberDao.getAllFacultyQB();
-        proQB.appendCriteria("id", PropertyConstraint.Operator.eq,_id);
+        proQB.appendCriteria("slug", PropertyConstraint.Operator.eq,_slug);
         List<FacultyMemberProfile> facultyMemberProfileList=proQB.getQueryResolver().list();
-        Container con=new FacultyMemberEditorUI(facultyMemberProfileList.get(0),false);
+        Container con=new FacultyMemberViewerUI(facultyMemberProfileList.get(0));
         PushButton backBtn = new PushButton();
         backBtn.setLabel(TextSources.create("BACK"));
         backBtn.addActionListener(new ActionListener()
@@ -139,6 +129,7 @@ public  class FacultyMemberDetail_Info extends MIWTPageElementModelContainer
         add(backBtn);
         add(con);
     }
+
     @Nullable
     @Override
     public Editor getEditor()
