@@ -276,7 +276,7 @@ public class FacultyMemberEditorUI extends MIWTPageElementModelContainer impleme
                             _img = fsp.newFile(dir, fe, FileSystemEntityCreateMode.unique);
                             fsp.setStream(_img, fileValue.getInputStream());
                             _imgCon.removeAllComponents();
-                            showImage(_img);
+                            _showImage(_img);
                             if(_facultyMemberProfile==null)
                                 _facultyMemberProfile=new FacultyMemberProfile();
                             dlg.close();
@@ -342,7 +342,7 @@ public class FacultyMemberEditorUI extends MIWTPageElementModelContainer impleme
          FacultyMemberProfile facultyMemberEditor = _facultyMemberDao.getAttachedFacultyMemberProfile(_facultyMemberProfile);
          if(facultyMemberEditor.getPicture()!=null)
           {
-            showImage(facultyMemberEditor.getPicture());
+              _showImage(facultyMemberEditor.getPicture());
           }
          _firstName.setText(facultyMemberEditor.getFirstName());
          _lastName.setText(facultyMemberEditor.getLastName());
@@ -441,7 +441,7 @@ public class FacultyMemberEditorUI extends MIWTPageElementModelContainer impleme
      * Show the image
      * @param fileEntity-the Image file entity
      */
-    private void showImage(FileEntity fileEntity)
+    private void _showImage(FileEntity fileEntity)
     {
         try
         {
