@@ -84,6 +84,7 @@ public class FacultyMemberViewerUI extends MIWTPageElementModelContainer impleme
      * Constructor
      */
     public FacultyMemberViewerUI(){}
+
     /**
      * create a instance
      */
@@ -91,6 +92,7 @@ public class FacultyMemberViewerUI extends MIWTPageElementModelContainer impleme
         super();
         _facultyMemberProfile = facultyMemberProfile;
     }
+
     /**
      * Create components
      */
@@ -182,6 +184,7 @@ public class FacultyMemberViewerUI extends MIWTPageElementModelContainer impleme
             )
         ));
     }
+
     /**
      * Update the UI value
      */
@@ -204,6 +207,7 @@ public class FacultyMemberViewerUI extends MIWTPageElementModelContainer impleme
             _sabbatical.setSelectedObject("false");
         }
     }
+
     @Override
     /**
      * workspace
@@ -213,13 +217,13 @@ public class FacultyMemberViewerUI extends MIWTPageElementModelContainer impleme
     {
         _workspace = workspace;
     }
+
     /**
      * Show the image
      * @param fileEntity-the Image file entity
      */
     private void _showImage(FileEntity fileEntity)
     {
-
         try
         {
             _imgCon.add(new ImageComponent(new Image(ImageResource.getResource(fileEntity, 80, 90))));
