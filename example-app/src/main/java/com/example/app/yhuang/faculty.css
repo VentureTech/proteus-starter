@@ -1,0 +1,58 @@
+/*
+ * Copyright (c) Interactive Information R & D (I2RD) LLC.
+ * All Rights Reserved.
+ *
+ * This software is confidential and proprietary information of
+ * I2RD LLC ("Confidential Information"). You shall not disclose
+ * such Confidential Information and shall use it only in
+ * accordance with the terms of the license agreement you entered
+ * into with I2RD.
+ */
+
+div.search-bar
+{
+    position:fixed;
+    left:10px;
+    top:10px;
+}
+div.pager.pager-search-results
+{
+    position:fixed;
+    left:10px;
+    top:80px;
+}
+#mi-bx42-645-c-21
+{
+    position:fixed;
+    left:10px;
+    top:35px;
+}
+#mi-bx42-645-c-24
+{
+    position:fixed;
+    left:300px;
+    top:35px;
+}
+span.actions
+{
+    position:fixed;
+    left:580px;
+    top:35px;
+}
+span.column-label
+{
+    margin: 8px;
+}
+
+td.type-date
+{
+    padding: 15px;
+}
+.odd
+{
+    background-color: #A4EBF7;
+}
+.even
+{
+    background-color: #FAF2AB;
+}

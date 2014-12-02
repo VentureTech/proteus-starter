@@ -1,0 +1,23 @@
+/*
+ * Copyright (c) Interactive Information R & D (I2RD) LLC.
+ * All Rights Reserved.
+ *
+ * This software is confidential and proprietary information of
+ * I2RD LLC ("Confidential Information"). You shall not disclose
+ * such Confidential Information and shall use it only in
+ * accordance with the terms of the license agreement you entered
+ * into with I2RD.
+ */
+
+span.mil
+{
+    position:fixed;
+    left:400px;
+    top:200px;
+    font-size: 50px;
+    font-family: "Courier New";
+}
+body.localhost
+{
+    background-color:#89E4F8;
+}
