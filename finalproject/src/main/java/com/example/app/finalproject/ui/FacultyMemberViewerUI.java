@@ -123,24 +123,20 @@ public class FacultyMemberViewerUI extends MIWTPageElementModelContainer impleme
         firLab.addClassName("lab1");
         _firstName.addClassName("val");
 
-
         lasLab = new Label(FacultyMemberEditorUILOK.LAST_NAME());
         _lastName = new Field();
         lasLab.addClassName("lab2");
         _lastName.addClassName("val");
-
 
         rankLab = new Label(FacultyMemberEditorUILOK.RANK());
         _rank = new ComboBox(new SimpleListModel<>(Rank.values()));
         rankLab.addClassName("lab");
         _rank.addClassName("val");
 
-
         resAreaLab = new Label(FacultyMemberEditorUILOK.RESEARCHAREA());
         _resArea = new Field();
         resAreaLab.addClassName("lab");
         _resArea.addClassName("val");
-
 
         _imgCon = new Container();
         _img = new FileEntity();
