@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.i2rd.cms.miwt.TimeAuditableColumn;
-import com.i2rd.contentmodel.miwt.PropertyEditor;
 
 import net.proteusframework.cms.CmsSite;
 import net.proteusframework.core.JunctionOperator;
@@ -41,6 +40,7 @@ import net.proteusframework.ui.miwt.component.Label;
 import net.proteusframework.ui.miwt.component.PushButton;
 import net.proteusframework.ui.miwt.component.composite.CustomCellRenderer;
 import net.proteusframework.ui.miwt.component.composite.DateFormatLabel;
+import net.proteusframework.ui.miwt.component.composite.editor.PropertyEditor;
 import net.proteusframework.ui.miwt.data.SortOrder;
 import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
