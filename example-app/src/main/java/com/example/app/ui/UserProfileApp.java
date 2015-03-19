@@ -13,7 +13,8 @@ package com.example.app.ui;
 
 import com.example.app.model.UserProfile;
 import com.example.app.model.UserProfileDAO;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -25,7 +26,6 @@ import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.LocaleContext;
 import net.proteusframework.core.locale.TextSource;
-import net.proteusframework.core.locale.TextSources;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
@@ -65,6 +65,7 @@ import net.proteusframework.ui.workspace.AbstractUITask;
 import net.proteusframework.users.model.Name;
 
 import static net.proteusframework.core.StringFactory.isEmptyString;
+import static net.proteusframework.core.locale.TextSources.createText;
 import static net.proteusframework.ui.search.SearchUIImpl.Options;
 
 /**
@@ -104,7 +105,7 @@ import static net.proteusframework.ui.search.SearchUIImpl.Options;
 public class UserProfileApp extends SearchUIApp
 {
     /** Logger. */
-    private final static Logger _logger = Logger.getLogger(UserProfileApp.class);
+    private static final Logger _logger = LogManager.getLogger(UserProfileApp.class);
 
     /** Mock Data Access Object. */
     @Autowired
@@ -132,9 +133,9 @@ public class UserProfileApp extends SearchUIApp
         super(session);
         // Set the default application name used in toString() and some other circumstances.
         // Since internationalization (i18n) is not a concern for our application, we use the
-        /// TextSources.create method as a placeholder in case we change our mind about i18n later.
+        /// TextSources.createText method as a placeholder in case we change our mind about i18n later.
         /// This will allow you to quickly / programmatically find text needing i18n and l10n (localization).
-        this.defAppName = TextSources.create("User Profile Example App");
+        this.defAppName = createText("User Profile Example App");
     }
 
 
@@ -187,7 +188,7 @@ public class UserProfileApp extends SearchUIApp
             @Override
             public TextSource getLabel()
             {
-                return TextSources.create("User Profile - " + _getName(
+                return createText("User Profile - " + _getName(
                     EntityRetriever.getInstance().reattachIfNecessary(userProfile)
                 ));
             }
@@ -199,7 +200,7 @@ public class UserProfileApp extends SearchUIApp
                 ReflectiveAction saveAction = CommonActions.SAVE.defaultAction();
                 ReflectiveAction cancelAction = CommonActions.CANCEL.defaultAction();
                 PropertyEditor<UserProfile> propertyEditor = new PropertyEditor<>();
-                propertyEditor.setTitle(new Label(TextSources.create("User Profile")).setHTMLElement(HTMLElement.h2));
+                propertyEditor.setTitle(new Label(createText("User Profile")).withHTMLElement(HTMLElement.h2));
                 propertyEditor.setValueEditor(new UserProfileEditor(userProfile));
                 propertyEditor.setPersistenceActions(saveAction, cancelAction);
 
@@ -274,7 +275,7 @@ public class UserProfileApp extends SearchUIApp
             @Override
             public TextSource getLabel()
             {
-                return TextSources.create("User Profile - " + _getName(
+                return createText("User Profile - " + _getName(
                     EntityRetriever.getInstance().reattachIfNecessary(userProfile)
                 ));
             }
@@ -292,7 +293,7 @@ public class UserProfileApp extends SearchUIApp
                 Container actions = Container.of(HTMLElement.div, "actions top persistence-actions", editBtn);
                 viewer.add(actions);
 
-                viewerWrapper.add(new Label(TextSources.create("User Profile")).setHTMLElement(HTMLElement.h1));
+                viewerWrapper.add(new Label(createText("User Profile")).withHTMLElement(HTMLElement.h1));
                 viewerWrapper.add(viewer);
 
                 editBtn.addActionListener(event -> {

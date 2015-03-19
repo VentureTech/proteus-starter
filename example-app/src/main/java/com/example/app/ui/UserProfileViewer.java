@@ -14,7 +14,8 @@ package com.example.app.ui;
 import com.example.app.model.UserProfile;
 import com.example.app.model.UserProfileDAO;
 import com.google.common.base.Preconditions;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.safety.Cleaner;
@@ -36,10 +37,8 @@ import com.i2rd.media.IMediaUtility;
 import com.i2rd.media.MediaUtilityFactory;
 
 import net.proteusframework.cms.component.generator.XMLRenderer;
-import net.proteusframework.core.StringFactory;
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.core.html.HTMLElement;
-import net.proteusframework.core.locale.TextSources;
 import net.proteusframework.core.metric.PixelMetric;
 import net.proteusframework.data.filesystem.FileEntity;
 import net.proteusframework.ui.miwt.Image;
@@ -56,6 +55,9 @@ import net.proteusframework.ui.miwt.event.Event;
 import net.proteusframework.users.model.Address;
 import net.proteusframework.users.model.Name;
 
+import static net.proteusframework.core.StringFactory.isEmptyString;
+import static net.proteusframework.core.locale.TextSources.createText;
+
 /**
  * UI view for UserProfile.
  * @author Russ Tennant (russ@venturetech.net)
@@ -64,7 +66,7 @@ import net.proteusframework.users.model.Name;
 public class UserProfileViewer extends Container
 {
     /** Logger. */
-    private final static Logger _logger = Logger.getLogger(UserProfileViewer.class);
+    private static final Logger _logger = LogManager.getLogger(UserProfileViewer.class);
     /** Profile. */
     private final UserProfile _userProfile;
 
@@ -91,7 +93,7 @@ public class UserProfileViewer extends Container
         super.init();
 
         // Set HTML element type and class names for presentation use on this Container component.
-        setHTMLElement(HTMLElement.section);
+        withHTMLElement(HTMLElement.section);
         addClassName("user-profile-viewer");
         // property_viewer is a standard class name.
         addClassName("property-viewer");
@@ -123,35 +125,35 @@ public class UserProfileViewer extends Container
         // Sometimes it is easier and less error prone to make a component non-visible
         /// than checking for null on each use. Use this pattern with care. You don't
         /// want to consume a lot of resource unnecessarily.
-        if(StringFactory.isEmptyString(namePrefix.getText())) namePrefix.setVisible(false);
-        if(StringFactory.isEmptyString(nameSuffix.getText())) nameSuffix.setVisible(false);
+        if(isEmptyString(namePrefix.getText())) namePrefix.setVisible(false);
+        if(isEmptyString(nameSuffix.getText())) nameSuffix.setVisible(false);
 
         // Address
         Address address = userProfile.getPostalAddress();
         // Address lines are always on their own line so we make sure they are enclosed by a block element like a DIV..
         final Label addressLine1 = new Label();
-        addressLine1.setHTMLElement(HTMLElement.div).addClassName("prop").addClassName("address_line");
+        addressLine1.withHTMLElement(HTMLElement.div).addClassName("prop").addClassName("address_line");
         final Label addressLine2 = new Label();
-        addressLine2.setHTMLElement(HTMLElement.div).addClassName("prop").addClassName("address_line");
-        if(address.getAddressLines().length > 0) addressLine1.setText(TextSources.create(address.getAddressLines()[0]));
-        if(address.getAddressLines().length > 1) addressLine2.setText(TextSources.create(address.getAddressLines()[1]));
+        addressLine2.withHTMLElement(HTMLElement.div).addClassName("prop").addClassName("address_line");
+        if(address.getAddressLines().length > 0) addressLine1.setText(createText(address.getAddressLines()[0]));
+        if(address.getAddressLines().length > 1) addressLine2.setText(createText(address.getAddressLines()[1]));
         final HTMLComponent city = new HTMLComponent();
         // The "prop" class name is part of the standard HTML structure. It is always a good idea to also
         /// add a specific class name like "city" in this example. Please be consistent when using class names.
         /// For example, if everyone else is using "city", please use "city" too. Don't come up with another class name
         /// that means something similar like "town" or "locality". Consistency has a big impact on
         /// the time required to style HTML as well as the ability to reuse CSS.
-        city.setHTMLElement(HTMLElement.span).addClassName("prop").addClassName("city");
-        if(!StringFactory.isEmptyString(address.getCity()))
+        city.withHTMLElement(HTMLElement.span).addClassName("prop").addClassName("city");
+        if(!isEmptyString(address.getCity()))
         {
             // Our microdata for the city shouldn't include the comma, so this is a bit more complicated than the other examples.
-            city.setText(TextSources.create("<span itemprop=\"addressLocality\">" + address.getCity()
+            city.setText(createText("<span itemprop=\"addressLocality\">" + address.getCity()
                 + "</span><span class=\"delimiter\">,</span>"));
         }
         else city.setVisible(false);
-        final Label state = new Label(TextSources.create(address.getState()));
+        final Label state = new Label(createText(address.getState()));
         state.addClassName("prop").addClassName("state");
-        final Label postalCode = new Label(TextSources.create(address.getPostalCode()));
+        final Label postalCode = new Label(createText(address.getPostalCode()));
         postalCode.addClassName("prop").addClassName("postal_code");
 
         // Other Contact
@@ -170,7 +172,7 @@ public class UserProfileViewer extends Container
         /// Sometimes you'll do this sanitation prior to persisting the data. It depends on whether or not you need to
         /// keep the original unsanitized HTML around.
         String processedHTML = userProfile.getAboutMeProse();
-        if(!StringFactory.isEmptyString(processedHTML))
+        if(!isEmptyString(processedHTML))
         {
             // Process the HTML converting links as necessary (adding JSESSIONID(s)
             /// for URL based session tracking, converting resource links to increase concurrent loading limit,
@@ -206,7 +208,7 @@ public class UserProfileViewer extends Container
             /// If the link is to the media itself, you can create a player for it.
             /// Below is an example of creating a link to the video as well as a player.
             final URI videoLinkURI = _userProfileDAO.toURI(videoLink, null);
-            URILink videoLinkComponent = new URILink(videoLinkURI, TextSources.create("My Video"));
+            URILink videoLinkComponent = new URILink(videoLinkURI, createText("My Video"));
             videoLinkComponent.setTarget("_blank");
             IMediaUtility util = MediaUtilityFactory.getUtility();
             try
@@ -270,7 +272,7 @@ public class UserProfileViewer extends Container
         /// using the standard HTML structure for a property viewer.
         add(of(HTMLElement.section,
             "prop-group name",
-            new Label(TextSources.create("Name")).setHTMLElement(HTMLElement.h1),
+            new Label(createText("Name")).withHTMLElement(HTMLElement.h1),
             namePrefix.setAttribute("itemprop", "honorificPrefix")
                 .addClassName("prop").addClassName("prefix"),
             nameGiven.setAttribute("itemprop", "givenName")
@@ -282,24 +284,24 @@ public class UserProfileViewer extends Container
         ));
 
         // Add wrapping DIV to group address lines if necessary.
-        Component streetAddress = (!StringFactory.isEmptyString(addressLine1.getText()) && !StringFactory.isEmptyString(addressLine2.getText())
+        Component streetAddress = (!isEmptyString(addressLine1.getText()) && !isEmptyString(addressLine2.getText())
             ? of(HTMLElement.div, "address_lines", addressLine1, addressLine2)
-            : (StringFactory.isEmptyString(addressLine1.getText()) ? addressLine2 : addressLine1).setHTMLElement(HTMLElement.div));
+            : (isEmptyString(addressLine1.getText()) ? addressLine2 : addressLine1).withHTMLElement(HTMLElement.div));
         streetAddress.setAttribute("itemprop", "streetAddress");
-        boolean hasAddress = (!StringFactory.isEmptyString(addressLine1.getText())
-            ||!StringFactory.isEmptyString(addressLine2.getText())
-            ||!StringFactory.isEmptyString(city.getText())
-            ||!StringFactory.isEmptyString(state.getText())
-            ||!StringFactory.isEmptyString(postalCode.getText())
+        boolean hasAddress = (!isEmptyString(addressLine1.getText())
+            ||!isEmptyString(addressLine2.getText())
+            ||!isEmptyString(city.getText())
+            ||!isEmptyString(state.getText())
+            ||!isEmptyString(postalCode.getText())
         );
-        boolean hasPhone = !StringFactory.isEmptyString(phoneNumber.getText());
-        boolean hasEmail = !StringFactory.isEmptyString(emailAddress.getText());
+        boolean hasPhone = !isEmptyString(phoneNumber.getText());
+        boolean hasEmail = !isEmptyString(emailAddress.getText());
         // We only want to output the enclosing HTML if we have content to display.
         if(hasAddress || hasPhone || hasEmail)
         {
             Container contactContainer = of(HTMLElement.section,
                 "contact",
-                new Label(TextSources.create("Contact Information")).setHTMLElement(HTMLElement.h1)
+                new Label(createText("Contact Information")).withHTMLElement(HTMLElement.h1)
             );
             add(contactContainer);
             if(hasAddress)
@@ -308,7 +310,7 @@ public class UserProfileViewer extends Container
                         "prop-group address",
                         // We are using an H2 here because are immediate ancestor is a DIV. If it was a SECTION,
                         /// then we would use an H1. See the UserProfileViewer for a comparison.
-                        new Label(TextSources.create("Address")).setHTMLElement(HTMLElement.h2),
+                        new Label(createText("Address")).withHTMLElement(HTMLElement.h2),
                         streetAddress,
                         of(HTMLElement.div, "place",
                             city,
@@ -323,7 +325,7 @@ public class UserProfileViewer extends Container
             {
                 contactContainer.add(of(HTMLElement.div,
                         "prop phone",
-                        new Label(TextSources.create("Phone")).setHTMLElement(HTMLElement.h2),
+                        new Label(createText("Phone")).withHTMLElement(HTMLElement.h2),
                         phoneNumber.setAttribute("itemprop", "telephone")
                         )
                 );
@@ -332,7 +334,7 @@ public class UserProfileViewer extends Container
             {
                 contactContainer.add(of(HTMLElement.div,
                         "prop email",
-                        new Label(TextSources.create("Email")).setHTMLElement(HTMLElement.h2),
+                        new Label(createText("Email")).withHTMLElement(HTMLElement.h2),
                         emailAddress.setAttribute("itemprop", "email")
                         )
                 );
@@ -345,51 +347,51 @@ public class UserProfileViewer extends Container
             Container social = of(
                 HTMLElement.section,
                 "social",
-                new Label(TextSources.create("Social Media Links")).setHTMLElement(HTMLElement.h1)
+                new Label(createText("Social Media Links")).withHTMLElement(HTMLElement.h1)
             );
             add(social);
             if(twitterLink != null)
             {
                 twitterLink.setTarget("_blank");
-                twitterLink.setText(TextSources.create("Twitter Link"));
+                twitterLink.setText(createText("Twitter Link"));
                 social.add(of(
                     HTMLElement.div,
                     "prop twitter",
-                    TextSources.create("Twitter"),
+                    createText("Twitter"),
                     twitterLink
                 ));
             }
             if(facebookLink != null)
             {
                 facebookLink.setTarget("_blank");
-                facebookLink.setText(TextSources.create("Facebook Link"));
+                facebookLink.setText(createText("Facebook Link"));
                 social.add(of(
                     HTMLElement.div,
                     "prop facebook",
-                    TextSources.create("Facebook"),
+                    createText("Facebook"),
                     facebookLink
                 ));
             }
             if(linkedInLink != null)
             {
                 linkedInLink.setTarget("_blank");
-                linkedInLink.setText(TextSources.create("LinkedIn Link"));
+                linkedInLink.setText(createText("LinkedIn Link"));
                 social.add(of(
                     HTMLElement.div,
                     "prop linkedin",
-                    TextSources.create("LinkedIn"),
+                    createText("LinkedIn"),
                     linkedInLink
                 ));
             }
         }
 
-        final boolean hasAboutMeProse = StringFactory.isEmptyString(aboutMeProse.getText());
+        final boolean hasAboutMeProse = isEmptyString(aboutMeProse.getText());
         if(!hasAboutMeProse || aboutMeVideo != null)
         {
             Container aboutMe = of(
                 HTMLElement.section,
                 "about_me",
-                new Label(TextSources.create("About Me")).setHTMLElement(HTMLElement.h1)
+                new Label(createText("About Me")).withHTMLElement(HTMLElement.h1)
             );
             add(aboutMe);
             if(picture != null)
@@ -397,7 +399,7 @@ public class UserProfileViewer extends Container
                 aboutMe.add(of(
                     HTMLElement.div,
                     "prop picture",
-                    TextSources.create("Picture"),
+                    createText("Picture"),
                     picture
                 ));
             }
@@ -406,13 +408,13 @@ public class UserProfileViewer extends Container
                 aboutMe.add(of(
                     HTMLElement.div,
                     "prop prose",
-                    TextSources.create("Professional Information, Hobbies, Interests..."),
+                    createText("Professional Information, Hobbies, Interests..."),
                     aboutMeProse
                 ));
             }
             if(aboutMeVideo != null)
             {
-                Label label = new Label(TextSources.create("Video")).setHTMLElement(HTMLElement.label);
+                Label label = new Label(createText("Video")).withHTMLElement(HTMLElement.label);
                 label.addClassName("vl");
                 aboutMe.add(of(
                     HTMLElement.div,

@@ -13,8 +13,9 @@ package com.example.app.ui;
 
 import com.example.app.model.UserProfile;
 import com.example.app.model.UserProfileDAO;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -66,7 +67,7 @@ public class UserProfileEditor extends Container
     // This class could also be used as a viewer. It's a choice to make determined by how different
     /// the viewer and editor user interfaces (including metadata) are from each other.
     /** Logger. */
-    private final static Logger _logger = Logger.getLogger(UserProfileEditor.class);
+    private static final Logger _logger = LogManager.getLogger(UserProfileEditor.class);
 
     /** DAO instance. */
     @Autowired
@@ -132,7 +133,7 @@ public class UserProfileEditor extends Container
         super.init();
 
         // Add HTML element type and class names for presentation use
-        setHTMLElement(HTMLElement.section);
+        withHTMLElement(HTMLElement.section);
         addClassName("user_profile_editor");
         addClassName("property_editor");
 
@@ -141,15 +142,15 @@ public class UserProfileEditor extends Container
 
         Name name = value.getName();
         // TextEditors automatically add a "prop" class name.
-        _namePrefix = new TextEditor(TextSources.create("Prefix"), name.getFormOfAddress());
+        _namePrefix = new TextEditor(TextSources.createText("Prefix"), name.getFormOfAddress());
         // Instead of adding a user_entry_required class name we could add the HTML5 required attribute,
         // but that requires a bit more consideration
         //// related to how the violation is handled and presented to the user.
-        _nameGiven = new TextEditor(TextSources.create("First"), name.getFirst());
+        _nameGiven = new TextEditor(TextSources.createText("First"), name.getFirst());
         _nameGiven.addClassName("user_entry_required");
-        _nameFamily = new TextEditor(TextSources.create("Last"), name.getLast());
+        _nameFamily = new TextEditor(TextSources.createText("Last"), name.getLast());
         _nameFamily.addClassName("user_entry_required");
-        _nameSuffix = new TextEditor(TextSources.create("Suffix"), name.getSuffix());
+        _nameSuffix = new TextEditor(TextSources.createText("Suffix"), name.getSuffix());
         _nameGiven.setValueValidator(new RequiredValueValidator()
             .withErrorMessage(CommonValidationText.ARG0_IS_REQUIRED, "First Name"));
         _nameFamily.setValueValidator(new RequiredValueValidator()
@@ -161,7 +162,7 @@ public class UserProfileEditor extends Container
         /// Adding the enclosing element will help with styling.
         add(of(HTMLElement.section,
             "name",
-            new Label(TextSources.create("Name")).setHTMLElement(HTMLElement.h1),
+            new Label(TextSources.createText("Name")).withHTMLElement(HTMLElement.h1),
             _namePrefix,
             _nameGiven,
             _nameFamily,
@@ -175,22 +176,22 @@ public class UserProfileEditor extends Container
             line1 = address.getAddressLines()[0];
         if (address.getAddressLines().length > 1)
             line2 = address.getAddressLines()[1];
-        _addressLine1 = new TextEditor(TextSources.create("Address Line 1"), line1);
-        _addressLine2 = new TextEditor(TextSources.create("Address Line 2"), line2);
-        _city = new TextEditor(TextSources.create("City"), address.getCity());
-        _state = new TextEditor(TextSources.create("State"), address.getState());
-        _postalCode = new TextEditor(TextSources.create("Postal Code"), address.getPostalCode());
-        _emailAddress = new TextEditor(TextSources.create("Email"), value.getEmailAddress());
+        _addressLine1 = new TextEditor(TextSources.createText("Address Line 1"), line1);
+        _addressLine2 = new TextEditor(TextSources.createText("Address Line 2"), line2);
+        _city = new TextEditor(TextSources.createText("City"), address.getCity());
+        _state = new TextEditor(TextSources.createText("State"), address.getState());
+        _postalCode = new TextEditor(TextSources.createText("Postal Code"), address.getPostalCode());
+        _emailAddress = new TextEditor(TextSources.createText("Email"), value.getEmailAddress());
         // Non default InputTypes can provide alternate keyboard layouts or UIs on devices that
         // support it like phones and tablets. This can make data entry much simpler
         // so consider this depending on the target audience.
         // Additionally, you can hook into the HTML5 constraint validation API if you choose.
         _emailAddress.setInputType(InputType.email);
-        _phoneNumber = new TextEditor(TextSources.create("Phone"), value.getPhoneNumber());
+        _phoneNumber = new TextEditor(TextSources.createText("Phone"), value.getPhoneNumber());
         _phoneNumber.setInputType(InputType.tel);
         add(of(HTMLElement.section,
             "contact",
-            new Label(TextSources.create("Contact Information")).setHTMLElement(HTMLElement.h1),
+            new Label(TextSources.createText("Contact Information")).withHTMLElement(HTMLElement.h1),
             of(HTMLElement.div,
                 "prop_group address",
                 _addressLine1.addClassName("address_line"),
@@ -205,7 +206,7 @@ public class UserProfileEditor extends Container
 
         add(of(HTMLElement.section,
             "social",
-            new Label(TextSources.create("Social Links")).setHTMLElement(HTMLElement.h1),
+            new Label(TextSources.createText("Social Links")).withHTMLElement(HTMLElement.h1),
             _twitterLink = (TextEditor) _createURLEditor("Twitter Link", value.getTwitterLink()).addClassName("twitter"),
             _facebookLink = (TextEditor) _createURLEditor("Facebook Link", value.getFacebookLink()).addClassName("facebook"),
             _linkedInLink = (TextEditor) _createURLEditor("LinkedIn Link", value.getLinkedInLink()).addClassName("linkedin")
@@ -213,17 +214,17 @@ public class UserProfileEditor extends Container
         _picture = new PictureEditor();
         _picture.setPreserveFileEntity(true);
         _picture.setValue(value.getPicture());
-        _picture.setLabel(TextSources.create("Picture"));
+        _picture.setLabel(TextSources.createText("Picture"));
         _picture.addClassName("picture");
 
-        _aboutMeProse = new TextEditor(TextSources.create("Professional Information, Hobbies, Interests..."),
+        _aboutMeProse = new TextEditor(TextSources.createText("Professional Information, Hobbies, Interests..."),
             value.getAboutMeProse());
         _aboutMeProse.setDisplayHeight(15);
         _aboutMeProse.setDisplayWidth(45);
         _aboutMeProse.setTextEditorConfig(CKEditorConfig.standard);
         add(of(HTMLElement.section,
             "about_me",
-            new Label(TextSources.create("About Me")).setHTMLElement(HTMLElement.h1),
+            new Label(TextSources.createText("About Me")).withHTMLElement(HTMLElement.h1),
             _picture,
             _aboutMeProse.addClassName("prose"),
             _aboutMeVideoLink = (TextEditor) _createURLEditor("Video Link", value.getAboutMeVideoLink()).addClassName("video")
@@ -415,7 +416,7 @@ public class UserProfileEditor extends Container
      */
     private TextEditor _createURLEditor(final String label, final URL value)
     {
-        TextEditor editor = new TextEditor(TextSources.create(label), _userProfileDAO.toString(value));
+        TextEditor editor = new TextEditor(TextSources.createText(label), _userProfileDAO.toString(value));
         editor.setInputType(InputType.url);
         editor.setValueValidator(new ValidURLValidator()
             .withErrorMessage(CommonValidationText.ARG0_IS_NOT_A_VALID_ARG1, label, "URL"));

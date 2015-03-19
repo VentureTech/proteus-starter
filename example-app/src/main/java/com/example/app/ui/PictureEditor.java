@@ -12,8 +12,9 @@
 package com.example.app.ui;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.beans.PropertyChangeEvent;
@@ -42,7 +43,7 @@ import net.proteusframework.ui.miwt.component.composite.editor.AbstractSimpleVal
 public class PictureEditor extends AbstractSimpleValueEditor<FileEntity>
 {
     /** Logger. */
-    private final static Logger _logger = Logger.getLogger(PictureEditor.class);
+    private static final Logger _logger = LogManager.getLogger(PictureEditor.class);
 
     /** File Field. */
     private final FileField _fileField = new FileField();

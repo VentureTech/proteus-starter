@@ -13,7 +13,8 @@ package com.example.app.config;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextException;
 import org.springframework.context.ApplicationEvent;
@@ -70,7 +71,7 @@ import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
 public class MyAppConfig implements ApplicationListener
 {
     /** Logger. */
-    private final static Logger _logger = Logger.getLogger(MyAppConfig.class);
+    private static final Logger _logger = LogManager.getLogger(MyAppConfig.class);
     /*
      * If you would like to setup your own servlets or filters either
      *

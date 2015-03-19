@@ -1,5 +1,7 @@
 import com.proteusframework.build.Property
 
+//settings.gradle.rootProject.name 'Your-Project-Name'
+
 // Check required properties
 def props = [
     new Property(name:'repo_venturetech_username',description:'Username to access the artifact repository'),

@@ -11,7 +11,8 @@
 
 package com.example.app.model;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.jetbrains.annotations.Contract;
@@ -51,7 +52,7 @@ import net.proteusframework.ui.search.QLResolverOptions;
 public class UserProfileDAO extends DAOHelper
 {
     /** Logger. */
-    private final static Logger _logger = Logger.getLogger(UserProfileDAO.class);
+    private static final Logger _logger = LogManager.getLogger(UserProfileDAO.class);
 
     /** FileSystem DAO. */
     @Autowired

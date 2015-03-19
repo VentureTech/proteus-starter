@@ -3,7 +3,7 @@ import org.ajoberstar.gradle.git.tasks.GitBranchList
 
 import java.text.SimpleDateFormat
 
-ext.aspectjVersion = '1.8.0.M1'
+ext.aspectjVersion = '1.8.+'
 
 // Compilation
 apply plugin: 'java'
@@ -153,7 +153,7 @@ dependencies {
     }
 }
 
-task wrapper(type: Wrapper) { gradleVersion = '1.11' } // Requires Intellij 13.1.x
+task wrapper(type: Wrapper) { gradleVersion = '2.2.1' } // Requires Intellij 13.1.x
 task createRuntimeAspectsLibs(type: Copy) {
     from configurations.runtimeaspects
     into "runtime-aspects"
@@ -274,8 +274,12 @@ artifactory {
     }
 }
 
+findbugs {
+    toolVersion = '3.0.1'
+}
+
 findbugsMain {
-    enabled = false // Waiting on Java 8 support
+    enabled = true
     excludeFilter = new File("${rootProject.projectDir}/config/findbugs/exclude.xml")
     reports {
         xml.enabled = true

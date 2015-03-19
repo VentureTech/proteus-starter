@@ -5,7 +5,10 @@
     <option name="explicitAspectPath" value="true" />
     <option name="aspectPath">
       <projectLibrary>
-        <option name="name" value="Gradle: spring-aspects-4.0.5.RELEASE" />
+        <option name="name" value="Gradle: spring-aspects-4.0.9.RELEASE" />
+      </projectLibrary>
+      <projectLibrary>
+        <option name="name" value="Gradle: log4j-core-2.1" />
       </projectLibrary>
     </option>
     <option name="delegateToJavac" value="true" />
