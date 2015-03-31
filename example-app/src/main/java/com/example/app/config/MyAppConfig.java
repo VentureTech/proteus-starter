@@ -53,7 +53,6 @@ import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
 @ComponentScan({"com.example.app"})
 // Add spring xml files if you'd like to register spring beans with XML.
 //@ImportResource("classpath:/spring/*.spring.xml")
-@Import(ProteusWebAppConfig.class)
 // SPLIT PropertySource -> https://jira.spring.io/browse/SPR-11637
 @PropertySource(
     name = ProteusWebAppConfig.PROTEUSFRAMEWORK_PROPERTY_SOURCE_NAME,
