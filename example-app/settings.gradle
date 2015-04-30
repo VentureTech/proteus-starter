@@ -1,5 +1,8 @@
 import com.proteusframework.build.Property
 
+import static groovy.io.FileVisitResult.CONTINUE
+import static groovy.io.FileVisitResult.SKIP_SUBTREE
+
 
 // Check required properties
 def props = [
@@ -18,5 +21,23 @@ settings.gradle.projectsLoaded( {
     settings.gradle.rootProject.ext.hasLocalRepo = settings.hasProperty('local_repo');
 })
 
+// Did you convert this to be your own project.
+if(new File(settings.rootProject.projectDir,'src/main/java/com/example/app/config/ExampleAppProjectConfig.java').exists())
+    throw new Error('Rename your project configuration class')
+
+def files = []
+settings.rootProject.projectDir.traverse(
+    [nameFilter: ~/.*\.java/,
+        preDir: { if (it.name == '.git' || it.name == '.apt_generated') return SKIP_SUBTREE }], { f ->
+
+    if( f.filterLine( { it ==~ /.*com.example.app.*/ } ) as String )
+        files.add(f)
+
+    CONTINUE
+})
+if(files.isEmpty())
+    throw new Error('Remove this example-app code check.')
+else
+    throw new Error("Update your code. This is no longer example-app: \n\t${files.join('\n\t')}")
 
 
