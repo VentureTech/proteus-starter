@@ -8,7 +8,7 @@
         <option name="name" value="Gradle: spring-aspects-4.0.9.RELEASE" />
       </projectLibrary>
       <projectLibrary>
-        <option name="name" value="Gradle: log4j-core-2.1" />
+        <option name="name" value="Gradle: log4j-core-2.2" />
       </projectLibrary>
     </option>
     <option name="delegateToJavac" value="true" />

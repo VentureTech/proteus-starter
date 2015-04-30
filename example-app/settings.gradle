@@ -1,6 +1,5 @@
 import com.proteusframework.build.Property
 
-//settings.gradle.rootProject.name 'Your-Project-Name'
 
 // Check required properties
 def props = [
@@ -9,6 +8,10 @@ def props = [
     new Property(name:'publish_venturetech_username',description:'Username to upload to the artifact repository', required:false),
     new Property(name:'publish_venturetech_password',description:'Password to upload to the artifact repository', required:false),
 ];
+
+println '\n\n!!!!! HEY YOU - SET THE PROJECT NAME !!!!\n'
+settings.rootProject.name = 'example-app'
+
 
 settings.gradle.projectsLoaded( {
     props.each({it.test(settings)})

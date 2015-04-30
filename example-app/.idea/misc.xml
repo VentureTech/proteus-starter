@@ -2,7 +2,7 @@
 <project version="4">
   <component name="CheckstyleConfigurable">
     <option name="suppFilterFilename" value="" />
-    <option name="suppCommentFilter" value="false" />
+    <option name="suppCommentFilter" value="true" />
     <option name="offComment" value="CHECKSTYLE\:OFF" />
     <option name="onComment" value="CHECKSTYLE\:ON" />
     <option name="checkFormat" value=".*" />
@@ -16,7 +16,7 @@
     <option name="snInfluenceFormat" value="0" />
     <option name="snCheckCPP" value="true" />
     <option name="snCheckC" value="true" />
-    <option name="pathToUserRulesConfiguration" value="" />
+    <option name="pathToUserRulesConfiguration" value="$PROJECT_DIR$/config/checkstyle/checkstyle.xml" />
     <option name="pathToJarWithRules" value="" />
   </component>
   <component name="EntryPointsManager">
@@ -26,7 +26,7 @@
     <option name="make" value="true" />
     <option name="effort" value="default" />
     <option name="priority" value="Medium" />
-    <option name="excludeFilter" value="" />
+    <option name="excludeFilter" value="$PROJECT_DIR$/config/findbugs/exclude.xml" />
   </component>
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$" />

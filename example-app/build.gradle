@@ -122,6 +122,9 @@ compileTestJava { source = source.filter(aptFilter) }
 
 
 dependencies {
+
+    checkstyle('com.puppycrawl.tools:checkstyle:5.9')
+
     runtimeaspects "org.springframework:spring-instrument:${version_spring}", "org.aspectj:aspectjweaver:${aspectjVersion}"
     compiletimeaspects "org.springframework:spring-aspects:${version_spring}", "org.aspectj:aspectjtools:${aspectjVersion}"
 
@@ -288,19 +291,23 @@ findbugsMain {
 }
 
 checkstyleMain {
-    enabled = false // Waiting on Java 8 support
+    enabled = true
     configFile = new File("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
     classpath += configurations.compile // To avoid class loading errors when checking javadoc
     source = 'src/main/java' // Do not include generated sources
 }
 
 configurations.all {
-    exclude group: 'xml-apis'
+    exclude group: 'org.eclipse.birt.runtime.3_7_1', module: 'org.apache.commons.codec'
     resolutionStrategy {
         eachDependency {DependencyResolveDetails details ->
             if (details.requested.group == 'org.aspectj' && details.requested.name == 'aspectjweaver')
             {
                 details.useVersion aspectjVersion
+            }
+            if (details.requested.group == 'xml-apis')
+            {
+                details.useVersion '1.4.+'
             }
         }
         // cache dynamic versions for ...

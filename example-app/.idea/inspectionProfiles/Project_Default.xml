@@ -142,6 +142,22 @@
       <option name="m_limit" value="5" />
     </inspection_tool>
     <inspection_tool class="Convert2Diamond" enabled="true" level="INFO" enabled_by_default="true" />
+    <inspection_tool class="CssUnknownProperty" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myCustomPropertiesEnabled" value="true" />
+      <option name="myIgnoreVendorSpecificProperties" value="true" />
+      <option name="myCustomPropertiesList">
+        <value>
+          <list size="6">
+            <item index="0" class="java.lang.String" itemvalue="user-select" />
+            <item index="1" class="java.lang.String" itemvalue="perspective" />
+            <item index="2" class="java.lang.String" itemvalue="transition" />
+            <item index="3" class="java.lang.String" itemvalue="transition-property" />
+            <item index="4" class="java.lang.String" itemvalue="transition-duration" />
+            <item index="5" class="java.lang.String" itemvalue="backface-visibility" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
     <inspection_tool class="CyclomaticComplexity" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="m_limit" value="20" />
     </inspection_tool>
@@ -263,7 +279,7 @@
       <option name="m_maxLength" value="64" />
     </inspection_tool>
     <inspection_tool class="InstanceVariableNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
-      <option name="m_regex" value="_?[a-z][A-Za-z\d]*" />
+      <option name="m_regex" value="_?[A-Za-z\d]*" />
       <option name="m_minLength" value="3" />
       <option name="m_maxLength" value="64" />
     </inspection_tool>
@@ -277,6 +293,9 @@
     </inspection_tool>
     <inspection_tool class="JNDIResource" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="insideTryAllowed" value="false" />
+    </inspection_tool>
+    <inspection_tool class="JSUnresolvedVariable" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="myStrictlyCheckGlobalDefinitions" value="true" />
     </inspection_tool>
     <inspection_tool class="JavaDoc" enabled="true" level="ERROR" enabled_by_default="true">
       <option name="TOP_LEVEL_CLASS_OPTIONS">
@@ -437,6 +456,10 @@
     </inspection_tool>
     <inspection_tool class="UseJBColor" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="VolatileArrayField" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="W3CssValidation" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myCssVersion" value="css3" />
+      <option name="myIgnoreVendorSpecificProperties" value="true" />
+    </inspection_tool>
     <inspection_tool class="WeakerAccess" enabled="false" level="WEAK WARNING" enabled_by_default="false">
       <option name="SUGGEST_PACKAGE_LOCAL_FOR_MEMBERS" value="true" />
       <option name="SUGGEST_PACKAGE_LOCAL_FOR_TOP_CLASSES" value="true" />
