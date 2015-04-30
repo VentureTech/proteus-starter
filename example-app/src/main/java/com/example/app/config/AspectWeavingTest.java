@@ -29,7 +29,7 @@ public class AspectWeavingTest
      * @param config configuration.
      */
     @Autowired
-    public void setAppConfig(MyAppConfig config)
+    public void setAppConfig(ExampleAppProjectConfig config)
     {
         _configured = (config != null);
     }

@@ -22,7 +22,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.context.event.ApplicationContextEvent;
@@ -67,10 +66,10 @@ import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
         ProteusWebAppConfig.PROTEUSFRAMEWORK_SPRING_PROPERTIES_PLACEHOLDER,
     }
 )
-public class MyAppConfig implements ApplicationListener
+public class ExampleAppProjectConfig implements ApplicationListener
 {
     /** Logger. */
-    private static final Logger _logger = LogManager.getLogger(MyAppConfig.class);
+    private static final Logger _logger = LogManager.getLogger(ExampleAppProjectConfig.class);
     /*
      * If you would like to setup your own servlets or filters either
      *
