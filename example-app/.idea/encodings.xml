@@ -5,6 +5,8 @@
     <file url="file://$PROJECT_DIR$/config/idea/settings.jar" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/gradle.properties" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/settings.gradle" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/webapp/META-INF/resources/logging/log4j2-development.xml" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/webapp/META-INF/resources/logging/log4j2.xml" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/webapp/META-INF/resources/spring/selector-hostnames.spring.xml" charset="UTF-8" />
   </component>
 </project>

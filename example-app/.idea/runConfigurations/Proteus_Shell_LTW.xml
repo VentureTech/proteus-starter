@@ -2,7 +2,7 @@
   <configuration default="false" name="Proteus Shell LTW" type="Application" factoryName="Application" singleton="true">
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     <option name="MAIN_CLASS_NAME" value="net.proteusframework.shell.ProteusShell" />
-    <option name="VM_PARAMETERS" value="-javaagent:$PROJECT_DIR$/runtime-aspects/spring-instrument.jar -javaagent:$PROJECT_DIR$/runtime-aspects/aspectjweaver.jar -Xmx1024m -XX:MaxPermSize=512m -Duser.timezone=UTC -Dspring.properties=&quot;file://$PROJECT_DIR$/src/main/webapp/META-INF/resources/contexts/development.properties&quot; -Dspring.config=com.example.app.config.MyAppConfig" />
+    <option name="VM_PARAMETERS" value="-javaagent:$PROJECT_DIR$/runtime-aspects/spring-instrument.jar -javaagent:$PROJECT_DIR$/runtime-aspects/aspectjweaver.jar -Xmx1024m -XX:MaxPermSize=512m -Duser.timezone=UTC -Dspring.properties=&quot;file://$PROJECT_DIR$/src/main/webapp/META-INF/resources/contexts/development.properties&quot; -Dspring.config=com.example.app.config.ExampleAppProjectConfig" />
     <option name="PROGRAM_PARAMETERS" value="" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -17,6 +17,7 @@
       <option name="TRANSPORT" value="0" />
       <option name="LOCAL" value="true" />
     </RunnerSettings>
+    <RunnerSettings RunnerId="Profile " />
     <RunnerSettings RunnerId="Run" />
     <ConfigurationWrapper RunnerId="Debug" />
     <ConfigurationWrapper RunnerId="Run" />

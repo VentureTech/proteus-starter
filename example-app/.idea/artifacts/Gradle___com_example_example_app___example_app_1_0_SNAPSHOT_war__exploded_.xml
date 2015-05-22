@@ -8,10 +8,9 @@
           <element id="module-output" name="example-app" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="Gradle: milton-api-1.5.0" />
+          <element id="library" level="project" name="Gradle: antlr-2.7.7" />
           <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity.db.generic-1.0.1.v201107221459" />
           <element id="library" level="project" name="Gradle: jcaptcha-1.0" />
-          <element id="library" level="project" name="Gradle: commons-math-1.2" />
           <element id="library" level="project" name="Gradle: jbcrypt-0.3m" />
           <element id="library" level="project" name="Gradle: jsch.agentproxy.sshagent-0.0.6" />
           <element id="library" level="project" name="Gradle: itext-2.1.7" />
@@ -24,7 +23,6 @@
           <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.hsqldb.dbdefinition-1.0.0.v201107221502" />
           <element id="library" level="project" name="Gradle: org.apache.batik.css-1.6.0" />
           <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity.oda.design-3.3.6.v201212070447" />
-          <element id="library" level="project" name="Gradle: mime-util-2.1.1" />
           <element id="library" level="project" name="Gradle: poi-ooxml-schemas-3.9" />
           <element id="library" level="project" name="Gradle: ecs-1.4.2" />
           <element id="library" level="project" name="Gradle: org.eclipse.jgit-2.2.0.201212191850-r" />
@@ -45,20 +43,13 @@
           <element id="library" level="project" name="Gradle: org.mozilla.javascript-1.7.2" />
           <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.mysql-1.0.4.v201212120617" />
           <element id="library" level="project" name="Gradle: flute-1.3" />
-          <element id="library" level="project" name="Gradle: jdom-1.0" />
           <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.oracle.dbdefinition-1.0.103.v201206010214" />
           <element id="library" level="project" name="Gradle: opencsv-2.3" />
           <element id="library" level="project" name="Gradle: org.eclipse.equinox.app-1.3.100.v20130327-1442" />
-          <element id="library" level="project" name="Gradle: rome-1.0" />
-          <element id="library" level="project" name="Gradle: rome-modules-1.0" />
           <element id="library" level="project" name="Gradle: org.eclipse.osgi.services-3.3.100.v20130513-1956" />
-          <element id="library" level="project" name="Gradle: jsr250-api-1.0" />
           <element id="library" level="project" name="Gradle: platform-3.4.0" />
-          <element id="library" level="project" name="Gradle: jackson-databind-2.1.1" />
           <element id="library" level="project" name="Gradle: bctsp-jdk14-1.38" />
-          <element id="library" level="project" name="Gradle: org.apache.commons.codec-1.3.0" />
           <element id="library" level="project" name="Gradle: org.apache.batik.dom.svg-1.6.0" />
-          <element id="library" level="project" name="Gradle: sac-1.3" />
           <element id="library" level="project" name="Gradle: org.eclipse.datatools.modelbase.sql.query-1.1.4.v201212120619" />
           <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.msft.sqlserver.dbdefinition-1.0.1.v201201240505" />
           <element id="library" level="project" name="Gradle: validation-api-1.1.0.Final" />
@@ -106,26 +97,21 @@
           <element id="library" level="project" name="Gradle: org.apache.xml.resolver-1.2.0" />
           <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity.oda.consumer-3.2.6.v201305170644" />
           <element id="library" level="project" name="Gradle: org.eclipse.jgit.ui-2.2.0.201212191850-r" />
-          <element id="library" level="project" name="Gradle: jackson-core-2.1.1" />
           <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity.dbdefinition.genericJDBC-1.0.1.v201107221459" />
           <element id="library" level="project" name="Gradle: mail-1.5.0-b01" />
           <element id="library" level="project" name="Gradle: jna-3.4.0" />
           <element id="library" level="project" name="Gradle: commons-cli-1.0" />
-          <element id="library" level="project" name="Gradle: org.apache.batik.pdf-1.6.0" />
           <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity.console.profile-1.0.10.v201109250955" />
           <element id="library" level="project" name="Gradle: com.lowagie.text-2.1.7" />
           <element id="library" level="project" name="Gradle: org.apache.batik.xml-1.6.0" />
           <element id="library" level="project" name="Gradle: org.apache.batik.util.gui-1.6.0" />
           <element id="library" level="project" name="Gradle: org.eclipse.core.contenttype-3.4.200.v20130326-1255" />
           <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.ibm.db2.luw.dbdefinition-1.0.4.v201107221502" />
-          <element id="library" level="project" name="Gradle: jackson-annotations-2.1.1" />
           <element id="library" level="project" name="Gradle: javax.wsdl-1.5.1" />
-          <element id="library" level="project" name="Gradle: parboiled-0.9.7.2" />
           <element id="library" level="project" name="Gradle: org.eclipse.datatools.modelbase.dbdefinition-1.0.2.v201107221519" />
           <element id="library" level="project" name="Gradle: jsch-0.1.49" />
           <element id="library" level="project" name="Gradle: xuggler-5.4.0" />
           <element id="library" level="project" name="Gradle: jetty-all-8.1.14.v20131031" />
-          <element id="library" level="project" name="Gradle: aws-java-sdk-1.6.12" />
           <element id="library" level="project" name="Gradle: jandex-1.1.0.Final" />
           <element id="library" level="project" name="Gradle: classmate-1.0.0" />
           <element id="library" level="project" name="Gradle: hibernate-jpa-2.1-api-1.0.0.Final" />
@@ -152,7 +138,6 @@
           <element id="library" level="project" name="Gradle: commons-lang-2.0" />
           <element id="library" level="project" name="Gradle: org.eclipse.datatools.enablement.msft.sqlserver-1.0.2.v201212120617" />
           <element id="library" level="project" name="Gradle: commons-fileupload-1.3.1" />
-          <element id="library" level="project" name="Gradle: fredck-fckeditor-4.4.1" />
           <element id="library" level="project" name="Gradle: spring-test-4.0.9.RELEASE" />
           <element id="library" level="project" name="Gradle: spring-context-4.0.9.RELEASE" />
           <element id="library" level="project" name="Gradle: spring-beans-4.0.9.RELEASE" />
@@ -164,7 +149,6 @@
           <element id="library" level="project" name="Gradle: spring-web-4.0.9.RELEASE" />
           <element id="library" level="project" name="Gradle: spring-orm-4.0.9.RELEASE" />
           <element id="library" level="project" name="Gradle: guava-18.0" />
-          <element id="library" level="project" name="Gradle: jetty-jsp-8.1.16.v20140903" />
           <element id="library" level="project" name="Gradle: spring-expression-4.0.9.RELEASE" />
           <element id="library" level="project" name="Gradle: icu4j-54.1.1" />
           <element id="library" level="project" name="Gradle: hibernate-validator-5.1.2.Final" />
@@ -193,78 +177,55 @@
           <element id="library" level="project" name="Gradle: org.eclipse.datatools.connectivity.oda-3.4.3.v201405301249" />
           <element id="library" level="project" name="Gradle: org.eclipse.emf-2.6.0.v20140901-1055" />
           <element id="library" level="project" name="Gradle: org.eclipse.birt.runtime-4.4.1a" />
-          <element id="library" level="project" name="Gradle: joda-time-2.7" />
           <element id="library" level="project" name="Gradle: aspectjrt-1.8.5" />
           <element id="library" level="project" name="Gradle: commons-logging-1.2" />
-          <element id="library" level="project" name="Gradle: commons-io-2.4" />
           <element id="library" level="project" name="Gradle: disruptor-3.3.0" />
-          <element id="library" level="project" name="Gradle: commons-codec-1.9" />
           <element id="library" level="project" name="Gradle: jcommander-1.27" />
           <element id="library" level="project" name="Gradle: testng-6.8.13" />
-          <element id="library" level="project" name="Gradle: gson-2.3" />
-          <element id="library" level="project" name="Gradle: drivers-1.0" />
-          <element id="library" level="project" name="Gradle: commons-exec-1.1" />
-          <element id="library" level="project" name="Gradle: reflections-0.9.9-RC1" />
-          <element id="library" level="project" name="Gradle: velocity-1.4" />
-          <element id="library" level="project" name="Gradle: reportng-1.1.2" />
-          <element id="library" level="project" name="Gradle: cglib-nodep-2.1_3" />
-          <element id="library" level="project" name="Gradle: selenium-api-2.44.0" />
-          <element id="library" level="project" name="Gradle: selenium-remote-driver-2.44.0" />
-          <element id="library" level="project" name="Gradle: selenium-chrome-driver-2.44.0" />
-          <element id="library" level="project" name="Gradle: selenium-firefox-driver-2.44.0" />
-          <element id="library" level="project" name="Gradle: selenium-ie-driver-2.44.0" />
-          <element id="library" level="project" name="Gradle: netty-3.5.2.Final" />
-          <element id="library" level="project" name="Gradle: webbit-0.4.14" />
-          <element id="library" level="project" name="Gradle: selenium-safari-driver-2.44.0" />
-          <element id="library" level="project" name="Gradle: selenium-support-2.44.0" />
-          <element id="library" level="project" name="Gradle: serializer-2.7.1" />
-          <element id="library" level="project" name="Gradle: xalan-2.7.1" />
-          <element id="library" level="project" name="Gradle: commons-lang3-3.3.2" />
-          <element id="library" level="project" name="Gradle: htmlunit-core-js-2.15" />
-          <element id="library" level="project" name="Gradle: xercesImpl-2.11.0" />
-          <element id="library" level="project" name="Gradle: nekohtml-1.9.21" />
-          <element id="library" level="project" name="Gradle: jetty-util-8.1.15.v20140411" />
-          <element id="library" level="project" name="Gradle: jetty-io-8.1.15.v20140411" />
-          <element id="library" level="project" name="Gradle: jetty-http-8.1.15.v20140411" />
-          <element id="library" level="project" name="Gradle: jetty-websocket-8.1.15.v20140411" />
-          <element id="library" level="project" name="Gradle: htmlunit-2.15" />
-          <element id="library" level="project" name="Gradle: selenium-htmlunit-driver-2.44.0" />
-          <element id="library" level="project" name="Gradle: selenium-java-2.44.0" />
-          <element id="library" level="project" name="Gradle: phantomjsdriver-1.2.1" />
-          <element id="library" level="project" name="Gradle: cglib-2.2.1-v20090111" />
-          <element id="library" level="project" name="Gradle: guice-3.0" />
-          <element id="library" level="project" name="Gradle: velocity-dep-1.4" />
-          <element id="library" level="project" name="Gradle: proteusframework-0.13.1" />
           <element id="library" level="project" name="Gradle: log4j-api-2.2" />
           <element id="library" level="project" name="Gradle: log4j-jul-2.2" />
           <element id="library" level="project" name="Gradle: log4j-core-2.2" />
           <element id="library" level="project" name="Gradle: slf4j-api-1.7.12" />
           <element id="library" level="project" name="Gradle: log4j-slf4j-impl-2.2" />
           <element id="library" level="project" name="Gradle: log4j-jcl-2.2" />
-          <element id="library" level="project" name="Gradle: groovy-all-2.3.11" />
-          <element id="library" level="project" name="Gradle: tomcat-juli-7.0.61" />
-          <element id="library" level="project" name="Gradle: tomcat-jdbc-7.0.61" />
           <element id="library" level="project" name="Gradle: aspectjweaver-1.8.5" />
-          <element id="library" level="project" name="Gradle: proteusframework-core-0.13.1" />
-          <element id="library" level="project" name="Gradle: proteusframework-users-0.13.1" />
-          <element id="library" level="project" name="Gradle: proteusframework-internet-0.13.1" />
-          <element id="library" level="project" name="Gradle: proteusframework-ui-0.13.1" />
+          <element id="library" level="project" name="Gradle: proteusframework-0.14.0" />
+          <element id="library" level="project" name="Gradle: proteusframework-internet-0.14.0" />
+          <element id="library" level="project" name="Gradle: groovy-all-2.4.3" />
+          <element id="library" level="project" name="Gradle: tomcat-jdbc-7.0.62" />
+          <element id="library" level="project" name="Gradle: proteusframework-users-0.14.0" />
+          <element id="library" level="project" name="Gradle: proteusframework-ui-0.14.0" />
+          <element id="library" level="project" name="Gradle: jetty-jsp-8.1.17.v20150415" />
+          <element id="library" level="project" name="Gradle: tomcat-juli-7.0.62" />
+          <element id="library" level="project" name="Gradle: proteusframework-core-0.14.0" />
+          <element id="library" level="project" name="Gradle: proteusframework-communication-0.14.0" />
+          <element id="library" level="project" name="Gradle: org.apache.batik.pdf-1.6.0" />
+          <element id="library" level="project" name="Gradle: proteusframework-cms-0.14.0" />
+          <element id="library" level="project" name="Gradle: milton-api-1.5.0" />
+          <element id="library" level="project" name="Gradle: parboiled-0.9.7.2" />
+          <element id="library" level="project" name="Gradle: sac-1.3" />
+          <element id="library" level="project" name="Gradle: aws-java-sdk-1.6.12" />
+          <element id="library" level="project" name="Gradle: rome-1.0" />
           <element id="library" level="project" name="Gradle: cssparser-0.9.15" />
-          <element id="library" level="project" name="Gradle: proteusframework-cms-0.13.1" />
-          <element id="library" level="project" name="Gradle: proteusframework-testing-0.13.1" />
-          <element id="library" level="project" name="Gradle: proteusframework-data-0.13.1" />
-          <element id="library" level="project" name="Gradle: proteusframework-communication-0.13.1" />
-          <element id="library" level="project" name="Gradle: proteusframework-processes-0.13.1" />
-          <element id="library" level="project" name="Gradle: proteusframework-management-0.13.1" />
+          <element id="library" level="project" name="Gradle: fredck-fckeditor-4.4.1" />
+          <element id="library" level="project" name="Gradle: commons-math-1.2" />
+          <element id="library" level="project" name="Gradle: jsr250-api-1.0" />
+          <element id="library" level="project" name="Gradle: mime-util-2.1.1" />
+          <element id="library" level="project" name="Gradle: rome-modules-1.0" />
+          <element id="library" level="project" name="Gradle: jackson-core-2.1.1" />
+          <element id="library" level="project" name="Gradle: jackson-databind-2.1.1" />
+          <element id="library" level="project" name="Gradle: jackson-annotations-2.1.1" />
+          <element id="library" level="project" name="Gradle: jdom-1.0" />
+          <element id="library" level="project" name="Gradle: proteusframework-management-0.14.0" />
+          <element id="library" level="project" name="Gradle: proteusframework-processes-0.14.0" />
+          <element id="library" level="project" name="Gradle: proteusframework-data-0.14.0" />
+          <element id="library" level="project" name="Gradle: commons-io-2.3" />
+          <element id="library" level="project" name="Gradle: commons-collections-3.2" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.2.4/a60a5e993c98c864010053cb901b7eab25306568/gson-2.2.4.jar" />
           <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.orbit/org.objectweb.asm/3.3.1.v201105211655/b95d8d7d1a57cf46d9f0e924f8864f94159bffd3/org.objectweb.asm-3.3.1.v201105211655.orbit" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/antlr/antlr/2.7.7/83cd2cd674a217ade95a4bb83a8a14f351f48bd0/antlr-2.7.7.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.inject/javax.inject/1/6975da39a7040257bd51d21a231b76c915872d38/javax.inject-1.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.7/5599707a3eaad13e889f691b3af78c8c03842195/joda-time-2.7.jar" />
           <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.beanshell/bsh/2.0b4/a05f0a0feefa8d8467ac80e16e7de071489f0d9c/bsh-2.0b4.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-collections/commons-collections/3.2.1/761ea405b9b37ced573d2df0d1e3a4e0f9edc668/commons-collections-3.2.1.jar" />
-          <element id="library" level="project" name="Gradle: antlr-2.7.7" />
-          <element id="library" level="project" name="Gradle: commons-collections-3.2.1" />
-          <element id="library" level="project" name="Gradle: bsh-2.0b4" />
-          <element id="library" level="project" name="Gradle: javax.inject-1" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.6/b7f0fc8f61ecadeb3695f0b9464755eee44374d4/commons-codec-1.6.jar" />
         </element>
       </element>
       <element id="directory" name="META-INF">
