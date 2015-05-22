@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) Interactive Information R & D (I2RD) LLC.
+  ~ All Rights Reserved.
+  ~
+  ~ This software is confidential and proprietary information of
+  ~ I2RD LLC ("Confidential Information"). You shall not disclose
+  ~ such Confidential Information and shall use it only in
+  ~ accordance with the terms of the license agreement you entered
+  ~ into with I2RD.
+  -->
+
+<Configuration status="debug" name="proteus" monitorInterval="90">
+
+    <Appenders>
+        <Console name="STDOUT">
+            <PatternLayout pattern="%date %-5level %X %t %c{3} - %message%n"/>
+        </Console>
+<!--        <Socket name="Logstash" host="${sys:logstash.host}" port="${sys:logstash.port}" protocol="TCP"
+                reconnectionDelayMillis="30000" ignoreExceptions="false"
+                immediateFail="false">
+            <ProteusJSONLayout/>
+        </Socket>-->
+    </Appenders>
+
+    <Loggers>
+
+
+        <!--  Silence overly verbose startup information. Comment out if you are experiencing issues. -->
+        <Logger name="org.drools.spring.factory.RuleBuilder" level="warn"/>
+
+        <Root level="info" includeLocation="false">
+            <AppenderRef ref="STDOUT">
+                <Filters>
+                    <ThreadContextMapFilter onMatch="DENY" onMismatch="NEUTRAL">
+                        <KeyValuePair key="type" value="access-origin"/>
+                    </ThreadContextMapFilter>
+                    <ThreadContextMapFilter onMatch="DENY" onMismatch="NEUTRAL">
+                        <KeyValuePair key="type" value="vm-stats"/>
+                    </ThreadContextMapFilter>
+                </Filters>
+            </AppenderRef>
+            <!--<AppenderRef ref="Logstash"/>-->
+        </Root>
+    </Loggers>
+
+</Configuration>

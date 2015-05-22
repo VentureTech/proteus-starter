@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration status="debug" name="proteus" monitorInterval="90">
+
+    <Appenders>
+        <Console name="STDOUT">
+            <PatternLayout pattern="%date %-5level %X %t %c{3} - %message%n"/>
+        </Console>
+
+        <Socket name="LogstashSocket" host="${sys:logstash.host}" port="${sys:logstash.port}" protocol="TCP"
+                reconnectionDelayMillis="1000" ignoreExceptions="false"
+                immediateFail="false">
+            <ProteusJSONLayout/>
+        </Socket>
+
+        <RollingRandomAccessFile name="LogstashFile" immediateFlush="false" fileName="logs/logstash.log"
+                                         filePattern="logs/logstash-%d{yyyy-MM-dd}-%i.log.gz">
+            <ProteusJSONLayout/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="FILE" immediateFlush="false" fileName="logs/log4j.log"
+                                         filePattern="logs/$${date:yyyy-MM}/log4j-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="%date %-5level %X %t %c{3} - %message%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <Failover name="Logstash" primary="LogstashSocket">
+            <Failovers>
+                <AppenderRef ref="LogstashFile"/>
+            </Failovers>
+        </Failover>
+
+    </Appenders>
+
+
+    <Loggers>
+        <!-- Hibernate and its dependents -->
+        <Logger name="org.hibernate" level="warn"/>
+        <Logger name="org.hibernate.engine.loading.LoadContexts" level="error"/>
+        <Logger name="org.hibernate.cache.EhCacheProvider" level="error"/>
+        <Logger name="org.hibernate.hql.ast.AST" level="info"/>
+
+        <!--  Silence overly verbose startup information. Comment out if you are experiencing issues. -->
+        <Logger name="org.drools.spring.factory.RuleBuilder" level="warn"/>
+        <Logger name="org.springframework.beans.factory.xml.XmlBeanDefinitionReader" level="warn"/>
+        <Logger name="org.springframework.beans.factory.support.DefaultListableBeanFactory" level="warn"/>
+        <Logger name="org.hibernate.cfg.HbmBinder" level="warn"/>
+        <Logger name="org.hibernate.cfg.AnnotationBinder" level="warn"/>
+        <Logger name="org.hibernate.cfg.annotations.EntityBinder" level="warn"/>
+        <Logger name="org.hibernate.tool.hbm2ddl.TableMetadata" level="warn"/>
+        <Logger name="org.hibernate.engine.internal.StatefulPersistenceContext" level="error"/>
+        <Logger name="org.hibernate" level="warn"/>
+        <Logger name="org.springframework.context.support.AbstractRefreshableApplicationContext" level="warn"/>
+        <Logger name="net.proteusframework.core.locale.JDBCLocaleSource" level="warn"/>
+        <Logger name="net.proteusframework.core.hibernate.HibernateSessionHelper" level="warn"/>
+        <Logger name="org.hibernate.cache.internal.StandardQueryCache" level="warn"/>
+        <Logger name="org.springframework.context.support.ClassPathXmlApplicationContext" level="warn"/>
+        <Logger name="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" level="warn"/>
+        <Logger name="org.hibernate.Version" level="warn"/>
+        <Logger name="org.hibernate.internal.SessionFactoryImpl" level="warn"/>
+        <Logger name="org.hibernate.hql.internal.ast.ASTQueryTranslatorFactory" level="warn"/>
+        <Logger name="org.hibernate.cache.spi.UpdateTimestampsCache" level="warn"/>
+        <Logger name="net.proteusframework.core.hibernate.dao.EntityRetrieverImpl" level="warn"/>
+        <Logger name="org.springframework.core.CollectionFactory" level="warn"/>
+        <Logger name="org.hibernate.dialect.Dialect" level="warn"/>
+        <Logger name="velocity" level="warn"/>
+        <Logger name="org.springframework.context.support.FileSystemXmlApplicationContext" level="warn"/>
+        <Logger name="org.hibernate.cfg.SettingsFactory" level="warn"/>
+        <Logger name="org.hibernate.cfg.Environment" level="warn"/>
+        <Logger name="com.amazonaws.request" level="warn"/>
+        <Logger name="org.hibernate.engine.internal.StatefulPersistenceContext" level="error"/>
+
+        <!--  Silence overly verbose startup information. Comment out if you are experiencing issues. -->
+        <Logger name="org.drools.spring.factory.RuleBuilder" level="warn"/>
+
+        <Root level="info">
+
+            <!--<AppenderRef ref="STDOUT">
+                <Filters>
+                    <ThreadContextMapFilter onMatch="DENY" onMismatch="NEUTRAL">
+                        <KeyValuePair key="type" value="access-origin"/>
+                    </ThreadContextMapFilter>
+                    <ThreadContextMapFilter onMatch="DENY" onMismatch="NEUTRAL">
+                        <KeyValuePair key="type" value="vm-stats"/>
+                    </ThreadContextMapFilter>
+                </Filters>
+            </AppenderRef>-->
+
+            <!--<AppenderRef ref="FILE">
+                <Filters>
+                    <ThreadContextMapFilter onMatch="DENY" onMismatch="NEUTRAL">
+                        <KeyValuePair key="type" value="access-origin"/>
+                    </ThreadContextMapFilter>
+                    <ThreadContextMapFilter onMatch="DENY" onMismatch="NEUTRAL">
+                        <KeyValuePair key="type" value="vm-stats"/>
+                    </ThreadContextMapFilter>
+                </Filters>
+            </AppenderRef>-->
+
+            <!--<AppenderRef ref="LogstashFile"/>-->
+
+            <AppenderRef ref="Logstash"/>
+        </Root>
+    </Loggers>
+
+</Configuration>
