@@ -23,6 +23,7 @@ import org.jsoup.safety.Whitelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -60,6 +61,7 @@ import static net.proteusframework.core.locale.TextSources.createText;
 
 /**
  * UI view for UserProfile.
+ *
  * @author Russ Tennant (russ@venturetech.net)
  */
 @Configurable
@@ -75,7 +77,64 @@ public class UserProfileViewer extends Container
     private UserProfileDAO _userProfileDAO;
 
     /**
+     * Get the about me.
+     *
+     * @param videoLink the video link.
+     * @param videoLinkURI the video link uRI.
+     * @param videoLinkComponent the video link component.
+     * @return the about me component or null.
+     */
+    @Nullable
+    static Component getAboutMe(URL videoLink, URI videoLinkURI, URILink videoLinkComponent)
+    {
+        Component aboutMeVideo = null;
+        IMediaUtility util = MediaUtilityFactory.getUtility();
+        try
+        {
+            // Check if we can parse the media and it has a stream we like.
+            /// In our made up example, we're only accepting H.264 video. We don't care about the audio in this example.
+            IMediaMetaData mmd;
+            if (util.isEnabled()
+                && videoLinkURI != null
+                && (mmd = util.getMetaData(videoLinkURI.toString())).getStreams().length > 0)
+            {
+                int width = 853, height = 480; // 480p default
+                boolean hasVideo = false;
+                for (IMediaStream stream : mmd.getStreams())
+                {
+                    if (stream.getCodec().getType() == ICodec.Type.video
+                        && "H264".equals(stream.getCodec().name()))
+                    {
+                        hasVideo = true;
+                        if (stream.getWidth() > 0)
+                        {
+                            width = stream.getWidth();
+                            height = stream.getHeight();
+                        }
+                        break;
+                    }
+                }
+                if (hasVideo)
+                {
+                    Media component = new Media();
+                    component.setMediaType(Media.MediaType.video);
+                    component.addSource(new MediaSource(videoLinkURI));
+                    component.setFallbackContent(videoLinkComponent);
+                    component.setSize(new PixelMetric(width), new PixelMetric(height));
+                    aboutMeVideo = component;
+                }
+            }
+        }
+        catch (IllegalArgumentException | RemoteException e)
+        {
+            _logger.error("Unable to get media information for " + videoLink, e);
+        }
+        return aboutMeVideo;
+    }
+
+    /**
      * Create a new viewer.
+     *
      * @param profile the profile.
      */
     public UserProfileViewer(UserProfile profile)
@@ -125,18 +184,18 @@ public class UserProfileViewer extends Container
         // Sometimes it is easier and less error prone to make a component non-visible
         /// than checking for null on each use. Use this pattern with care. You don't
         /// want to consume a lot of resource unnecessarily.
-        if(isEmptyString(namePrefix.getText())) namePrefix.setVisible(false);
-        if(isEmptyString(nameSuffix.getText())) nameSuffix.setVisible(false);
+        if (isEmptyString(namePrefix.getText())) namePrefix.setVisible(false);
+        if (isEmptyString(nameSuffix.getText())) nameSuffix.setVisible(false);
 
         // Address
         Address address = userProfile.getPostalAddress();
         // Address lines are always on their own line so we make sure they are enclosed by a block element like a DIV..
         final Label addressLine1 = new Label();
-        addressLine1.withHTMLElement(HTMLElement.div).addClassName("prop").addClassName("address_line");
+        addressLine1.withHTMLElement(HTMLElement.div).addClassName("prop").addClassName("address-line");
         final Label addressLine2 = new Label();
-        addressLine2.withHTMLElement(HTMLElement.div).addClassName("prop").addClassName("address_line");
-        if(address.getAddressLines().length > 0) addressLine1.setText(createText(address.getAddressLines()[0]));
-        if(address.getAddressLines().length > 1) addressLine2.setText(createText(address.getAddressLines()[1]));
+        addressLine2.withHTMLElement(HTMLElement.div).addClassName("prop").addClassName("address-line");
+        if (address.getAddressLines().length > 0) addressLine1.setText(createText(address.getAddressLines()[0]));
+        if (address.getAddressLines().length > 1) addressLine2.setText(createText(address.getAddressLines()[1]));
         final HTMLComponent city = new HTMLComponent();
         // The "prop" class name is part of the standard HTML structure. It is always a good idea to also
         /// add a specific class name like "city" in this example. Please be consistent when using class names.
@@ -144,7 +203,7 @@ public class UserProfileViewer extends Container
         /// that means something similar like "town" or "locality". Consistency has a big impact on
         /// the time required to style HTML as well as the ability to reuse CSS.
         city.withHTMLElement(HTMLElement.span).addClassName("prop").addClassName("city");
-        if(!isEmptyString(address.getCity()))
+        if (!isEmptyString(address.getCity()))
         {
             // Our microdata for the city shouldn't include the comma, so this is a bit more complicated than the other examples.
             city.setText(createText("<span itemprop=\"addressLocality\">" + address.getCity()
@@ -172,7 +231,7 @@ public class UserProfileViewer extends Container
         /// Sometimes you'll do this sanitation prior to persisting the data. It depends on whether or not you need to
         /// keep the original unsanitized HTML around.
         String processedHTML = userProfile.getAboutMeProse();
-        if(!isEmptyString(processedHTML))
+        if (!isEmptyString(processedHTML))
         {
             // Process the HTML converting links as necessary (adding JSESSIONID(s)
             /// for URL based session tracking, converting resource links to increase concurrent loading limit,
@@ -200,9 +259,10 @@ public class UserProfileViewer extends Container
         final HTMLComponent aboutMeProse = new HTMLComponent(processedHTML);
         Component aboutMeVideo = null;
         URL videoLink = userProfile.getAboutMeVideoLink();
-        if(videoLink != null)
+        if (videoLink != null)
         {
-            // There are several ways to link to media (Youtube video URL, Vimeo video URL, Flickr URL, internally hosted media file, etc).
+            // There are several ways to link to media (Youtube video URL, Vimeo video URL, Flickr URL,
+            // internally hosted media file, etc).
             /// You can link to it.
             /// You can embed it. See http://oembed.com/ for a common protocol for doing this.
             /// If the link is to the media itself, you can create a player for it.
@@ -210,48 +270,8 @@ public class UserProfileViewer extends Container
             final URI videoLinkURI = _userProfileDAO.toURI(videoLink, null);
             URILink videoLinkComponent = new URILink(videoLinkURI, createText("My Video"));
             videoLinkComponent.setTarget("_blank");
-            IMediaUtility util = MediaUtilityFactory.getUtility();
-            try
-            {
-                // Check if we can parse the media and it has a stream we like.
-                /// In our made up example, we're only accepting H.264 video. We don't care about the audio in this example.
-                IMediaMetaData mmd;
-                if(util.isEnabled()
-                    && videoLinkURI != null
-                    && (mmd=util.getMetaData(videoLinkURI.toString())).getStreams().length > 0)
-                {
-                    int width = 853, height = 480; // 480p default
-                    boolean hasVideo = false;
-                    for(IMediaStream stream : mmd.getStreams())
-                    {
-                        if(stream.getCodec().getType() == ICodec.Type.video
-                            && "H264".equals(stream.getCodec().name()))
-                        {
-                            hasVideo = true;
-                            if(stream.getWidth() > 0)
-                            {
-                                width = stream.getWidth();
-                                height = stream.getHeight();
-                            }
-                            break;
-                        }
-                    }
-                    if(hasVideo)
-                    {
-                        Media component = new Media();
-                        component.setMediaType(Media.MediaType.video);
-                        component.addSource(new MediaSource(videoLinkURI));
-                        component.setFallbackContent(videoLinkComponent);
-                        component.setSize(new PixelMetric(width), new PixelMetric(height));
-                        aboutMeVideo = component;
-                    }
-                }
-            }
-            catch(IllegalArgumentException | RemoteException e)
-            {
-                _logger.error("Unable to get media information for " + videoLink, e);
-            }
-            if(aboutMeVideo == null)
+            aboutMeVideo = getAboutMe(videoLink, videoLinkURI, videoLinkComponent);
+            if (aboutMeVideo == null)
             {
                 // We could check for oEmbed support in case link was to youtube, vimeo, etc - http://oembed.com/
                 // Since this is an example, we'll just output the link.
@@ -260,7 +280,7 @@ public class UserProfileViewer extends Container
         }
         ImageComponent picture = null;
         final FileEntity userProfilePicture = userProfile.getPicture();
-        if(userProfilePicture != null)
+        if (userProfilePicture != null)
         {
             picture = new ImageComponent(new Image(userProfilePicture));
             picture.setImageCaching(userProfilePicture.getLastModifiedTime().before(
@@ -285,26 +305,26 @@ public class UserProfileViewer extends Container
 
         // Add wrapping DIV to group address lines if necessary.
         Component streetAddress = (!isEmptyString(addressLine1.getText()) && !isEmptyString(addressLine2.getText())
-            ? of(HTMLElement.div, "address_lines", addressLine1, addressLine2)
+            ? of(HTMLElement.div, "address-lines", addressLine1, addressLine2)
             : (isEmptyString(addressLine1.getText()) ? addressLine2 : addressLine1).withHTMLElement(HTMLElement.div));
         streetAddress.setAttribute("itemprop", "streetAddress");
         boolean hasAddress = (!isEmptyString(addressLine1.getText())
-            ||!isEmptyString(addressLine2.getText())
-            ||!isEmptyString(city.getText())
-            ||!isEmptyString(state.getText())
-            ||!isEmptyString(postalCode.getText())
+            || !isEmptyString(addressLine2.getText())
+            || !isEmptyString(city.getText())
+            || !isEmptyString(state.getText())
+            || !isEmptyString(postalCode.getText())
         );
         boolean hasPhone = !isEmptyString(phoneNumber.getText());
         boolean hasEmail = !isEmptyString(emailAddress.getText());
         // We only want to output the enclosing HTML if we have content to display.
-        if(hasAddress || hasPhone || hasEmail)
+        if (hasAddress || hasPhone || hasEmail)
         {
             Container contactContainer = of(HTMLElement.section,
                 "contact",
                 new Label(createText("Contact Information")).withHTMLElement(HTMLElement.h1)
             );
             add(contactContainer);
-            if(hasAddress)
+            if (hasAddress)
             {
                 contactContainer.add(of(HTMLElement.div,
                         "prop-group address",
@@ -321,28 +341,28 @@ public class UserProfileViewer extends Container
                         .setAttribute("itemtype", "http://schema.org/PostalAddress")
                 );
             }
-            if(hasPhone)
+            if (hasPhone)
             {
                 contactContainer.add(of(HTMLElement.div,
                         "prop phone",
                         new Label(createText("Phone")).withHTMLElement(HTMLElement.h2),
                         phoneNumber.setAttribute("itemprop", "telephone")
-                        )
+                    )
                 );
             }
-            if(hasEmail)
+            if (hasEmail)
             {
                 contactContainer.add(of(HTMLElement.div,
                         "prop email",
                         new Label(createText("Email")).withHTMLElement(HTMLElement.h2),
                         emailAddress.setAttribute("itemprop", "email")
-                        )
+                    )
                 );
             }
         }
 
 
-        if(twitterLink != null || facebookLink != null || linkedInLink != null)
+        if (twitterLink != null || facebookLink != null || linkedInLink != null)
         {
             Container social = of(
                 HTMLElement.section,
@@ -350,7 +370,7 @@ public class UserProfileViewer extends Container
                 new Label(createText("Social Media Links")).withHTMLElement(HTMLElement.h1)
             );
             add(social);
-            if(twitterLink != null)
+            if (twitterLink != null)
             {
                 twitterLink.setTarget("_blank");
                 twitterLink.setText(createText("Twitter Link"));
@@ -361,7 +381,7 @@ public class UserProfileViewer extends Container
                     twitterLink
                 ));
             }
-            if(facebookLink != null)
+            if (facebookLink != null)
             {
                 facebookLink.setTarget("_blank");
                 facebookLink.setText(createText("Facebook Link"));
@@ -372,7 +392,7 @@ public class UserProfileViewer extends Container
                     facebookLink
                 ));
             }
-            if(linkedInLink != null)
+            if (linkedInLink != null)
             {
                 linkedInLink.setTarget("_blank");
                 linkedInLink.setText(createText("LinkedIn Link"));
@@ -386,15 +406,15 @@ public class UserProfileViewer extends Container
         }
 
         final boolean hasAboutMeProse = isEmptyString(aboutMeProse.getText());
-        if(!hasAboutMeProse || aboutMeVideo != null)
+        if (!hasAboutMeProse || aboutMeVideo != null)
         {
             Container aboutMe = of(
                 HTMLElement.section,
-                "about_me",
+                "about-me",
                 new Label(createText("About Me")).withHTMLElement(HTMLElement.h1)
             );
             add(aboutMe);
-            if(picture != null)
+            if (picture != null)
             {
                 aboutMe.add(of(
                     HTMLElement.div,
@@ -403,7 +423,7 @@ public class UserProfileViewer extends Container
                     picture
                 ));
             }
-            if(hasAboutMeProse)
+            if (hasAboutMeProse)
             {
                 aboutMe.add(of(
                     HTMLElement.div,
@@ -412,7 +432,7 @@ public class UserProfileViewer extends Container
                     aboutMeProse
                 ));
             }
-            if(aboutMeVideo != null)
+            if (aboutMeVideo != null)
             {
                 Label label = new Label(createText("Video")).withHTMLElement(HTMLElement.label);
                 label.addClassName("vl");
@@ -429,6 +449,7 @@ public class UserProfileViewer extends Container
 
     /**
      * Get the user profile attached to the Hibernate Session or EntityManager.
+     *
      * @return the attached profile.
      */
     UserProfile getUserProfile()

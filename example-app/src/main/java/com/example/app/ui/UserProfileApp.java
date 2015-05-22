@@ -52,7 +52,6 @@ import net.proteusframework.ui.search.QLBuilderImpl;
 import net.proteusframework.ui.search.QLOrderByImpl;
 import net.proteusframework.ui.search.SearchModelImpl;
 import net.proteusframework.ui.search.SearchResultColumnImpl;
-import net.proteusframework.ui.search.SearchSupplier;
 import net.proteusframework.ui.search.SearchSupplierImpl;
 import net.proteusframework.ui.search.SearchUI;
 import net.proteusframework.ui.search.SearchUIApp;
@@ -70,7 +69,7 @@ import static net.proteusframework.ui.search.SearchUIImpl.Options;
 
 /**
  * Example application to demonstrate how to create and handle
- * UI views.
+ * UI views using a workspace.
  *
  * You'll want to attach the following files to the page this is on:
  * <ul>
@@ -107,7 +106,7 @@ public class UserProfileApp extends SearchUIApp
     /** Logger. */
     private static final Logger _logger = LogManager.getLogger(UserProfileApp.class);
 
-    /** Mock Data Access Object. */
+    /** Data Access Object. */
     @Autowired
     private UserProfileDAO _userProfileDAO;
     /** Site Loader. */
@@ -154,7 +153,54 @@ public class UserProfileApp extends SearchUIApp
      */
     public void setupSearch()
     {
-        SearchSupplier searchSupplier = createSearchSupplier();
+        SearchSupplierImpl searchSupplier = createSearchSupplier();
+        searchSupplier.setSearchUIOperationHandler(new SearchUIOperationHandlerImpl()
+        {
+            @Override
+            public boolean supportsOperation(SearchUIOperation operation)
+            {
+                switch (operation)
+                {
+                    case select:
+                    case edit:
+                    case delete:
+                    case view:
+                    case add:
+                        return true;
+                    case copy:
+                    default:
+                        return false;
+                }
+            }
+
+            @Override
+            public void handle(SearchUIOperationContext context)
+            {
+                switch (context.getOperation())
+                {
+
+                    case select:
+                    case view:
+                        viewUserProfiles(context);
+                        break;
+
+                    case edit:
+                        editUserProfiles(context);
+                        break;
+
+                    case delete:
+                        deleteUserProfiles(context);
+                        break;
+
+                    case add:
+                        addUserProfile();
+                        break;
+
+                    default:
+                        throw new AssertionError("Unhandled operation: " + context.getOperation());
+                }
+            }
+        });
         Options options = new Options("User Profile");
         ReflectiveAction addAction = CommonActions.ADD.defaultAction();
         addAction.setTarget(this, "addUserProfile");
@@ -201,7 +247,7 @@ public class UserProfileApp extends SearchUIApp
                 ReflectiveAction cancelAction = CommonActions.CANCEL.defaultAction();
                 PropertyEditor<UserProfile> propertyEditor = new PropertyEditor<>();
                 propertyEditor.setTitle(new Label(createText("User Profile")).withHTMLElement(HTMLElement.h2));
-                propertyEditor.setValueEditor(new UserProfileEditor(userProfile));
+                propertyEditor.setValueEditor(new UserProfileEditor());
                 propertyEditor.setPersistenceActions(saveAction, cancelAction);
 
                 // We are creating the action logic after creating the UI components
@@ -311,7 +357,7 @@ public class UserProfileApp extends SearchUIApp
      * This supplier has the name, description, and
      * @return a new supplier.
      */
-    SearchSupplier createSearchSupplier()
+    static SearchSupplierImpl createSearchSupplier()
     {
         SearchModelImpl searchModel = new SearchModelImpl();
         searchModel.setName("UserProfile Search");
@@ -390,53 +436,7 @@ public class UserProfileApp extends SearchUIApp
         searchSupplier.setDescription(UserProfileAppLOK.SEARCHSUPPLIER_DESCRIPTION());
         searchSupplier.setBuilderSupplier(() -> new QLBuilderImpl(UserProfile.class, "userProfile"));
         searchSupplier.setSearchModel(searchModel);
-        searchSupplier.setSearchUIOperationHandler(new SearchUIOperationHandlerImpl()
-        {
-            @Override
-            public boolean supportsOperation(SearchUIOperation operation)
-            {
-                switch (operation)
-                {
-                    case select:
-                    case edit:
-                    case delete:
-                    case view:
-                    case add:
-                        return true;
-                    case copy:
-                    default:
-                        return false;
-                }
-            }
 
-            @Override
-            public void handle(SearchUIOperationContext context)
-            {
-                switch (context.getOperation())
-                {
-
-                    case select:
-                    case view:
-                        viewUserProfiles(context);
-                        break;
-
-                    case edit:
-                        editUserProfiles(context);
-                        break;
-
-                    case delete:
-                        deleteUserProfiles(context);
-                        break;
-
-                    case add:
-                        addUserProfile();
-                        break;
-
-                    default:
-                        throw new AssertionError("Unhandled operation: " + context.getOperation());
-                }
-            }
-        });
 
 
         return searchSupplier;

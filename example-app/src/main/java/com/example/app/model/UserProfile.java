@@ -46,6 +46,8 @@ public class UserProfile implements TimeAuditable
 {
     /** Sequence name. */
     private final static String SEQ = "userprofile_seq";
+    /** identifier name. */
+    private static final String USERPROFILE_ID = "userprofile_id";
     /** Identifier. */
     private long _id;
     /** Name - we'll use some of the properties of this class. */
@@ -113,7 +115,7 @@ public class UserProfile implements TimeAuditable
     @NotNull
     @GeneratedValue(strategy = GenerationType.AUTO, generator = SEQ)
     @SequenceGenerator(name = SEQ, sequenceName = SEQ)
-    @Column(name = "userprofile_id")
+    @Column(name = USERPROFILE_ID)
     public Long getId()
     {
         return _id;

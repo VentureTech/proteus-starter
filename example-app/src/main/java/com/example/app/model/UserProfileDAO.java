@@ -181,8 +181,10 @@ public class UserProfileDAO extends DAOHelper
      *
      * @param userProfile the user profile to delete.
      */
-    public void deleteUserProfile(UserProfile userProfile)
+    public void deleteUserProfile(@Nullable UserProfile userProfile)
     {
+        if(userProfile == null)
+            return;
         beginTransaction();
         boolean success = false;
         try

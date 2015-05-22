@@ -117,12 +117,10 @@ public class UserProfileEditor extends Container
     /**
      * Create a new editor.
      *
-     * @param profile the profile.
      */
-    public UserProfileEditor(UserProfile profile)
+    public UserProfileEditor()
     {
         super();
-        setValue(profile);
     }
 
     @Override
@@ -134,8 +132,6 @@ public class UserProfileEditor extends Container
 
         // Add HTML element type and class names for presentation use
         withHTMLElement(HTMLElement.section);
-        addClassName("user_profile_editor");
-        addClassName("property_editor");
 
         UserProfile value = getValue();
         if (value == null) value = new UserProfile(); // Just so we don't have to check for null
@@ -147,9 +143,9 @@ public class UserProfileEditor extends Container
         // but that requires a bit more consideration
         //// related to how the violation is handled and presented to the user.
         _nameGiven = new TextEditor(TextSources.createText("First"), name.getFirst());
-        _nameGiven.addClassName("user_entry_required");
+        _nameGiven.addClassName("required");
         _nameFamily = new TextEditor(TextSources.createText("Last"), name.getLast());
-        _nameFamily.addClassName("user_entry_required");
+        _nameFamily.addClassName("required");
         _nameSuffix = new TextEditor(TextSources.createText("Suffix"), name.getSuffix());
         _nameGiven.setValueValidator(new RequiredValueValidator()
             .withErrorMessage(CommonValidationText.ARG0_IS_REQUIRED, "First Name"));
@@ -194,11 +190,11 @@ public class UserProfileEditor extends Container
             new Label(TextSources.createText("Contact Information")).withHTMLElement(HTMLElement.h1),
             of(HTMLElement.div,
                 "prop_group address",
-                _addressLine1.addClassName("address_line"),
-                _addressLine2.addClassName("address_line"),
+                _addressLine1.addClassName("address-line"),
+                _addressLine2.addClassName("address-line"),
                 _city.addClassName("city"),
                 _state.addClassName("state"),
-                _postalCode.addClassName("postal_code")
+                _postalCode.addClassName("postal-code")
             ),
             _emailAddress.addClassName("email"),
             _phoneNumber.addClassName("phone")
@@ -272,8 +268,9 @@ public class UserProfileEditor extends Container
     public UserProfile commitValue() throws MIWTException
     {
         UserProfile profile = getValue();
-        if(profile != null)
-            _updateUserProfileFromUI(profile);
+        if(profile == null)
+            profile = new UserProfile();
+        _updateUserProfileFromUI(profile);
         return profile;
     }
 
