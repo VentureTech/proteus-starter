@@ -156,7 +156,7 @@ dependencies {
     }
 }
 
-task wrapper(type: Wrapper) { gradleVersion = '2.2.1' } // Requires Intellij 13.1.x
+task wrapper(type: Wrapper) { gradleVersion = '2.4' } // Requires Intellij 13.1.x
 task createRuntimeAspectsLibs(type: Copy) {
     from configurations.runtimeaspects
     into "runtime-aspects"
@@ -311,9 +311,9 @@ configurations.all {
             }
         }
         // cache dynamic versions for ...
-        //cacheDynamicVersionsFor 0, 'seconds'
+//        cacheDynamicVersionsFor 0, 'seconds'
         // cache changing modules for ...
-        //cacheChangingModulesFor 0, 'seconds'
+//        cacheChangingModulesFor 0, 'seconds'
     }
 }
 
