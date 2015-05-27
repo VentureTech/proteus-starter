@@ -2,7 +2,7 @@
 # Example shell script to launch proteus shell from a standard
 #  layout. See redeploy for how this layout is typically setup.
 
-CONFIG_CLASS=com.example.app.config.MyAppConfig
+CONFIG_CLASS=com.example.app.config.ExampleAppProjectConfig
 PROPERTIES="file:///srv/tomcat/proteus-worker/conf/stage.properties"
 
 java -Dspring.config=${CONFIG_CLASS} \
