@@ -24,6 +24,7 @@ import net.proteusframework.core.CommandUtil;
 public class ExampleMain
 {
 
+    /** object . */
     private Object _object;
 
     /**
