@@ -494,6 +494,7 @@ public class UserProfileApp extends SearchUIApp
                 _userProfileDAO.deleteUserProfiles(currentSearchQLBuilder);
                 _logger.warn("Not viewing all profiles that match search.");
                 break;
+            default:break;
         }
     }
 
@@ -520,6 +521,7 @@ public class UserProfileApp extends SearchUIApp
             case search:
                 _logger.warn("Not viewing all profiles that match search.");
                 break;
+            default:break;
         }
     }
 
@@ -531,7 +533,6 @@ public class UserProfileApp extends SearchUIApp
     {
         switch (context.getDataContext())
         {
-
             case new_instance:
             case lead_selection:
                 UserProfile userProfile = context.getData();
@@ -546,6 +547,7 @@ public class UserProfileApp extends SearchUIApp
             case search:
                 _logger.warn("Not viewing all profiles that match search.");
                 break;
+            default:break;
         }
     }
 }
