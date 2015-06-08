@@ -129,6 +129,16 @@ dependencies {
     compiletimeaspects "org.springframework:spring-aspects:${version_spring}", "org.aspectj:aspectjtools:${aspectjVersion}"
 
     // App dependencies
+    compile "net.proteusframework:proteusframework-core:${version_proteus}"
+    //compile "net.proteusframework:proteusframework-testing:${version_proteus}"
+    compile "net.proteusframework:proteusframework-data:${version_proteus}"
+    compile "net.proteusframework:proteusframework-internet:${version_proteus}"
+    compile "net.proteusframework:proteusframework-ui:${version_proteus}"
+    compile "net.proteusframework:proteusframework-users:${version_proteus}"
+    compile "net.proteusframework:proteusframework-cms:${version_proteus}"
+    //compile "net.proteusframework:proteusframework-communication:${version_proteus}"
+    //compile "net.proteusframework:proteusframework-processes:${version_proteus}"
+    //compile "net.proteusframework:proteusframework-management:${version_proteus}"
     compile "net.proteusframework:proteusframework:${version_proteus}"
 
     // Most apps use spring.
