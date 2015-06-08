@@ -109,6 +109,7 @@ public class ExampleAppProjectConfig implements ApplicationListener
     {
         StaticKeyDataConfig config = new StaticKeyDataConfig();
         config.addScanPackage("com.example.app");
+        config.setUpdate(true);
         return config;
     }
 
