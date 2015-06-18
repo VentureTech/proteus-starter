@@ -105,6 +105,7 @@ war {
     classpath = jar.outputs.files + configurations.runtime
     if(warTaskSpecified) classpath = classpath - configurations.providedRuntime
 }
+
 configurations {
     runtimeaspects { transitive = false }
     compiletimeaspects { transitive = false }
@@ -153,7 +154,7 @@ dependencies {
         "org.springframework:spring-instrument:${version_spring}",
         "org.springframework:spring-aspects:${version_spring}"
 
-    testCompile 'junit:junit:4.11'
+    testCompile 'org.testng:testng:6.8.13'
 
 
     // These are for the war plugin
@@ -163,6 +164,43 @@ dependencies {
         providedCompile('javax.servlet.jsp:jsp-api:2.2'){ transitive = false }
         //providedCompile('org.eclipse.jetty.orbit:org.apache.jasper.glassfish:2.2+')
         providedCompile('org.eclipse.jetty:jetty-jsp:8+')
+    }
+}
+
+test {
+    useTestNG() {
+        includeGroups 'unit'
+        excludeGroups 'manual'
+    }
+
+    testLogging {
+        outputs.upToDateWhen {false} // Always generate report immediately
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+
+    options {
+        listeners << 'org.uncommons.reportng.HTMLReporter'
+        listeners << 'org.uncommons.reportng.JUnitXMLReporter'
+        listeners << 'org.testng.reporters.XMLReporter'
+    }
+}
+
+task browserTest(type: Test) {
+    useTestNG() {
+        includeGroups 'browser'
+        parallel 'tests'
+        threadCount 4
+    }
+
+    testLogging {
+        outputs.upToDateWhen {false} // Always generate report immediately
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+
+    options {
+        listeners << 'org.uncommons.reportng.HTMLReporter'
+        listeners << 'org.uncommons.reportng.JUnitXMLReporter'
+
     }
 }
 
