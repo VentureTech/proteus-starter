@@ -11,7 +11,7 @@
  
 package com.example.app;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 /**
  * This example is to prevent Jenkins build from failing due to no unit tests.
@@ -21,7 +21,7 @@ public class ExampleTest
 {
 
     /** Example test method.  */
-    @Test
+    @Test(groups = {"unit"})
     public void test() 
     {
         // Implement a test
