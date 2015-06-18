@@ -157,6 +157,7 @@ dependencies {
     testCompile "net.proteusframework:proteusframework-core:${version_proteus}"
     testCompile "net.proteusframework:proteusframework-testing:${version_proteus}"
     testCompile 'org.testng:testng:6.8.13'
+    testRuntime 'org.apache.derby:derby:10.11.+'
 
 
     // These are for the war plugin

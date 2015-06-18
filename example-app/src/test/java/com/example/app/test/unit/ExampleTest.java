@@ -9,17 +9,16 @@
  * into with I2RD.
  */
  
-package com.example.app;
+package com.example.app.test.unit;
 
+import com.example.app.test.core.BaseTest;
 import org.testng.annotations.Test;
-
-import com.i2rd.unit.test.BaseTestAnnotationConfig;
 
 /**
  * This example is to prevent Jenkins build from failing due to no unit tests.
  * @author Joe Developer
  */
-public class ExampleTest extends BaseTestAnnotationConfig
+public class ExampleTest extends BaseTest
 {
 
     /** Example test method.  */
