@@ -11,14 +11,13 @@
  
 package com.example.app.test.unit;
 
-import com.example.app.test.core.BaseTest;
 import org.testng.annotations.Test;
 
 /**
  * This example is to prevent Jenkins build from failing due to no unit tests.
  * @author Joe Developer
  */
-public class ExampleTest extends BaseTest
+public class ExampleTest //TODO: Add extends BaseTestAnnotationConfig when it becomes available again
 {
 
     /** Example test method.  */
