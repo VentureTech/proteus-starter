@@ -13,11 +13,13 @@ package com.example.app;
 
 import org.testng.annotations.Test;
 
+import com.i2rd.unit.test.BaseTestAnnotationConfig;
+
 /**
  * This example is to prevent Jenkins build from failing due to no unit tests.
  * @author Joe Developer
  */
-public class ExampleTest 
+public class ExampleTest extends BaseTestAnnotationConfig
 {
 
     /** Example test method.  */
