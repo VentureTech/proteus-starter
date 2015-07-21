@@ -113,17 +113,6 @@ configurations {
     runtimeaspects { transitive = false }
     compiletimeaspects { transitive = false }
 }
-// Add the APT generated folder to the java sourceSet for Intellij IDEA
-sourceSets {
-    main { java {srcDirs '.apt_generated'} }
-    test { java {srcDirs '.apt_generated_tests'} }
-}
-def aptGenPath = project.file("${project.projectDir}/.apt_generated").absolutePath
-def aptFilter = { p -> !p.path.startsWith(aptGenPath) }
-// Remove files in .apt_generated paths as we would have dups otherwise
-compileJava { source = source.filter(aptFilter) }
-compileTestJava { source = source.filter(aptFilter) }
-
 
 dependencies {
 
