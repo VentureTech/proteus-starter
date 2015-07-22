@@ -17,7 +17,7 @@ apply plugin: 'checkstyle'
 // Publishing
 apply plugin: 'ivy-publish'
 apply plugin: 'maven-publish'
-apply plugin: 'artifactory-publish'
+apply plugin: "com.jfrog.artifactory"
 
 apply plugin: 'war'
 
@@ -49,11 +49,11 @@ buildscript {
     dependencies {
         // aspectj-weave plugin for our use of Spring @Configurable
         classpath 'com.i2rd:gradle-aspectj-weave:1.1',
-                  'org.jfrog.buildinfo:build-info-extractor-gradle:2.2+',
-                  'org.ajoberstar:gradle-git:0.6.3'
-                  //'org.hibernate:hibernate-gradle-plugin:4.3.1.Final'
+                    'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1',
+                    'org.ajoberstar:gradle-git:0.6.3'
     }
 }
+
 
 task populateGitInfo(type: GitBranchList) {
     // If not in the root, change the repoPath
@@ -162,24 +162,23 @@ dependencies {
     }
 }
 
-//TODO: Update to use TestNG when core-tests package is available again
-//test {
-//    useTestNG() {
-//        includeGroups 'unit'
-//        excludeGroups 'manual'
-//    }
-//
-//    testLogging {
-//        outputs.upToDateWhen {false} // Always generate report immediately
-//        events "passed", "skipped", "failed", "standardOut", "standardError"
-//    }
-//
-//    options {
-//        listeners << 'org.uncommons.reportng.HTMLReporter'
-//        listeners << 'org.uncommons.reportng.JUnitXMLReporter'
-//        listeners << 'org.testng.reporters.XMLReporter'
-//    }
-//}
+test {
+    useTestNG() {
+        includeGroups 'unit'
+        excludeGroups 'manual'
+    }
+
+    testLogging {
+        outputs.upToDateWhen {false} // Always generate report immediately
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+
+    options {
+        listeners << 'org.uncommons.reportng.HTMLReporter'
+        listeners << 'org.uncommons.reportng.JUnitXMLReporter'
+        listeners << 'org.testng.reporters.XMLReporter'
+    }
+}
 //
 //task browserTest(type: Test) {
 //    useTestNG() {
@@ -200,7 +199,7 @@ dependencies {
 //    }
 //}
 
-task wrapper(type: Wrapper) { gradleVersion = '2.4' } // Requires Intellij 13.1.x
+task wrapper(type: Wrapper) { gradleVersion = '2.5' }
 task createRuntimeAspectsLibs(type: Copy) {
     from configurations.runtimeaspects
     into "runtime-aspects"
@@ -248,7 +247,7 @@ javadoc {
             'http://docs.oracle.com/javase/8/docs/api/',
             'http://docs.jboss.org/hibernate/orm/4.3/javadocs/', 'http://docs.jboss.org/hibernate/validator/5.0/api/',
             'http://docs.jboss.org/hibernate/annotations/3.5/api/', 'http://docs.jboss.org/hibernate/core/4.3/javadocs/',
-            "http://docs.spring.io/spring/docs/${version_spring}/javadoc-api/",
+            "http://docs.spring.io/spring/docs/${version_spring}/javadoc-api/".toString(),
             'http://docs.guava-libraries.googlecode.com/git-history/release/javadoc/'
     ]
 }
@@ -298,14 +297,20 @@ artifactory {
         }
         defaults {
             publications ('ivyPub', 'mavenPub')
-            properties = ['dd.status': version.status ]
+            properties = [
+                'status': version.status, 'release.status': version.status,
+                'build.status': version.status, 'commit': gitinfo.commit,
+                'branch': gitinfo.branch
+            ]
         }
     }
 
     resolve {
-        repoKey = 'repo'
-        username = repo_venturetech_username
-        password = repo_venturetech_password
+        repository {
+            repoKey = 'repo'
+            username = repo_venturetech_username
+            password = repo_venturetech_password
+        }
     }
 
     clientConfig.info.vcsRevision = gitinfo.commit

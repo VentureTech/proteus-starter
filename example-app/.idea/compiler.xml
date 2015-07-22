@@ -2,15 +2,6 @@
 <project version="4">
   <component name="AjcSettings">
     <option name="ajcPath" value="$PROJECT_DIR$/compiletime-aspects/aspectjtools.jar" />
-    <option name="explicitAspectPath" value="true" />
-    <option name="aspectPath">
-      <projectLibrary>
-        <option name="name" value="Gradle: spring-aspects-4.0.9.RELEASE" />
-      </projectLibrary>
-      <projectLibrary>
-        <option name="name" value="Gradle: log4j-core-2.2" />
-      </projectLibrary>
-    </option>
     <option name="delegateToJavac" value="true" />
   </component>
   <component name="CompilerConfiguration">
@@ -36,4 +27,3 @@
     </annotationProcessing>
   </component>
 </project>
-
