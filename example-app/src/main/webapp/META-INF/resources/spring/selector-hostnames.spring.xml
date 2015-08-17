@@ -39,8 +39,5 @@
         <property name="hostname" value="static3.#{systemProperties[DEFAULT_DOMAIN]}"></property>
     </bean>
 
-    <bean class="net.proteusframework.internet.http.resource.WeightedHostnameImpl">
-        <property name="hostname" value="static4.#{systemProperties[DEFAULT_DOMAIN]}"></property>
-    </bean>
 
 </beans>
