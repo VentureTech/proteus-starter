@@ -1,0 +1,39 @@
+
+test {
+    useTestNG() {
+        includeGroups 'unit'
+        excludeGroups 'manual'
+    }
+
+    testLogging {
+        outputs.upToDateWhen {false} // Always generate report immediately
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+
+    options {
+        listeners << 'org.uncommons.reportng.HTMLReporter'
+        listeners << 'org.uncommons.reportng.JUnitXMLReporter'
+        listeners << 'org.testng.reporters.XMLReporter'
+    }
+}
+
+
+//
+//task browserTest(type: Test) {
+//    useTestNG() {
+//        includeGroups 'browser'
+//        parallel 'tests'
+//        threadCount 4
+//    }
+//
+//    testLogging {
+//        outputs.upToDateWhen {false} // Always generate report immediately
+//        events "passed", "skipped", "failed", "standardOut", "standardError"
+//    }
+//
+//    options {
+//        listeners << 'org.uncommons.reportng.HTMLReporter'
+//        listeners << 'org.uncommons.reportng.JUnitXMLReporter'
+//
+//    }
+//}

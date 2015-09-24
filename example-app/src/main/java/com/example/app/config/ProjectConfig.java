@@ -17,14 +17,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextException;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import org.springframework.context.event.ApplicationContextEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -39,7 +37,7 @@ import static com.i2rd.hibernate.util.LocationQualifier.Type.entity_location;
 import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
 
 /**
- * Example configuration class.
+ * Project Configuration.
  *
  * @author Russ Tennant (russ@i2rd.com)
  */
@@ -66,10 +64,10 @@ import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
         ProteusWebAppConfig.PROTEUSFRAMEWORK_SPRING_PROPERTIES_PLACEHOLDER,
     }
 )
-public class ExampleAppProjectConfig implements ApplicationListener
+public class ProjectConfig implements ApplicationListener<ContextRefreshedEvent>
 {
     /** Logger. */
-    private static final Logger _logger = LogManager.getLogger(ExampleAppProjectConfig.class);
+    private static final Logger _logger = LogManager.getLogger(ProjectConfig.class);
     /*
      * If you would like to setup your own servlets or filters either
      *
@@ -142,27 +140,24 @@ public class ExampleAppProjectConfig implements ApplicationListener
      */
     @SuppressFBWarnings("DM_EXIT")
     @Override
-    public void onApplicationEvent(ApplicationEvent event)
+    public void onApplicationEvent(ContextRefreshedEvent event)
     {
-        if(event instanceof ContextRefreshedEvent)
+
+        if (!new AspectWeavingTest().isConfigured())
         {
-            if(!new AspectWeavingTest().isConfigured())
+            ApplicationContext applicationContext = event.getApplicationContext();
+            try
             {
-                ApplicationContextEvent ace = (ApplicationContextEvent) event;
-                ApplicationContext applicationContext = ace.getApplicationContext();
-                try
-                {
-                    if(applicationContext instanceof AbstractApplicationContext)
-                        ((AbstractApplicationContext)applicationContext).close();
-                }
-                finally
-                {
-                    ApplicationContextException ex = new ApplicationContextException(
-                        "AspectJ weaving is not working. Configure compile-time or load-time weaving.");
-                    _logger.fatal("AspectJ weaving misconfiguration.", ex);
-                }
-                System.exit(1);
+                if (applicationContext instanceof AbstractApplicationContext)
+                    ((AbstractApplicationContext) applicationContext).close();
             }
+            finally
+            {
+                ApplicationContextException ex = new ApplicationContextException(
+                    "AspectJ weaving is not working. Configure compile-time or load-time weaving.");
+                _logger.fatal("AspectJ weaving misconfiguration.", ex);
+            }
+            System.exit(1);
         }
 
     }

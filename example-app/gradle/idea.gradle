@@ -1,0 +1,7 @@
+idea {
+
+    module {
+        sourceDirs += file('.apt_generated')
+        testSourceDirs += file('.apt_generated_tests')
+    }
+}

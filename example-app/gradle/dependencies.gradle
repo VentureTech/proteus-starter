@@ -1,0 +1,73 @@
+def demoExists = project.file('src/demo').exists()
+if(demoExists){
+    sourceSets {
+        demo
+    }
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << '-Xlint:all,-deprecation,-processing'
+    options.incremental = true
+}
+compileTestJava { options.incremental = true }
+compileDemoJava {
+    options.incremental = true
+    options.compilerArgs << '-Xlint:all,-deprecation,-processing'
+}
+
+configurations {
+    runtimeaspects { transitive = false }
+    compiletimeaspects { transitive = false }
+    if(demoExists) {
+        demoCompile.extendsFrom compile
+        demoRuntime.extendsFrom compile
+    }
+}
+dependencies {
+
+    checkstyle("com.puppycrawl.tools:checkstyle:${version_checkstyle}")
+
+    runtimeaspects "org.springframework:spring-instrument:${version_spring}", "org.aspectj:aspectjweaver:${aspectjVersion}"
+    compiletimeaspects "org.springframework:spring-aspects:${version_spring}", "org.aspectj:aspectjtools:${aspectjVersion}"
+
+    // App dependencies
+    compile "net.proteusframework:proteusframework-core:${version_proteus}"
+    //compile "net.proteusframework:proteusframework-testing:${version_proteus}"
+    compile "net.proteusframework:proteusframework-data:${version_proteus}"
+    compile "net.proteusframework:proteusframework-internet:${version_proteus}"
+    compile "net.proteusframework:proteusframework-ui:${version_proteus}"
+    compile "net.proteusframework:proteusframework-users:${version_proteus}"
+    compile "net.proteusframework:proteusframework-cms:${version_proteus}"
+    //compile "net.proteusframework:proteusframework-communication:${version_proteus}"
+    //compile "net.proteusframework:proteusframework-processes:${version_proteus}"
+    //compile "net.proteusframework:proteusframework-management:${version_proteus}"
+    compile "net.proteusframework:proteusframework:${version_proteus}"
+
+    // Most apps use spring.
+    compile "org.springframework:spring-core:${version_spring}",
+        "org.springframework:spring-beans:${version_spring}",
+        "org.springframework:spring-jdbc:${version_spring}",
+        "org.springframework:spring-aop:${version_spring}",
+        "org.springframework:spring-context:${version_spring}",
+        "org.springframework:spring-orm:${version_spring}",
+        "org.springframework:spring-web:${version_spring}",
+        "org.springframework:spring-test:${version_spring}",
+        "org.springframework:spring-instrument:${version_spring}",
+        "org.springframework:spring-aspects:${version_spring}"
+
+    testCompile "net.proteusframework:proteusframework-testing:${version_proteus}"
+    testCompile 'junit:junit:4.11'
+    //TODO: Update to use TestNG when core-tests package is available again
+    //    testCompile 'org.testng:testng:6.8.13'
+
+
+    // These are for the war plugin
+    if(warTaskSpecified)
+    {
+        providedCompile('javax.servlet:javax.servlet-api:3.0+'){ transitive = false }
+        providedCompile('javax.servlet.jsp:jsp-api:2.2'){ transitive = false }
+        //providedCompile('org.eclipse.jetty.orbit:org.apache.jasper.glassfish:2.2+')
+        providedCompile('org.eclipse.jetty:jetty-jsp:8+')
+    }
+}

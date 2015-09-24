@@ -1,0 +1,9 @@
+import com.proteusframework.build.Version
+
+description = "${app_description}"
+buildDir = 'build/gradle'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+version = new Version(app_version, project)
+group = app_group
+ext[Version.PROJECT_INFORMATION_PACKAGE] = 'com.example.app.config'

@@ -131,7 +131,7 @@ public class ExampleAppDataConversionVersion1
             }
 
             @Override
-            public Map<TaskArgument, String> validateArguments(TaskArgument[] arguments)
+            public Map<TaskArgument, String> validateArguments(TaskArgument... arguments)
             {
                 final Map<TaskArgument, String> validationMap = new HashMap<>();
                 final String sign = arguments[0].getArgument().toString().toUpperCase();

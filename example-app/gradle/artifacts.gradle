@@ -1,0 +1,67 @@
+import java.text.SimpleDateFormat
+
+int proteusMajorVersion = ProteusProjectInformation.getMajorVersion()
+
+ext.sharedManifest = manifest {
+    attributes 'Implementation-Title': "${project.name.replace('-', ' ').capitalize()}",
+        'Implementation-Version': version,
+        'Commit-ID': (hasProperty('gitinfo') ? gitinfo.commit : '')
+}
+jar {
+    manifest = sharedManifest
+    enabled = true
+}
+
+war {
+    manifest = sharedManifest
+    classpath = jar.outputs.files + configurations.runtime
+    if(warTaskSpecified)
+        classpath = classpath - configurations.providedRuntime
+}
+task sourceJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+    include 'com/example/**'
+}
+javadoc {
+    def year = new SimpleDateFormat('yyyy').format(new Date())
+    def docVersion = version.originalVersion
+    def isRoot = project == project.rootProject
+    def pName = project.name.capitalize()
+    //include 'com/example/app/**'
+    options.docTitle = "<b>${pName}</b>"
+    options.charSet = 'UTF-8'
+    options.locale = 'en'
+    options.noDeprecated().showFromPublic().showFromProtected()
+    options.use = true
+    options.version = true
+    options.author = true
+    options.splitIndex = true
+    //    options.header = ('<a href="http://www.proteusframework.com/" target="_top">Proteus Application Framework</a><br>'
+    //            + "${isRoot?'':pName} v${docVersion}")
+    options.header = "${pName}<br> v${docVersion}".toString()
+    options.windowTitle = "${pName} v${docVersion}"
+    options.footer = """<p id="copyright" align="center";>&copy; ${year} ${pName}</p>"""
+    options.links = [
+        'http://jsr-305.googlecode.com/svn/trunk/javadoc/', 'http://docs.oracle.com/javaee/7/api/',
+        'http://docs.oracle.com/javase/8/docs/api/',
+        'http://docs.jboss.org/hibernate/orm/4.3/javadocs/', 'http://docs.jboss.org/hibernate/validator/5.0/api/',
+        'http://docs.jboss.org/hibernate/annotations/3.5/api/', 'http://docs.jboss.org/hibernate/core/4.3/javadocs/',
+        "http://docs.spring.io/spring/docs/${version_spring}/javadoc-api/".toString(),
+        'http://google.github.io/guava/releases/18.0/api/docs/',
+        "http://docs.proteusframework.com/version/${proteusMajorVersion}/api/core/".toString(),
+        "http://docs.proteusframework.com/version/${proteusMajorVersion}/api/users/".toString(),
+        "http://docs.proteusframework.com/version/${proteusMajorVersion}/api/internet/".toString(),
+        "http://docs.proteusframework.com/version/${proteusMajorVersion}/api/data/".toString(),
+        "http://docs.proteusframework.com/version/${proteusMajorVersion}/api/ui/".toString(),
+        "http://docs.proteusframework.com/version/${proteusMajorVersion}/api/cms/".toString(),
+        "http://docs.proteusframework.com/version/${proteusMajorVersion}/api/communication/".toString(),
+        "http://docs.proteusframework.com/version/${proteusMajorVersion}/api/processes/".toString(),
+        "http://docs.proteusframework.com/version/${proteusMajorVersion}/api/proteusframework/".toString(),
+    ]
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+    include 'com/example/app/**'
+}

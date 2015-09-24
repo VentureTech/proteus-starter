@@ -1,0 +1,18 @@
+
+task createRuntimeAspectsLibs(type: Copy) {
+    group 'AspectJ'
+    from configurations.runtimeaspects
+    into "runtime-aspects"
+    rename { "${it.substring(0, it.lastIndexOf('-'))}.jar" }
+}
+task createCompiletimeAspectsLibs(type: Copy) {
+    group 'AspectJ'
+    from configurations.compiletimeaspects
+    into "compiletime-aspects"
+    rename { "${it.substring(0, it.lastIndexOf('-'))}.jar" }
+}
+gradle.projectsEvaluated {
+    createRuntimeAspectsLibs.execute()
+    createCompiletimeAspectsLibs.execute()
+    version.generateProjectInformationClass()
+}

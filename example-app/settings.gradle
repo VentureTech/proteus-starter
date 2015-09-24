@@ -12,17 +12,25 @@ def props = [
     new Property(name:'publish_venturetech_password',description:'Password to upload to the artifact repository', required:false),
 ];
 
-println '\n\n!!!!! HEY YOU - SET THE PROJECT NAME !!!!\n'
-settings.rootProject.name = 'example-app'
 
+settings.rootProject.name = "${app_name}"
 
 settings.gradle.projectsLoaded( {
     props.each({it.test(settings)})
+
     settings.gradle.rootProject.ext.hasLocalRepo = settings.hasProperty('local_repo');
+    settings.gradle.rootProject.ext.repoURL = "${repo_venture_tech_url}/${repo_venture_tech_key}"
+    settings.gradle.rootProject.ext.warTaskSpecified = gradle.startParameter.taskNames.any {it == 'war'}
+    settings.gradle.rootProject.ext.isIDEA = System.getProperties().containsKey('idea.active') ||
+            System.getProperties().containsKey('idea.paths.selector') ||
+            plugins.any({it.class.name == 'JetGradlePlugin'})
+    settings.gradle.rootProject.ext.isEclipse = System.getProperties().containsKey('eclipse.product')
 })
 
-if(!settings.hasProperty('skip_project_rename_check'))
+if(!settings.hasProperty('skip_project_rename_check') && false)
 {
+    if(settings.rootProject.name == 'example-app')
+        println '\n\n!!!!! HEY YOU - SET THE PROJECT NAME !!!!\n'
     // Did you convert this to be your own project.
     if (new File(settings.rootProject.projectDir, 'src/main/java/com/example/app/config/ExampleAppProjectConfig.java').exists())
         throw new Error('Rename your project configuration class')

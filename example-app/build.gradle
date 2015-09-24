@@ -1,39 +1,6 @@
-import com.proteusframework.build.Version
-import org.ajoberstar.gradle.git.tasks.GitBranchList
+import com.proteusframework.build.GitInfo
+import net.proteusframework.core.ProjectInformation as ProteusProjectInformation
 
-import java.text.SimpleDateFormat
-
-ext.aspectjVersion = '1.8.+'
-
-// Compilation
-apply plugin: 'java'
-apply plugin: 'groovy'
-apply plugin: 'aspectj-weave'
-
-// Code Inspection
-apply plugin: 'findbugs'
-apply plugin: 'checkstyle'
-
-// Publishing
-apply plugin: 'ivy-publish'
-apply plugin: 'maven-publish'
-apply plugin: "com.jfrog.artifactory"
-
-apply plugin: 'war'
-
-ext.isIDEA = System.getProperties().containsKey('idea.active') ||
-    System.getProperties().containsKey('idea.paths.selector') ||
-    plugins.any({it.class.name == 'JetGradlePlugin'})
-ext.isEclipse = System.getProperties().containsKey('eclipse.product')
-
-buildDir = 'build/gradle'
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-version = new Version(app_version, project)
-group = app_group
-ext[Version.PROJECT_INFORMATION_PACKAGE] = 'com.example.app.config'
-
-final repoURL = "${repo_venture_tech_url}/${repo_venture_tech_key}"
 buildscript {
     final buildRepoURL = "${repo_venture_tech_url}/${repo_venture_tech_key}"
     repositories {
@@ -49,39 +16,11 @@ buildscript {
     dependencies {
         // aspectj-weave plugin for our use of Spring @Configurable
         classpath 'com.i2rd:gradle-aspectj-weave:1.1',
-                    'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1',
-                    'org.ajoberstar:gradle-git:0.6.3'
+            'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1',
+            "net.proteusframework:proteusframework-core:${version_proteus}"
     }
-}
 
-
-task populateGitInfo(type: GitBranchList) {
-    // If not in the root, change the repoPath
-    //repoPath = new File(project.rootProject.projectDir, "..")
 }
-populateGitInfo << {
-    def branch = getWorkingBranch();
-    branch.name;
-    def commit = branch.commit
-    project.ext {
-        gitinfo = [
-                branch: branch.name,
-                ref: branch.refName,
-                commit: commit.id,
-                author: "${commit.author.name} <${commit.author.email}>"
-        ]
-    }
-}
-try{
-    populateGitInfo.execute()
-}catch(def e){
-    logger.warn('Unable to retrieve GIT info. Is this in GIT?')
-    project.ext {
-        gitinfo = [branch: '', ref: '', commit: '', author: '']
-    }
-}
-
-
 repositories {
     mavenLocal()
     if(hasLocalRepo){ maven { url = local_repo } }
@@ -93,259 +32,27 @@ repositories {
         url repoURL
     }
 }
-ext.sharedManifest = manifest {
-    attributes 'Implementation-Title': "${project.name.replace('-', ' ').capitalize()} Application",
-        'Implementation-Version': version,
-        'Commit-ID': (hasProperty('gitinfo') ? gitinfo.commit : '')
-}
-jar {
-    manifest = sharedManifest
-    enabled = true
-}
-ext.warTaskSpecified = gradle.startParameter.taskNames.any {it == 'war'}
-war {
-    manifest = sharedManifest
-    classpath = jar.outputs.files + configurations.runtime
-    if(warTaskSpecified) classpath = classpath - configurations.providedRuntime
-}
+GitInfo.populateProject(project)
+ext.ProteusProjectInformation = ProteusProjectInformation
 
-configurations {
-    runtimeaspects { transitive = false }
-    compiletimeaspects { transitive = false }
-}
+apply from: 'gradle/plugins.gradle'
+apply from: 'gradle/config.gradle'
+apply from: 'gradle/dependencies.gradle'
+apply from: 'gradle/artifacts.gradle'
+apply from: 'gradle/tests.gradle'
+apply from: 'gradle/aspectj.gradle'
+apply from: 'gradle/publishing.gradle'
+apply from: 'gradle/analysis.gradle'
+apply from: 'gradle/idea.gradle'
 
-dependencies {
-
-    checkstyle('com.puppycrawl.tools:checkstyle:5.9')
-
-    runtimeaspects "org.springframework:spring-instrument:${version_spring}", "org.aspectj:aspectjweaver:${aspectjVersion}"
-    compiletimeaspects "org.springframework:spring-aspects:${version_spring}", "org.aspectj:aspectjtools:${aspectjVersion}"
-
-    // App dependencies
-    compile "net.proteusframework:proteusframework-core:${version_proteus}"
-    //compile "net.proteusframework:proteusframework-testing:${version_proteus}"
-    compile "net.proteusframework:proteusframework-data:${version_proteus}"
-    compile "net.proteusframework:proteusframework-internet:${version_proteus}"
-    compile "net.proteusframework:proteusframework-ui:${version_proteus}"
-    compile "net.proteusframework:proteusframework-users:${version_proteus}"
-    compile "net.proteusframework:proteusframework-cms:${version_proteus}"
-    //compile "net.proteusframework:proteusframework-communication:${version_proteus}"
-    //compile "net.proteusframework:proteusframework-processes:${version_proteus}"
-    //compile "net.proteusframework:proteusframework-management:${version_proteus}"
-    compile "net.proteusframework:proteusframework:${version_proteus}"
-
-    // Most apps use spring.
-    compile "org.springframework:spring-core:${version_spring}",
-        "org.springframework:spring-beans:${version_spring}",
-        "org.springframework:spring-jdbc:${version_spring}",
-        "org.springframework:spring-aop:${version_spring}",
-        "org.springframework:spring-context:${version_spring}",
-        "org.springframework:spring-orm:${version_spring}",
-        "org.springframework:spring-web:${version_spring}",
-        "org.springframework:spring-test:${version_spring}",
-        "org.springframework:spring-instrument:${version_spring}",
-        "org.springframework:spring-aspects:${version_spring}"
-
-    testCompile "net.proteusframework:proteusframework-testing:${version_proteus}"
-    testCompile 'junit:junit:4.11'
-    //TODO: Update to use TestNG when core-tests package is available again
-//    testCompile 'org.testng:testng:6.8.13'
-
-
-    // These are for the war plugin
-    if(warTaskSpecified)
-    {
-        providedCompile('javax.servlet:javax.servlet-api:3.0+'){ transitive = false }
-        providedCompile('javax.servlet.jsp:jsp-api:2.2'){ transitive = false }
-        //providedCompile('org.eclipse.jetty.orbit:org.apache.jasper.glassfish:2.2+')
-        providedCompile('org.eclipse.jetty:jetty-jsp:8+')
-    }
-}
-
-test {
-    useTestNG() {
-        includeGroups 'unit'
-        excludeGroups 'manual'
-    }
-
-    testLogging {
-        outputs.upToDateWhen {false} // Always generate report immediately
-        events "passed", "skipped", "failed", "standardOut", "standardError"
-    }
-
-    options {
-        listeners << 'org.uncommons.reportng.HTMLReporter'
-        listeners << 'org.uncommons.reportng.JUnitXMLReporter'
-        listeners << 'org.testng.reporters.XMLReporter'
-    }
-}
-//
-//task browserTest(type: Test) {
-//    useTestNG() {
-//        includeGroups 'browser'
-//        parallel 'tests'
-//        threadCount 4
-//    }
-//
-//    testLogging {
-//        outputs.upToDateWhen {false} // Always generate report immediately
-//        events "passed", "skipped", "failed", "standardOut", "standardError"
-//    }
-//
-//    options {
-//        listeners << 'org.uncommons.reportng.HTMLReporter'
-//        listeners << 'org.uncommons.reportng.JUnitXMLReporter'
-//
-//    }
-//}
-
-task wrapper(type: Wrapper) { gradleVersion = '2.5' }
-task createRuntimeAspectsLibs(type: Copy) {
-    from configurations.runtimeaspects
-    into "runtime-aspects"
-    rename { "${it.substring(0, it.lastIndexOf('-'))}.jar" }
-}
-task createCompiletimeAspectsLibs(type: Copy) {
-    from configurations.compiletimeaspects
-    into "compiletime-aspects"
-    rename { "${it.substring(0, it.lastIndexOf('-'))}.jar" }
-}
-gradle.projectsEvaluated {
-    createRuntimeAspectsLibs.execute()
-    createCompiletimeAspectsLibs.execute()
-    version.generateProjectInformationClass()
+task wrapper(type: Wrapper) {
+    group 'Build Setup'
+    gradleVersion = '2.7'
 }
 
 
 
-// Publishing
-task sourceJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-    include 'com/example/**'
-}
-javadoc {
-    def year = new SimpleDateFormat('yyyy').format(new Date())
-    def docVersion = version.originalVersion
-    def isRoot = project == project.rootProject
-//    def pName = project.name.capitalize()
-//    include 'net/proteusframework/**'
-//    options.docTitle = (isRoot ? "<b>Proteus Application Framework</b>" : "<b>${pName} API</b>")
-    options.charSet = 'UTF-8'
-    options.locale = 'en'
-    options.noDeprecated().showFromPublic().showFromProtected()
-    options.use = true
-    options.version = true
-    options.author = true
-    options.splitIndex = true
-//    options.header = ('<a href="http://www.proteusframework.com/" target="_top">Proteus Application Framework</a><br>'
-//            + "${isRoot?'':pName} v${docVersion}")
-//    options.windowTitle = "Proteus ${isRoot?'':pName} API v${docVersion}"
-//    options.footer = """<p id="copyright" align="center";>&copy; ${year} Interactive Information R&amp;D LLC</p>"""
-    options.links = [
-            'http://jsr-305.googlecode.com/svn/trunk/javadoc/', 'http://docs.oracle.com/javaee/7/api/',
-            'http://docs.oracle.com/javase/8/docs/api/',
-            'http://docs.jboss.org/hibernate/orm/4.3/javadocs/', 'http://docs.jboss.org/hibernate/validator/5.0/api/',
-            'http://docs.jboss.org/hibernate/annotations/3.5/api/', 'http://docs.jboss.org/hibernate/core/4.3/javadocs/',
-            "http://docs.spring.io/spring/docs/${version_spring}/javadoc-api/".toString(),
-            'http://docs.guava-libraries.googlecode.com/git-history/release/javadoc/'
-    ]
-}
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-    include 'com/example/**'
-}
-publishing {
-    publications {
-        ivyPub(IvyPublication) {
-            from components.java
-
-            artifact(sourceJar) {
-                type "source"
-                conf "runtime"
-            }
-            artifact(javadocJar) {
-                type "javadoc"
-                conf "runtime"
-            }
-        }
-        mavenPub(MavenPublication) {
-            from components.java
-
-            artifact(sourceJar) {
-                classifier "source"
-            }
-            artifact(javadocJar) {
-                classifier "javadoc"
-            }
-        }
-    }
-}
-artifactoryPublish.doFirst {
-    if("${publish_venturetech_username}".trim().isEmpty()) println "Missing property: publish_venturetech_username"
-    if("${publish_venturetech_password}".trim().isEmpty()) println "Missing property: publish_venturetech_password"
-}
-artifactory {
-    contextUrl = publish_venture_tech_url
-
-    publish {
-        repository {
-            repoKey = (version.isSnapshot() ? publish_venture_tech_snapshot_key : publish_venture_tech_release_key)
-            username = publish_venturetech_username
-            password = publish_venturetech_password
-        }
-        defaults {
-            publications ('ivyPub', 'mavenPub')
-            properties = [
-                'status': version.status, 'release.status': version.status,
-                'build.status': version.status, 'commit': gitinfo.commit,
-                'branch': gitinfo.branch
-            ]
-        }
-    }
-
-    resolve {
-        repository {
-            repoKey = 'repo'
-            username = repo_venturetech_username
-            password = repo_venturetech_password
-        }
-    }
-
-    clientConfig.info.vcsRevision = gitinfo.commit
-
-}
-
-
-// We will selectively enable code analysis
-[Checkstyle, FindBugs].each {
-    tasks.withType(it) {
-        ignoreFailures = true
-        enabled = false
-    }
-}
-
-findbugs {
-    toolVersion = '3.0.1'
-}
-
-findbugsMain {
-    enabled = true
-    excludeFilter = new File("${rootProject.projectDir}/config/findbugs/exclude.xml")
-    reports {
-        xml.enabled = true
-        html.enabled = false
-    }
-}
-
-checkstyleMain {
-    enabled = true
-    configFile = new File("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
-    classpath += configurations.compile // To avoid class loading errors when checking javadoc
-    source = 'src/main/java' // Do not include generated sources
-}
-
+//noinspection GroovyAssignabilityCheck
 configurations.all {
     exclude group: 'org.eclipse.birt.runtime.3_7_1', module: 'org.apache.commons.codec'
     resolutionStrategy {

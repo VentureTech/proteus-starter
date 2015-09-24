@@ -97,7 +97,8 @@ class Version
         def gitIgnore = new File(packageDir, '.gitignore')
         if(!gitIgnore.exists()) {
             gitIgnore.text = """# Ignore auto generated file ProjectInformation.java
-ProjectInformation.java"""
+ProjectInformation.java
+.gitignore"""
         }
         def generatedClass = new File(packageDir, 'ProjectInformation.java')
         generatedClass.text = """
@@ -137,7 +138,7 @@ public final class ProjectInformation
     private final static String _status = "${status}";
 
     /**
-     * Get the project name.
+     * Get the project name: "{@value #_name}"
      * @return the name.
      */
     public static String getName() 
@@ -146,7 +147,7 @@ public final class ProjectInformation
     }
 
     /**
-     * Get the project group.
+     * Get the project group: "{@value #_group}"
      * @return the group.
      */
     public static String getGroup() 
@@ -155,7 +156,7 @@ public final class ProjectInformation
     }
 
     /**
-     * Get the project version.
+     * Get the project version: "{@value #_version}"
      * @return the version.
      */
     public static String getVersion() 
@@ -164,7 +165,7 @@ public final class ProjectInformation
     }
 
     /**
-     * Get the commit id.
+     * Get the commit id: "{@value #_commit}"
      * @return the commit id.
      */
     public static String getCommit() 
@@ -173,7 +174,7 @@ public final class ProjectInformation
     }
 
     /**
-     * Get the branch.
+     * Get the branch: "{@value #_branch}"
      * @return the branch.
      */
     public static String getBranch() 
@@ -182,7 +183,7 @@ public final class ProjectInformation
     }
 
     /**
-     * Get the project status.
+     * Get the project status: "{@value #_status}"
      * @return the status.
      */
     public static String getStatus() 

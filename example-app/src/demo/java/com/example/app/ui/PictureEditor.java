@@ -15,6 +15,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Nullable;
 import java.beans.PropertyChangeEvent;
@@ -40,6 +42,7 @@ import net.proteusframework.ui.miwt.component.composite.editor.AbstractSimpleVal
  *
  * @author Russ Tennant (russ@i2rd.com)
  */
+@Configurable
 public class PictureEditor extends AbstractSimpleValueEditor<FileEntity>
 {
     /** Logger. */
@@ -57,6 +60,9 @@ public class PictureEditor extends AbstractSimpleValueEditor<FileEntity>
     private boolean _preserveFileEntity;
     /** Modified Flag. */
     private boolean _modified;
+    /** service. */
+    @Autowired
+    private ClassPathResourceLibraryHelper _classPathResourceLibraryHelper;
 
     /**
      * Create an instance.
@@ -72,6 +78,7 @@ public class PictureEditor extends AbstractSimpleValueEditor<FileEntity>
             @Override
             public void propertyChange(PropertyChangeEvent evt)
             {
+                @SuppressWarnings("unchecked")
                 final List<FileItem> files = (List<FileItem>) evt.getNewValue();
                 if(files != null && files.size() > 0)
                 {
@@ -83,8 +90,8 @@ public class PictureEditor extends AbstractSimpleValueEditor<FileEntity>
             }
         });
 
-        final ClassPathResourceLibraryHelper helper = ClassPathResourceLibraryHelper.getInstance();
-        _defaultProfilePicture = helper.createResource(helper.createLibrary("default-profile-picture.png"));
+        _defaultProfilePicture = _classPathResourceLibraryHelper.createResource(
+            _classPathResourceLibraryHelper.createLibrary("default-profile-picture.png"));
     }
 
     /**

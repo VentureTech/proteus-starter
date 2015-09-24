@@ -1,0 +1,21 @@
+
+// Compilation
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'aspectj-weave'
+
+// Intellij IDEA
+apply plugin: 'idea'
+
+// Code Inspection
+apply plugin: 'findbugs'
+apply plugin: 'checkstyle'
+
+// Publishing
+apply plugin: 'ivy-publish'
+apply plugin: 'maven-publish'
+apply plugin: "com.jfrog.artifactory"
+
+apply plugin: 'war'
+
+
