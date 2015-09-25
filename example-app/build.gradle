@@ -1,5 +1,4 @@
 import com.proteusframework.build.GitInfo
-import net.proteusframework.core.ProjectInformation as ProteusProjectInformation
 
 buildscript {
     final buildRepoURL = "${repo_venture_tech_url}/${repo_venture_tech_key}"
@@ -16,8 +15,7 @@ buildscript {
     dependencies {
         // aspectj-weave plugin for our use of Spring @Configurable
         classpath 'com.i2rd:gradle-aspectj-weave:1.1',
-            'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1',
-            "net.proteusframework:proteusframework-core:${version_proteus}"
+            'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1'
     }
 
 }
@@ -33,7 +31,6 @@ repositories {
     }
 }
 GitInfo.populateProject(project)
-ext.ProteusProjectInformation = ProteusProjectInformation
 
 apply from: 'gradle/plugins.gradle'
 apply from: 'gradle/config.gradle'
@@ -44,6 +41,10 @@ apply from: 'gradle/aspectj.gradle'
 apply from: 'gradle/publishing.gradle'
 apply from: 'gradle/analysis.gradle'
 apply from: 'gradle/idea.gradle'
+
+if(name == 'example-app') {
+    task createProject(type: com.proteusframework.build.CreateProjectTask)
+}
 
 task wrapper(type: Wrapper) {
     group 'Build Setup'

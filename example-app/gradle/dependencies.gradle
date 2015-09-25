@@ -3,6 +3,10 @@ if(demoExists){
     sourceSets {
         demo
     }
+    compileDemoJava {
+        options.incremental = true
+        options.compilerArgs << '-Xlint:all,-deprecation,-processing'
+    }
 }
 
 compileJava {
@@ -11,10 +15,7 @@ compileJava {
     options.incremental = true
 }
 compileTestJava { options.incremental = true }
-compileDemoJava {
-    options.incremental = true
-    options.compilerArgs << '-Xlint:all,-deprecation,-processing'
-}
+
 
 configurations {
     runtimeaspects { transitive = false }

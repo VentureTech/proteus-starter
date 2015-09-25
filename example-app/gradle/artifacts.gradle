@@ -1,6 +1,7 @@
 import java.text.SimpleDateFormat
 
-int proteusMajorVersion = ProteusProjectInformation.getMajorVersion()
+String proteusVersion = "${version_proteus}".toString()
+int proteusMajorVersion = Integer.parseInt(proteusVersion.substring(0, proteusVersion.indexOf('.')));
 
 ext.sharedManifest = manifest {
     attributes 'Implementation-Title': "${project.name.replace('-', ' ').capitalize()}",

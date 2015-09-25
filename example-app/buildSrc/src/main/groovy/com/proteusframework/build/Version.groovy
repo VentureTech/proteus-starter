@@ -125,17 +125,24 @@ import javax.annotation.Generated;
 public final class ProjectInformation
 {
     /** Name. */
-    private final static String _name = "${project.name}";
+    private static final String _name = "${project.name}";
     /** Group. */
-    private final static String _group = "${project.group}";
+    private static final String _group = "${project.group}";
     /** Version. */
-    private final static String _version = "${versionNumber}";
+    private static final String _version = "${versionNumber}";
     /** Commit. */
-    private final static String _commit = "${project?.gitinfo?.commit?:''}";
+    private static final String _commit = "${project?.gitinfo?.commit?:''}";
     /** Branch. */
-    private final static String _branch = "${project?.gitinfo?.branch?:''}";
+    private static final String _branch = "${project?.gitinfo?.branch?:''}";
     /** Status: release, milestone, integration. */
-    private final static String _status = "${status}";
+    private static final String _status = "${status}";
+
+    /**
+    * Utility class constructor.
+    */
+    private ProjectInformation()
+    {
+    }
 
     /**
      * Get the project name: "{@value #_name}"

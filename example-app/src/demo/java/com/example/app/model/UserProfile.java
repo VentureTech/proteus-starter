@@ -45,7 +45,7 @@ import net.proteusframework.users.model.Name;
 public class UserProfile implements TimeAuditable
 {
     /** Sequence name. */
-    private final static String SEQ = "userprofile_seq";
+    private static final String SEQ = "userprofile_seq";
     /** identifier name. */
     private static final String USERPROFILE_ID = "userprofile_id";
     /** Identifier. */
