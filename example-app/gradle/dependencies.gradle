@@ -6,12 +6,14 @@ if(demoExists){
     compileDemoJava {
         options.incremental = true
         options.compilerArgs << '-Xlint:all,-deprecation,-processing'
+        options.compilerArgs << '-parameters'
     }
 }
 
 compileJava {
     options.encoding = 'UTF-8'
     options.compilerArgs << '-Xlint:all,-deprecation,-processing'
+    options.compilerArgs << '-parameters'
     options.incremental = true
 }
 compileTestJava { options.incremental = true }
