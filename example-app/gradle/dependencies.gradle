@@ -42,9 +42,9 @@ dependencies {
     compile "net.proteusframework:proteusframework-ui:${version_proteus}"
     compile "net.proteusframework:proteusframework-users:${version_proteus}"
     compile "net.proteusframework:proteusframework-cms:${version_proteus}"
-    //compile "net.proteusframework:proteusframework-communication:${version_proteus}"
-    //compile "net.proteusframework:proteusframework-processes:${version_proteus}"
-    //compile "net.proteusframework:proteusframework-management:${version_proteus}"
+    compile "net.proteusframework:proteusframework-communication:${version_proteus}"
+    compile "net.proteusframework:proteusframework-processes:${version_proteus}"
+    compile "net.proteusframework:proteusframework-management:${version_proteus}"
     compile "net.proteusframework:proteusframework:${version_proteus}"
 
     // Most apps use spring.

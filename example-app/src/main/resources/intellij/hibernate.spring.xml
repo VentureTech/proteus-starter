@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) Interactive Information R & D (I2RD) LLC.
+  ~ All Rights Reserved.
+  ~
+  ~ This software is confidential and proprietary information of
+  ~ I2RD LLC ("Confidential Information"). You shall not disclose
+  ~ such Confidential Information and shall use it only in
+  ~ accordance with the terms of the license agreement you entered
+  ~ into with I2RD.
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation=
+           "http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="intellijSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="mappingLocations">
+            <array>
+                <value>classpath*:com/i2rd/**/*.hbm.xml</value>
+                <value>classpath*:net/proteusframework/**/*.hbm.xml</value>
+                <!-- App locations -->
+                <!--<value>classpath*:com/example/app/**/*.hbm.xml</value>-->
+            </array>
+        </property>
+        <property name="annotatedPackages">
+            <array>
+                <!--<value>com.i2rd.contentmodel.def.type</value>-->
+                <value>com.i2rd.hibernate.usertype</value>
+                <!--<value>com.i2rd.message</value>-->
+                <!--<value>com.i2rd.cms.bean.contentmodel</value>-->
+
+                <!-- App locations -->
+                <!--<value>com.example.app</value>-->
+            </array>
+        </property>
+        <property name="packagesToScan">
+            <array>
+                <value>com.i2rd</value>
+                <value>net.proteusframework</value>
+
+                <!-- App locations -->
+                <value>com.example.app</value>
+            </array>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL9Dialect</prop>
+                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.internal.NoCachingRegionFactory</prop>
+                <prop key="hibernate.cache.use_query_cache">false</prop>
+                <prop key="hibernate.cache.use_second_level_cache">false</prop>
+            </props>
+        </property>
+    </bean>
+</beans>

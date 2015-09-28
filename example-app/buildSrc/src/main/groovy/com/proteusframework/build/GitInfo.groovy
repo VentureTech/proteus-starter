@@ -12,6 +12,7 @@
 package com.proteusframework.build;
 
 import org.ajoberstar.grgit.Grgit
+import org.slf4j.LoggerFactory
 
 /**
  * Plugin to provide git information
@@ -45,7 +46,10 @@ public class GitInfo
             gitInfo.commit = commit.id
             gitInfo.author = "${commit.author.name} <${commit.author.email}>".toString()
         } catch(def e) {
-            e.printStackTrace()
+            LoggerFactory.getLogger('build').debug(
+                'Doesn\'t appear we are a repo. I am okay with it if you are.', e
+            )
+            println '!!! Remember to setup a git repo at some point.'
         }
     }
 

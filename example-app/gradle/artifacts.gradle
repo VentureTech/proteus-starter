@@ -11,6 +11,7 @@ ext.sharedManifest = manifest {
 jar {
     manifest = sharedManifest
     enabled = true
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 war {
@@ -18,11 +19,13 @@ war {
     classpath = jar.outputs.files + configurations.runtime
     if(warTaskSpecified)
         classpath = classpath - configurations.providedRuntime
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 task sourceJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
     include 'com/example/**'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 javadoc {
     def year = new SimpleDateFormat('yyyy').format(new Date())
@@ -65,4 +68,5 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
     include 'com/example/app/**'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

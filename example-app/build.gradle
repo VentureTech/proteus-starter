@@ -42,9 +42,8 @@ apply from: 'gradle/publishing.gradle'
 apply from: 'gradle/analysis.gradle'
 apply from: 'gradle/idea.gradle'
 
-if(name == 'example-app') {
-    task createProject(type: com.proteusframework.build.CreateProjectTask)
-}
+task createProject(type: com.proteusframework.build.CreateProjectTask)
+
 
 task wrapper(type: Wrapper) {
     group 'Build Setup'

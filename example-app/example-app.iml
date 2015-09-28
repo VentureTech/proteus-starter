@@ -17,10 +17,22 @@
     <facet type="Spring" name="Spring">
       <configuration>
         <fileset id="fileset" name="Spring Application Context" removed="false">
-          <file>file://$MODULE_DIR$/src/main/java/com/example/app/config/automation/ExampleAppDataConversionVersion1.java</file>
           <file>file://$MODULE_DIR$/src/main/webapp/META-INF/resources/spring/selector-hostnames.spring.xml</file>
           <file>file://$MODULE_DIR$/src/main/java/com/example/app/config/ProjectConfig.java</file>
         </fileset>
+        <fileset id="fileset2" name="Intellij Context" removed="false">
+          <file>file://$MODULE_DIR$/src/main/resources/intellij/hibernate.spring.xml</file>
+        </fileset>
+      </configuration>
+    </facet>
+    <facet type="hibernate" name="Hibernate">
+      <configuration>
+        <datasource-map>
+          <unit-entry name="intellijSessionFactory" value="bf1dd55f-c734-43a6-ade2-38c6d4866106" />
+        </datasource-map>
+        <naming-strategy-map>
+          <unit-entry name="intellijSessionFactory" value="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
+        </naming-strategy-map>
       </configuration>
     </facet>
     <facet type="web" name="Web Gradle : example-app-1.0-SNAPSHOT.war">
@@ -62,14 +74,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Gradle: org.aspectj:aspectjrt:1.8.7" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-core:0.15.3" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-data:0.15.3" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-internet:0.15.3" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-ui:0.15.3" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-web:4.0.9.RELEASE" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-users:0.15.3" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-cms:0.15.3" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework:0.15.3" level="project" />
     <orderEntry type="library" name="Gradle: commons-logging:commons-logging:1.2" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-test:4.0.9.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.tomcat:tomcat-juli:7.0.64" level="project" />
@@ -106,60 +111,11 @@
     <orderEntry type="library" name="Gradle: org.apache.logging.log4j:log4j-core:2.3" level="project" />
     <orderEntry type="library" name="Gradle: org.beanshell:bsh:2.0b4" level="project" />
     <orderEntry type="library" name="Gradle: com.beust:jcommander:1.27" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-support:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-simpledb:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-simpleworkflow:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-storagegateway:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-route53:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-s3:1.9.40" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.logging.log4j:log4j-jul:2.3" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-importexport:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-sts:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-sqs:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-rds:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-redshift:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-elasticbeanstalk:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-glacier:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-iam:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-datapipeline:1.9.40" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.logging.log4j:log4j-jcl:2.3" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-elasticloadbalancing:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-emr:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-elasticache:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-elastictranscoder:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-ec2:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-dynamodb:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-sns:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cloudtrail:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cloudwatch:1.9.40" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.logging.log4j:log4j-slf4j-impl:2.3" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-logs:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cognitoidentity:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cognitosync:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-directconnect:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cloudformation:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cloudfront:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-kinesis:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-opsworks:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-ses:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-autoscaling:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cloudsearch:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cloudwatchmetrics:1.9.40" level="project" />
     <orderEntry type="library" name="Gradle: org.freemarker:freemarker:2.3.21" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-swf-libraries:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-codedeploy:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-kms:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-config:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-lambda:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-ecs:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cloudhsm:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-ssm:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-workspaces:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-machinelearning:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-directory:1.9.40" level="project" />
     <orderEntry type="library" name="Gradle: com.i2rd.spullara.cli-parser:cli-parser:1.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-efs:1.9.40" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-core:1.9.40" level="project" />
     <orderEntry type="library" name="Gradle: javax.servlet:javax.servlet-api:3.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.findbugs:annotations:2.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.google.guava:guava:18.0" level="project" />
@@ -280,21 +236,16 @@
     <orderEntry type="library" name="Gradle: asm:asm:3.3.1" level="project" />
     <orderEntry type="library" name="Gradle: org.jsoup:jsoup:1.6.3" level="project" />
     <orderEntry type="library" name="Gradle: xml-apis:xml-apis:1.4.01" level="project" />
-    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.3.2" level="project" />
-    <orderEntry type="library" name="Gradle: joda-time:joda-time:2.8.2" level="project" />
     <orderEntry type="library" name="Gradle: com.jcraft:jsch.agentproxy.core:0.0.6" level="project" />
     <orderEntry type="library" name="Gradle: net.java.dev.jna:jna:3.4.0" level="project" />
     <orderEntry type="library" name="Gradle: net.java.dev.jna:platform:3.4.0" level="project" />
     <orderEntry type="library" name="Gradle: org.acegisecurity:acegi-security:1.0.1" level="project" />
     <orderEntry type="library" name="Gradle: org.bouncycastle:bcprov-jdk14:1.38" level="project" />
     <orderEntry type="library" name="Gradle: org.bouncycastle:bcmail-jdk14:1.38" level="project" />
-    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.3.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.3.2" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-core:4.0.9.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.apache:ecs:1.4.2" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.poi:poi:3.9" level="project" />
     <orderEntry type="library" name="Gradle: org.testng:testng:6.8.13" level="project" />
-    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk:1.9.40" level="project" />
     <orderEntry type="library" name="Gradle: com.twelvemonkeys.imageio:imageio-jpeg:3.1.2" level="project" />
     <orderEntry type="library" name="Gradle: com.twelvemonkeys.imageio:imageio-tiff:3.1.2" level="project" />
     <orderEntry type="library" name="Gradle: com.twelvemonkeys.imageio:imageio-bmp:3.1.2" level="project" />
@@ -333,16 +284,11 @@
     <orderEntry type="library" name="Gradle: org.springframework:spring-expression:4.0.9.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: com.i2rd.org.apache.xmlbeans:xmlbeans:2.3.0" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-orm:4.0.9.RELEASE" level="project" />
-    <orderEntry type="library" name="Gradle: org.postgresql:postgresql:9.3-1100-jdbc41" level="project" />
     <orderEntry type="library" name="Gradle: org.ajoberstar:gradle-git:0.6.3" level="project" />
     <orderEntry type="library" name="Gradle: com.twelvemonkeys.servlet:servlet:3.1.2" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-communication:0.15.3" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-processes:0.15.3" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-management:0.15.3" level="project" />
     <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-jsp:8.1.17.v20150415" level="project" />
     <orderEntry type="library" name="Gradle: javax.activation:activation:1.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.logging.log4j:log4j-api:2.3" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: net.proteusframework:proteusframework-testing:0.15.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: junit:junit:4.11" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.seleniumhq.selenium:selenium-java:2.44.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.apache.commons:commons-exec:1.1" level="project" />
@@ -377,5 +323,75 @@
     <orderEntry type="library" scope="TEST" name="Gradle: org.eclipse.jetty:jetty-io:8.1.15.v20140411" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.eclipse.jetty:jetty-http:8.1.15.v20140411" level="project" />
     <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy-all:2.4.5" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-core:0.16.0" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-data:0.16.0" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-internet:0.16.0" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-ui:0.16.0" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-users:0.16.0" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-cms:0.16.0" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework:0.16.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: org.postgresql:postgresql:9.4-1202-jdbc42" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-communication:0.16.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-support:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-simpledb:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-simpleworkflow:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-storagegateway:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-route53:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-s3:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-importexport:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-sts:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-sqs:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-rds:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-redshift:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-elasticbeanstalk:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-glacier:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-iam:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-datapipeline:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-elasticloadbalancing:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-emr:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-elasticache:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-elastictranscoder:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-ec2:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-dynamodb:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-sns:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cloudtrail:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cloudwatch:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-logs:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cognitoidentity:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cognitosync:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-directconnect:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cloudformation:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cloudfront:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-kinesis:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-opsworks:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-ses:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-autoscaling:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cloudsearch:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cloudwatchmetrics:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-swf-libraries:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-codedeploy:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-codepipeline:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-kms:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-config:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-lambda:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-ecs:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cloudhsm:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-ssm:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-workspaces:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-machinelearning:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-directory:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-efs:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-codecommit:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-devicefarm:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-core:1.10.20" level="project" />
+    <orderEntry type="library" name="Gradle: c3p0:c3p0:0.9.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.5.3" level="project" />
+    <orderEntry type="library" name="Gradle: joda-time:joda-time:2.8.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.5.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.5.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: net.proteusframework:proteusframework-testing:0.16.0" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-processes:0.16.0" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-management:0.16.0" level="project" />
   </component>
 </module>

@@ -13,10 +13,13 @@ package com.proteusframework.build
 
 import groovy.swing.SwingBuilder
 import org.gradle.api.Project
+import org.slf4j.LoggerFactory
 
 import javax.swing.*
 import javax.swing.border.EmptyBorder
+import javax.swing.border.TitledBorder
 import java.awt.*
+import java.util.concurrent.CompletableFuture
 
 import static groovy.io.FileVisitResult.CONTINUE
 import static groovy.io.FileVisitResult.SKIP_SUBTREE
@@ -28,25 +31,30 @@ import static javax.swing.JFileChooser.DIRECTORIES_ONLY
  */
 class CreateProjectUI
 {
+    def logger = LoggerFactory.getLogger("build")
     def swing = new SwingBuilder()
     def model = new ProjectModel()
+    CompletableFuture<ProjectModel> _future = new CompletableFuture<>()
     Project project
     CreateProjectUI(def project)
     {
         this.project = project
+    }
+
+    def start()
+    {
         URL resource = getClass().getResource('proteus-logo.png')
         assert resource != null
         def icon = new ImageIcon(resource)
         def count = 0
+        def upIn = this.&updateInstructions
         swing.edt {
-            frame(id: 'ui', title: 'Create New Project', defaultCloseOperation: JFrame.EXIT_ON_CLOSE, pack: true, visible:
-                true,
-                iconImage: icon.getImage(), location: [400, 50]) {
+            frame(id: 'ui', title: 'Create New Project', defaultCloseOperation: JFrame.DISPOSE_ON_CLOSE, pack: true,
+                visible: true, iconImage: icon.getImage(), location: [400, 50]) {
                 vbox(border: new EmptyBorder(10, 10, 10, 10)) {
                     hbox {
                         label('Artifact Group: ')
-                        widget(new PlaceholderTextField(), id: 'app_group', placeholder: 'net.venturetech',
-                            columns: 20)
+                        widget(new PlaceholderTextField(), id: 'app_group', placeholder: 'net.venturetech', columns: 20)
                     }
                     hbox {
                         label('Artifact/Project Name: ')
@@ -74,18 +82,28 @@ class CreateProjectUI
                         })
 
                     }
+                    hbox(border: new TitledBorder(new EmptyBorder(20, 10, 20, 10), 'Next Steps')) {
+                        textArea(id:'instructions', enabled: false, disabledTextColor: Color.BLACK)
+                        updateInstructions()
+                    }
                     hbox(border: new EmptyBorder(10, 10, 10, 10)) {
                         button(
+                            id: 'create_project_btn',
                             text: 'Create Project',
                             actionPerformed: {ev ->
-                                if (validate() && createProject(ev))
-                                    System.exit(0)
+                                if (validate() && createProject(ev)) {
+                                    _future.complete(model)
+                                    swing.create_project_btn.setVisible(false)
+                                    swing.close_btn.setText('Close')
+                                }
                             }
                         )
                         button(
+                            id: 'close_btn',
                             text: 'Cancel',
                             actionPerformed: {
-                                System.exit(0)
+                                _future.complete(model)
+                                swing.ui.dispose()
                             }
                         )
                     }
@@ -95,6 +113,18 @@ class CreateProjectUI
                 bean(model, copyDemo: bind {copy_demo.selected})
             }
         }
+        return _future
+    }
+
+    def updateInstructions()
+    {
+        swing.instructions.text = '''Setup remote git repo.
+Open in Intellij IDEA.
+Synchronize gradle settings.
+Install a database snapshot.
+Update the db.url & db.username in default.properties if needed.
+Run the "App with LTW".
+To run the demo code, you will need to update your ProjectConfig.'''
     }
 
     def validate()
@@ -131,33 +161,16 @@ class CreateProjectUI
         def slash = File.separator
         def packageDir = packageName.replace('.', slash)
 
-        def file = new File('/tmp/test.txt')
-        def pw = file.newPrintWriter()
-        pw.println model.appGroup
-        pw.println model.appName
-        pw.println model.copyDemo
-        pw.println project.projectDir
-        pw.println model.destinationDirectory
-        pw.flush()
-        def dialog = new JDialog(swing.ui as JFrame, 'Creating Project', true)
-        swing.doLater {
-            dialog.setSize(600, 100);
-            JProgressBar pb
-            def panel = swing.panel(border: new EmptyBorder(20, 20, 20, 20)) {
-                vbox {
-                    pb = progressBar(id: 'progress_bar', minimum: 0, maximum: 100, value: 0, string: 'Creating....',
-                        stringPainted: true, indeterminate: true)
-                }
-            }
-            dialog.getContentPane().add(panel)
-            dialog.setModal(true)
-            dialog.pack()
-            dialog.show()
-        }
+        println "appGroup = ${model.appGroup}"
+        println "appName = ${model.appName}"
+        println "copyDemo = ${model.copyDemo}"
+        println "destinationDirectory = ${model.destinationDirectory}"
+        println "sourceProjectDir = ${project.projectDir}"
+        println "package name = ${packageName}"
+
+
         File baseDir = new File(model.destinationDirectory, model.appName);
         if(!baseDir.exists() && !baseDir.mkdirs()){
-            dialog.hide()
-            dialog.dispose()
             swing.optionPane().showMessageDialog(swing.ui, 'Unable to create directory: ' + baseDir,
                 "Unable To Create Project", JOptionPane.ERROR_MESSAGE)
         }
@@ -175,81 +188,104 @@ class CreateProjectUI
                     include 'gradle/**/*'
                     include 'scripts/**/*'
                     include 'src/main/resources/META-INF/**/*'
+                    include 'src/main/resources/intellij/**/*'
                     include 'src/main/webapp/**/*'
                     if (model.copyDemo)
                     {
                         include 'src/demo/**/*'
                     }
-                    include '.gitignore'
                     include 'example-app.iml'
                     include 'gradle*'
+                    include 'build.gradle'
                     include 'settings.gradle'
+
+                    exclude '.idea/workspace.xml'
+                    exclude '.idea/tasks.xml'
+                    exclude '.idea/artifacts/**'
                 }
             }
-            def mainJava = new File(baseDir, "src${slash}main${slash}java${slash}${packageDir}${slash}config")
-            def mainRes  = new File(baseDir, "src${slash}main${slash}resources${slash}${packageDir}${slash}config")
+            new File(baseDir, '.gitignore').text = '''
+.gradle/
+.apt_generated/
+.apt_generated_tests/
+/build/
+/buildSrc/build
+/compiletime-aspects/
+/runtime-aspects/
+
+.idea/libraries/
+.idea/workspace.xml
+.idea/tasks.xml
+atlassian-ide-plugin.xml
+
+spring-shell.log
+'''
+            new File(baseDir, '.idea/vcs.xml').text = '''<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+  </component>
+</project>
+'''
+            def mainJava = new File(baseDir, "src${slash}main${slash}java${slash}${packageDir}")
+            def mainRes  = new File(baseDir, "src${slash}main${slash}resources${slash}${packageDir}")
+            mainJava.mkdirs()
+            mainRes.mkdirs()
             project.copy() {
                 into mainJava
-                from(project.projectDir) {
-                    include 'src/main/java/com/example/app/config/**/*'
+                from(new File(project.projectDir, 'src/main/java/com/example/app')) {
+                    include '**/*'
                 }
             }
             project.copy() {
                 into mainRes
-                from(project.projectDir) {
-                    include 'src/main/resources/com/example/app/config/**/*'
+                from(new File(project.projectDir, 'src/main/resources/com/example/app')) {
+                    include '**/*'
                 }
             }
 
             def skipDirs = ['.git', '.apt_generated', '.apt_generated_tests', 'demo'] as Set
+            def skipFiles = ['CreateProjectUI.groovy'] as Set
             baseDir.traverse(
-                [nameFilter: ~/.*\.java/,
-                 preDir    : {if (skipDirs.contains(it.name)) return SKIP_SUBTREE}], {f ->
-
-                def content = f.getText('UTF-8')
-                def updatedContent = content.replaceAll('com[.]example[.]app', packageName)
-                    .replaceAll('com/example/app', packageDir)
-                if(updatedContent != content)
-                    f.setText(updatedContent, 'UTF-8')
+                [preDir    : {if (skipDirs.contains(it.name)) return SKIP_SUBTREE}], {f ->
+                if(f.isFile() && !skipFiles.contains(f.name)) {
+                    def content = f.getText('UTF-8')
+                    def updatedContent = content.replaceAll('com[.]example[.]app', packageName)
+                        .replaceAll('com/example/app', packageDir)
+                        .replaceAll('example-app', model.appName)
+                        .replaceAll('com.example', model.appGroup)
+                        .replaceAll('example_app', model.appName.replace('.', '_'))
+                    if (updatedContent != content)
+                    {
+                        println('Updating ' + f)
+                        f.setText(updatedContent, 'UTF-8')
+                    }
+                    if(f.name == 'example-app.iml'){
+                        f.renameTo("${baseDir}${slash}${model.appName}.iml")
+                    }
+                }
 
                 CONTINUE
                  })
+
+            def gradleScript = new File(baseDir, 'gradlew').absolutePath
+            def command = [gradleScript, '-Dorg.gradle.daemon=false']
+            def envp = System.getenv().collect({k, v -> "${k}=${v}"})
+            def process = command.execute(envp, baseDir)
+            process.consumeProcessOutput(System.out, System.err)
+            process.waitFor()
+            if(new File('/usr/bin/git').canExecute()){
+                command = ['/usr/bin/git', 'init']
+                process = command.execute(envp, baseDir)
+                process.consumeProcessOutput(System.out, System.err)
+                process.waitFor()
+            }
         }
         catch(e)
         {
-            e.printStackTrace(pw)
+            e.printStackTrace()
         }
-        pw.close()
-        dialog.dispose()
         true
     }
 
-    def foo()
-    {
-
-
-        println()
-        System.in.withReader {
-            print "Artifact Group (net.venturetech): "
-            def appGroup = it.readLine()
-            print "Artifact/Project Name: "
-            def appName = it.readLine()
-
-            println "You entered ${appGroup}"
-        }
-
-
-
-        def sharedPanel = {
-            swing.panel() {
-                label("Shared Panel")
-            }
-        }
-
-
-
-
-        println files.join('\n')
-
-    }
 }

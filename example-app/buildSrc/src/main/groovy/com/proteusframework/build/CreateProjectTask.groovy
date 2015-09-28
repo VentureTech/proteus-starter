@@ -28,6 +28,9 @@ class CreateProjectTask extends DefaultTask
 
     @TaskAction
     def doIt() {
-        new CreateProjectUI(project)
+
+        def ui = new CreateProjectUI(project)
+        def future = ui.start()
+        future.get()
     }
 }

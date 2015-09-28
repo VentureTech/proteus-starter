@@ -29,7 +29,7 @@ import net.proteusframework.data.filesystem.FileEntity;
 import net.proteusframework.data.filesystem.TemporaryFileEntity;
 import net.proteusframework.data.filesystem.http.FileEntityFileItem;
 import net.proteusframework.internet.http.resource.ClassPathResourceLibraryHelper;
-import net.proteusframework.internet.http.resource.FactoryBasedResource;
+import net.proteusframework.internet.http.resource.FactoryResource;
 import net.proteusframework.ui.miwt.Image;
 import net.proteusframework.ui.miwt.MIWTException;
 import net.proteusframework.ui.miwt.component.Component;
@@ -55,7 +55,7 @@ public class PictureEditor extends AbstractSimpleValueEditor<FileEntity>
     /** UI Value - UI state isn't held in component. */
     private FileItem _uiValue;
     /** Default Profile Picture. */
-    private final FactoryBasedResource _defaultProfilePicture;
+    private final FactoryResource _defaultProfilePicture;
     /** Preserver File Entity. */
     private boolean _preserveFileEntity;
     /** Modified Flag. */
