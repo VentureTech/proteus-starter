@@ -166,14 +166,8 @@ public class UserProfileEditor extends Container
         ));
 
         Address address = value.getPostalAddress();
-        String line1 = null;
-        String line2 = null;
-        if (address.getAddressLines().length > 0)
-            line1 = address.getAddressLines()[0];
-        if (address.getAddressLines().length > 1)
-            line2 = address.getAddressLines()[1];
-        _addressLine1 = new TextEditor(TextSources.createText("Address Line 1"), line1);
-        _addressLine2 = new TextEditor(TextSources.createText("Address Line 2"), line2);
+        _addressLine1 = new TextEditor(TextSources.createText("Address Line 1"), address.getAddressLine(1));
+        _addressLine2 = new TextEditor(TextSources.createText("Address Line 2"), address.getAddressLine(2));
         _city = new TextEditor(TextSources.createText("City"), address.getCity());
         _state = new TextEditor(TextSources.createText("State"), address.getState());
         _postalCode = new TextEditor(TextSources.createText("Postal Code"), address.getPostalCode());
@@ -348,7 +342,7 @@ public class UserProfileEditor extends Container
         if (line1 != null) addressLines.add(line1);
         else if (line2 != null) addressLines.add("");
         if (line2 != null) addressLines.add(line2);
-        profile.getPostalAddress().setAddressLines(addressLines.toArray(new String[addressLines.size()]));
+        profile.getPostalAddress().setAddressLineList(addressLines);
         profile.getPostalAddress().setCity(_city.commitValue());
         profile.getPostalAddress().setState(_state.commitValue());
         profile.getPostalAddress().setPostalCode(_postalCode.commitValue());
@@ -384,14 +378,8 @@ public class UserProfileEditor extends Container
             _nameFamily.setValue(name.getLast());
             _nameSuffix.setValue(name.getSuffix());
             Address address = value.getPostalAddress();
-            String line1 = null;
-            String line2 = null;
-            if (address.getAddressLines().length > 0)
-                line1 = address.getAddressLines()[0];
-            if (address.getAddressLines().length > 1)
-                line2 = address.getAddressLines()[1];
-            _addressLine1.setValue(line1);
-            _addressLine2.setValue(line2);
+            _addressLine1.setValue(address.getAddressLine(1));
+            _addressLine2.setValue(address.getAddressLine(2));
             _city.setValue(address.getCity());
             _state.setValue(address.getState());
             _postalCode.setValue(address.getPostalCode());

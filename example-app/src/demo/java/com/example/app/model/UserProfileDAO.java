@@ -11,6 +11,7 @@
 
 package com.example.app.model;
 
+import com.google.common.io.ByteSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Repository;
 import javax.annotation.Nullable;
 import javax.mail.internet.ContentType;
 import javax.mail.internet.ParseException;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -37,11 +37,14 @@ import net.proteusframework.core.net.ContentTypes;
 import net.proteusframework.data.filesystem.DirectoryEntity;
 import net.proteusframework.data.filesystem.FileEntity;
 import net.proteusframework.data.filesystem.FileSystemDAO;
-import net.proteusframework.data.filesystem.FileSystemEntityCreateMode;
+import net.proteusframework.data.filesystem.FileSystemDAO.StoreRequest;
 import net.proteusframework.data.filesystem.TemporaryFileEntity;
+import net.proteusframework.ui.miwt.event.Event;
 import net.proteusframework.ui.search.QLBuilder;
 import net.proteusframework.ui.search.QLResolver;
 import net.proteusframework.ui.search.QLResolverOptions;
+
+import static net.proteusframework.data.filesystem.FileSystemEntityCreateMode.overwrite;
 
 /**
  * DAO for user profile.
@@ -126,6 +129,10 @@ public class UserProfileDAO extends DAOHelper
             if (picture != null)
             {
                 pictureName += _getFileExtensionWithDot(picture);
+                TemporaryFileEntity tfe = null;
+                if(picture instanceof TemporaryFileEntity)
+                    tfe  = (TemporaryFileEntity) picture;
+                ByteSource fileData = tfe != null ? tfe.asByteSource() : ByteSource.empty();
                 // Ensure our picture file has a unique file name consistent with the profile.
                 if (picture.getId() < 1)
                 {
@@ -133,19 +140,22 @@ public class UserProfileDAO extends DAOHelper
                     final DirectoryEntity rootDirectory = FileSystemDirectory.getRootDirectory(site);
                     DirectoryEntity parentDirectory = _fileSystemDAO.mkdirs(rootDirectory, null, "UserProfilePictures");
                     picture.setName(pictureName);
-                    picture = _fileSystemDAO.newFile(parentDirectory, picture, FileSystemEntityCreateMode.truncate);
+
+                    picture = _fileSystemDAO.store(new StoreRequest(parentDirectory, picture, fileData)
+                        .withCreateMode(overwrite)
+                        .withRequest(Event.getRequest()));
                     userProfile.setPicture(picture);
                 }
-                else if(picture instanceof TemporaryFileEntity)
+                else
                 {
-                    TemporaryFileEntity tfe  = (TemporaryFileEntity) picture;
                     EntityRetriever er = EntityRetriever.getInstance();
-                    picture = er.reattachIfNecessary(tfe.getFileEntity());
+                    picture = er.reattachIfNecessary(tfe != null ? tfe.getFileEntity() : picture);
                     picture.setName(pictureName);
-                    _fileSystemDAO.update(picture);
-                    _fileSystemDAO.setStream(picture, tfe.getStream(), true);
+                    _fileSystemDAO.store(new StoreRequest(picture, fileData)
+                        .withCreateMode(overwrite)
+                        .withRequest(Event.getRequest()));
                     userProfile.setPicture(picture); // In case we are cascading.
-                    tfe.deleteStream();
+                    if(tfe != null) tfe.deleteStream();
                 }
             }
 
@@ -159,11 +169,11 @@ public class UserProfileDAO extends DAOHelper
                 // New user profile. Update picture name to include the ID
                 pictureName = name + " #" + userProfile.getId() + _getFileExtensionWithDot(picture);
                 picture.setName(pictureName);
-                _fileSystemDAO.update(picture);
+                _fileSystemDAO.store(new StoreRequest(picture));
             }
             success = true;
         }
-        catch (IOException ioe)
+        catch (HibernateException ioe)
         {
             throw new RuntimeException("Unable to access filesystem.", ioe);
         }

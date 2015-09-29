@@ -194,8 +194,8 @@ public class UserProfileViewer extends Container
         addressLine1.withHTMLElement(HTMLElement.div).addClassName("prop").addClassName("address-line");
         final Label addressLine2 = new Label();
         addressLine2.withHTMLElement(HTMLElement.div).addClassName("prop").addClassName("address-line");
-        if (address.getAddressLines().length > 0) addressLine1.setText(createText(address.getAddressLines()[0]));
-        if (address.getAddressLines().length > 1) addressLine2.setText(createText(address.getAddressLines()[1]));
+        if (address.getAddressLineList().size() > 0) addressLine1.setText(createText(address.getAddressLine(1)));
+        if (address.getAddressLineList().size() > 1) addressLine2.setText(createText(address.getAddressLine(2)));
         final HTMLComponent city = new HTMLComponent();
         // The "prop" class name is part of the standard HTML structure. It is always a good idea to also
         /// add a specific class name like "city" in this example. Please be consistent when using class names.

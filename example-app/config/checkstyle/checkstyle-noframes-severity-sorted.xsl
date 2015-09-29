@@ -83,9 +83,9 @@
                 <table border="0" cellpadding="0" cellspacing="0" width="100%">
                     <tr>
                         <td class="bannercell" rowspan="2">
-                            <!--a href="http://jakarta.apache.org/">
-                            <img src="http://jakarta.apache.org/images/jakarta-logo.gif" alt="http://jakarta.apache.org" align="left" border="0"/>
-                            </a-->
+            <!--a href="http://jakarta.apache.org/">
+            <img src="http://jakarta.apache.org/images/jakarta-logo.gif" alt="http://jakarta.apache.org" align="left" border="0"/>
+            </a-->
                         </td>
                         <td class="text-align:right">
                             <h2>CheckStyle Audit</h2>
