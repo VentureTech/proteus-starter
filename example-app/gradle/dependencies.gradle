@@ -29,8 +29,6 @@ configurations {
 }
 dependencies {
 
-    checkstyle("com.puppycrawl.tools:checkstyle:${version_checkstyle}")
-
     runtimeaspects "org.springframework:spring-instrument:${version_spring}", "org.aspectj:aspectjweaver:${aspectjVersion}"
     compiletimeaspects "org.springframework:spring-aspects:${version_spring}", "org.aspectj:aspectjtools:${aspectjVersion}"
 

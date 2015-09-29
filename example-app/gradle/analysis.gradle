@@ -7,6 +7,10 @@
     }
 }
 
+checkstyle {
+    toolVersion = "${version_checkstyle}"
+}
+
 findbugs {
     toolVersion = "${version_findbugs}"
 }

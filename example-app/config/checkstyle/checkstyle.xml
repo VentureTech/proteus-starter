@@ -4,7 +4,12 @@
     "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 <module name="Checker">
     <property name="severity" value="warning"/>
-    <module name="SuppressionCommentFilter"/>
+
+    <module name="SuppressionCommentFilter"></module>
+    <module name="SuppressWithNearbyCommentFilter">
+        <property name="influenceFormat" value="1"/>
+    </module>
+    <module name="SuppressWarningsFilter"></module>
     <module name="FileLength"></module>
     <module name="JavadocPackage">
         <property name="allowLegacy" value="true"/>
@@ -20,7 +25,9 @@
     </module>
      -->
     <module name="TreeWalker">
+
         <module name="FileContentsHolder"></module>
+        <module name="SuppressWarningsHolder"></module>
         <module name="RegexpSinglelineJava">
             <property name="severity" value="error"/>
             <property name="format" value="inheritdoc|\(\s*@*inheritDoc\s*\)|@\{inheritDoc\}"/>
@@ -43,13 +50,7 @@
             <property name="severity" value="error"/>
             <property name="option" value="nl"/>
             <property name="maxLineLength" value="132"/>
-            <property name="tokens"
-                      value="CLASS_DEF, CTOR_DEF, INTERFACE_DEF, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_SWITCH, LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, METHOD_DEF"/>
-        </module>
-        <module name="NeedBraces">
-            <property name="severity" value="ignore"/>
-            <property name="tokens"
-                      value="LITERAL_DO, LITERAL_FOR, LITERAL_WHILE"/>
+            <property name="tokens" value="CLASS_DEF, CTOR_DEF, INTERFACE_DEF, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_SWITCH, LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, METHOD_DEF"/>
         </module>
         <module name="RightCurly">
             <property name="severity" value="error"/>
@@ -99,7 +100,7 @@
             <property name="severity" value="error"/>
         </module>
         <module name="RedundantModifier">
-            <property name="tokens" value="METHOD_DEF, VARIABLE_DEF"/>
+            <property name="tokens" value="INTERFACE_DEF, VARIABLE_DEF, ANNOTATION_FIELD_DEF"/>
         </module>
         <module name="ConstantName">
             <property name="format"

@@ -1,1 +1,0 @@
-checkstyle-noframes-severity-sorted.xsl
