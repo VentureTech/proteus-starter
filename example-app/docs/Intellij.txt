@@ -1,4 +1,4 @@
-This example project was tested with Intellij 13.
+This example project was tested with Intellij 15.
 
 There are two example run configurations.
 *) App with LTW. This is short for Application with Load-Time Weaving (AspectJ).

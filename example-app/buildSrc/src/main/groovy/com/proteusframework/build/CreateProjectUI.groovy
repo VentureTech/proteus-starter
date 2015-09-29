@@ -146,6 +146,8 @@ To run the demo code, you will need to update your ProjectConfig.'''
             errors.add('Destination Directory Is Required')
         else if (!model.destinationDirectory.canWrite())
             errors.add('Destination Directory Is Not Writeable')
+        else if (new File(model.destinationDirectory, model.appName).exists())
+            errors.add('Project Already Exists')
         if (errors)
         {
             swing.optionPane().showMessageDialog(swing.ui, errors.join('\n'),
@@ -276,6 +278,16 @@ spring-shell.log
             process.waitFor()
             if(new File('/usr/bin/git').canExecute()){
                 command = ['/usr/bin/git', 'init']
+                process = command.execute(envp, baseDir)
+                process.consumeProcessOutput(System.out, System.err)
+                process.waitFor()
+
+                command = ['/usr/bin/git', 'add', '-A']
+                process = command.execute(envp, baseDir)
+                process.consumeProcessOutput(System.out, System.err)
+                process.waitFor()
+
+                command = ['/usr/bin/git', 'commit', '-m', "Created project, ${model.appName}, from example-app", '.']
                 process = command.execute(envp, baseDir)
                 process.consumeProcessOutput(System.out, System.err)
                 process.waitFor()
