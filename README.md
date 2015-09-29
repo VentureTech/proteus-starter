@@ -19,5 +19,7 @@ The example app (*/proteus-examples/example-app*) is a gradle project with depen
 * Create a git repo where you host your code such as github and push the project up.
 * Code!
 
+OR
+* Run ./gradlew createProject and follow the instructions
 
 For documentation on the Proteus Framework, head over to http://docs.proteusframework.com
