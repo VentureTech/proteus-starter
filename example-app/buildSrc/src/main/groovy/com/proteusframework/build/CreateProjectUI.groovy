@@ -134,7 +134,7 @@ To run the demo code, you will need to update your ProjectConfig.'''
             errors.add('Artifact Group Is Required')
         else if(!model.appGroup.matches('([a-z_]{1}[a-z0-9_]*(\\.[a-z_]{1}[a-z0-9_]*)*)'))
             errors.add('Artifact Group Must Be A Valid Package Name')
-        else if(!Character.isLetter(model.appName.charAt(model.appName.length()-1)))
+        else if(!Character.isLetter(model.appGroup.charAt(model.appGroup.length()-1)))
             errors.add('Artifact Group Must End With A Letter')
         if (!model.appName)
             errors.add('Artifact/Project Name Is Required')
