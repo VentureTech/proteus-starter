@@ -2,6 +2,7 @@
 <!DOCTYPE module PUBLIC
     "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
     "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+<!--suppress LongLine -->
 <module name="Checker">
     <property name="severity" value="warning"/>
 
@@ -64,10 +65,11 @@
         <module name="EqualsHashCode">
             <property name="severity" value="error"/>
         </module>
+        <!-- Broken in v6.11 - ignores tokens property
         <module name="InnerAssignment">
-            <property name="tokens"
-                      value="BAND_ASSIGN, BOR_ASSIGN, BSR_ASSIGN, BXOR_ASSIGN, DIV_ASSIGN, MINUS_ASSIGN, MOD_ASSIGN, PLUS_ASSIGN, SL_ASSIGN, SR_ASSIGN, STAR_ASSIGN"/>
+            <property name="tokens" value="BAND_ASSIGN, BOR_ASSIGN, BSR_ASSIGN, BXOR_ASSIGN, DIV_ASSIGN, MINUS_ASSIGN, MOD_ASSIGN, PLUS_ASSIGN, SL_ASSIGN, SR_ASSIGN, STAR_ASSIGN"/>
         </module>
+        -->
         <module name="MissingSwitchDefault">
             <property name="severity" value="error"/>
         </module>
