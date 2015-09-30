@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JavaProjectCodeInsightSettings">
+    <excluded-names>
+      <name>javafx</name>
+      <name>org.apache.logging.log4j.core.Logger</name>
+      <name>org.eclipse.datatools</name>
+      <name>sun.io</name>
+    </excluded-names>
+  </component>
+</project>
