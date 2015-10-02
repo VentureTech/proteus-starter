@@ -15,7 +15,8 @@ settings.gradle.projectsLoaded( {
     props.each({it.test(settings)})
 
     settings.gradle.rootProject.ext.hasLocalRepo = settings.hasProperty('local_repo');
-    settings.gradle.rootProject.ext.repoURL = "${repo_venture_tech_url}/${repo_venture_tech_key}"
+    settings.gradle.rootProject.ext.repoReleaseURL = "${repo_venture_tech_url}/release"
+    settings.gradle.rootProject.ext.repoSnapshotURL = "${repo_venture_tech_url}/snapshot"
     settings.gradle.rootProject.ext.warTaskSpecified = gradle.startParameter.taskNames.any {it == 'war'}
     settings.gradle.rootProject.ext.isIDEA = System.getProperties().containsKey('idea.active') ||
             System.getProperties().containsKey('idea.paths.selector') ||

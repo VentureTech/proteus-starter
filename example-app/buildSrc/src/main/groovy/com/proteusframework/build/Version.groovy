@@ -47,7 +47,8 @@ class Version
         {
             status = 'integration'
             versionNumber = originalVersion.substring(0, originalVersion.length() - '-SNAPSHOT'.length())
-            thisVersion = "${versionNumber}-${getTimestamp()}"
+//            thisVersion = "${versionNumber}-${getTimestamp()}"
+            thisVersion = versionValue
         }
         else
         {
