@@ -181,7 +181,11 @@ To run the demo code, you will need to update your ProjectConfig.'''
             project.copy() {
                 into baseDir
                 from(project.projectDir) {
-                    include 'buildSrc/src/**/*'
+                    include 'buildSrc/src/main/groovy/com/proteusframework/build/GitInfo.groovy'
+                    include 'buildSrc/src/main/groovy/com/proteusframework/build/package-info.java'
+                    include 'buildSrc/src/main/groovy/com/proteusframework/build/Property.groovy'
+                    include 'buildSrc/src/main/groovy/com/proteusframework/build/Version.groovy'
+                    include 'buildSrc/src/main/resources/**/*'
                     include 'buildSrc/build.gradle'
                     include 'buildSrc/buildSrc.iml'
                     include '.idea/**/*'
@@ -257,6 +261,7 @@ spring-shell.log
                         .replaceAll('example-app', model.appName)
                         .replaceAll('com.example', model.appGroup)
                         .replaceAll('example_app', model.appName.replace('.', '_'))
+                        .replace('task createProject(type: com.proteusframework.build.CreateProjectTask)', '')
                     if (updatedContent != content)
                     {
                         println('Updating ' + f)

@@ -67,6 +67,5 @@ javadoc {
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
-    include 'com/example/app/**'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
