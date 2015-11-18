@@ -59,8 +59,10 @@ dependencies {
 
     testCompile "net.proteusframework:proteusframework-testing:${version_proteus}"
     testCompile 'junit:junit:4.11'
-    //TODO: Update to use TestNG when core-tests package is available again
-    //    testCompile 'org.testng:testng:6.8.13'
+    testCompile 'org.testng:testng:6.8.13'
+    testCompile('org.uncommons:reportng:1.1.2') {
+        exclude group: "org.testng", module: "testng"
+    }
 
 
     // These are for the war plugin
