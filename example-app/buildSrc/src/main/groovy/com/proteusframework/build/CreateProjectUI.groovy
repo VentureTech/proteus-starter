@@ -260,7 +260,7 @@ spring-shell.log
                         .replaceAll('com/example/app', packageDir)
                         .replaceAll('example-app', model.appName)
                         .replaceAll('com.example', model.appGroup)
-                        .replaceAll('example_app', model.appName.replace('.', '_'))
+                        .replaceAll('example_app', model.appName.replace('.', '-'))
                         .replace('task createProject(type: com.proteusframework.build.CreateProjectTask)', '')
                     if (updatedContent != content)
                     {
