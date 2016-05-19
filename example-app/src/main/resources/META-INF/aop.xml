@@ -31,8 +31,6 @@
 
     <weaver options="-Xset:overWeaving=true">
         <!-- Exclude Proteus Unless You Have Your Own Aspects -->
-        <exclude within="com.i2rd..*" />
-        <exclude within="com.proteusframework..*" />
         <exclude within="net.proteusframework..*" />
 
         <!-- Include Your Packages Here For Spring Aspects -->
