@@ -1,3 +1,7 @@
+def jdkHome =tool 'JDK 8'
+env.JAVA_HOME=jdkHome
+
+
 
 node {
     // Mark the code checkout 'stage'....
@@ -10,7 +14,7 @@ node {
     // Mark the code build 'stage'....
     stage 'Build'
     // Run the build
-    def jdkHome =tool 'JDK 8'
-    env.JAVA_HOME=jdkHome
-    sh "./example-app/gradlew clean assemble"
+    sh 'cd example-app; ./gradlew clean assemble -Prepo_venturetech_username=${repo_venturetech_username} ' +
+        '-Prepo_venturetech_password=${repo_venturetech_password} ' +
+        '-Pcompile_libraries=true --no-daemon --console plain'
 }
