@@ -1,0 +1,166 @@
+@import "../mixins/table";
+
+.miwt-table {
+	@include style-table;
+	font-size: 90%;
+
+	> thead > tr {
+		> th {
+			//@include style-table-heading;
+			background: lighten($color-app-light-grey, 25%);
+			color: $color-app-grey;
+			font-family: $font-roboto;
+			line-height: 24px;
+			padding: 5px 8px;
+			text-align: left;
+			font-weight: 400;
+
+			a {
+				color: $color-app-grey;
+			}
+
+		}
+	}
+
+	> tbody > tr {
+		@include style-table-data-row;
+	}
+	caption {
+		caption-side: top;
+		text-align: left;
+		margin-top: -2.5rem;
+		font-size: 1rem !important;
+		font-weight: 400 !important;
+		color: $color-app-grey;
+	}
+}
+
+/* MIWT Trees. */
+
+.miwt-tree {
+	@include style-table;
+	border: 0 none;
+
+	> thead > tr {
+		> th {
+			@include style-table-heading;
+			border-bottom: 1px solid $color-cloud-grey;
+
+			&.last-column {
+				border-right: 1px solid $color-cloud-grey;
+				border-top: 1px solid $color-cloud-grey;
+			}
+		}
+	}
+
+	> tbody > tr {
+		@include style-table-data-row;
+
+		> td {
+			border-bottom: 1px solid $color-cloud-grey;
+
+			&.leaf,
+			&.parent-sibling-following,
+			&.parent-last-sibling,
+			&.sibling-following,
+			&.last-sibling {
+				background-color: transparent;
+				border: 0 none;
+			}
+
+			&.first-column {
+				border-left: 1px solid $color-cloud-grey;
+				border-top: 1px solid $color-cloud-grey;
+			}
+
+			&.last-column {
+				border-right: 1px solid $color-cloud-grey;
+				border-top: 1px solid $color-cloud-grey;
+			}
+		}
+	}
+
+	tr.dnd-source {
+		td.first-column {
+			padding: 5px 8px;
+			background-image: none;
+		}
+
+		&:hover {
+			td.first-column {
+				background-image: none;
+			}
+		}
+	}
+
+	.parent-sibling-following,
+	.last-sibling,
+	.sibling-following {
+		img.tpi {
+			width: 14px;
+		}
+	}
+
+	td.parent-sibling-following,
+	td.sibling-following {
+		background-image: url(/_resources/all/docroot/cms/icons/tree/vline.gif);
+		background-repeat: no-repeat;
+		background-position: 50% 0;
+		border: 0 none;
+		padding: 0;
+	}
+
+	td.first {
+		width: 1px;
+	}
+
+	.last-sibling,
+	td.sibling-following {
+		width: 16px;
+	}
+
+	td.parent-last-sibling {
+		border: 0 none;
+		background: transparent;
+		padding: 0;
+	}
+
+	td.sibling-following.leaf {
+		background-image: url(/_resources/all/docroot/cms/icons/tree/tn.gif);
+		background-repeat: no-repeat;
+		background-position: 50% 0;
+		border: 0 none;
+		padding: 0;
+	}
+
+	td.last-sibling {
+		background-image: url(/_resources/all/docroot/cms/icons/tree/ln.gif);
+		background-repeat: no-repeat;
+		background-position: 50% 0;
+		border: 0 none;
+		padding: 0;
+	}
+
+	div.column-visibility {
+		padding-left: 0;
+	}
+}
+.miwt-config-option{
+	text-align: left;
+}
+.miwt-config-option ul li{
+	display: block;
+}
+
+.miwt-select-all-rows th,
+.miwt-clear-row-selection th{
+	text-align: center;
+	background-color: #FFFFCC;
+}
+
+@media (max-width: 600px) {
+	.miwt-table-con {
+		max-width: 100vw;
+		overflow: auto;
+	}
+}

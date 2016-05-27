@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="6717379d-d394-4a8b-92b6-8683d2e2a80d" name="LDP Live (SSH)" url="https://ldp-release.venturetech.net/_files/">
+        <fileTransfer host="ldp-release-01.ebiz-core.com" port="22" privateKey="$USER_HOME$/.ssh/id_dsa" accessType="SFTP" passphrase="dfe3df8adfdddfcfdfc4dfdedf8adfdedfc5df8adfdedfc2dfcfdf8adfd9dfdedfc5dfd8dfcfdf8adfdedfc5df8adfc8dfdfdfd3df8adf9bdf8adfcddfcbdfc6dfc6dfc5dfc4df8adfc5dfccdf8adfc7dfc3dfc6dfc1df84" username="russ" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+      <webServer id="e0b7c140-a0ac-4872-892e-0aab03357d9d" name="LDP Live (Web)" url="https://ldp-release.venturetech.net/_files/Web">
+        <fileTransfer port="0" mountedRoot="$USER_HOME$/mounts/ldp-live" accessType="MOUNT" />
+      </webServer>
+      <webServer id="c97a816b-f697-494f-bf60-bd160aa28a2c" name="LDP QA (Web)" url="https://ldp-qa.venturetech.net/_files/Web">
+        <fileTransfer port="0" mountedRoot="$USER_HOME$/mounts/ldp-qa" accessType="MOUNT" />
+      </webServer>
+    </option>
+  </component>
+</project>

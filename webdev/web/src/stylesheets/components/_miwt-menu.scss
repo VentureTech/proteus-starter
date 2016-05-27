@@ -1,0 +1,86 @@
+@import "../config/base-vars";
+@import "../../../../bower_components/bootstrap/scss/mixins/clearfix";
+
+.miwt .menu-component {
+	> .menu-item {
+		//fixme add class of btn to this thing
+		color: inherit;
+		display: inline-block;
+		vertical-align: middle;
+		white-space: nowrap;
+		font-family: $font-family-sans-serif;
+		font-size: 12px;
+		padding: 5px 8px;
+		border: 0 none;
+		margin: 0;
+		text-decoration: none;
+		&:before {
+			font-family: FontAwesome;
+			content: "\f067";
+			padding-right: 6px;
+		}
+	}
+
+	ul.menu-items {
+		min-width: 100%;
+		background-color: $color-white;
+		box-shadow: 1px 1px 4px transparentize($color-black, 0.7);
+		padding: 10px 0;
+		top: 100%;
+		left: auto;
+		right: 0;
+		border: 1px solid $color-light-grey;
+		color: $color-light-charcoal;
+	}
+
+	li.menu {
+
+		ul.menu-items {
+			left:auto;
+			right:100%;
+		}
+
+		a.menu-item,
+		span.menu-item {
+			display: block;
+			width: auto;
+			padding: 5px 20px;
+			color: inherit;
+			text-align: left;
+		}
+
+
+		&:hover {
+			background-color: $color-cloud-grey;
+			> a.menu-item,
+			> span.menu-item {
+				background-color: inherit;
+			}
+		}
+	}
+
+	li.parent-menu {
+		> a.menu-item {
+			//background: url(/_resources/all/docroot/miwt/component/images/menu-expand.gif) no-repeat left center;
+			background: none;
+		}
+		> a.menu-item:before {
+			font-family: FontAwesome;
+			content: "\f0d9";
+			padding-right: 6px;
+		}
+	}
+
+	ul {
+		li.menu {
+			white-space: nowrap;
+			width: auto;
+		}
+	}
+
+	li.deprecated {
+		text-decoration: line-through;
+	}
+}
+
+

@@ -1,0 +1,90 @@
+$color-app-brand: #67B362;
+$color-app-yellow: #F9BB29;
+$color-app-blue: #488fb4;
+$color-app-light-blue: #4AB0D5;
+$color-app-cyan: #6CCAC9;
+$color-app-red: #EE695B;
+$color-app-black: #343940;
+$color-app-grey: #515B6B;
+$color-app-light-grey: #9699A6;
+
+$app-page-bg: #F1F2F7;
+
+$body-bg: $app-page-bg;
+$brand-primary: $color-app-brand;
+$brand-danger: $color-app-red;
+$brand-warning: $color-app-yellow;
+$brand-info: $color-app-cyan;
+
+$btn-primary-color:              #fff;
+$btn-primary-bg:                 $brand-primary;
+$btn-primary-border:             darken($brand-primary, 5%);
+
+$btn-secondary-color:            $brand-primary;
+$btn-secondary-bg:               #fff;
+$btn-secondary-border:           $brand-primary;
+$enable-shadows:                 true;
+
+@import "../../../../bower_components/bootstrap/scss/variables";
+
+
+$menu-item-active: $color-app-red;
+$menu-item-inactive: $color-app-light-grey;
+
+$header-bg: #A8ABBA;
+
+$color-white: #fff;
+$color-black: #000;
+
+$color-almost-white: #f7f7f7;
+$color-smokey-white: #f2f2f2;
+$color-cloud-grey: #e7e7e7;
+$color-lighter-grey: #ddd;
+$color-light-grey: #ccc;
+$color-grey: #aaa;
+$color-dark-grey: #999;
+$color-darker-grey: #777;
+$color-light-charcoal: #555;
+$color-charcoal: #333;
+
+$color-cornsilk: cornsilk;
+
+$font-monospace: monospace;
+$font-arial: $font-family-sans-serif;
+$font-open-sans: Open Sans, $font-arial;
+$font-roboto: "Roboto", $font-family-sans-serif;
+
+$font-default-color: $color-black;
+$font-default-size: 14px;
+$font-default-content-line-height: 1.4;
+
+$html-entity-nbsp: "\a0";
+
+$bp-mobile-landscape: (min-width: 480px);
+$bp-tablets-portrait: (min-width: 768px);
+$bp-tablets-only: (min-width: 768px) (min-width: 1024px);
+$bp-tablets-landscape: (min-width: 1024px);
+$bp-desktop: (min-width: 1280px);
+$bp-desktop-wide: (min-width: 1400px);
+
+
+$font-open-sans-bold: Open Sans Bold;
+
+$font-glyph-lib: FontAwesome;
+
+$html-entity-error: '\f071';
+$html-entity-info: '\f129';
+$html-entity-success: '\f00c';
+$html-entity-fixme: '\f0ad';
+
+$color-success-light: #dff0d8;
+$color-success-dark: #3c763d;
+
+$color-info-light: #dff0d8;
+$color-info-dark: #31708f;
+
+$color-warning-light: #faf2cc;
+$color-warning-dark: #8a6d3b;
+
+$color-error-light: #ebcccc;
+$color-error-dark: #a94442;

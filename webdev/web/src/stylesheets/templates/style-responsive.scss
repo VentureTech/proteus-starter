@@ -1,0 +1,47 @@
+
+
+@media (max-width: 768px) {
+
+	.top-menu {
+		> li > .fa,
+		> li.dropdown a.dropdown-toggle {
+			font-size: 75%;
+		}
+	}
+	.sidebar-toggle-box span.logo {
+		//font-size: 75%;
+	}
+
+	.img-responsive {
+		width: 100%;
+	}
+
+}
+
+@media (max-width: 600px) {
+	.sidebar-toggle-box {
+		.logo {
+			display: none;
+		}
+	}
+	.top-menu {
+		margin-top: 0;
+		li.link {
+			margin-right: 0;
+		}
+		li.link .fa:before {
+			font-size:1rem;
+		}
+		.dropdown .welcome {
+			display: none;
+		}
+	}
+}
+
+@media (max-width: 320px) {
+
+}
+
+
+
+

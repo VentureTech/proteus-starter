@@ -1,0 +1,268 @@
+@import "../config/base-vars";
+@import "../../../../bower_components/bootstrap/scss/variables";
+@import "../../../../bower_components/bootstrap/scss/mixins";
+@import "../../../../bower_components/bootstrap/scss/buttons";
+
+#main-content {
+	min-height: calc(100vh - 87px); //window height - footer
+}
+
+.login-body {
+	background-color: #f1f2f7;
+}
+
+.action-login, .action-password {
+	@extend .btn-block;
+	@extend .btn-lg;
+	font-weight: 300;
+	text-transform: uppercase;
+}
+
+.form-signin .title {
+	margin: 0;
+	padding:20px 15px;
+	text-align: center;
+	background: $header-bg;
+	border-radius: 5px 5px 0 0;
+	-webkit-border-radius: 5px 5px 0 0;
+	color: #fff;
+	font-size: 18px;
+	text-transform: uppercase;
+	line-height: $headings-line-height;
+	font-weight: $headings-font-weight;
+	font-family: $headings-font-family;
+}
+
+.form-signin .checkbox {
+	margin-bottom: 14px;
+}
+.form-signin .checkbox {
+	font-family: $font-family-sans-serif;
+	color: #b6b6b6;
+	font-weight: 300;
+}
+.form-signin .form-control {
+	position: relative;
+	font-size: 16px;
+	height: auto;
+	padding: 10px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.form-signin .form-control:focus {
+	z-index: 2;
+}
+.form-signin input[type="text"], .form-signin input[type="password"] {
+	margin-bottom: 15px;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border: 1px solid #eaeaea;
+	box-shadow: none;
+	font-size: 12px;
+	padding:2px 4px;
+	width: 100%;
+}
+
+.form-signin .action-login,
+.form-signin button.submit,
+.form-signin .action-password {
+	background: $btn-primary-bg;
+	color: #fff;
+	text-transform: uppercase;
+	font-weight: 300;
+	//box-shadow: 0 4px darken($btn-primary-border, 12%);
+	margin-bottom: 20px;
+
+	&:hover {
+		background-color: darken($btn-primary-bg, 15%);
+		color: $color-white;
+	}
+
+}
+
+.form-signin p {
+	text-align: center;
+	margin: 0;
+}
+
+.label, label {
+	font-weight: 500;
+	display: block;
+	padding: 0;
+	margin-bottom: .25rem;
+	text-align: left;
+}
+
+.form-signin a {
+	color: #41cac0;
+}
+
+.form-signin a:hover {
+	color: #b6b6b6;
+}
+
+.login-wrap {
+	padding: 20px;
+}
+
+.login-social-link  {
+	display: inline-block;
+	margin-top: 20px;
+	margin-bottom: 15px;
+}
+
+.login-social-link a {
+	color: #fff;
+	padding: 15px 28px;
+	border-radius: 4px;
+}
+
+.login-social-link a:hover {
+	color: #fff;
+}
+
+.login-social-link a i {
+	font-size: 20px;
+	padding-right: 10px;
+}
+
+.login-social-link a.facebook {
+	background: #5193ea;
+	margin-right: 22px;
+	box-shadow: 0 4px #2775e2;
+	float:left;
+}
+
+.login-social-link a.twitter {
+	background: #44ccfe;
+	box-shadow: 0 4px #2bb4e8;
+	float:left;
+}
+
+
+.set-pw-intro {
+	padding: 1rem;
+	font-weight: 400;
+	color: $color-app-grey;
+	text-align: center;
+	max-width: 50rem;
+	margin: 100px auto 0;
+
+	h3 {
+		color: $color-app-brand;
+	}
+
+	p {
+		margin-bottom: 0;
+	}
+
+	+ .password-reset.form-signin {
+		margin-top: 1rem;
+		max-width: 30rem;
+
+		.action-password.btn {
+			max-width: 16rem;
+			margin: 0 auto 20px;
+		}
+
+	}
+
+}
+
+#authentication {
+	background-color: #f1f2f7;
+}
+.form-signin, .form-signout {
+	max-width: 375px;
+	margin: 100px auto 0;
+	background: #fff;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+.form-signin .fields{
+	text-align: left;
+	padding:20px 3rem;
+}
+.form-signin .message-container,
+.form-signin .actions {
+	padding-left:20px;
+	padding-right:20px;
+}
+.form-signin {
+
+	.text p, .password-rules {
+		color: $color-app-grey;
+		font-size: 90%;
+	}
+
+	.message-container{
+		margin: 10px 0 25px;
+	}
+
+	.retrieve-password {
+		padding: 10px 0;
+
+		div.email {
+			padding: 0 3rem 15px;
+			text-align: left;
+
+			> span {
+				color: #444;
+				font-weight: 500;
+				font-size: 90%;
+			}
+
+		}
+
+		.submit {
+			border: 1px solid transparent;
+			@include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
+			@extend .btn-block;
+			@extend .btn-lg;
+		}
+
+	}
+
+	.actions {
+		text-align: center;
+	}
+
+}
+
+.password-reset {
+	.password-rules { padding: 25px 20px 0; }
+
+	.username .value { color: $color-app-grey; font-size: .9rem; }
+
+	.actions {
+		padding-bottom: 25px;
+	}
+
+	.fields {
+
+		> .field { margin-bottom: 15px; }
+	}
+
+	.label label, .value input {
+		margin-bottom: 0;
+		font-size: 90%;
+	}
+}
+
+.form-reset #retrieve-password {
+	text-align: center;
+}
+header#main-header {
+	display: none;
+}
+
+@media (max-width: 600px) {
+	.set-pw-intro {
+		margin-top: 1rem;
+
+		h3 {
+			padding-left: 0 !important;
+		}
+	}
+}

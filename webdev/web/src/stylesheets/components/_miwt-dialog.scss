@@ -1,0 +1,373 @@
+@import "../config/base-vars";
+@import "../../../../bower_components/bootstrap/scss/mixins/buttons";
+
+div.window.dialog /*specificity*/ {
+	padding: 0;
+	background-color: $modal-content-bg;
+	background-clip: padding-box;
+	border: 1px solid $modal-content-border-color;
+	border-radius: $border-radius-lg;
+	@include box-shadow(0 3px 9px rgba(0,0,0,.5));
+	// Remove focus outline from opened modal
+	outline: 0;
+
+	.titlebar {
+		background-color: lighten($color-app-light-grey, 25%);
+		height: 70px;
+		border-top-left-radius: $border-radius-lg;
+		border-top-right-radius: $border-radius-lg;
+		position: relative;
+		z-index: 501;
+	}
+
+	td.activewindowtitle {
+		padding: $modal-title-padding;
+		border-bottom: 1px solid $modal-header-border-color;
+		text-align: left;
+		margin: 0;
+		line-height: 1;
+		font-size: 1.35rem;
+		font-weight: inherit;
+		color: $color-app-grey;
+		height: auto;
+	}
+	td.windowbuttons {
+		color: inherit;
+		height: auto;
+		border-bottom: 1px solid $modal-header-border-color;
+		padding: 0 10px;
+
+		.btn { // assuming close - only 1 button currently
+			background-color: lighten($color-app-light-grey, 35%);
+			padding: 0 10px 0;
+			border-color: lighten($color-app-light-grey, 10%);
+			color: lighten($color-app-light-grey, 5%);
+		}
+
+	}
+	.windowcontent {
+		top: 70px;
+		padding: 25px;
+		border: none;
+		background-color: $color-white;
+		color: $color-app-grey;
+		bottom: initial;
+		left: initial;
+		right: initial;
+		width: 100%;
+		max-height: calc(100vh - 100px);
+		border-bottom-left-radius: $border-radius-lg;
+		border-bottom-right-radius: $border-radius-lg;
+		z-index: 502;
+	}
+	.actions.bottom, .actions.top {
+		width: 100%;
+		text-align: right;
+		border-top: 1px #ccc solid;
+		padding: 20px 0 15px;
+		border-top: 1px solid $modal-footer-border-color;
+		@include clearfix(); // clear it in case folks use .pull-* classes on buttons
+
+		// Properly space out buttons
+		.btn + .btn {
+			margin-bottom: 0; // account for input[type="submit"] which gets the bottom margin like all other inputs
+			margin-left: 5px;
+		}
+		// but override that for button groups
+		.btn-group .btn + .btn {
+			margin-left: -1px;
+		}
+		// and override it for block buttons as well
+		.btn-block + .btn-block {
+			margin-left: 0;
+		}
+	}
+	.actions.top {
+		border-top: none;
+		border-bottom: 1px solid $modal-footer-border-color;
+		padding: 0 0 15px;
+	}
+
+	&::before {
+		content: '';
+		background: rgba(42,53,66,0.9);
+		display: block;
+		height: 100%;
+		width: 100%;
+		z-index: 499;
+		position: fixed;
+		top: 0;
+		left: 0;
+	}
+
+	h2 {
+		font-size: 1rem;
+		padding-bottom: .15rem !important;
+	}
+
+	.email-notifications {
+		margin-bottom: 1rem;
+	}
+
+	.miwt-table {
+		font-size: 85%;
+
+		> tbody > tr + tr {
+			border-top: 1px solid lighten($color-app-light-grey, 25%);
+		}
+
+	}
+
+	textarea {
+		border: 1px solid lighten($color-app-light-grey, 25%);
+		border-radius: $border-radius-sm;
+		height: 3rem;
+	}
+
+	.note {
+		margin-top: 1rem;
+
+		label, .tal {
+			font-weight: 500;
+			margin-bottom: 0;
+		}
+
+	}
+
+	input[type="text"] {
+		border: 1px solid lighten($color-app-light-grey, 25%);
+		border-radius: $border-radius-sm;
+		padding: 2px 5px;
+	}
+
+	.prop-group.time {
+		label.prop-group-title {
+			margin-bottom: -2.5rem;
+			font-size: 1rem;
+		}
+
+		.zoned-time-editor {
+			span.time, span.timezone {
+				display: inline-block;
+			}
+			span.timezone {
+				margin-left: 1.5rem;
+			}
+		}
+
+	}
+
+	.prop.subject {
+		input[type="text"] {
+			width: 100%;
+		}
+	}
+
+	.task-assignment {
+		.entity-actions {
+			margin-top: .5rem;
+			margin-bottom: -.15rem;
+			padding-right: 0;
+
+		}
+		.entity-action {
+			margin-right: 0 !important;
+			padding: 0 !important;
+		}
+
+		.miwt-table > tbody > tr:not(.no-data) > td.first-column,
+		.miwt-table > thead > tr > th.first-column {
+			width: 40%;
+		}
+
+		.miwt-table > tbody > tr > td.type-membership,
+		.miwt-table > thead > tr > th.type-membership {
+			width: 48%;
+		}
+
+	}
+
+	.search .entity-actions .menu-component,
+	.search-wrapper .entity-actions .menu-component {
+		@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border);
+
+		> a.menu-item {
+			font-size: 12px;
+
+			&:before {
+				font-size: 10px;
+				margin-top: -2px;
+				padding-right: 4px;
+			}
+		}
+
+		li.menu ul.menu-items {
+			top: auto;
+			bottom: -10px;
+		}
+
+	}
+
+	/* ----- Let's style specific dialog windows. */
+	&.configure-tasks {
+	}
+	&.view-engagement-dialog {
+		width: 50%;
+	}
+	&.edit-goal-dialog {
+		z-index: 1090 !important;
+	}
+
+	.emailtemplate-config {
+		.recipient {
+			display: block;
+			margin-bottom: .5rem;
+		}
+	}
+
+	.result-upload-interactive {
+		input.publish-file {
+			margin-right: .25rem;
+		}
+		.btn.delete {
+			@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $line-height-sm, $border-radius-sm);
+			margin-bottom: 1rem;
+		}
+		input[type="file"] {
+			margin-bottom: 1rem;
+		}
+	}
+
+	.email-preview-content {
+		height: 200px;
+	}
+
+	.engagement-viewer {
+		h1 {
+			font-size: 1.35rem;
+		}
+	}
+
+	&.reschedule-task, &.confirm-task, &.message-ctx-editor-dialog {
+		.prop-header-actions {
+			display: none;
+		}
+	}
+
+	&.message-ctx-editor-dialog {
+		.prop-editor .prop {
+			input[type="text"], textarea {
+				width: 65%;
+			}
+			textarea {
+				height: 8rem;
+			}
+		}
+	}
+
+	&.send-resource-dialog {
+
+		.prop.select-resources {
+			margin-top: 1.25rem;
+			> label {
+				font-weight: 400;
+			}
+			.search-bar {
+				padding: 0;
+				margin: 0;
+
+				.actions.search-actions .btn {
+					@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $line-height-sm, $border-radius-sm);
+				}
+
+			}
+		}
+	}
+
+	&.send-resource-dialog, &.send-survey-dialog {
+
+		.prop.notify-message {
+			margin-top: .75rem;
+
+			label {
+				display: block;
+			}
+			textarea {
+				width: 100%;
+				height: 6rem;
+			}
+		}
+
+	}
+
+	&.send-resource-dialog, &.send-survey-dialog {
+		.property-editor > div.actions {
+			margin: 1.25rem 0 10px;
+			border-top: 1px solid #e5e5e5;
+			padding: 20px 0 15px;
+			text-align: right;
+			width: 100%;
+		}
+	}
+
+	&.select-resources-dialog {
+		.resource-selector-wrapper {
+			.actions.nav-actions {
+				margin-bottom: 0;
+
+				> .btn.done-action {
+					@include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
+				}
+			}
+		}
+	}
+
+	&.close-plan-dialog {
+		input[type="number"] {
+			border: 1px solid lighten($color-app-light-grey, 25%);
+			border-radius: $border-radius-sm;
+			display: block;
+			margin: 1rem 0;
+		}
+
+		div.actions {
+			margin: 1.25rem 0 10px;
+			border-top: 1px solid #e5e5e5;
+			padding: 20px 0 15px;
+			text-align: right;
+			width: 100%;
+		}
+
+	}
+
+}
+
+@media (max-width: 767px) {
+	div.window.dialog {
+		.windowcontent {
+			padding: 10px;
+		}
+		td.activewindowtitle {
+			font-size: 1.1rem;
+		}
+	}
+}
+
+@media (max-width: 1050px) {
+	div.window.dialog {
+		.prop-group.time {
+			.zoned-time-editor {
+				span.timezone {
+					margin-left: 0;
+					display: block;
+				}
+			}
+		}
+	}
+}
+
+@media (min-width:1300px) {
+	div.window.dialog:not(.activity-configurer-dialog) {
+		max-width: 65rem;
+	}
+}

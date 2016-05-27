@@ -1,0 +1,78 @@
+@import "../config/base-vars";
+@import "../../../../bower_components/bootstrap/scss/mixins";
+
+.email-preview {
+	.preview-actions {
+		margin-top:-2.5rem!important;
+		text-align: right;
+		margin-bottom: .65rem;
+		padding-right: 0 !important;
+	}
+}
+.prop-wrapper .recipients-wrapper > label {
+	display: inline-block;
+}
+.recipient > .btn.remove{
+	@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-xs, $line-height-sm, $btn-border-radius);
+	margin-left: 2ch;
+	background: $color-white;
+	color: $color-app-red;
+	border-color: $color-app-red;
+
+	&:hover {
+		background: $color-app-red;
+		border-color: $color-app-red;
+		color: $color-white;
+		box-shadow: none;
+	}
+}
+span.et-user-variable {
+	border-bottom: 2px dotted darkgreen;
+}
+.email-preview-content{
+	background-color: $color-white;
+	border: 1px solid $color-app-light-grey;
+	margin-bottom: 5px;
+	padding:.75rem;
+	resize: both;
+	height: 350px;
+	overflow: auto;
+}
+.selected-link > label {
+	font-weight: bold;
+}
+
+.recipient-editor-dialog{
+	width: 50rem !important;
+}
+
+.link-chooser-dialog {
+	max-width: 50rem;
+}
+
+.variable-list {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	.variable-wrapper {
+		flex:1 0 20rem;
+		input[type=text]{
+			min-width: 20rem!important;
+		}
+		a {
+			display: block;
+			padding-left: 4px;
+			max-width: 20rem;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.actions {
+			display: block;
+			padding-left: 0!important;
+		}
+		.selected-link{
+			display: block;
+		}
+	}
+}

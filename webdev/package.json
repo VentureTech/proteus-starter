@@ -1,0 +1,20 @@
+{
+  "name": "Example-App-Web-Development",
+  "repository": "git@github.com:VentureTech/proteus-examples.git",
+  "version": "0.0.1",
+  "devDependencies": {
+    "del": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-clean-css": "^2.0.8",
+    "gulp-clip-empty-files": "^0.1.2",
+    "gulp-favicons": "^2.2.6",
+    "gulp-include": "~2.2.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.3.1",
+    "gulp-sourcemaps": "~1.6.0",
+    "gulp-uglify": "~1.5.3",
+    "gulp-util": "^3.0.7",
+    "run-sequence": "^1.2.1"
+  }
+}

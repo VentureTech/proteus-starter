@@ -1,0 +1,46 @@
+@import "../mixins/tabs";
+
+.nav-actions {
+	text-align: right;
+	margin-bottom: -2.55rem;
+	padding-right: .8rem;
+	.btn, .btn:first-child {
+		color: $brand-primary;
+		background-color: $color-white;
+		&:hover {
+			background-color: $color-smokey-white;
+			color: darken($brand-primary, 5%);
+		}
+	}
+	.back /*, .other */ {
+		/*visibility: hidden;*/
+		padding:0;
+		border:none;
+		width:3rem;
+		height:2.275rem;
+		overflow: hidden;
+		color: #fff;
+		&:before {
+			display: inline-block;
+			font: normal normal normal 14px/1 FontAwesome;
+			font-size: inherit;
+			text-rendering: auto;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			visibility: visible;
+			@include button-variant($color-app-grey, $btn-secondary-bg, $btn-secondary-border);
+			@include button-size($btn-padding-y, $btn-padding-x, $font-size-base, $line-height, $btn-border-radius);
+		}
+		&:hover:before {
+			background-color: $color-smokey-white;
+			color: darken($color-app-grey, 10%);
+		}
+	}
+	.back:before {
+		content: '\f112';
+	}
+}
+
+.tab-container {
+	@include style-tab-elements;
+}

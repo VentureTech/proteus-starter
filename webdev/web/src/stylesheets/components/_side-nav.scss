@@ -1,0 +1,137 @@
+@import "../config/base-vars";
+/*--sidebar toggle---*/
+
+#main-wrapper {
+	min-height: calc(100vh - 68px); // minus header height
+	display: flex;
+	flex-wrap: nowrap;
+
+	main {
+		flex:1;
+	}
+}
+
+.sidebar-closed,
+#body-wrapper:not(.sidebar-open){
+	#side-nav {
+		width: 55px;
+		overflow: hidden;
+		.menu {
+			.mi a.menuitemlabel {
+				padding: 8px 0 8px 14px;
+			}
+
+			span.mil {
+				opacity:0;
+			}
+		}
+	}
+}
+
+/*sidebar navigation*/
+
+#side-nav {
+	width: 210px;
+	min-height: calc(100vh - 68px); // minus header height
+	background: #2a3542;
+}
+.sidebar-open #main-content,
+.sidebar-open #side-nav,
+.sidebar-closed #main-content,
+.sidebar-closed #side-nav{
+	transition: all 0.5s ease;
+}
+.nav-collapse.collapse {
+	display: inline;
+}
+
+#side-nav .menu {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#side-nav .menu .mi {
+	border-bottom: 1px solid #4f5a69;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+#side-nav .menu .mi span.mil {
+	display: inline-block;
+}
+
+#side-nav .menu .mi a.menuitemlabel{
+	color: #e1e4e6;
+	text-decoration: none;
+	display: block;
+	padding: 23px 15px 20px;
+	outline: none;
+	transition: all 0.3s ease;
+	font-weight: 400;
+}
+
+#side-nav .menu .mi.mi-active a.menuitemlabel,
+#side-nav .menu .mi a.menuitemlabel:hover, 
+#side-nav .menu .mi a.menuitemlabel:focus {
+	background: #4f5a69;
+}
+
+
+#side-nav .menu .mi .menuitemlabel{
+	padding-right: 6px;
+}
+
+#side-nav .menu .mi a.menuitemlabel:hover:before,
+#side-nav .menu .mi a.menuitemlabel:focus:before,
+#side-nav .menu .mi-active a.menuitemlabel:before{
+	//color: $menu-item-active;
+}
+#side-nav .menu .mi > .menuitemlabel:before{
+	font-family: FontAwesome;
+	padding-right: .75rem;
+	min-width: 40px;
+	display: inline-block;
+	font-size: 1.5rem;
+	margin-top: -2px;
+	vertical-align: middle;
+}
+
+#side-nav .menu .user-mgt > .menuitemlabel:before {
+	content: "\f007";
+}
+#side-nav .menu .company-mgt > .menuitemlabel:before {
+	content: "\f0f7";
+}
+#side-nav .menu .location-mgt > .menuitemlabel:before {
+	content: "\f14e";
+}
+
+@media (max-width: 767px) {
+	.sidebar-closed,
+	#body-wrapper:not(.sidebar-open){
+		#side-nav {
+			width: 0;
+			overflow: hidden;
+		}
+	}
+	.sidebar-open {
+		#side-nav {
+			width: 55px;
+		}
+	}
+}
+@media (max-width: 767px) {
+	.sidebar-closed,
+	#body-wrapper:not(.sidebar-open){
+		#side-nav {
+			width: 0;
+			overflow: hidden;
+		}
+	}
+	.sidebar-open {
+		#side-nav {
+			width: 55px;
+		}
+	}
+}

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalDependencies">
+    <plugin id="Git4Idea" />
+    <plugin id="HtmlTools" />
+    <plugin id="JavaScript" />
+    <plugin id="NodeJS" />
+    <plugin id="W3Validators" />
+    <plugin id="com.bulenkov.intellij.png.optimizer" />
+    <plugin id="com.intellij.copyright" />
+    <plugin id="com.intellij.css" />
+    <plugin id="com.jetbrains.restClient" />
+    <plugin id="mobi.hsz.idea.gitignore" />
+    <plugin id="org.jetbrains.plugins.sass" />
+  </component>
+</project>

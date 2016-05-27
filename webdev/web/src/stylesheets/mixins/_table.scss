@@ -1,0 +1,173 @@
+@import "general-mixins";
+
+@mixin style-table {
+	border: 1px solid $color-cloud-grey;
+	width: 100%;
+
+	.column-visibility-selector {
+		font-family: $font-open-sans;
+		font-size: 14px;
+		padding: 10px;
+		border: 1px solid $color-grey;
+		top: 100%;
+
+		ul {
+			padding:0;
+			margin:0;
+			list-style: none;
+		}
+
+		label {
+			margin-left: 5px;
+		}
+	}
+
+	.column-visibility {
+		.btn {
+			&.trigger {
+				background-color: transparent;
+				outline: none;
+			}
+		}
+	}
+}
+
+@mixin style-table-heading-row {
+	&:hover {
+		> th,
+		> td {
+			background-color: $color-white;
+		}
+	}
+}
+
+@mixin style-table-heading {
+	background-color: $color-white;
+	font-family: $font-family-serif;
+	font-weight: normal;
+	font-size: 14px;
+	padding: 5px 8px;
+	text-align: left;
+	line-height: 24px;
+
+	//TODO underscore fix for HTML generation
+	&.action_column,
+	&.action-column {
+		white-space: nowrap;
+		width: 1px;
+	}
+
+	&.control {
+		width: 1px;
+		white-space: nowrap;
+
+		.column-label {
+			display: inline-block;
+
+			+ .column-visibility {
+				margin-left: 5px;
+			}
+		}
+
+		input[type=checkbox] {
+			display: block;
+		}
+
+		.column-visibility {
+			input[type=checkbox] {
+				display: inline-block;
+			}
+		}
+	}
+
+	& button.configure {
+		vertical-align: text-top;
+	}
+
+	a {
+		color: $color-charcoal;
+		@include anchorUnderlineHover;
+	}
+}
+
+@mixin style-table-data-row {
+	> td {
+		background-color: $color-white;
+		padding: 5px 8px;
+		transition: background-color 500ms;
+		text-align: start;
+
+		//TODO underscore fix for HTML generation
+		&.action_column,
+		&.action-column,
+		&.actions-con {
+			white-space: nowrap;
+			width: 1px;
+
+			&.last-column {
+				text-align: right;
+			}
+		}
+
+		&.control {
+			width: 1px;
+			white-space: nowrap;
+
+			input[type=checkbox] {
+				display: block;
+			}
+		}
+
+		input[type=checkbox] {
+			vertical-align: middle;
+		}
+
+		a {
+			@include anchorUnderlineHover;
+		}
+	}
+
+	&:nth-child(even) {
+		> td {
+			background-color: $color-almost-white;
+		}
+	}
+
+	&.no_data {
+		> td {
+			background-color: $color-almost-white;
+			color: $color-grey;
+			font-style: italic;
+		}
+	}
+
+	&:hover {
+		> td {
+			background-color: $color-cornsilk;
+		}
+	}
+}
+
+@mixin style-miwt-tree-norows {
+	border: 0 none;
+	margin-top: 10px;
+
+	tbody {
+		> tr.odd,
+		> tr.even {
+			td {
+				background-color: transparent;
+			}
+		}
+	}
+
+	td {
+		padding: 0;
+
+		&.last-column {
+			border: 0 none;
+			padding: 1px 0 0 0;
+		}
+	}
+}
+

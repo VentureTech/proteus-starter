@@ -1,0 +1,64 @@
+@import "../config/base-vars";
+@import "../../../../bower_components/bootstrap/scss/mixins";
+@import "../../../../bower_components/bootstrap/scss/mixins/gradients";
+@import "../../../../bower_components/bootstrap/scss/mixins/progress";
+
+body div.miwt-ajax-progress {
+	background-color: $color-white;
+	border-color: $btn-primary-border;
+	color: $brand-primary;
+
+	.label {
+		color: inherit;
+	}
+	progress {
+		//display: block;
+		width: 100%;
+		height: $spacer-y; // todo: make a new var for this
+		margin: 0;
+	}
+}
+.miwt-ajax-progress .progress-con:not(.progress-indeterminate) {
+	progress {
+		border:0;
+		@include progress-variant($progress-bar-info-bg);
+		@include gradient-striped();
+
+		appearance: none;
+		&::-webkit-progress-bar {
+			background-color: #eee;
+			@include border-radius($border-radius);
+			@include box-shadow(inset 0 .1rem .1rem rgba(0,0,0,.1));
+		}
+
+		&::-moz-progress-bar {
+			@include gradient-striped();
+			background-size: $spacer-y $spacer-y;
+		}
+		&::-webkit-progress-value {
+			background-color: #0074d9;
+			border-top-left-radius: $border-radius;
+			border-bottom-left-radius: $border-radius;
+			@include gradient-striped();
+			background-size: $spacer-y $spacer-y;
+		}
+	}
+}
+.dnd-source {
+	cursor:move;
+	cursor:grab;
+	cursor:-webkit-grab;
+}
+.dnd-active {
+	cursor:no-drop;
+	.dnd-source {
+		cursor:move;
+		cursor:grabbing;
+		cursor:-webkit-grabbing;
+	}
+	.dnd-target {
+		cursor:copy;
+	}
+}
+
+.miwt-config-wrapper{ z-index:1; }

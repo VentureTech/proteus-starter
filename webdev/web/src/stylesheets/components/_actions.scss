@@ -1,0 +1,44 @@
+@import "../config/base-vars";
+@import "../../../../bower_components/bootstrap/scss/buttons";
+
+.actions .btn {
+	margin-right:4px;
+}
+.actions .btn, .procedure-navigation .btn, .recipients .btn {
+	@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border);
+
+	&.save, &.add, &.finish-button, &.save_exit, &.confirm, &.engagement-completed {
+		@include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
+	}
+
+	&.delete, &.remove, &.cancel, &.cancel-button, &.reschedule {
+		background: $color-white;
+		color: $color-app-red;
+		border-color: $color-app-red;
+
+		&:hover {
+			background: $color-app-red;
+			border-color: $color-app-red;
+			color: $color-white;
+		}
+
+	}
+
+}
+
+.btn {
+
+	&.engagement-completed {
+		@include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
+		display: block;
+	}
+
+	&.go, &.back-home {
+		@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border);
+	}
+
+}
+
+.action-column .btn {
+	@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-xs, $line-height-sm, $btn-border-radius-sm);
+}

@@ -1,0 +1,148 @@
+
+@import "../config/base-vars";
+@import "../mixins/styles";
+@import "../../../../bower_components/bootstrap/scss/mixins/buttons";
+@import "../../../../bower_components/bootstrap/scss/mixins/clearfix";
+/*
+	Partial -	Messages
+*/
+
+.message-container {
+	margin: 10px 0;
+	clear: both;
+	@include clearfix();
+
+	&.empty {
+		display: none;
+	}
+	.actionable-message {
+		display: flex;
+		.message-content{
+			flex:1;
+		}
+		.message-actions {
+			flex:0;
+			margin:0 !important;
+			text-align: inherit !important;
+			.btn {
+				@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $line-height-sm, $btn-border-radius-sm);
+				font-size: .75rem;
+			}
+		}
+	}
+}
+
+div.message {
+	@include style-message-info;
+
+	&:before{
+		top:11px;
+	}
+
+	& + & {
+		margin-top: 5px;
+	}
+
+	&.error {
+		@include style-message-error;
+	}
+
+	&.success {
+		@include style-message-success;
+	}
+
+	&.important {
+		@include style-message-warning;
+	}
+
+	&.warning {
+		@include style-message-warning;
+	}
+
+	p {
+		&:first-child {
+			margin-top: 0;
+		}
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	.miwt-collapsable-content {
+		@include style-popup-box();
+		overflow-y: auto;
+		max-height: 500px;
+		z-index: 10000;
+	}
+}
+
+.picture-editor .message {
+	padding: 5px 5px 5px 16px !important;
+}
+
+div.has-error, span.has-error {
+	background-color: $color-error-light;
+	border: 1px solid $color-error-dark;
+	padding: 5px !important;
+
+	&.profile-roles {
+		margin-bottom: 1rem;
+
+		.error-message {
+			margin-top: .75rem;
+		}
+
+		.pager {
+			margin-bottom: 0;
+		}
+
+	}
+
+	.error-message {
+		display: inline-block;
+		padding-left: 1.5rem;
+		color: $color-error-dark;
+		position: relative;
+		font-size: .75rem;
+
+		&::before {
+			content: '\f071';
+			display: inline-block;
+			font-family: FontAwesome;
+			font-size: inherit;
+			font-style: normal;
+			font-weight: 400;
+			left: 7px;
+			line-height: 1;
+			position: absolute;
+			text-decoration: inherit;
+			text-rendering: optimizelegibility;
+			text-transform: none;
+			top: 3px;
+			vertical-align: middle;
+			color: $color-error-dark;
+		}
+
+	}
+}
+
+.prop-group.time {
+	.has-error {
+		display: inline-block;
+		vertical-align: top;
+		margin-top: -11px;
+
+		span.error-message {
+			display: block;
+		}
+
+		+ .field-separator {
+			margin: 0 .25rem;
+		}
+
+		+.clock-period {
+			margin-left: .35rem;
+		}
+
+	}
+}

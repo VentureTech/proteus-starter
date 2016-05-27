@@ -1,0 +1,54 @@
+@import "../config/base-vars";
+@import "../../../../bower_components/bootstrap/scss/mixins/border-radius";
+@import "../../../../bower_components/bootstrap/scss/mixins/buttons";
+
+$tab-color-bg: $color-app-light-grey !default;
+$tab-color-bg-selected: $color-app-grey !default;
+$tab-color-fg: $color-white !default;
+$tab-content-color-bg: $color-white !default;
+
+@mixin style-tab-elements {
+
+	.tab-items {
+		margin-bottom: 0;
+		padding:0;
+		background-color: $tab-color-bg;
+		border-top-left-radius: 5px;
+		border-top-right-radius: 5px;
+		border-left: 1px solid $color-lighter-grey;
+
+		.ti {
+			display: inline-block;
+			border-right: 1px solid $tab-color-bg-selected;
+			font-family: $font-family-sans-serif;
+			color: $tab-color-fg;
+			a {
+				background-color: $tab-color-bg;
+				color: inherit;
+				text-decoration: none;
+				display: block;
+				@include button-size(.6rem, 1.1rem, 1.1rem, $line-height, 0);
+			}
+			&:first-child a {
+				border-top-left-radius: 5px;
+			}
+			&:hover {
+				a {
+					background-color: $tab-color-bg-selected;
+				}
+			}
+			&.tab-selected {
+
+				a {
+					background-color: $tab-color-bg-selected;
+				}
+			}
+		}
+	}
+
+	.tab-content {
+		background-color: $tab-content-color-bg;
+		border: 1px solid $color-lighter-grey;
+		padding: 15px;
+	}
+}

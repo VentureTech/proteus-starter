@@ -1,0 +1,82 @@
+/**
+* For collapsible content
+*/
+@mixin style-popup-box($padding: 10px) {
+  padding: $padding;
+  background-color: $color-white;
+  border: 1px solid $color-cloud-grey;
+  box-shadow: 3px 3px 10px transparentize($color-black, 0.55);
+}
+
+@mixin glyphAdd($html-entity, $size: 13px, $color: '') {
+  font-family: $font-glyph-lib;
+  content: $html-entity;
+  //	width: $size;
+  //	height: $size;
+  font-size: $size;
+  @if ($color != '') {
+    color: $color;
+  }
+  //background-color: $color-cloud-grey;
+  // generated from grunt task
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: inherit;
+  text-transform: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@mixin style-message($color-bg, $color-border, $color-text, $html-entity-icon: '') {
+  position: relative;
+  background-color: $color-bg;
+  border: 1px solid $color-border;
+  color: $color-text;
+  padding: 7px 7px 7px 1.75rem;
+  display: block;
+  font-family: $font-family-sans-serif;
+  text-align: left;
+
+  @if ($html-entity-icon != '') {
+    &:before {
+      @include glyphAdd($html-entity-icon, $size: 18px, $color: $color-text);
+      position: absolute;
+      left: 7px;
+      top: 8px;
+    }
+  } @else {
+    &:before {
+      display: none;
+    }
+  }
+
+  a {
+    color: $color-text;
+    margin-left: 2px;
+    font-family: $font-open-sans-bold;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+@mixin style-message-info($html-entity-icon: $html-entity-info) {
+  @include style-message($color-info-light, $color-info-dark, $color-info-dark, $html-entity-icon);
+}
+
+@mixin style-message-error($html-entity-icon: $html-entity-error) {
+  @include style-message($color-error-light, $color-error-dark, $color-error-dark, $html-entity-icon);
+}
+
+@mixin style-message-success($html-entity-icon: $html-entity-success) {
+  @include style-message($color-success-light, $color-success-dark, $color-success-dark, $html-entity-icon);
+}
+
+@mixin style-message-warning($html-entity-icon: $html-entity-fixme) {
+  @include style-message($color-warning-light, $color-warning-dark, $color-warning-dark, $html-entity-icon);
+}

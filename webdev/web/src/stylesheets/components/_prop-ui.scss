@@ -1,0 +1,247 @@
+@import "../config/base-vars";
+@import "../mixins/miwt-switch";
+@import "../../../../bower_components/bootstrap/scss/mixins/buttons";
+
+/* ==========================================================================
+   Basic Styles for Property Editor/Viewer
+   baiken@vipasolutions.com, sbenes
+   Updated July 25, 2014
+   ========================================================================== */
+
+/* Form Elements
+   ========================================================================== */
+
+.prop-wrapper {
+	//max-width: 50rem;
+	max-width: 100%;
+
+	input,
+	textarea {
+		border: 1px solid #B7B7B5;
+		padding: 2px 5px;
+		margin: 2px;
+		border-radius: $border-radius-lg;
+	}
+
+	input:focus,
+	select:focus,
+	textarea:focus {
+		background-color: #feffdd;
+	}
+
+	button,
+	input[type="submit"],
+	input[type="reset"],
+	.constraints a[data-features~="submit"] {
+		text-transform: uppercase;
+		text-decoration: none;
+		white-space: nowrap;
+		box-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8) inset,
+		-1px -1px 0 rgba(0, 0, 0, 0.05) inset;
+	}
+
+}
+input[type=number]{
+	width:8ch;
+}
+
+/* Content
+	 ========================================================================== */
+.prop-wrapper {
+	.prop-header-title {
+		font-size: 22px;
+		font-weight: 500;
+		margin: 1em 0;
+	}
+
+	.prop-group-title {
+		font-weight: 500;
+		font-size: 18px;
+		margin: 10px 0;
+	}
+	span.ctb {
+		display: block;
+	}
+	.prop > label {
+		display: block;
+		font-weight: 400;
+		user-select: none;
+	}
+	.prop > label.tbl {
+		display: inline-block;
+		padding-right: 4px;
+	}
+	.prop > .val {
+		display: inline-block;
+	}
+
+	header .actions, footer .actions {
+		margin: 10px 0;
+		text-align: right;
+	}
+
+	.actions.bottom {
+		text-align: left;
+	}
+
+	.prop {
+		margin-bottom: 1rem;
+		padding: 5px;
+		> .actions, .selected-link {
+			.btn {
+				@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-xs, $line-height-sm, $btn-border-radius-sm);
+			}
+		}
+	}
+	.prop-group {
+		margin-bottom: 0;
+	}
+
+	.user-entry-required label:after,
+	.user-entry-required caption:after{
+		content: "*";
+		color: #ff0000;
+	}
+
+	.validation-error input[type="text"] {
+		border: 1px solid red;
+	}
+
+}
+
+.prop-viewer,
+.prop-editor {
+	padding: .5rem;
+}
+
+.prop-viewer {
+	.actions.top {
+		display: none;
+	}
+
+	.address > span {
+		display: block;
+	}
+
+}
+
+.prop-editor {
+	.prop {
+		input[type=text],
+		input[type=email],
+		input[type=url],
+		input[type=tel],
+		textarea {
+			//min-width: 25rem;
+			width: 45%;
+		}
+
+		.actions {
+			@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $line-height-sm, $btn-border-radius-sm);
+		}
+		span.rtb + span.rtb {
+			padding-left: 1rem;
+		}
+		span.ctb + span.ctb {
+			padding-left: 1rem;
+		}
+	}
+	.miwt-calendar {
+		input[type=text] {
+			min-width:8rem;
+			max-width: 8rem;
+		}
+	}
+}
+
+.user-picture.mode-view {
+	max-width: 325px;
+	box-sizing: content-box;
+	img {
+		max-width: 325px;
+	}
+}
+
+.resource-picture.mode-view {
+	max-width: 350px;
+	box-sizing: content-box;
+}
+
+.picture-editor .actions.bottom {
+	text-align: center;
+}
+
+.prop.picture {
+	img {
+		border-radius: 100%;
+		max-height: 200px;
+	}
+}
+
+@media (max-width: 767px) {
+	.prop-editor {
+		.prop {
+			input[type=text],
+			input[type=email],
+			input[type=url],
+			input[type=tel],
+			textarea {
+				width: 100%;
+			}
+		}
+	}
+}
+
+.prop.schedule {
+	width: 100%;
+	margin-top: 1rem;
+
+	> div {
+		width: 8rem;
+		.select2-container {
+			max-width: 100%;
+			width: 100% !important;
+		}
+
+		&.repeat-interval-wrapper {
+			display: inline-block;
+			margin: 2rem 1rem 0 0;
+			+ .frequency {
+				display: inline-block;
+				vertical-align: top;
+				margin: 2rem 0 1rem;
+				padding: 0;
+
+				> label {
+					display: block;
+					color: transparent;
+				}
+			}
+		}
+		&.by, &.dom {
+			padding: 0;
+			margin-bottom: 1rem;
+		}
+	}
+	.prop.dow {
+		span.ctb + span.ctb {
+			padding-left: 0;
+		}
+	}
+	.prop.repeat {
+		display: inline-block;
+		margin: 0;
+		padding: 0;
+		@include checkboxSwitch(false, 6ch);
+		width: 100%;
+	}
+
+	span.rtb.label-after {
+		display: block;
+
+		+ span.rtb.label-after {
+			padding-left: 0;
+		}
+	}
+
+}

@@ -1,0 +1,237 @@
+@import "../config/base-vars";
+
+#main-content {
+	min-height: calc(100vh - 155px);
+}
+
+.my-account-view {
+	max-width: 90%;
+	background: #fff;
+	border: 1px solid lighten($color-app-light-grey, 25%);
+	border-radius: $border-radius-lg;
+	margin: 2rem auto;
+	padding: 2rem;
+
+	.prop > label {
+		margin-bottom: 0.125rem;
+	}
+
+	.prop-body {
+		display: flex;
+		flex-flow: column nowrap;
+
+		.prop:not(.picture) {
+			flex: 1 0 0;
+		}
+
+		.prop.picture {
+			flex: 1 0 0;
+			text-align: center;
+		}
+
+	}
+
+}
+
+.back-home-container {
+	padding-top: 1rem;
+
+	.btn {
+		float: right;
+
+		i {
+			padding-right: 3px;
+		}
+
+	}
+
+}
+.back-home-container {
+	padding-top: 1rem;
+
+	.btn {
+		float: right;
+
+		i {
+			padding-right: 3px;
+		}
+
+	}
+
+}
+
+.my-account-edit {
+	max-width: 90%;
+	background: #fff;
+	border: 1px solid lighten($color-app-light-grey, 25%);
+	border-radius: $border-radius-lg;
+	margin: 2rem auto;
+	padding: 2rem;
+
+	.prop-header-actions {
+		display: none;
+	}
+
+	&.prop-wrapper .persistence-actions.bottom.actions {
+		text-align: right;
+	}
+
+	.prop > label {
+		margin-bottom: 0.125rem;
+	}
+
+	.prop-body {
+		display: flex;
+		flex-flow: column nowrap;
+
+		> div:not(.user-picture) > div {
+			display: flex;
+			flex-flow: row wrap;
+		}
+
+		.user-picture {
+			flex: 1 0 0;
+			max-width: none;
+			margin-bottom: 2rem;
+
+			> * {
+				margin: 0 auto;
+			}
+
+			> .actions.bottom {
+				margin: .5rem auto 0;
+			}
+
+		}
+
+		.name-editor {
+			display: flex;
+			flex: 1 0 100%;
+			flex-flow: column nowrap;
+
+			> .prop {
+				flex: 1;
+				input {
+					width: 95%;
+				}
+			}
+		}
+
+		.prop-group {
+			display: flex;
+			flex-flow: column nowrap;
+
+			&.address {
+				flex: 1 0 100%;
+				flex-flow: column nowrap;
+			}
+
+			&.email-address, &.phone, &.user-entry-required {
+				flex: 1 0 100%;
+			}
+
+			.prop {
+				flex: 1;
+				input {
+					width: 95%;
+				}
+
+				&.address-line-1, &.address-line-2 {
+					flex: 1 0 0;
+				}
+
+			}
+
+		}
+
+		.prop {
+			.select2-container {
+				width: 95% !important;
+				max-width: none;
+			}
+		}
+
+	}
+
+}
+
+@media (min-width: 768px) {
+	.my-account-view {
+
+		.prop-body {
+			flex-flow: row wrap;
+
+			.prop:not(.picture) {
+				flex: 1 0 30%;
+			}
+
+			.prop.picture {
+				flex: 1 0 100%;
+			}
+
+			section.prop {
+				flex: 1 0 100% !important;
+			}
+
+		}
+
+	}
+
+	.my-account-edit {
+
+		.prop-body {
+			flex-flow: row wrap;
+
+			> div:not(.user-picture) {
+				flex: 1 0 100%;
+			}
+
+			.user-picture {
+				flex: 1 0 100%;
+			}
+
+			.name-editor {
+				flex-flow: row wrap;
+			}
+
+			.prop-group {
+				flex-flow: row wrap;
+
+				&.address {
+					flex: 1 0 100%;
+					flex-flow: row wrap;
+				}
+
+				&.email-address, &.phone, &.user-entry-required {
+					flex: 1 0 25%;
+				}
+
+				.prop {
+
+					&.address-line-1, &.address-line-2 {
+						flex: 1 0 50%;
+					}
+
+				}
+
+			}
+
+			> div.prop {
+				flex: 1 0 50%;
+			}
+
+		}
+
+	}
+
+}
+
+@media (min-width: 1100px) {
+	.my-account-view {
+		width: 100%;
+		max-width: 50rem;
+	}
+	.my-account-edit {
+		width: 60rem;
+	}
+}

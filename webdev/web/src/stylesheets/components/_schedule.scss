@@ -1,0 +1,135 @@
+@import "../config/base-vars";
+@import "../mixins/miwt-switch";
+
+.inlinewindow {
+	.prop-editor {
+		.schedule {
+			.repeat {
+				display: inline-block;
+				margin: 0;
+				padding: 0;
+
+				@include checkboxSwitch(false);
+
+			}
+			.dow span.rtb,
+			.dow span.ctb {
+				display: inline;
+				.tbl {
+					width: 30px;
+					overflow: hidden;
+					display: inline-block;
+					margin: 0;
+					padding: 0;
+					font-family: monospace;
+					font-size: 16px;
+					vertical-align: bottom;
+					user-select: none;
+				}
+			}
+			/*.dow span.ctb {
+				@include checkboxSwitch(true);
+			}*/
+			.dow-wom-wrapper .actions {
+				display: block;
+				text-align: right;
+				margin-top: -4rem;
+			}
+
+			.dow-wom {
+				border: 1px transparent dotted;
+				padding: 0 4px;
+			}
+			.dow-wom:hover {
+				border: 1px #aaa dotted;
+			}
+		}
+		.repeat-interval-wrapper {
+			label {
+				display: inline-block;
+				padding-right: 4px;
+			}
+			display: inline-block;
+			margin-bottom: 0.5rem;
+
+		}
+
+		.frequency select.val {
+			min-width: 5rem;
+		}
+		.temporal-direction select.val {
+			min-width: 8rem;
+		}
+		.reschedule-behavior select.val {
+			min-width: 11rem;
+		}
+		.dom select.val {
+			min-width: 4rem;
+		}
+
+	}
+	.schedule-period {
+		select.val {
+			min-width: 4.5rem;
+		}
+	}
+	.task-config-editor {
+		.ctb.label-before { // prop.display-timeline
+			max-width: 15rem;
+			@include checkboxSwitchAbsolute();
+		}
+	}
+}
+
+
+.prop-group.schedule {
+	display: inline-block;
+	.frequency{
+		display: inline;
+	}
+	h1, .repeat-unit, .frequency > label {
+		display: none;
+	}
+
+	.dow-wom-wrapper, .dow-wom {
+		.actions {
+			margin-top: 0 !important;
+			margin-bottom: .5rem;
+			text-align: left !important;
+			padding: 0 !important;
+		}
+
+		.prop.dow, .prop.wom {
+			padding: 0;
+
+			span.rtb.label-after {
+				display: block;
+				.tbl {
+					width: auto;
+					font-family: $font-roboto;
+					text-transform: none;
+					margin-bottom: .25rem;
+					vertical-align: middle;
+				}
+
+			}
+
+		}
+
+	}
+
+	> .prop.dow {
+		span.ctb.label-after {
+			display: block;
+			.tbl {
+				width: auto;
+				font-family: $font-roboto;
+				text-transform: none;
+				margin-bottom: .25rem;
+				vertical-align: middle;
+			}
+
+		}
+	}
+
+}

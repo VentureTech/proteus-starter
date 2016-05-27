@@ -1,0 +1,174 @@
+/* ==========================================================================
+   Standard CSS for Basic Search UI
+   baiken@vipasolutions.com, sbenes
+   Updated July 25, 2014
+   ========================================================================== */
+/* Form Elements
+   ========================================================================== */
+@import "../config/base-vars";
+@import "../mixins/general-mixins";
+@import "../../../../bower_components/bootstrap/scss/mixins/clearfix";
+@import "../../../../bower_components/bootstrap/scss/mixins/buttons";
+
+.search .entity-actions .menu-component,
+.search-wrapper .entity-actions .menu-component {
+	margin-right: 25px;
+	@include bootstrapButton;
+	@include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
+	padding: 0 !important;
+
+	> a.menu-item {
+		font-size: 1rem;
+		line-height: 1.5;
+		&:before {
+			font-size: .8rem;
+			display: inline-block;
+			margin-top: -2px;
+			vertical-align: middle;
+		}
+	}
+
+}
+
+/* Search Bar
+   ========================================================================== */
+.search-bar {
+	margin: 10px 0;
+	padding: 10px;
+	//background-color: #F9F9F7;
+	//border: 1px dotted #CBC8B9;
+
+	input[type="text"] {
+		border: 1px solid #aaa;
+		border-radius: $border-radius-lg;
+	}
+
+}
+
+.search-bar .constraint {
+	display: inline-block;
+	white-space: nowrap;
+	margin: 5px;
+	padding: 5px;
+
+}
+
+.search-bar .constraint label {
+	display: block;
+	font-size: 90%;
+	margin-bottom: .25rem;
+}
+
+.search-bar .search-actions {
+	display: inline-block;
+	padding: 10px;
+}
+
+.constraint-input-conjunction {
+	padding: 0 4px;
+}
+
+/* Actions
+   ========================================================================== */
+.search-wrapper .entity-actions,
+.search .entity-actions {
+	float: right;
+	margin-top:-1rem;
+	margin-bottom: 1rem;
+}
+
+.search-wrapper .result-actions,
+.search-wrapper .result-actions {
+	text-align: right;
+	display: block;
+	padding: 10px 0;
+}
+
+/* Results Table
+   ========================================================================== */
+.search-wrapper .miwt-table {
+	width: 100%;
+	margin: 20px 0;
+}
+
+.search-wrapper .miwt-table thead th {
+	//padding: 3px;
+	//font-size:14px;
+	//line-height: 20px;
+	//text-align: left;
+	//background-color: #FAF9E2;
+	//border-top: 1px solid #DDDAAA;
+	//border-bottom: 3px solid #DDDAAA;
+}
+
+//.search-wrapper .miwt-table thead th.first {
+//	border-left: 1px solid #DDDAAA;
+//}
+//
+//.search-wrapper .miwt-table thead th.last {
+//	border-right: 1px solid #DDDAAA;
+//}
+
+//.search-wrapper .miwt-table thead th a {
+//	text-decoration: none;
+//	color: #5d5636;
+//}
+
+.search .miwt-table tbody tr:hover td,
+.search-wrapper .miwt-table tbody tr:hover td {
+	background-color: #feffdd;
+}
+
+//
+//.search-wrapper .miwt-table tbody td {
+//	padding: 3px;
+//	border-bottom: 1px dotted #ddd;
+//}
+//
+//.search-wrapper .miwt-table tbody .even td {
+//	background-color: #fff;
+//}
+//
+//.search-wrapper .miwt-table tbody .odd td {
+//	background-color: #F9F9F7;
+//}
+
+.search td.actions-col,
+.search-wrapper td.actions-col {
+	width: 1%;
+	white-space: nowrap;
+}
+
+//.search-wrapper .miwt-table td.last,
+//.search-wrapper .miwt-table th.last {
+//	text-align: right;
+//	padding-right: 10px;
+//}
+
+.search {
+	@include clearfix;
+}
+
+select.bulk-actions,
+select.bulk_actions {
+	min-width: 8rem;
+}
+
+.search-bar .range-constraint {
+	white-space: normal;
+	select {
+		min-width: 6rem;
+	}
+	.constraint-label {
+		display: block;
+	}
+	.miwt-calendar{
+		margin-top:4px;
+	}
+	.constraint-operator,
+	.miwt-calendar,
+	.constraint-input-conjunction {
+		white-space: nowrap;
+		display: inline-block;
+	}
+}

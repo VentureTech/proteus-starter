@@ -1,0 +1,380 @@
+@import "../config/base-import";
+
+#body-wrapper {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	min-height: 100%;
+
+	> * {
+		flex: none;
+	}
+
+}
+
+.form-entry {
+	font-family: $font-roboto;
+	margin: 2rem auto;
+	padding: 2rem 1rem;
+	width: 95%;
+	background: $color-white;
+	border: 1px solid lighten($color-app-light-grey, 25%);
+	border-radius: $border-radius-lg;
+	color: $color-app-grey;
+	position: relative;
+	@include clearfix();
+
+	.form_entry { @include clearfix(); }
+
+	h2 {
+		padding-top: 0 !important;
+		padding-left: 0 !important;
+		margin-bottom: 1rem;
+		border-bottom: 1px solid lighten($color-app-light-grey, 25%);
+	}
+
+	.content {
+		margin-top: 1.75rem;
+	}
+
+	.wizard_procedure, table.extra_value_renderer {
+		width: 100%;
+	}
+
+	.user-entry-required {
+		.label {
+			&::after {
+				content: '*';
+				color: red;
+				padding-left: 3px;
+			}
+		}
+	}
+
+	.wizard_category_navigator_node {
+		margin-bottom: .5rem;
+
+		&.wizard_category_navigator_node_selected {
+			font-style: italic;
+			&::before {
+				content: '';
+				border-top: 5px solid transparent;
+				border-left: 6px solid $color-app-brand;
+				border-bottom: 5px solid transparent;
+				padding-right: 3px;
+				display: inline-block;
+			}
+		}
+	}
+
+	.wizard_category_navigator_node_step {
+		font-weight: 400;
+		margin-right: 7px;
+	}
+
+	.wizard_procedure_step_header {
+		&.submitstep_header {
+			font-size: 1.5rem;
+			font-weight: 500;
+			display: block;
+		}
+	}
+
+	.wizard_submit_registration {
+
+		.wizard_step_summary .name_field {
+			> span.extra_value_name.label {
+				display: block;
+			}
+		}
+
+		.wizard_step_summary {
+
+			.question:first-child {
+				border-bottom: none;
+				padding-bottom: 0;
+				margin-bottom: 1.5rem;
+			}
+
+			&:last-child {
+
+				.question:last-child {
+					border-bottom: none;
+					margin-bottom: 0;
+					display: none;
+				}
+
+				.question:nth-last-child(2) {
+					border-bottom: none;
+					margin-bottom: 0;
+				}
+
+			}
+
+		}
+
+		.submit_registration_instructions {
+			border-bottom: 1px solid lighten($color-app-light-grey, 25%);
+			margin-bottom: 1.25rem;
+			padding-bottom: 1.75rem;
+			display: block;
+		}
+
+		span.submit_button {
+			position: absolute;
+			right: 2rem;
+			bottom: 2rem;
+		}
+	}
+
+	p > strong {
+		font-size: 1.25rem;
+		font-weight: 500;
+	}
+
+	.btn {
+		@include button-size($btn-padding-y, $btn-padding-x, $font-size-root, $line-height, $border-radius-lg);
+		@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-primary-border);
+
+		&.submit_button {
+			@include button-variant($color-white, $btn-primary-bg, $btn-primary-border);
+		}
+
+		&.edit {
+			margin: 1rem 0;
+		}
+
+	}
+
+	span.save_exit_button {
+		position: absolute;
+		bottom: 2em;
+		left: 50%;
+		margin-left: -3.5rem;
+	}
+
+	.label {
+		color: $color-app-grey;
+		font-size: 1rem;
+		font-weight: 400;
+		white-space: normal;
+		text-align: left;
+		line-height: 1.5;
+		padding: 0;
+		margin-bottom: .25rem;
+		display: block;
+	}
+
+	.label, label {
+		&.tbl {
+			padding-left: 5px;
+		}
+	}
+
+	.name_field {
+		> span.extra_value_name.label {
+			display: none;
+		}
+		.given_name_container {
+			margin-bottom: 1rem;
+		}
+	}
+
+	.part, .text_field {
+		.label {
+			display: block;
+			padding-left: 0;
+		}
+	}
+
+	input[type="text"], textarea {
+		border: 1px solid lighten($color-app-light-grey, 25%);
+		border-radius: $border-radius;
+		width: 100%;
+	}
+
+	textarea {
+		height: 6rem;
+		width: 100%;
+		padding: .25rem;
+	}
+
+	.question {
+		/*border-bottom: 1px solid lighten($color-lr-light-grey, 25%);
+		margin-bottom: 2.5rem;
+		padding-bottom: 1.25rem;*/
+
+
+		&:last-child {
+			border-bottom: none;
+			margin-bottom: 0;
+		}
+
+		td {
+			padding: 0 .75rem;
+			text-align: center !important;
+
+			&[class*=' likert_label'], &[class^='likert_label'] {
+				max-width: 3.5rem;
+				vertical-align: top;
+			}
+
+			label {
+				font-size: 90%;
+
+				/*&[class*=' likert_heading'], &[class^='likert_heading'] {
+					display: none;
+				}*/
+
+			}
+
+		}
+
+		.form_field {
+			margin-bottom: 1.5rem;
+		}
+
+	}
+
+	.likert-columns {
+		.likert_heading-con {
+			display: none;
+		}
+		.question .user-entry-required {
+			padding: .5rem;
+
+			&:nth-of-type(even) {
+				background: lighten($color-app-light-grey, 35%);
+			}
+		}
+	}
+
+	.procedure-navigation-bottom-con {
+		border-top: 1px solid lighten($color-app-light-grey, 25%);
+		padding-top: 2rem;
+	}
+
+	.procedure-navigation-bottom {
+		width: 100%;
+
+		.disabled-con {
+			display: none;
+		}
+
+		.next-button-con {
+			float: right;
+		}
+
+	}
+
+	span.submit_button {
+		float: right;
+	}
+
+}
+
+@media (min-width: 768px) {
+	.form-entry {
+		input[type="text"] {
+			width: 50%;
+		}
+
+		.question {
+
+			.left, .right {
+				display: inline-block;
+
+				input[type="text"] {
+					width: 100%;
+				}
+
+			}
+
+			.left {
+				width: 75%;
+				padding-right: 1rem;
+			}
+
+			.right {
+				width: 25%;
+			}
+
+		}
+
+	}
+
+}
+
+@media (min-width: 1120px) {
+	.form-entry {
+		padding: 2rem;
+		width: 75%;
+
+		input[type="text"] {
+			width: 40%;
+		}
+	}
+}
+
+@media (min-width: 1281px) {
+
+	.form-entry {
+		width: 65%;
+	}
+
+}
+
+@media (max-width: 600px) {
+	#main-content-wc-0 {
+		padding: .5rem;
+	}
+	.form-entry {
+		margin: 0 auto;
+
+		.likert-columns {
+
+			.question {
+
+				tr {
+					display: inline-block;
+					&:first-child {
+						width: 75%;
+						//float: left;
+					}
+					&:last-child {
+						float: left;
+						width: 18%;
+					}
+				}
+
+				td {
+					&[class*=' likert_label'], &[class^='likert_label'],
+					&[class*=' likert_option'], &[class^='likert_option'] {
+						display: block;
+						margin-bottom: .5rem;
+					}
+					&[class*=' likert_label'], &[class^='likert_label'] {
+						max-width: none;
+						width: 85%;
+						padding: 0;
+						text-align: left !important;
+
+						label {
+							margin: 0;
+							padding: 0;
+						}
+
+					}
+				}
+
+			}
+
+
+		}
+
+		.btn {
+			@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $line-height-sm, $border-radius-sm);
+		}
+
+	}
+}

@@ -1,0 +1,46 @@
+@import "../config/base-vars";
+@import "../../../../bower_components/bootstrap/scss/mixins";
+
+
+table.add-participant-plan {
+	//min-height: 20rem;
+	.miwt-procedure-card{
+
+	}
+	tr:first-of-type td { // Message Container
+
+	}
+	td.miwt-procedure-card-con { // Main Procedure Content
+		vertical-align: top;
+		height:100%;
+	}
+	td.procedure-navigation-bottom-con{
+
+	}
+	table.procedure-navigation-bottom{
+		td {
+			padding: 0 5px;
+
+			&.disabled-con {
+				padding: 0;
+			}
+
+		}
+		span.disabled {
+			display: none;
+			background-color: transparent;
+		}
+		/*.btn {
+			@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border);
+		}
+		.btn.next-button:not(:disabled),
+		.btn.finish-button:not(:disabled)
+		{
+			@include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
+		}
+		.btn:disabled {
+			color: $color-dark-grey;
+		}*/
+
+	}
+}

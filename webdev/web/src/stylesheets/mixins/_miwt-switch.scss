@@ -1,0 +1,133 @@
+@import "../config/base-vars";
+
+/**
+ * miwt checkbox switch.
+ * @param anchor-right true if label is on the right.
+ * @param width the width of the label.
+ */
+@mixin checkboxSwitch($anchor-right, $width: 60px) {
+	input[type=checkbox] {
+		position: absolute;
+		margin-left: -9999px;
+		visibility: hidden;
+	}
+	[data-switchon="true"] {
+		~ .tbl {
+			&:before {
+				background-color: $btn-primary-bg;
+			}
+			&:after {
+				margin-left: 30px;
+			}
+		}
+	}
+	.tbl:not(:empty) {
+		@if $anchor-right {
+			text-indent: $width;
+			overflow: visible;
+		} @else {
+			text-indent: -$width;
+			margin-left: $width;
+		}
+	}
+	.tbl {
+		display: block;
+		position: relative;
+		cursor: pointer;
+		outline: none;
+		user-select: none;
+
+		padding: 2px;
+		width: 60px;
+		height: 30px;
+		background-color: #ddd;
+		border-radius: 60px;
+
+		&:before,
+		&:after {
+			display: block;
+			position: absolute;
+			top: 1px;
+			left: 1px;
+			bottom: 1px;
+			content: "";
+		}
+		&:before {
+			right: 1px;
+			background-color: #f1f1f1;
+			border-radius: 30px;
+			transition: background 0.3s;
+		}
+		&:after {
+			width: 28px;
+			background-color: #fff;
+			border-radius: 100%;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+			transition: margin 0.3s;
+		}
+	}
+}
+
+@mixin checkboxSwitchAbsolute() {
+	input[type=checkbox] {
+		position: absolute;
+		margin-left: -9999px;
+		visibility: hidden;
+	}
+	[data-switchon="true"] {
+		~ .tbl {
+			span:before {
+				background-color: $btn-primary-bg;
+			}
+			span:after {
+				margin-left: 30px;
+			}
+		}
+	}
+	.tbl {
+		display: block;
+		position: relative;
+		cursor: pointer;
+		outline: none;
+		user-select: none;
+		height:30px;
+
+		span {
+			display: block;
+			position:absolute;
+			width:60px;
+			height: 30px;
+			right:-90px;
+			left:auto;
+			top:0;
+			bottom:0;
+			text-indent: calc(-100% - 30px);
+			background-color: #ddd;
+			border-radius: 60px;
+		}
+
+		span:before,
+		span:after {
+			display: block;
+			position: absolute;
+			top: 1px;
+			left: 1px;
+			bottom: 1px;
+			content: "";
+		}
+		span:before {
+			right: 1px;
+			background-color: #f1f1f1;
+			border-radius: 30px;
+			transition: background 0.3s;
+		}
+		span:after {
+			right:30px;
+			width: 28px;
+			background-color: #fff;
+			border-radius: 100%;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+			transition: all 0.3s;
+		}
+	}
+}
