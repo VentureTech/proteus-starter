@@ -1,0 +1,43 @@
+/*
+ * Copyright (c) Interactive Information R & D (I2RD) LLC.
+ * All Rights Reserved.
+ *
+ * This software is confidential and proprietary information of
+ * I2RD LLC ("Confidential Information"). You shall not disclose
+ * such Confidential Information and shall use it only in
+ * accordance with the terms of the license agreement you entered
+ * into with I2RD.
+ */
+
+package com.proteusframework.build
+
+import javax.script.ScriptEngine
+
+/**
+ * https://confluence.jetbrains.com/display/GRVY/Scripting+IDE+for+DSL+awareness
+ * Exposes context as property to scripts
+ * @author Russ Tennant (russ@i2rd.com)
+ */
+
+def ctx = context()
+
+contributor(ctx) {
+    property name: "context", type: "javax.script.ScriptContext", doc: 'JSR223 Script Context.'
+    //property name: "binding", type: "groovy.lang.Binding"
+    property name: "_params", type: "java.util.Map<String,Object>", doc: 'Parameters for script.'
+    property name: "_site", type: "net.proteusframework.internet.http.Site", doc: 'Operational Site if available.'
+    property name: "_logger", type: "org.apache.logging.log4j.Logger",
+        doc: 'Builtin logger based on library type and ID. Makes it easy to track down the source of a log message.'
+    property name: "_testing", type: "boolean", doc: 'True if the script is being tested.'
+    property name: "_loading_params", type: "boolean",
+        doc: 'Will be true if the script is being evaluated in order to access the parameters'
+    property name: ScriptEngine.FILENAME, type: "java.lang.String", doc: $/Filename used to compile the script. This will be
+different than the filename of the script that is uploaded to the backend./$
+    property name: "net.proteusframework.core.locale.LocalizedNamedObject", type: "com.i2rd.lib.LibraryDAO.LibraryLNO",
+        doc: 'The name and description of the script as entered in the backend UI.'
+    property name: "com.i2rd.lib.Library.id", type: "long", doc: 'The library database identifier.'
+    property name: "com.i2rd.lib.LibraryAccessor", type: 'com.i2rd.lib.ILibraryAccessor',
+        doc: 'Object that can be used to retrieve the Library object that is associated with the script instance.'
+    property name: "exporter", type: 'com.i2rd.datawarehouse.DWExporter',
+        doc: 'Exporter for registration in datawarehouse scripts.'
+}
