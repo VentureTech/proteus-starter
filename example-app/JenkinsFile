@@ -1,9 +1,9 @@
-def jdkHome =tool 'JDK 8'
-env.JAVA_HOME=jdkHome
 
 
 
 node {
+    def jdkHome =tool 'JDK 8'
+    env.JAVA_HOME=jdkHome
     // Mark the code checkout 'stage'....
     stage 'Checkout'
 
