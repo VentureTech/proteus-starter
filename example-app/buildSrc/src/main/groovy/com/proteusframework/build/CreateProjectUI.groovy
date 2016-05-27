@@ -196,11 +196,13 @@ To run the demo code, you will need to update your ProjectConfig.'''
                     include 'src/main/resources/META-INF/**/*'
                     include 'src/main/resources/intellij/**/*'
                     include 'src/main/webapp/**/*'
+                    include 'src/libraries/**/*'
                     if (model.copyDemo)
                     {
                         include 'src/demo/**/*'
                     }
                     include 'example-app.iml'
+                    include '.idea/modules/example-app.iml'
                     include 'gradle*'
                     include 'build.gradle'
                     include 'settings.gradle'
@@ -220,11 +222,15 @@ To run the demo code, you will need to update your ProjectConfig.'''
 /runtime-aspects/
 
 .idea/libraries/
+.idea/artifacts/
 .idea/workspace.xml
 .idea/tasks.xml
+.idea/modules.xml
+
 atlassian-ide-plugin.xml
 
 spring-shell.log
+derby.log
 '''
             new File(baseDir, '.idea/vcs.xml').text = '''<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
@@ -250,7 +256,7 @@ spring-shell.log
                 }
             }
 
-            def skipDirs = ['.git', '.apt_generated', '.apt_generated_tests', 'demo'] as Set
+            def skipDirs = ['.git', '.apt_generated', '.apt_generated_tests', 'demo', 'libraries'] as Set
             def skipFiles = ['CreateProjectUI.groovy'] as Set
             baseDir.traverse(
                 [preDir    : {if (skipDirs.contains(it.name)) return SKIP_SUBTREE}], {f ->
@@ -268,12 +274,23 @@ spring-shell.log
                         f.setText(updatedContent, 'UTF-8')
                     }
                     if(f.name == 'example-app.iml'){
-                        f.renameTo("${baseDir}${slash}${model.appName}.iml")
+                        f.renameTo(new File(f.getParentFile(), "${model.appName}.iml"))
                     }
                 }
 
                 CONTINUE
                  })
+
+            def demoIML = new File(baseDir, ".idea/${slash}modules${slash}example-app_demo.iml")
+            if(!model.copyDemo)
+                demoIML.delete()
+            else
+                demoIML.renameTo(new File(baseDir, ".idea/${slash}modules${slash}${model.appName}_demo.iml"))
+            new File(baseDir, ".idea/${slash}modules${slash}example-app_main.iml")
+                .renameTo(new File(baseDir, ".idea/${slash}modules${slash}${model.appName}_main.iml"))
+            new File(baseDir, ".idea/${slash}modules${slash}example-app_test.iml")
+                .renameTo(new File(baseDir, ".idea/${slash}modules${slash}${model.appName}_test.iml"))
+
 
             def gradleScript = new File(baseDir, 'gradlew').absolutePath
             def command = [gradleScript, '-Dorg.gradle.daemon=false']
