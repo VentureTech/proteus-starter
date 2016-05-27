@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalDependencies">
+    <plugin id="CheckStyle-IDEA" />
+    <plugin id="Git4Idea" />
+    <plugin id="com.bulenkov.intellij.png.optimizer" />
+    <plugin id="com.intellij.database" />
+    <plugin id="com.intellij.freemarker" />
+    <plugin id="com.intellij.hibernate" />
+    <plugin id="org.jetbrains.plugins.github" />
+  </component>
+</project>

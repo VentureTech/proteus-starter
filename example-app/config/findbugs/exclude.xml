@@ -10,6 +10,7 @@
   -->
 
 <FindBugsFilter>
+
     <Match>
         <!-- We currently don't rely on serialization working, so we'll ignore the error for now -->
         <Bug pattern="SE_BAD_FIELD"/>
@@ -17,7 +18,6 @@
     <Match>
         <Bug pattern="SE_BAD_FIELD_STORE"/>
     </Match>
-
     <Match>
         <!-- This prevents the use of assert -->
         <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
@@ -55,18 +55,5 @@
     <Match>
         <Bug pattern="RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT"/>
     </Match>
-    <!-- Plan on removing com.i2rd.db - not going to fix issues -->
-    <Match>
-        <Package name="~com\.i2rd\.db.*"/>
-    </Match>
-    <Match>
-        <Package name="~com\.i2rd\.qrelay.*"/>
-    </Match>
-    <Match>
-        <Package name="~com\.i2rd\.datawarehouse.*"/>
-    </Match>
-    <!-- com.i2rd.java.util.RecurrenceDefinitionQueryString is for backward compatibility -->
-    <Match>
-        <Class name="com.i2rd.java.util.RecurrenceDefinitionQueryString"/>
-    </Match>
+
 </FindBugsFilter>

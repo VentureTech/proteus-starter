@@ -10,6 +10,9 @@
     <module name="SuppressWithNearbyCommentFilter">
         <property name="influenceFormat" value="1"/>
     </module>
+    <module name="SuppressionFilter">
+        <property name="file" value="${basedir}/config/checkstyle/suppressions.xml"/>
+    </module>
     <module name="SuppressWarningsFilter"></module>
     <module name="FileLength"></module>
     <module name="JavadocPackage">
@@ -88,17 +91,22 @@
         </module>
         <!--  Do not use UnusedImports. Does not take into consideration, even with processJavadoc set to true -->
         <module name="JavadocMethod">
+            <property name="scope" value="public"/>
             <property name="severity" value="error"/>
             <property name="allowUndeclaredRTE" value="true"/>
+            <property name="allowThrowsTagsForSubclasses" value="true"/>
+            <property name="suppressLoadErrors" value="true"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF"/>
         </module>
         <module name="JavadocType">
+            <property name="scope" value="public"/>
             <property name="severity" value="error"/>
             <property name="authorFormat"
                       value="\s*[a-zA-Z]+(\s+\(.*@.*\))?"/>
-            <property name="tokens" value="CLASS_DEF, INTERFACE_DEF"/>
+            <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, ANNOTATION_DEF"/>
         </module>
         <module name="JavadocVariable">
+            <property name="scope" value="public"/>
             <property name="severity" value="error"/>
         </module>
         <module name="RedundantModifier">
@@ -151,6 +159,7 @@
         <module name="ParameterNumber">
             <property name="max" value="8"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF"/>
+            <property name="ignoreOverriddenMethods" value="true"/>
         </module>
         <module name="OperatorWrap">
             <property name="severity" value="error"/>

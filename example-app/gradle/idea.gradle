@@ -3,5 +3,7 @@ idea {
     module {
         sourceDirs += file('.apt_generated')
         testSourceDirs += file('.apt_generated_tests')
+        generatedSourceDirs += file("${buildDir}/.apt_generated/")
+        generatedSourceDirs += file("${buildDir}/.apt_generated_tests/")
     }
 }

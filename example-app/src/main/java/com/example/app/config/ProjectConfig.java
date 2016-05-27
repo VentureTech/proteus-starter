@@ -39,19 +39,15 @@ import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
 /**
  * Project Configuration.
  *
- * @author Russ Tennant (russ@i2rd.com)
+ * @author Russ Tennant (russ@venturetech.net)
  */
-@SuppressWarnings("SameReturnValue")
+@SuppressWarnings({"SameReturnValue", "InjectedReferences"})
 @Configuration
 @EnableAsync
 @EnableScheduling
 @EnableSpringConfigured
-// Scan for spring components in my package hierarchy
-@ComponentScan({"com.example.app"})
-// Add spring xml files if you'd like to register spring beans with XML.
-//@ImportResource("classpath:/spring/*.spring.xml")
-// SPLIT PropertySource -> https://jira.spring.io/browse/SPR-11637
-@PropertySource(
+@ComponentScan({"com.example.app"}/*Scan for spring components in my package hierarchy*/)
+@PropertySource( /* SPLIT PropertySource -> https://jira.spring.io/browse/SPR-11637 */
     name = ProteusWebAppConfig.PROTEUSFRAMEWORK_PROPERTY_SOURCE_NAME,
     value = {
         ProteusWebAppConfig.PROTEUSFRAMEWORK_CONFIG_DEFAULT_PROPERTIES

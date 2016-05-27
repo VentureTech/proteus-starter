@@ -19,8 +19,10 @@ settings.gradle.projectsLoaded( {
     settings.gradle.rootProject.ext.repoSnapshotURL = "${repo_venture_tech_url}/snapshot"
     settings.gradle.rootProject.ext.warTaskSpecified = gradle.startParameter.taskNames.any {it == 'war'}
     settings.gradle.rootProject.ext.isIDEA = System.getProperties().containsKey('idea.active') ||
-            System.getProperties().containsKey('idea.paths.selector') ||
-            plugins.any({it.class.name == 'JetGradlePlugin'})
+        System.getProperties().containsKey('idea.paths.selector') ||
+        plugins.any({it.class.name == 'JetGradlePlugin'})
     settings.gradle.rootProject.ext.isEclipse = System.getProperties().containsKey('eclipse.product')
+    settings.gradle.rootProject.ext.compileLibraries = settings.hasProperty('compile_libraries') ||
+        settings.gradle.rootProject.ext.isIDEA;
 })
 

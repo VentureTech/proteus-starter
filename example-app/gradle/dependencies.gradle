@@ -10,6 +10,17 @@ if(demoExists){
     }
 }
 
+
+if(compileLibraries) {
+    println 'Compiling Libraries Is Enabled'
+    sourceSets {
+        libraries {
+            java { srcDirs = []}
+            resources { srcDirs = []}
+        }
+    }
+}
+
 compileJava {
     options.encoding = 'UTF-8'
     options.compilerArgs << '-Xlint:all,-deprecation,-processing'
@@ -26,8 +37,19 @@ configurations {
         demoCompile.extendsFrom compile
         demoRuntime.extendsFrom compile
     }
+    if(compileLibraries) {
+        librariesCompile.extendsFrom compile
+        librariesRuntime.extendsFrom runtime
+    }
 }
 dependencies {
+
+    if(demoExists) {
+        demoCompile sourceSets.main.output
+    }
+    if(compileLibraries) {
+        librariesCompile sourceSets.main.output
+    }
 
     runtimeaspects "org.springframework:spring-instrument:${version_spring}", "org.aspectj:aspectjweaver:${aspectjVersion}"
     compiletimeaspects "org.springframework:spring-aspects:${version_spring}", "org.aspectj:aspectjtools:${aspectjVersion}"

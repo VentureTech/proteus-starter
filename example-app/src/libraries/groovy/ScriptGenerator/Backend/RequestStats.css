@@ -1,0 +1,109 @@
+/*
+ * Copyright (c) Interactive Information R & D (I2RD) LLC.
+ * All Rights Reserved.
+ *
+ * This software is confidential and proprietary information of
+ * I2RD LLC ("Confidential Information"). You shall not disclose
+ * such Confidential Information and shall use it only in
+ * accordance with the terms of the license agreement you entered
+ * into with I2RD.
+ */
+
+#request_stats table.search_results {
+	border: 1px #aaa solid;
+	border-top: 0 none;
+	border-bottom: 0 none;
+	width: 100%;
+	color: #000;
+}
+
+#request_stats th {
+	background-color: #1a608a;
+	color: #fff;
+	font-weight: normal;
+	font-family: OpenSansBold, Arial, Verdana, sans-serif;
+}
+
+#request_stats td {
+	padding: 2px;
+}
+
+.search_results tr td {
+	background-color: inherit;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+tr.very_fast {
+	background-color: #fff;
+}
+
+tr.fast {
+	background-color: #68c266;
+}
+
+tr.good {
+	background-color: #57944f;
+}
+
+tr.slow {
+	background-color: #bdb149;
+}
+
+tr.very_slow {
+	background-color: #d53e4f;
+}
+
+tr.very_slow a {
+	color: #fff;
+}
+
+td.partial {
+	font-family: monospace;
+}
+
+h3 {
+	margin: 0;
+}
+
+.legend {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	margin-bottom: 10px;
+}
+
+.legend .legend-color {
+	display: inline-block;
+	vertical-align: top;
+	margin-right: 10px;
+}
+
+.legend .legend-color:before {
+	display: inline-block;
+	content: " ";
+	width: 20px;
+	height: 20px;
+	margin-right: 5px;
+	border: 1px solid #333;
+}
+
+.legend .legend-color.very-fast:before {
+	background-color: #fff;
+}
+
+.legend .legend-color.fast:before {
+	background-color: #68c266;
+}
+
+.legend .legend-color.good:before {
+	background-color: #57944f;
+}
+
+.legend .legend-color.slow:before {
+	background-color: #bdb149;
+}
+
+.legend .legend-color.very-slow:before {
+	background-color: #d53e4f;
+}

@@ -53,7 +53,7 @@ task createProject(type: com.proteusframework.build.CreateProjectTask)
 
 task wrapper(type: Wrapper) {
     group 'Build Setup'
-    gradleVersion = '2.7'
+    gradleVersion = '2.13'
 }
 
 
@@ -71,6 +71,11 @@ configurations.all {
             {
                 details.useVersion '1.4.+'
             }
+        }
+        dependencySubstitution {
+            substitute module('bouncycastle:bcmail-jdk14:138') with module('org.bouncycastle:bcmail-jdk15on:1.52')
+            substitute module('bouncycastle:bcprov-jdk14:138') with module('org.bouncycastle:bcprov-jdk15on:1.52')
+            substitute module('bouncycastle:bctsp-jdk14:138') with module('org.bouncycastle:bctsp-jdk15on:1.46')
         }
         // cache dynamic versions for ...
 //        cacheDynamicVersionsFor 0, 'seconds'
