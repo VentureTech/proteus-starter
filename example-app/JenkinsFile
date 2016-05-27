@@ -9,7 +9,8 @@ node {
 
     // Mark the code build 'stage'....
     stage 'Build'
-    // Run the maven build
-
+    // Run the build
+    def jdkHome =tool 'JDK-1.8'
+    env.JAVA_HOME=jdkHome
     sh "./example-app/gradlew clean assemble"
 }
