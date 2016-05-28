@@ -17,3 +17,4 @@ atlassian-ide-plugin.xml
 
 spring-shell.log
 derby.log
+velocity.log
