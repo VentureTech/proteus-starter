@@ -79,12 +79,15 @@ dependencies {
         "org.springframework:spring-instrument:${version_spring}",
         "org.springframework:spring-aspects:${version_spring}"
 
+    testCompile "net.proteusframework:proteusframework-core:${version_proteus}"
     testCompile "net.proteusframework:proteusframework-testing:${version_proteus}"
     testCompile 'junit:junit:4.11'
     testCompile 'org.testng:testng:6.8.13'
     testCompile('org.uncommons:reportng:1.1.2') {
         exclude group: "org.testng", module: "testng"
     }
+    testCompile 'org.apache.derby:derby:10.12.1.1'
+    testRuntime 'com.google.inject:guice:4.0'
 
 
     // These are for the war plugin

@@ -1,0 +1,42 @@
+
+//noinspection LongLine
+def gradleOptions = $/-Prepo_venturetech_username=$repo_venturetech_username -Prepo_venturetech_password=$repo_venturetech_password -Pcompile_libraries=true --no-daemon/$
+
+node {
+
+    stage 'Checkout'
+    // Get some code from a GitHub repository
+    git url: 'https://github.com/VentureTech/proteus-examples.git'
+    //checkout scm
+    dir('example-app') {
+        def gradleProps = readFile('gradle.properties')
+        echo gradleProps
+        def appVersion = getAppVersion(gradleProps)
+        def appName = getAppName(gradleProps)
+        stage "Building $appName $appVersion"
+        gradleProps = null;
+        def jdkHome = tool 'JDK 8'
+        env.JAVA_HOME = jdkHome
+        withEnv(["JAVA_HOME=$jdkHome"]){
+            // Run the build
+            wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
+                sh "./gradlew clean assemble $gradleOptions"
+            }
+        }
+
+    }
+}
+
+@NonCPS
+def getAppVersion(String text)
+{
+    def matcher = text =~ /app_version=(.+)/
+    return matcher ? matcher[0][1] : '0.0'
+}
+
+@NonCPS
+def getAppName(String text)
+{
+    def matcher = text =~ /app_name=(.+)/
+    return matcher ? matcher[0][1] : '0.0'
+}

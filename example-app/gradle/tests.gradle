@@ -1,9 +1,19 @@
 
 test {
     useTestNG() {
-        includeGroups 'unit'
+        if(project.hasProperty("testGroups"))
+            includeGroups project.getProperty("testGroups")
+        else
+            includeGroups 'unit'
         excludeGroups 'manual'
     }
+
+    ignoreFailures = true
+
+    maxParallelForks = 2
+
+    minHeapSize = "128m"
+    maxHeapSize = "512m"
 
     testLogging {
         outputs.upToDateWhen {false} // Always generate report immediately

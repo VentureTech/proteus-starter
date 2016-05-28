@@ -9,7 +9,7 @@
  * into with I2RD.
  */
 
-package com.proteusframework.build
+
 
 //The global script scope
 def ctx = context(scope: scriptScope())

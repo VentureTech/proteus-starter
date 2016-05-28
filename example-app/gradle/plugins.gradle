@@ -2,7 +2,8 @@
 // Compilation
 apply plugin: 'java'
 apply plugin: 'groovy'
-apply plugin: 'aspectj-weave'
+// doesn't currently work
+//apply plugin: 'aspectj-weave'
 
 // Intellij IDEA
 apply plugin: 'idea'

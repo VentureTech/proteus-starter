@@ -11,36 +11,25 @@
  
 package com.example.app.test.unit;
 
-//import org.testng.annotations.Test;
-//import com.i2rd.unit.test.BaseTestAnnotationConfig;
+import org.testng.annotations.Test;
 
-import org.junit.Test;
+import com.i2rd.unit.test.BaseTestAnnotationConfig;
+
+
 
 /**
  * This example is to prevent Jenkins build from failing due to no unit tests.
  * @author Joe Developer
  */
-//TODO: Update to use TestNG when core-tests are available again.
-//public class ExampleTest extends BaseTestAnnotationConfig
-//{
-//
-//    /** Example test method.  */
-//    @Test(groups = {"unit"})
-//    public void test()
-//    {
-//        // Implement a test
-//    }
-//
-//}
-
-public class ExampleTest
+public class ExampleTest extends BaseTestAnnotationConfig
 {
 
     /** Example test method.  */
-    @Test
+    @Test(groups = {"unit"})
     public void test()
     {
         // Implement a test
     }
 
 }
+
