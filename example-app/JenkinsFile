@@ -14,7 +14,7 @@ node {
     // Mark the code build 'stage'....
     stage 'Build'
     // Run the build
-    sh 'cd example-app; ./gradlew clean assemble -Prepo_venturetech_username=${repo_venturetech_username} ' +
-        '-Prepo_venturetech_password=${repo_venturetech_password} ' +
+    sh "cd example-app; ./gradlew clean assemble -Prepo_venturetech_username=${env.repo_venturetech_username} " +
+        "-Prepo_venturetech_password=${env.repo_venturetech_password} " +
         '-Pcompile_libraries=true --no-daemon --console plain'
 }
