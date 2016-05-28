@@ -290,7 +290,8 @@ derby.log
                 .renameTo(new File(baseDir, ".idea/${slash}modules${slash}${model.appName}_main.iml"))
             new File(baseDir, ".idea/${slash}modules${slash}example-app_test.iml")
                 .renameTo(new File(baseDir, ".idea/${slash}modules${slash}${model.appName}_test.iml"))
-
+            new File(baseDir, ".idea/${slash}modules${slash}example-app_libraries.iml")
+                .renameTo(new File(baseDir, ".idea/${slash}modules${slash}${model.appName}_libraries.iml"))
 
             def gradleScript = new File(baseDir, 'gradlew').absolutePath
             def command = [gradleScript, '-Dorg.gradle.daemon=false']
