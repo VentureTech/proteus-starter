@@ -22,7 +22,7 @@ import com.i2rd.unit.test.TestGroups;
  * @author Russ Tennant (russ@i2rd.com)
  * @since 5/28/16 1:18 PM
  */
-public class ExampleUnitTest extends BaseTest
+public class ExampleUnitTest //extends BaseTest
 {
     /** Logger. */
     private static final Logger _logger = LogManager.getLogger(ExampleUnitTest.class);
