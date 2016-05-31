@@ -18,7 +18,7 @@ import net.fortuna.ical4j.model.Period;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.parameter.Value;
 
-import com.example.app.support.LRLabsUtil;
+import com.example.app.support.AppUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
@@ -189,7 +189,7 @@ public class ICal4jSchedule extends Schedule
         final Date start = new Date(startTime.toInstant(UTC).toEpochMilli());
         final DateList dateList = recur.getDates(start, new Period(new DateTime(start), new DateTime(until)), Value.DATE_TIME);
         DateFormat parser = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
-        parser.setTimeZone(LRLabsUtil.UTC);
+        parser.setTimeZone(AppUtil.UTC);
         for (Object dateObject : dateList)
         {
             try

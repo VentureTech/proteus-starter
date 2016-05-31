@@ -37,6 +37,19 @@ public interface ProfileTermProvider extends Serializable
      */
     TextSource attendees();
 
+    /**
+     * Return the term.
+     *
+     * @return the term.
+     */
+    TextSource company();
+
+    /**
+     * Return the term.
+     *
+     * @return the term.
+     */
+    TextSource location();
 
     /**
      * Return the term.
@@ -114,6 +127,13 @@ public interface ProfileTermProvider extends Serializable
      * @return the term.
      */
     TextSource userAllLower();
+
+    /**
+     * Return the term.
+     * This is the profile type name that owns users.
+     * @return the term.
+     */
+    TextSource userProfile();
 
     /**
      * Return the term.

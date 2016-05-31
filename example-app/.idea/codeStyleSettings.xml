@@ -273,8 +273,9 @@
               <section>
                 <rule>
                   <match>
-                    <INTERFACE />
+                    <INTERFACE>true</INTERFACE>
                   </match>
+                  <order>BY_NAME</order>
                 </rule>
               </section>
               <section>
@@ -499,6 +500,6 @@
         </codeStyleSettings>
       </value>
     </option>
-    <option name="PREFERRED_PROJECT_CODE_STYLE" value="i2rd" />
+    <option name="USE_PER_PROJECT_SETTINGS" value="true" />
   </component>
 </project>

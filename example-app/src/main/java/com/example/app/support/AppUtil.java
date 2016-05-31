@@ -86,19 +86,19 @@ import static java.util.Optional.ofNullable;
 import static net.proteusframework.ui.miwt.component.Container.of;
 
 /**
- * Util class for holding utility methods and instances for use across LR Labs
+ * Util class for holding utility methods and instances for use across applicaiton.
  *
  * @author Alan Holt (aholt@venturetech.net)
  * @since 11/2/15 11:03 AM
  */
 @SuppressWarnings("unused")
 @org.springframework.stereotype.Component
-public class LRLabsUtil implements Serializable
+public class AppUtil implements Serializable
 {
     /** UTC. */
     public static final TimeZone UTC = TimeZone.getTimeZone(ZoneOffset.UTC);
     /** Logger. */
-    private static final Logger _logger = LogManager.getLogger(LRLabsUtil.class);
+    private static final Logger _logger = LogManager.getLogger(AppUtil.class);
     private static final long serialVersionUID = -6831853311031034991L;
 
     @Autowired
@@ -175,13 +175,13 @@ public class LRLabsUtil implements Serializable
 
     /**
      *   Get the default TimeZone statically.
-     *   Uses application context utils to get LRLabsUtil and call {@link LRLabsUtil#getDefaultTimeZone()}
+     *   Uses application context utils to get LRLabsUtil and call {@link AppUtil#getDefaultTimeZone()}
      *   @return the default time zone.
      */
     public static TimeZone staticGetDefaultTimeZone()
     {
         @SuppressWarnings("ConstantConditions")
-        LRLabsUtil util = ApplicationContextUtils.getInstance().getContext().getBean(LRLabsUtil.class);
+        AppUtil util = ApplicationContextUtils.getInstance().getContext().getBean(AppUtil.class);
         return util.getDefaultTimeZone();
     }
 
@@ -638,7 +638,7 @@ public class LRLabsUtil implements Serializable
         final TokenCredentials token = _principalDAO.getTokenCredentials(principal, suffix);
         if(token.getExpireDate() == null)
         {
-            token.setExpireDate(LRLabsUtil.getNewTokenExpireTime());
+            token.setExpireDate(AppUtil.getNewTokenExpireTime());
             _principalDAO.saveCredentials(token);
         }
         return token;
@@ -827,7 +827,7 @@ public class LRLabsUtil implements Serializable
     {
         ApplicationContext context = ApplicationContextUtils.getInstance().getContext();
         assert context != null;
-        return context.getBean(LRLabsUtil.class);
+        return context.getBean(AppUtil.class);
     }
 
     @Contract(pure = true)

@@ -25,7 +25,7 @@ import com.example.app.service.ProfileService;
 import com.example.app.service.ProfileTypeKindLabelProvider;
 import com.example.app.service.ResourceCategoryLabelProvider;
 import com.example.app.service.ResourceTagsLabelProvider;
-import com.example.app.support.LRLabsUtil;
+import com.example.app.support.AppUtil;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -318,7 +318,7 @@ public class ProjectShellCommands extends AbstractShellCommands
         if(user == null)
             throw new IllegalArgumentException("Principal could not be retrieved for given username/authdomain combination");
 
-        List<Membership> memberships = _profileDAO.getMemberships(profile, user, LRLabsUtil.UTC);
+        List<Membership> memberships = _profileDAO.getMemberships(profile, user, AppUtil.UTC);
         Membership membership;
         if(memberships.size() > 0)
         {

@@ -17,7 +17,7 @@ import com.example.app.model.resource.ResourceType;
 import com.example.app.model.resource.ResourceVisibility;
 import com.example.app.service.ResourceCategoryLabelProvider;
 import com.example.app.service.ResourceTagsLabelProvider;
-import com.example.app.support.LRLabsUtil;
+import com.example.app.support.AppUtil;
 import com.example.app.ui.vtcrop.VTCropPictureEditor;
 import com.example.app.ui.vtcrop.VTCropPictureEditorConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,7 +89,7 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
     private ResourceTagsLabelProvider _categoryLabelProvider;
     private ResourceCategoryLabelProvider _typeLabelProvider;
     private VTCropPictureEditorConfig _pictureEditorConfig;
-    private LRLabsUtil _appUtil;
+    private AppUtil _appUtil;
 
     private VTCropPictureEditor _resourcePictureEditor;
 
@@ -142,7 +142,7 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
      *   @param appUtil the App Util
      */
     @Autowired
-    public void setLRLabsUtil(LRLabsUtil appUtil)
+    public void setLRLabsUtil(AppUtil appUtil)
     {
         _appUtil = appUtil;
     }
@@ -274,6 +274,6 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
     @Override
     public ModificationState getModificationState()
     {
-        return LRLabsUtil.getModificationStateForComponent(this);
+        return AppUtil.getModificationStateForComponent(this);
     }
 }

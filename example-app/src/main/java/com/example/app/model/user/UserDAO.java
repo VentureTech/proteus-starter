@@ -13,7 +13,7 @@ package com.example.app.model.user;
 
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.support.ImageSaver;
-import com.example.app.support.LRLabsUtil;
+import com.example.app.support.AppUtil;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,7 +52,7 @@ import net.proteusframework.users.model.Principal;
 import net.proteusframework.users.model.PrincipalStatus;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
-import static com.example.app.support.LRLabsUtil.getExtensionWithDot;
+import static com.example.app.support.AppUtil.getExtensionWithDot;
 import static net.proteusframework.core.StringFactory.isEmptyString;
 
 /**
@@ -83,7 +83,7 @@ public class UserDAO extends DAOHelper implements Serializable
 
     /** app util */
     @Autowired
-    protected transient LRLabsUtil _appUtil;
+    protected transient AppUtil _appUtil;
 
     /** principal dao */
     @Autowired
@@ -116,6 +116,7 @@ public class UserDAO extends DAOHelper implements Serializable
             }, User::getImage, (user, image) -> {
                 final DirectoryEntity directory = FileSystemDirectory.Pictures.getDirectory2(
                     _cmsFrontendDAO.getOperationalSite());
+                // FIXME : I'd like to break the user picture folder into buckets
                 return _fileSystemDAO.mkdirs(directory, null, USER_PICTURE_FOLDER);
             }, (user, image) -> {
                 String fileNameSuffix = USER_PICTURE_FILE_NAME_SUFFIX + getExtensionWithDot(image);

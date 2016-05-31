@@ -65,8 +65,8 @@ import static com.example.app.model.profile.Membership.USER_PROP;
 import static com.example.app.model.profile.MembershipOperation.PROGRAMMATIC_IDENTIFIER_COLUMN_PROP;
 import static com.example.app.model.profile.Profile.MEMBERSHIPS_PROP;
 import static com.example.app.model.user.User.PRINCIPAL_PROP;
-import static com.example.app.support.LRLabsUtil.convertForPersistence;
-import static com.example.app.support.LRLabsUtil.getZonedDateTimeForComparison;
+import static com.example.app.support.AppUtil.convertForPersistence;
+import static com.example.app.support.AppUtil.getZonedDateTimeForComparison;
 import static net.proteusframework.ui.search.PropertyConstraint.Operator.*;
 import static net.proteusframework.ui.search.QLBuilder.JoinType.INNER;
 

@@ -41,7 +41,7 @@ import net.proteusframework.ui.search.QLBuilder;
 import net.proteusframework.ui.search.QLResolver;
 import net.proteusframework.ui.search.QLResolverOptions;
 
-import static com.example.app.support.LRLabsUtil.getExtensionWithDot;
+import static com.example.app.support.AppUtil.getExtensionWithDot;
 import static net.proteusframework.data.filesystem.FileSystemEntityCreateMode.overwrite;
 
 /**

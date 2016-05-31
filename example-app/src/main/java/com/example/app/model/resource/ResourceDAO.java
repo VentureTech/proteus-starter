@@ -12,7 +12,7 @@
 package com.example.app.model.resource;
 
 import com.example.app.support.ImageSaver;
-import com.example.app.support.LRLabsUtil;
+import com.example.app.support.AppUtil;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,7 +57,7 @@ public class ResourceDAO extends DAOHelper
     @Autowired
     private FileSystemDAO _fileSystemDAO;
     @Autowired
-    private LRLabsUtil _appUtil;
+    private AppUtil _appUtil;
 
     private ImageSaver<Resource> _resourceImageSaver;
 

@@ -19,7 +19,7 @@ import net.fortuna.ical4j.model.WeekDayList;
 
 import com.example.app.model.schedule.ICal4jSchedule;
 import com.example.app.model.schedule.WeekOfMonth;
-import com.example.app.support.LRLabsUtil;
+import com.example.app.support.AppUtil;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -407,7 +407,7 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
     @Override
     public ModificationState getModificationState()
     {
-        return LRLabsUtil.getModificationStateForComponent(this);
+        return AppUtil.getModificationStateForComponent(this);
     }
 
     @Nullable
@@ -993,7 +993,7 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
             ConcatTextSource.create(CommonActions.ADD.getName(), BY_DAY_OF_WEEK_AND_WEEK_NO())
             .withSpaceSeparator()
         );
-        LRLabsUtil.enableTooltip(addDayWeekContainer);
+        AppUtil.enableTooltip(addDayWeekContainer);
         _dowWoMWrapper.add(of("actions", addDayWeekContainer).withHTMLElement(HTMLElement.span));
         addDayWeekContainer.addActionListener(ev -> _dowWoMWrapper.add(new DoWWoM(_dayWeekEditors)));
     }

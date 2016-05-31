@@ -18,7 +18,7 @@ import com.example.app.model.profile.Profile;
 import com.example.app.model.profile.ProfileDAO;
 import com.example.app.model.resource.Resource;
 import com.example.app.model.user.User;
-import com.example.app.support.LRLabsUtil;
+import com.example.app.support.AppUtil;
 import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -233,7 +233,7 @@ public class RepositoryDAO extends DAOHelper
 
     private static Date getNow()
     {
-        final Calendar calendar = Calendar.getInstance(LRLabsUtil.staticGetDefaultTimeZone(), Locale.ENGLISH);
+        final Calendar calendar = Calendar.getInstance(AppUtil.staticGetDefaultTimeZone(), Locale.ENGLISH);
         calendar.add(Calendar.HOUR_OF_DAY, -1);// truncate to an hour for caching
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
