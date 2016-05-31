@@ -206,6 +206,7 @@ package com.example.app.support.address;
 //CHECKSTYLE:OFF
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -222,7 +223,7 @@ class SpecialData
     static
     {
         try (BufferedReader r = new BufferedReader(new InputStreamReader(SpecialData.class
-            .getResourceAsStream("exception_city.txt"))))
+            .getResourceAsStream("exception_city.txt"), StandardCharsets.UTF_8)))
         {
             String line = null;
             Map<String, Set<String>> tmp = new HashMap<String, Set<String>>();
@@ -241,15 +242,8 @@ class SpecialData
             }
             for (Map.Entry<String, Set<String>> e : tmp.entrySet())
             {
-                String[] array = e.getValue().toArray(new String[]{});
-                Arrays.sort(array, new Comparator<String>()
-                {
-                    @Override
-                    public int compare(String o1, String o2)
-                    {
-                        return Integer.valueOf(o2.length()).compareTo(o1.length());
-                    }
-                });
+                String[] array = e.getValue().toArray(new String[e.getValue().size()]);
+                Arrays.sort(array, (o1, o2) -> Integer.compare(o2.length(), o1.length()));
                 C_MAP.put(e.getKey(), Arrays.asList(array));
             }
         }

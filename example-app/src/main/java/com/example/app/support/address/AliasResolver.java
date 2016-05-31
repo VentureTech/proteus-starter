@@ -209,6 +209,7 @@ import org.apache.commons.lang.StringUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -242,7 +243,7 @@ class AliasResolver
     static
     {
         try (BufferedReader br = new BufferedReader(
-            new InputStreamReader(AliasResolver.class.getResourceAsStream("city-alias.txt"))))
+            new InputStreamReader(AliasResolver.class.getResourceAsStream("city-alias.txt"), StandardCharsets.UTF_8)))
         {
             String line = null;
             Map<String, Set<String>> allRealCitiesMap = new HashMap<String, Set<String>>();
