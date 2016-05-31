@@ -10,6 +10,6 @@
  */
 
 /**
- * User interfaces for the example application.
+ * Classes related to business specific terms.
  */
-package com.example.app.ui;
+package com.example.app.terminology;

@@ -35,6 +35,7 @@ import net.proteusframework.core.locale.xml.StaticKeyDataConfig;
 
 import static com.i2rd.hibernate.util.LocationQualifier.Type.entity_location;
 import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
+import static org.hibernate.metamodel.source.annotations.JPADotNames.DISCRIMINATOR_COLUMN;
 
 /**
  * Project Configuration.
@@ -62,6 +63,14 @@ import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
 )
 public class ProjectConfig implements ApplicationListener<ContextRefreshedEvent>
 {
+    /** Project Schema. */
+    public static final String PROJECT_SCHEMA = "app";
+    /** Discriminator Column. */
+    public static final String DISCRIMINATOR_COLUMN = "disc_type";
+    /** The database schema for envers audit tables */
+    public static final String ENVERS_SCHEMA = "audit";
+    /** Data conversion identifier. */
+    public static final String DC_IDENTIFIER = "example_app";
     /** Logger. */
     private static final Logger _logger = LogManager.getLogger(ProjectConfig.class);
     /*

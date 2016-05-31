@@ -10,6 +10,6 @@
  */
 
 /**
- * Data models for the example application.
+ * Contains support classes and files.
  */
-package com.example.app.model;
+package com.example.app.support;

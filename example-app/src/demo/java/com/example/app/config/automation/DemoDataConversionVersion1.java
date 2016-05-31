@@ -45,7 +45,7 @@ import net.proteusframework.core.automation.TaskQualifier;
 @Configuration
 //@Profile({"automation", "com.example.1"})
 @Lazy
-public class ExampleAppDataConversionVersion1
+public class DemoDataConversionVersion1
 {
     // !!! PLEASE PUT THE LATEST conversion at the top so it is easy to determine the next version #
     /** Data Conversion Identifier. */

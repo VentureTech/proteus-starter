@@ -10,6 +10,6 @@
  */
 
 /**
- * Automation configuration.
+ * Entities and objects associated with text.
  */
-package com.example.app.config.automation;
+package com.example.app.model.text;
