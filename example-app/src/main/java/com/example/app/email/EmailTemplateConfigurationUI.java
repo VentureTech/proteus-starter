@@ -735,8 +735,6 @@ public class EmailTemplateConfigurationUI extends Container
         instructions.addClassName(CSSUtil.CSS_INSTRUCTIONS);
         dialog.add(instructions);
 
-        final TextSource taleLabel = createText(LABEL_ADD__0__RECIPIENTS(), _profileTermProvider.profile());
-
         Field recipient = new Field();
         dialog.addClassName("prop-wrapper").addClassName("prop-editor").addClassName("recipient-editor-dialog");
         dialog.add(of("prop email", LABEL_RECIPIENT(), recipient));
