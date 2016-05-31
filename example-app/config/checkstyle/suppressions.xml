@@ -16,5 +16,6 @@
 
 <suppressions>
     <suppress files=".+\.(?:LOK).java$" checks=".*"/>
-    <suppress checks="." files="your[\\/]package[\\/]name[\\/]"/>
+    <suppress checks="." files="com[\\/]example[\\/]app[\\/]support[\\/]address[\\/]"/>
+    <suppress checks="." files=".apt_generated[\\/]"/>
 </suppressions>
