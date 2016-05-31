@@ -20,6 +20,7 @@ import javax.swing.border.EmptyBorder
 import javax.swing.border.TitledBorder
 import java.awt.*
 import java.util.concurrent.CompletableFuture
+import java.util.regex.Pattern
 
 import static groovy.io.FileVisitResult.CONTINUE
 import static groovy.io.FileVisitResult.SKIP_SUBTREE
@@ -162,6 +163,7 @@ To run the demo code, you will need to update your ProjectConfig.'''
         def packageName = model.appGroup + '.' + (model.appName.toLowerCase().replaceAll('[^a-z0-9_]', '_'))
         def slash = File.separator
         def packageDir = packageName.replace('.', slash)
+        def packageSuppression = packageName.replace('.', '[\\/]')
 
         println "appGroup = ${model.appGroup}"
         println "appName = ${model.appName}"
@@ -264,6 +266,7 @@ derby.log
                     def content = f.getText('UTF-8')
                     def updatedContent = content.replaceAll('com[.]example[.]app', packageName)
                         .replaceAll('com/example/app', packageDir)
+                        .replaceAll(Pattern.quote("com[\\/]example[\\/]app"), packageSuppression)
                         .replaceAll('example-app', model.appName)
                         .replaceAll('com.example', model.appGroup)
                         .replaceAll('example_app', model.appName.replace('.', '-'))
