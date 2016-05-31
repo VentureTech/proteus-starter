@@ -203,7 +203,7 @@
  */
 
 package com.example.app.support.address;
-
+//CHECKSTYLE:OFF
 import com.example.app.support.address.Utils.NamedGroupPattern;
 
 import static com.example.app.support.address.RegexLibrary.*;

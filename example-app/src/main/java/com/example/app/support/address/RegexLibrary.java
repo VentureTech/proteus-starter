@@ -203,7 +203,7 @@
  */
 
 package com.example.app.support.address;
-
+//CHECKSTYLE:OFF
 import com.google.common.base.Joiner;
 import org.apache.commons.lang.StringUtils;
 

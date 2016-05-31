@@ -203,7 +203,7 @@
  */
 
 package com.example.app.support.address;
-
+//CHECKSTYLE:OFF
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Arrays;

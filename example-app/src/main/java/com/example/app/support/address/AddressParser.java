@@ -223,6 +223,7 @@ import static com.example.app.support.address.AddressRegexLibrary.*;
 import static com.example.app.support.address.AddressComponent.*;
 import static com.example.app.support.address.AddressComponent.LINE2;
 import static com.example.app.support.address.AddressComponent.NUMBER;
+//CHECKSTYLE:OFF
 
 //TODO: support theses
 //123 Avenue of art, philadelphia pa 12345
