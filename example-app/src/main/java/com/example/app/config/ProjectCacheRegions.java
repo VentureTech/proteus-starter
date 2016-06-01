@@ -32,23 +32,20 @@ public class ProjectCacheRegions extends AbstractCacheRegionsConfiguration
 
     /** The suffix to use for profile cache regions */
     private static final String PROFILE_SUFFIX = "profile";
-    /** The suffix to use for member cache regions */
-    private static final String MEMBER_SUFFIX = "member";
-    /** The suffix to use for entity cache regions */
-    private static final String ENTITY_SUFFIX = "entity";
-
     /** Profile data cache region */
     public static final String PROFILE_DATA = DATA_PREFIX + '.' + PROFILE_SUFFIX;
-    /** Member data cache region */
-    public static final String MEMBER_DATA = DATA_PREFIX + '.' + MEMBER_SUFFIX;
-    /** Entity data cache region */
-    public static final String ENTITY_DATA = DATA_PREFIX + '.' + ENTITY_SUFFIX;
-
-
     /** Profile query cache region */
     public static final String PROFILE_QUERY = QUERY_PREFIX + '.' + PROFILE_SUFFIX;
+    /** The suffix to use for member cache regions */
+    private static final String MEMBER_SUFFIX = "member";
+    /** Member data cache region */
+    public static final String MEMBER_DATA = DATA_PREFIX + '.' + MEMBER_SUFFIX;
     /** Member query cache region */
     public static final String MEMBER_QUERY = QUERY_PREFIX + '.' + MEMBER_SUFFIX;
+    /** The suffix to use for entity cache regions */
+    private static final String ENTITY_SUFFIX = "entity";
+    /** Entity data cache region */
+    public static final String ENTITY_DATA = DATA_PREFIX + '.' + ENTITY_SUFFIX;
     /** Entity query cache region */
     public static final String ENTITY_QUERY = QUERY_PREFIX + '.' + ENTITY_SUFFIX;
 

@@ -86,6 +86,7 @@ import static com.example.app.ui.user.UserViewerComponentLOK.*;
 )
 public class UserViewerComponent extends MIWTPageElementModelContainer
 {
+    private final MessageContainer _messages = new MessageContainer(35_000L);
     @Autowired
     private ProfileService _profileService;
     @Autowired
@@ -96,13 +97,11 @@ public class UserViewerComponent extends MIWTPageElementModelContainer
     private UserDAO _userDAO;
     @Autowired
     private UIPreferences _uiPreferences;
-
     private User _user;
-    private Profile _userProfile;
-    private final MessageContainer _messages = new MessageContainer(35_000L);
+    private Profile _adminProfile;
 
     /**
-     *   Instantiate a new instance of UserViewerComponent
+     * Instantiate a new instance of UserViewerComponent
      */
     public UserViewerComponent()
     {
@@ -133,7 +132,8 @@ public class UserViewerComponent extends MIWTPageElementModelContainer
 
         final UserPropertyViewer valueViewer = new UserPropertyViewer();
         valueViewer.configure(_user);
-        valueViewer.addComponentListener(new ComponentAdapter(){
+        valueViewer.addComponentListener(new ComponentAdapter()
+        {
             @Override
             public void componentClosed(ComponentEvent e)
             {
@@ -143,7 +143,7 @@ public class UserViewerComponent extends MIWTPageElementModelContainer
 
         final UserPositionManagement positionManagement = new UserPositionManagement(_user);
 
-        final UserMembershipManagement roleMgt = new UserMembershipManagement(_user, _userProfile);
+        final UserMembershipManagement roleMgt = new UserMembershipManagement(_user, _adminProfile);
 
         final TabbedContainerImpl tabs = new TabbedContainerImpl();
         tabs.addTab(profileTID, valueViewer);
@@ -159,17 +159,18 @@ public class UserViewerComponent extends MIWTPageElementModelContainer
         add(tabs);
     }
 
-    @SuppressWarnings("unused") //Used by ApplicationFunction
+    @SuppressWarnings("unused")
+        //Used by ApplicationFunction
     void configure(ParsedRequest request)
     {
         _user = request.getPropertyValue(URLProperties.USER);
-        if(_user == null)
+        if (_user == null)
             throw new IllegalArgumentException("Unable to determine User.");
-        _userProfile = _profileService.getOwnerProfileForUser(_user)
-            .orElseThrow(() -> new IllegalStateException("User must have an owner profile."));
+        _adminProfile = _profileService.getAdminProfileForUser(_user)
+            .orElseThrow(() -> new IllegalStateException("User must have an admin profile."));
         User currentUser = _userDAO.getAssertedCurrentUser();
 
-        if(!_profileDAO.canOperate(currentUser, _userProfile, AppUtil.UTC, _mop.viewUser()))
+        if (!_profileDAO.canOperate(currentUser, _adminProfile, AppUtil.UTC, _mop.viewUser()))
             throw new IllegalArgumentException("Invalid Permissions To View Page");
     }
 }

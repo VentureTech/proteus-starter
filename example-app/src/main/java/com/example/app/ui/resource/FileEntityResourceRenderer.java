@@ -50,17 +50,17 @@ import static net.proteusframework.core.StringFactory.getExtension;
 @Configurable(preConstruction = true)
 public class FileEntityResourceRenderer extends GeneratorImpl<PageElement>
 {
+    private final FileEntityResource _resource;
     @Autowired
     private EntityRetriever _er;
     @Autowired
     private URLGenerator _urlGenerator;
-
-    private final FileEntityResource _resource;
     private CacheableBuilder _cacheableBuilder;
 
     /**
-     *   Instantiate a new instance
-     *   @param resource the resource to render
+     * Instantiate a new instance
+     *
+     * @param resource the resource to render
      */
     public FileEntityResourceRenderer(FileEntityResource resource)
     {
@@ -70,15 +70,6 @@ public class FileEntityResourceRenderer extends GeneratorImpl<PageElement>
         _urlGenerator.setOutputHostname(true);
     }
 
-    /**
-     *   Get the resource.  Makes a call to {@link EntityRetriever#reattachIfNecessary(Object)} before returning.
-     *   @return the reattached (if necessary) resource
-     */
-    public FileEntityResource getResource()
-    {
-        return _er.reattachIfNecessary(_resource);
-    }
-
     @Override
     public void preRenderProcess(CmsRequest<PageElement> request, CmsResponse response, ProcessChain chain)
     {
@@ -86,10 +77,14 @@ public class FileEntityResourceRenderer extends GeneratorImpl<PageElement>
         _cacheableBuilder.addEntity(getResource());
     }
 
-    @Override
-    public String getIdentity(CmsRequest<PageElement> request)
+    /**
+     * Get the resource.  Makes a call to {@link EntityRetriever#reattachIfNecessary(Object)} before returning.
+     *
+     * @return the reattached (if necessary) resource
+     */
+    public FileEntityResource getResource()
     {
-        return _cacheableBuilder.makeCacheable().getIdentity(request);
+        return _er.reattachIfNecessary(_resource);
     }
 
     @Override
@@ -99,7 +94,7 @@ public class FileEntityResourceRenderer extends GeneratorImpl<PageElement>
         EntityUtilWriter pw = response.getContentWriter();
 
         FileEntity fe = getResource().getFile();
-        if(fe != null)
+        if (fe != null)
         {
             String fileExtension = getExtension(fe.getName());
             String className = "resource file-resource ext-" + fileExtension;
@@ -127,5 +122,11 @@ public class FileEntityResourceRenderer extends GeneratorImpl<PageElement>
 
             pw.append("</span>");
         }
+    }
+
+    @Override
+    public String getIdentity(CmsRequest<PageElement> request)
+    {
+        return _cacheableBuilder.makeCacheable().getIdentity(request);
     }
 }

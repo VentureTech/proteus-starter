@@ -60,13 +60,12 @@ import static com.example.app.ui.user.MyAccountViewLOK.LABEL_UPDATE_PASSWORD;
 )
 public class MyAccountView extends MIWTPageElementModelPropertyViewer
 {
+    private final MessageContainer _messages = new MessageContainer(35_000L);
     @Autowired
     private UserDAO _userDAO;
 
-    private final MessageContainer _messages = new MessageContainer(35_000L);
-
     /**
-     *   Instantiate a new instance of MyAccountView
+     * Instantiate a new instance of MyAccountView
      */
     public MyAccountView()
     {
@@ -79,6 +78,15 @@ public class MyAccountView extends MIWTPageElementModelPropertyViewer
     }
 
     @Override
+    public void preRenderProcess(Request request, Response response, RendererEditorState<?> state)
+    {
+        super.preRenderProcess(request, response, state);
+        UserValueViewer valueViewer = getValueViewer();
+        if (valueViewer != null)
+        {
+            valueViewer.setUser(_userDAO.getAssertedCurrentUser());
+        }
+    }    @Override
     public void init()
     {
         super.init();
@@ -90,7 +98,7 @@ public class MyAccountView extends MIWTPageElementModelPropertyViewer
 
         UserValueViewer valueViewer = getValueViewer();
 
-        if(valueViewer != null && valueViewer.canUpdatePassword())
+        if (valueViewer != null && valueViewer.canUpdatePassword())
         {
             ReflectiveAction updatePassword = new ReflectiveAction();
             updatePassword.prop(Action.NAME, LABEL_UPDATE_PASSWORD());
@@ -106,30 +114,22 @@ public class MyAccountView extends MIWTPageElementModelPropertyViewer
         moveToTop(_messages);
     }
 
-    @Nullable
-    @Override
-    public UserValueViewer getValueViewer()
-    {
-        return (UserValueViewer)super.getValueViewer();
-    }
-
-    @SuppressWarnings("unused") //Used by ApplicationFunction
+    @SuppressWarnings("unused")
+        //Used by ApplicationFunction
     void configure(ParsedRequest request)
     {
         UserValueViewer valueViewer = new UserValueViewer();
         valueViewer.setUser(_userDAO.getAssertedCurrentUser());
         valueViewer.setNotifiable(_messages);
         setValueViewer(valueViewer);
+    }    @Nullable
+    @Override
+    public UserValueViewer getValueViewer()
+    {
+        return (UserValueViewer) super.getValueViewer();
     }
 
-    @Override
-    public void preRenderProcess(Request request, Response response, RendererEditorState<?> state)
-    {
-        super.preRenderProcess(request, response, state);
-        UserValueViewer valueViewer = getValueViewer();
-        if(valueViewer != null)
-        {
-            valueViewer.setUser(_userDAO.getAssertedCurrentUser());
-        }
-    }
+
+
+
 }

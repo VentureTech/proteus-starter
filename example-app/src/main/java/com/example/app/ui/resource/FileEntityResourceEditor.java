@@ -57,6 +57,21 @@ public class FileEntityResourceEditor extends ResourceValueEditor<FileEntityReso
         _fileField.setLabel(FileEntityResourceEditorLOK.FILE_LABEL());
     }
 
+    @Override
+    public void init()
+    {
+        if (!_configured)
+        {
+            throw new IllegalArgumentException("FileEntityResourceEditor has not been configured.  Please make sure you call "
+                                               + "setFileChooser on the FileEntityResourceEditor before trying to initialize it.");
+        }
+
+        super.init();
+
+        addEditorForProperty(() -> _fileField,
+            FileEntityResource.FILE_PROP);
+    }
+
     /**
      * Set the file chooser.
      * Must be called before component initialization.
@@ -78,20 +93,5 @@ public class FileEntityResourceEditor extends ResourceValueEditor<FileEntityReso
     public void setValueChooserDisplayHandler(@Nullable ValueChooserDisplayHandler<FileEntity> handler)
     {
         _fileField.setValueChooserDisplayHandler(handler);
-    }
-
-    @Override
-    public void init()
-    {
-        if (!_configured)
-        {
-            throw new IllegalArgumentException("FileEntityResourceEditor has not been configured.  Please make sure you call "
-                + "setFileChooser on the FileEntityResourceEditor before trying to initialize it.");
-        }
-
-        super.init();
-
-        addEditorForProperty(() -> _fileField,
-            FileEntityResource.FILE_PROP);
     }
 }

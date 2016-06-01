@@ -204,6 +204,7 @@
 
 package com.example.app.support.address;
 //CHECKSTYLE:OFF
+
 import org.apache.commons.lang.StringUtils;
 
 import java.io.BufferedReader;
@@ -217,7 +218,7 @@ import java.util.Set;
 
 class AliasResolver
 {
-    private static final Map<String, Map<String, String>> CITY_ALIAS_MAP = new HashMap<String, Map<String, String>>();
+    private static final Map<String, Map<String, String>> CITY_ALIAS_MAP = new HashMap<>();
 
     /**
      * Resolve.
@@ -246,7 +247,7 @@ class AliasResolver
             new InputStreamReader(AliasResolver.class.getResourceAsStream("city-alias.txt"), StandardCharsets.UTF_8)))
         {
             String line = null;
-            Map<String, Set<String>> allRealCitiesMap = new HashMap<String, Set<String>>();
+            Map<String, Set<String>> allRealCitiesMap = new HashMap<>();
             while ((line = br.readLine()) != null)
             {
                 String[] items = line.split("\\s*=\\s*");
@@ -256,7 +257,7 @@ class AliasResolver
                 Map<String, String> aliasMap = CITY_ALIAS_MAP.get(state);
                 if (aliasMap == null)
                 {
-                    aliasMap = new HashMap<String, String>();
+                    aliasMap = new HashMap<>();
                     CITY_ALIAS_MAP.put(state, aliasMap);
                 }
                 for (String a : alias)
@@ -266,7 +267,7 @@ class AliasResolver
                     Set<String> allRealCities = allRealCitiesMap.get(state);
                     if (allRealCities == null)
                     {
-                        allRealCities = new HashSet<String>();
+                        allRealCities = new HashSet<>();
                         allRealCitiesMap.put(state, allRealCities);
                     }
                     allRealCities.add(realCity);

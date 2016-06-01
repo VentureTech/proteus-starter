@@ -50,7 +50,7 @@ import net.proteusframework.users.model.dao.PrincipalDAO;
 import static com.example.app.ui.user.MyAccountEditLOK.COMPONENT_NAME;
 import static com.example.app.ui.user.MyAccountEditLOK.ERROR_MESSAGE_USERNAME_EXISTS_FMT;
 import static net.proteusframework.core.locale.TextSources.createText;
-import static net.proteusframework.ui.miwt.component.composite.Message.error;
+import static net.proteusframework.core.notification.NotificationImpl.error;
 
 /**
  * Component for the My Account edit page
@@ -90,7 +90,7 @@ public class MyAccountEdit extends MIWTPageElementModelPropertyEditor<User>
     private ProfileTermProvider _terms;
 
     /**
-     *   Instantiate a new instance of MyAccountEdit
+     * Instantiate a new instance of MyAccountEdit
      */
     public MyAccountEdit()
     {
@@ -102,7 +102,17 @@ public class MyAccountEdit extends MIWTPageElementModelPropertyEditor<User>
         setHTMLElement(HTMLElement.section);
     }
 
-    @SuppressWarnings("Duplicates")
+    @SuppressWarnings("unused")
+        //Used by ApplicationFunction
+    void configure(ParsedRequest request)
+    {
+        User currentUser = _userDAO.getAssertedCurrentUser();
+        getValueEditor().setInitialProfile(_profileService.getAdminProfileForUser(currentUser).orElseThrow(
+            () -> new IllegalArgumentException("Coaching Entity on User for My Account was null.  This should not happen.")));
+        getValueEditor().setAuthDomains(_userDAO.getAuthenticationDomainsToSaveOnUserPrincipal(currentUser));
+        getValueEditor().setAdminMode(false);
+        getValueEditor().setValue(currentUser);
+    }    @SuppressWarnings("Duplicates")
     @Override
     public void init()
     {
@@ -118,7 +128,7 @@ public class MyAccountEdit extends MIWTPageElementModelPropertyEditor<User>
                 boolean success = false;
                 try
                 {
-                    if(Objects.equals(currentUser.getId(), user.getId()))
+                    if (Objects.equals(currentUser.getId(), user.getId()))
                     {
                         user.setPreferredContactMethod(editor.commitValuePreferredContactMethod());
 
@@ -145,24 +155,23 @@ public class MyAccountEdit extends MIWTPageElementModelPropertyEditor<User>
 
                         user = _userDAO.mergeUser(user);
 
-                        if(editor.getPictureEditor().getModificationState().isModified())
+                        if (editor.getPictureEditor().getModificationState().isModified())
                         {
                             _userDAO.saveUserImage(user, editor.getPictureEditor().commitValue());
                         }
 
                         success = true;
                     }
-                    catch(NonUniqueCredentialsException e)
+                    catch (NonUniqueCredentialsException e)
                     {
                         _logger.error("Unable to persist changes to the Principal.", e);
                         getNotifiable().sendNotification(error(createText(ERROR_MESSAGE_USERNAME_EXISTS_FMT(), _terms.user())));
                     }
+                    _sessionHelper.commitTransaction();
                 }
                 finally
                 {
-                    if(success)
-                        _sessionHelper.commitTransaction();
-                    else
+                    if(!success)
                         _sessionHelper.recoverableRollbackTransaction();
                 }
                 return success;
@@ -182,25 +191,16 @@ public class MyAccountEdit extends MIWTPageElementModelPropertyEditor<User>
     @Override
     public UserValueEditor getValueEditor()
     {
-        return (UserValueEditor)super.getValueEditor();
+        return (UserValueEditor) super.getValueEditor();
     }
 
     @Override
     public void setValueEditor(ValueEditor<User> valueEditor)
     {
-        if(!(valueEditor instanceof UserValueEditor))
+        if (!(valueEditor instanceof UserValueEditor))
             throw new IllegalArgumentException("Given ValueEditor is not a UserValueEditor");
         super.setValueEditor(valueEditor);
     }
 
-    @SuppressWarnings("unused") //Used by ApplicationFunction
-    void configure(ParsedRequest request)
-    {
-        User currentUser = _userDAO.getAssertedCurrentUser();
-        getValueEditor().setInitialProfile(_profileService.getOwnerProfileForUser(currentUser).orElseThrow(
-            () -> new IllegalArgumentException("Coaching Entity on User for My Account was null.  This should not happen.")));
-        getValueEditor().setAuthDomains(_userDAO.getAuthenticationDomainsToSaveOnUserPrincipal(currentUser));
-        getValueEditor().setAdminMode(false);
-        getValueEditor().setValue(currentUser);
-    }
+
 }

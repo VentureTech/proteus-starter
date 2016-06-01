@@ -29,7 +29,8 @@ import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
 
 import static com.example.app.ui.user.MessageContextPropertyEditorLOK.LABEL_MESSAGE_CONTENT;
-import static com.example.app.ui.user.MessageContextValueEditorLOK.*;
+import static com.example.app.ui.user.MessageContextValueEditorLOK.LABEL_CONTACT_METHOD;
+import static com.example.app.ui.user.MessageContextValueEditorLOK.LABEL_SUBJECT;
 
 /**
  * {@link CompositeValueEditor} implementation for {@link MessageContext}
@@ -55,8 +56,9 @@ public class MessageContextValueEditor extends CompositeValueEditor<MessageConte
     private TextEditor _messageContentEditor;
 
     /**
-     *   Instantiate a new instance of ContactUserValueEditor
-     *   @param initialContactMethod the contact method to start with initially
+     * Instantiate a new instance of ContactUserValueEditor
+     *
+     * @param initialContactMethod the contact method to start with initially
      */
     public MessageContextValueEditor(@Nonnull ContactMethod initialContactMethod)
     {

@@ -46,21 +46,27 @@ import net.proteusframework.core.locale.LocalizedObjectKey;
 @DiscriminatorValue("resource")
 public class ResourceRepositoryItem extends RepositoryItem
 {
-    private static final long serialVersionUID = 6067966732141155565L;
-
     /** The database table name */
     public static final String TABLE_NAME = "resourceRepositoryItem";
-
     /** The database column for property: resource */
     public static final String RESOURCE_COLUMN = "resource_id";
     /** The property: resource */
     public static final String RESOURCE_PROP = "resource";
-
+    private static final long serialVersionUID = 6067966732141155565L;
     private Resource _resource;
 
+    @Transient
+    @Nonnull
+    @Override
+    public LocalizedObjectKey getName()
+    {
+        return getResource().getName();
+    }
+
     /**
-     *   Get the {@link Resource} that this RepositoryItem is pointing to
-     *   @return the Resource
+     * Get the {@link Resource} that this RepositoryItem is pointing to
+     *
+     * @return the Resource
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = RESOURCE_COLUMN, unique = true)
@@ -71,21 +77,15 @@ public class ResourceRepositoryItem extends RepositoryItem
     {
         return _resource;
     }
+
     /**
-     *   Set the {@link Resource} that this RepositoryItem is pointing to
-     *   @param resource the Resource
+     * Set the {@link Resource} that this RepositoryItem is pointing to
+     *
+     * @param resource the Resource
      */
-    public void setResource(@Nonnull  Resource resource)
+    public void setResource(@Nonnull Resource resource)
     {
         _resource = resource;
-    }
-
-    @Transient
-    @Nonnull
-    @Override
-    public LocalizedObjectKey getName()
-    {
-        return getResource().getName();
     }
 
     @Transient

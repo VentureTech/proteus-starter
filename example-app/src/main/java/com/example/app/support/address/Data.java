@@ -204,6 +204,7 @@
 
 package com.example.app.support.address;
 //CHECKSTYLE:OFF
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -215,24 +216,17 @@ import java.util.Map;
 class Data
 {
 
+    private static final Map<String, String> NUMBER_MAP = new HashMap<>();
+    private static final Map<String, String> DIRECTIONAL_MAP = new HashMap<>();
+    private static final Map<String, String> STREET_TYPE_MAP = new HashMap<>();
+    private static final Map<String, String> STATE_CODE_MAP = new HashMap<>();
+    private static final Map<String, String> UNIT_MAP = new HashMap<>();
+    private static final Map<String, String> SAINT_NAME_MAP = new HashMap<>();
+    private static final Map<String, String> ORDINAL_MAP = new HashMap<>();
+
     public static Map<String, String> getDIRECTIONAL_MAP()
     {
         return DIRECTIONAL_MAP;
-    }
-
-    public static Map<String, String> getSTREET_TYPE_MAP()
-    {
-        return STREET_TYPE_MAP;
-    }
-
-    public static Map<String, String> getSTATE_CODE_MAP()
-    {
-        return STATE_CODE_MAP;
-    }
-
-    public static Map<String, String> getUNIT_MAP()
-    {
-        return UNIT_MAP;
     }
 
     public static Map<String, String> getNUMBER_MAP()
@@ -240,23 +234,30 @@ class Data
         return NUMBER_MAP;
     }
 
-    public static Map<String, String> getSAINT_NAME_MAP()
-    {
-        return SAINT_NAME_MAP;
-    }
-
     public static Map<String, String> getORDINAL_MAP()
     {
         return ORDINAL_MAP;
     }
 
-    private static final Map<String, String> NUMBER_MAP = new HashMap<String, String>();
-    private static final Map<String, String> DIRECTIONAL_MAP = new HashMap<String, String>();
-    private static final Map<String, String> STREET_TYPE_MAP = new HashMap<String, String>();
-    private static final Map<String, String> STATE_CODE_MAP = new HashMap<String, String>();
-    private static final Map<String, String> UNIT_MAP = new HashMap<String, String>();
-    private static final Map<String, String> SAINT_NAME_MAP = new HashMap<String, String>();
-    private static final Map<String, String> ORDINAL_MAP = new HashMap<String, String>();
+    public static Map<String, String> getSAINT_NAME_MAP()
+    {
+        return SAINT_NAME_MAP;
+    }
+
+    public static Map<String, String> getSTATE_CODE_MAP()
+    {
+        return STATE_CODE_MAP;
+    }
+
+    public static Map<String, String> getSTREET_TYPE_MAP()
+    {
+        return STREET_TYPE_MAP;
+    }
+
+    public static Map<String, String> getUNIT_MAP()
+    {
+        return UNIT_MAP;
+    }
 
     static
     {

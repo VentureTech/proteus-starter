@@ -46,19 +46,14 @@ import net.proteusframework.core.locale.TextSources;
 @Audited
 public class Note extends AbstractAuditableEntity<Integer> implements NamedObject
 {
-    private static final long serialVersionUID = -8659050739585920812L;
-
     /** The database table name */
     public static final String TABLE_NAME = "Note";
-
     /** The database id column for this entity */
     public static final String ID_COLUMN = "note_id";
-
-    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + '.' + ID_COLUMN + "_seq";
-
     /** The database column and property: content */
     public static final String CONTENT_COLUMN_PROP = "content";
-
+    private static final long serialVersionUID = -8659050739585920812L;
+    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + '.' + ID_COLUMN + "_seq";
     private String _content;
 
     @Id
@@ -71,9 +66,18 @@ public class Note extends AbstractAuditableEntity<Integer> implements NamedObjec
         return super.getId();
     }
 
+    @Nonnull
+    @Override
+    @Transient
+    public TextSource getName()
+    {
+        return Optional.ofNullable(getContent()).map(TextSources::createText).orElse(TextSources.EMPTY);
+    }
+
     /**
-     *   Get the note content
-     *   @return content
+     * Get the note content
+     *
+     * @return content
      */
     @Column(name = CONTENT_COLUMN_PROP, length = 4096)
     @Nullable
@@ -84,20 +88,13 @@ public class Note extends AbstractAuditableEntity<Integer> implements NamedObjec
     }
 
     /**
-     *   Set the note content
-     *   @param content the content
+     * Set the note content
+     *
+     * @param content the content
      */
     public void setContent(@Nonnull String content)
     {
         _content = content;
-    }
-
-    @Nonnull
-    @Override
-    @Transient
-    public TextSource getName()
-    {
-        return Optional.ofNullable(getContent()).map(TextSources::createText).orElse(TextSources.EMPTY);
     }
 
     @Nullable

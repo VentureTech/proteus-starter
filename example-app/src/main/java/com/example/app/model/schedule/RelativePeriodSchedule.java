@@ -52,39 +52,6 @@ public class RelativePeriodSchedule extends Schedule
     @Nonnull
     private TemporalDirection _temporalDirection = TemporalDirection.FUTURE;
 
-    @Override
-    public ScheduleType getType()
-    {
-        return ScheduleType.relative;
-    }
-
-    @Override
-    public List<Instant> schedule(ScheduleContext scheduleContext)
-    {
-        final List<Instant> times = new ArrayList<>();
-        LocalDateTime startTime = LocalDateTime.ofInstant(scheduleContext.getStartTime(), UTC)
-            .truncatedTo(ChronoUnit.DAYS);
-        final TemporalAmount duration = scheduleContext.getDuration();
-        final LocalDateTime endTimeInclusive = LocalDateTime.from(
-            getTemporalDirection() == TemporalDirection.FUTURE
-            ? startTime.plus(duration)
-            : startTime.minus(duration).minus(1, ChronoUnit.DAYS)
-        );
-        @Nullable
-        final LocalTime time = getTime() != null ? getTime().toLocalTime() : null;
-        LocalDateTime next = execute(startTime);
-        while(shouldContinue(next, endTimeInclusive))
-        {
-            if(time != null)
-                times.add(next.plus(time.toSecondOfDay(), ChronoUnit.SECONDS).toInstant(UTC));
-            else
-                times.add(next.toInstant(UTC));
-            if(!_repeat) break;
-            next = execute(next);
-        }
-        return times;
-    }
-
     @SuppressWarnings("ConstantConditions")
     @Override
     public RelativePeriodSchedule copy()
@@ -98,45 +65,49 @@ public class RelativePeriodSchedule extends Schedule
         return copy;
     }
 
-    /**
-     * Execute the schedule.
-     * @param time the time.
-     * @return the new time.
-     */
-    LocalDateTime execute(Temporal time)
+    @Override
+    public ScheduleType getType()
     {
-        return LocalDateTime.from(
-            getTemporalDirection() == TemporalDirection.FUTURE
-            ? _period.addTo(time)
-            : _period.subtractFrom(time)
-        );
+        return ScheduleType.relative;
     }
 
-    /**
-     * Test if we should stop looking for more dates.
-     *
-     * @param time the time.
-     * @param endTimeInclusive the end time inclusive
-     * @return true or false.
-     */
-    boolean shouldContinue(LocalDateTime time, LocalDateTime endTimeInclusive)
+    @Override
+    public boolean isRepeat()
     {
-        final boolean result;
-        final int cmp = time.compareTo(endTimeInclusive);
-        if (getTemporalDirection() == TemporalDirection.FUTURE)
+        return _repeat;
+    }
+
+    @Override
+    public List<Instant> schedule(ScheduleContext scheduleContext)
+    {
+        final List<Instant> times = new ArrayList<>();
+        LocalDateTime startTime = LocalDateTime.ofInstant(scheduleContext.getStartTime(), UTC)
+            .truncatedTo(ChronoUnit.DAYS);
+        final TemporalAmount duration = scheduleContext.getDuration();
+        final LocalDateTime endTimeInclusive = LocalDateTime.from(
+            getTemporalDirection() == TemporalDirection.FUTURE
+                ? startTime.plus(duration)
+                : startTime.minus(duration).minus(1, ChronoUnit.DAYS)
+        );
+        @Nullable
+        final LocalTime time = getTime() != null ? getTime().toLocalTime() : null;
+        LocalDateTime next = execute(startTime);
+        while (shouldContinue(next, endTimeInclusive))
         {
-            result = cmp <= 0;
+            if (time != null)
+                times.add(next.plus(time.toSecondOfDay(), ChronoUnit.SECONDS).toInstant(UTC));
+            else
+                times.add(next.toInstant(UTC));
+            if (!_repeat) break;
+            next = execute(next);
         }
-        else
-        {
-            result = cmp > 0;
-        }
-        return result;
+        return times;
     }
 
     /**
      * Get the temporal direction.
      * Defaults to future.
+     *
      * @return the temporal direction.
      */
     @NotNull
@@ -157,25 +128,9 @@ public class RelativePeriodSchedule extends Schedule
         _temporalDirection = temporalDirection;
     }
 
-    @Override
-    public boolean isRepeat()
-    {
-        return _repeat;
-    }
-
-    /**
-     * Set the repeat flag.
-     *
-     * @param repeat the repeat flag.
-     * @see #isRepeat()
-     */
-    public void setRepeat(boolean repeat)
-    {
-        _repeat = repeat;
-    }
-
     /**
      * Get the time of the day.
+     *
      * @return the time of the day.
      */
     @Nullable
@@ -185,7 +140,47 @@ public class RelativePeriodSchedule extends Schedule
     }
 
     /**
+     * Execute the schedule.
+     *
+     * @param time the time.
+     *
+     * @return the new time.
+     */
+    LocalDateTime execute(Temporal time)
+    {
+        return LocalDateTime.from(
+            getTemporalDirection() == TemporalDirection.FUTURE
+                ? _period.addTo(time)
+                : _period.subtractFrom(time)
+        );
+    }
+
+    /**
+     * Test if we should stop looking for more dates.
+     *
+     * @param time the time.
+     * @param endTimeInclusive the end time inclusive
+     *
+     * @return true or false.
+     */
+    boolean shouldContinue(LocalDateTime time, LocalDateTime endTimeInclusive)
+    {
+        final boolean result;
+        final int cmp = time.compareTo(endTimeInclusive);
+        if (getTemporalDirection() == TemporalDirection.FUTURE)
+        {
+            result = cmp <= 0;
+        }
+        else
+        {
+            result = cmp > 0;
+        }
+        return result;
+    }
+
+    /**
      * Set the time of the day.
+     *
      * @param time the time of the day.
      */
     public void setTime(Time time)
@@ -194,9 +189,22 @@ public class RelativePeriodSchedule extends Schedule
     }
 
     /**
+     * Set the repeat flag.
+     *
+     * @param repeat the repeat flag.
+     *
+     * @see #isRepeat()
+     */
+    public void setRepeat(boolean repeat)
+    {
+        _repeat = repeat;
+    }
+
+    /**
      * Get the event name to lookup the start time.
      * Callers to {@link #schedule(ScheduleContext)} will use this to set
      * the ScheduleContext {@link ScheduleContext#getStartTime() start time}.
+     *
      * @return the event name. The plan is referenced by its class name.
      */
     public String getEventProgrammaticIdentifier()
@@ -206,11 +214,12 @@ public class RelativePeriodSchedule extends Schedule
 
     /**
      * Set the event name used to lookup the start time.
+     *
      * @param eventProgrammaticIdentifier the event name.
      */
     public void setEventProgrammaticIdentifier(String eventProgrammaticIdentifier)
     {
-        this._eventProgrammaticIdentifier = eventProgrammaticIdentifier;
+        _eventProgrammaticIdentifier = eventProgrammaticIdentifier;
     }
 
     /**
@@ -233,6 +242,14 @@ public class RelativePeriodSchedule extends Schedule
         _period = period;
     }
 
+    @Override
+    public int hashCode()
+    {
+        if (getId() != null)
+            return super.hashCode();
+
+        return Objects.hash(isRepeat(), getEventProgrammaticIdentifier(), getPeriod(), getTime(), getTemporalDirection());
+    }
 
     @Override
     public boolean equals(Object o)
@@ -252,14 +269,5 @@ public class RelativePeriodSchedule extends Schedule
                && Objects.equals(getPeriod(), that.getPeriod())
                && Objects.equals(getTime(), that.getTime())
                && getTemporalDirection() == that.getTemporalDirection();
-    }
-
-    @Override
-    public int hashCode()
-    {
-        if(getId() != null)
-            return super.hashCode();
-
-        return Objects.hash(isRepeat(), getEventProgrammaticIdentifier(), getPeriod(), getTime(), getTemporalDirection());
     }
 }

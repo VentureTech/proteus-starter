@@ -19,8 +19,6 @@ package com.example.app.support;
  */
 public class SupportedChartTypes
 {
-    private SupportedChartTypes(){}
-
     /** Chart Type */
     public static final String GAUGE = "gauge";
     /** Chart Type */
@@ -33,4 +31,7 @@ public class SupportedChartTypes
     public static final String RADAR = "radar";
     /** Chart Type */
     public static final String POLAR_AREA = "polar-area";
+    private SupportedChartTypes()
+    {
+    }
 }

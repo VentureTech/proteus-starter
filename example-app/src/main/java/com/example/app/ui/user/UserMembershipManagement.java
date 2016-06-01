@@ -20,7 +20,6 @@ import com.example.app.service.MembershipOperationProvider;
 import com.example.app.support.AppUtil;
 import com.example.app.terminology.ProfileTermProvider;
 import com.google.common.base.Preconditions;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -103,6 +102,8 @@ import static net.proteusframework.core.locale.TextSources.createText;
 @Configurable
 public class UserMembershipManagement extends HistoryContainer implements SearchUIOperationHandler
 {
+    private final User _user;
+    private final List<Profile> _profiles = new ArrayList<>();
     @Autowired
     private EntityRetriever _er;
     @Autowired
@@ -113,15 +114,13 @@ public class UserMembershipManagement extends HistoryContainer implements Search
     private MembershipOperationProvider _mop;
     @Autowired
     private ProfileTermProvider _terms;
-
-    private final User _user;
-    private final List<Profile> _profiles = new ArrayList<>();
     private SearchUIImpl _searchUI;
 
     /**
-     *   Instantiate a new instance of UserMembershipManagement
-     *   @param user the User for which this manager is managing the Roles
-     *   @param profiles the profiles for which this manager is managing the Roles -- must have at least one
+     * Instantiate a new instance of UserMembershipManagement
+     *
+     * @param user the User for which this manager is managing the Roles
+     * @param profiles the profiles for which this manager is managing the Roles -- must have at least one
      */
     public UserMembershipManagement(@Nonnull User user, Profile... profiles)
     {
@@ -133,20 +132,6 @@ public class UserMembershipManagement extends HistoryContainer implements Search
         Collections.addAll(_profiles, profiles);
 
         addClassName("user-roles");
-    }
-
-    @Nonnull
-    private User getUser()
-    {
-        return _er.reattachIfNecessary(_user);
-    }
-
-    @Nonnull
-    private List<Profile> getProfiles()
-    {
-        return _profiles.stream()
-            .map(prof -> _er.reattachIfNecessary(prof))
-            .collect(Collectors.toList());
     }
 
     @Override
@@ -174,7 +159,7 @@ public class UserMembershipManagement extends HistoryContainer implements Search
         getProfiles().forEach(profile -> {
             MenuItem subMenu = getProfileMenuItem(profile);
             User currentUser = _userDAO.getAssertedCurrentUser();
-            if(_profileDAO.canOperate(currentUser, profile, tz, _mop.modifyUserRoles()))
+            if (_profileDAO.canOperate(currentUser, profile, tz, _mop.modifyUserRoles()))
             {
                 counter.set(counter.get() + 1);
                 menu.add(subMenu);
@@ -187,76 +172,6 @@ public class UserMembershipManagement extends HistoryContainer implements Search
             of("entity-actions actions", menu), _searchUI));
     }
 
-    private MenuItem getProfileMenuItem(Profile profile)
-    {
-        final Profile finalProfile = profile;
-        TextSource profileText = TextSources.createTextForAny(profile);
-        MenuItem subMenu;
-        //noinspection ConstantConditions
-        if(profile.getProfileType() != null && !profile.getProfileType().getMembershipTypeSet().isEmpty())
-        {
-            subMenu = new Menu(profileText);
-            profile.getProfileType().getMembershipTypeSet().stream().sorted(new NamedObjectComparator(getLocaleContext()))
-                .forEach(memType -> {
-                    MenuItem memTypeItem = new MenuItem(TextSources.createTextForAny(memType));
-                    memTypeItem.addActionListener(ev -> {
-                        _profileDAO.saveMembership(_profileDAO.createMembership(
-                            finalProfile, getUser(), memType, ZonedDateTime.now(getSession().getTimeZone().toZoneId()), true));
-                        _searchUI.doAction(SearchUIAction.search);
-                    });
-                    ((Menu)subMenu).add(memTypeItem);
-                });
-        }
-        else
-        {
-            subMenu = new MenuItem(profileText);
-            subMenu.addActionListener(ev -> {
-                _profileDAO.saveMembership(_profileDAO.createMembership(finalProfile, getUser(), null,
-                    ZonedDateTime.now(getSession().getTimeZone().toZoneId()), true));
-                _searchUI.doAction(SearchUIAction.search);
-            });
-        }
-        return subMenu;
-    }
-
-    @Override
-    public boolean supportsOperation(SearchUIOperation operation)
-    {
-        switch(operation)
-        {
-            case add:
-            case edit:
-            case delete:
-                return true;
-            case view:
-            case select:
-            case copy:
-            default:
-                return false;
-        }
-    }
-
-    @Override
-    public void handle(SearchUIOperationContext context)
-    {
-        Membership mem = context.getData();
-        switch(context.getOperation())
-        {
-            //case add: handled by Menu
-            case edit:
-                if(mem != null)
-                    doEdit(mem);
-                break;
-            case delete:
-                if(mem != null)
-                    _profileDAO.deleteMembership(mem);
-                _searchUI.doAction(SearchUIAction.search);
-                break;
-            default:
-                break;
-        }
-    }
-
     @Nonnull
     private SearchSupplierImpl getSearchSupplier()
     {
@@ -264,25 +179,27 @@ public class UserMembershipManagement extends HistoryContainer implements Search
         searchModel.setName("User Role Search");
         searchModel.setDisplayName(createText(SEARCH_MODEL_NAME_FMT(), _terms.user()));
         final TimeZone tz = getSession().getTimeZone();
-        ActionColumn actions = new ActionColumn(){
+        ActionColumn actions = new ActionColumn()
+        {
             @Override
             public TableCellRenderer getTableCellRenderer(SearchUI searchUI)
             {
                 final SearchUIOperationHandler handler = searchUI.getSearchSupplier().getSearchUIOperationHandler();
-                Container tcr = (Container)super.getTableCellRenderer(searchUI);
-                if(tcr == null)
+                Container tcr = (Container) super.getTableCellRenderer(searchUI);
+                if (tcr == null)
                     tcr = new Container();
 
-                PushButton modifyButton = new PushButton(BUTTON_TEXT_MODIFY()){
+                PushButton modifyButton = new PushButton(BUTTON_TEXT_MODIFY())
+                {
                     @Override
                     public Component getTableCellRendererComponent(Table table, @Nullable Object value, boolean isSelected,
                         boolean hasFocus,
                         int row, int column)
                     {
-                        PushButton btcr = (PushButton)super.getTableCellRendererComponent(
+                        PushButton btcr = (PushButton) super.getTableCellRendererComponent(
                             table, value, isSelected, hasFocus, row, column);
 
-                        Membership mem = (Membership)value;
+                        Membership mem = (Membership) value;
                         User currentUser = _userDAO.getAssertedCurrentUser();
 
                         btcr.setVisible(
@@ -310,17 +227,17 @@ public class UserMembershipManagement extends HistoryContainer implements Search
             .withTableColumn(new FixedValueColumn().withColumnName(COLUMN_ROLE()))
             .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input
 
-            -> {
-                Membership mem = _er.reattachIfNecessary((Membership)input);
+                -> {
+                Membership mem = _er.reattachIfNecessary((Membership) input);
 
-                if(mem.getMembershipType() != null)
+                if (mem.getMembershipType() != null)
                     return ConcatTextSource.create(mem.getProfile().getName(), mem.getMembershipType()).withSeparator(" : ");
                 else
                     return mem.getProfile().getName();
 
             })));
 
-        if(getProfiles().size() > 1)
+        if (getProfiles().size() > 1)
         {
             searchModel.getResultColumns().add(new SearchResultColumnImpl()
                 .withName("profile")
@@ -330,7 +247,7 @@ public class UserMembershipManagement extends HistoryContainer implements Search
                 .withName("profile-type")
                 .withTableColumn(new FixedValueColumn().withColumnName(_terms.profileType()))
                 .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
-                    Membership mem = _er.reattachIfNecessary((Membership)input);
+                    Membership mem = _er.reattachIfNecessary((Membership) input);
                     return TextSources.createTextForAny(mem.getProfile().getProfileType());
                 })));
         }
@@ -351,6 +268,90 @@ public class UserMembershipManagement extends HistoryContainer implements Search
         });
 
         return searchSupplier;
+    }
+
+    @Nonnull
+    private List<Profile> getProfiles()
+    {
+        return _profiles.stream()
+            .map(prof -> _er.reattachIfNecessary(prof))
+            .collect(Collectors.toList());
+    }
+
+    private MenuItem getProfileMenuItem(Profile profile)
+    {
+        final Profile finalProfile = profile;
+        TextSource profileText = TextSources.createTextForAny(profile);
+        MenuItem subMenu;
+        //noinspection ConstantConditions
+        if (profile.getProfileType() != null && !profile.getProfileType().getMembershipTypeSet().isEmpty())
+        {
+            subMenu = new Menu(profileText);
+            profile.getProfileType().getMembershipTypeSet().stream().sorted(new NamedObjectComparator(getLocaleContext()))
+                .forEach(memType -> {
+                    MenuItem memTypeItem = new MenuItem(TextSources.createTextForAny(memType));
+                    memTypeItem.addActionListener(ev -> {
+                        _profileDAO.saveMembership(_profileDAO.createMembership(
+                            finalProfile, getUser(), memType, ZonedDateTime.now(getSession().getTimeZone().toZoneId()), true));
+                        _searchUI.doAction(SearchUIAction.search);
+                    });
+                    ((Menu) subMenu).add(memTypeItem);
+                });
+        }
+        else
+        {
+            subMenu = new MenuItem(profileText);
+            subMenu.addActionListener(ev -> {
+                _profileDAO.saveMembership(_profileDAO.createMembership(finalProfile, getUser(), null,
+                    ZonedDateTime.now(getSession().getTimeZone().toZoneId()), true));
+                _searchUI.doAction(SearchUIAction.search);
+            });
+        }
+        return subMenu;
+    }
+
+    @Nonnull
+    private User getUser()
+    {
+        return _er.reattachIfNecessary(_user);
+    }
+
+    @Override
+    public boolean supportsOperation(SearchUIOperation operation)
+    {
+        switch (operation)
+        {
+            case add:
+            case edit:
+            case delete:
+                return true;
+            case view:
+            case select:
+            case copy:
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public void handle(SearchUIOperationContext context)
+    {
+        Membership mem = context.getData();
+        switch (context.getOperation())
+        {
+            //case add: handled by Menu
+            case edit:
+                if (mem != null)
+                    doEdit(mem);
+                break;
+            case delete:
+                if (mem != null)
+                    _profileDAO.deleteMembership(mem);
+                _searchUI.doAction(SearchUIAction.search);
+                break;
+            default:
+                break;
+        }
     }
 
     private void doEdit(@Nonnull Membership membership)

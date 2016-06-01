@@ -88,6 +88,33 @@ public class CommonEditorFields
         compositeValueEditor.addEditorForProperty(getDescriptionEditor(), property);
     }
 
+    private static Supplier<ValueEditor<?>> getDescriptionEditor()
+    {
+        return getDescriptionEditor(null);
+    }
+
+    private static Supplier<ValueEditor<?>> getDescriptionEditor(@Nullable TextSource label)
+    {
+        return getDescriptionEditor(label, 255);
+    }
+
+    private static Supplier<ValueEditor<?>> getDescriptionEditor(@Nullable TextSource label, int maxChars)
+    {
+        return () -> {
+            TextEditor textEditor = new TextEditor(label == null ? DESCRIPTION : label, null);
+            textEditor.setDisplayHeight(5);
+            textEditor.setDisplayWidth(40);
+            textEditor.setRequiredValueValidator();
+            textEditor.addClassName("description");
+            textEditor.getValueComponent().setMaxChars(maxChars);
+            if (maxChars > 255)
+            {
+                textEditor.getValueComponent().setDisplayHeight(10);
+            }
+            return textEditor;
+        };
+    }
+
     /**
      * Add a description editor.
      *
@@ -95,7 +122,7 @@ public class CommonEditorFields
      * @param reader the property reader to use
      * @param writer the property writer to use
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({"rawtypes"})
     public static void addDescriptionEditor(CompositeValueEditor<?> compositeValueEditor,
         CompositeValueEditor.PropertyReader reader, CompositeValueEditor.PropertyWriter writer)
     {
@@ -104,12 +131,13 @@ public class CommonEditorFields
 
     /**
      * Add a description editor.
-     *  @param compositeValueEditor the composite editor.
+     *
+     * @param compositeValueEditor the composite editor.
      * @param reader the property reader to use
      * @param writer the property writer to use
      * @param label the label for the description editor
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({"rawtypes"})
     public static void addDescriptionEditor(CompositeValueEditor<?> compositeValueEditor,
         CompositeValueEditor.PropertyReader reader, CompositeValueEditor.PropertyWriter writer, @Nullable TextSource label)
     {
@@ -118,6 +146,7 @@ public class CommonEditorFields
 
     /**
      * Add a description editor.
+     *
      * @param compositeValueEditor the composite editor.
      * @param reader the property reader to use
      * @param writer the property writer to use
@@ -161,7 +190,8 @@ public class CommonEditorFields
 
     /**
      * Add a name editor.
-     *  @param compositeValueEditor the composite editor.
+     *
+     * @param compositeValueEditor the composite editor.
      * @param property the property for the name field
      * @param label the label for the field
      */
@@ -203,7 +233,8 @@ public class CommonEditorFields
 
     /**
      * Add a Status Editor for a RepositoryItem editor
-     *  @param compositeValueEditor the composite value editor
+     *
+     * @param compositeValueEditor the composite value editor
      * @param comparator comparator for
      */
     public static void addRepositoryItemStatusEditor(CompositeValueEditor<? extends RepositoryItem> compositeValueEditor,
@@ -218,33 +249,6 @@ public class CommonEditorFields
             editor.addClassName("status");
             return editor;
         }, RepositoryItem.STATUS_COLUMN_PROP);
-    }
-
-    private static Supplier<ValueEditor<?>> getDescriptionEditor()
-    {
-        return getDescriptionEditor(null);
-    }
-
-    private static Supplier<ValueEditor<?>> getDescriptionEditor(@Nullable TextSource label)
-    {
-        return getDescriptionEditor(label, 255);
-    }
-
-    private static Supplier<ValueEditor<?>> getDescriptionEditor(@Nullable TextSource label, int maxChars)
-    {
-        return () -> {
-            TextEditor textEditor = new TextEditor(label == null ? DESCRIPTION : label, null);
-            textEditor.setDisplayHeight(5);
-            textEditor.setDisplayWidth(40);
-            textEditor.setRequiredValueValidator();
-            textEditor.addClassName("description");
-            textEditor.getValueComponent().setMaxChars(maxChars);
-            if(maxChars > 255)
-            {
-                textEditor.getValueComponent().setDisplayHeight(10);
-            }
-            return textEditor;
-        };
     }
 
     private CommonEditorFields()

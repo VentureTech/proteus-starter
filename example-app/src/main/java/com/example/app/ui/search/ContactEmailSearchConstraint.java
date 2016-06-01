@@ -38,9 +38,10 @@ public class ContactEmailSearchConstraint extends SimpleConstraint
     private EnumSet<ContactDataCategory> _contactDataCategories = EnumSet.noneOf(ContactDataCategory.class);
 
     /**
-     *   Instantiate a new instance
-     *   @param name the constraint name
-     *   @param contactProperty the property name for the Contact
+     * Instantiate a new instance
+     *
+     * @param name the constraint name
+     * @param contactProperty the property name for the Contact
      */
     public ContactEmailSearchConstraint(String name, String contactProperty)
     {
@@ -48,39 +49,41 @@ public class ContactEmailSearchConstraint extends SimpleConstraint
         withProperty(contactProperty);
     }
 
-    /**
-     *   Specify one or more ContactDataCategories to search for in conjunction with the email address.
-     *   If no contact data categories are specified, it simply searches all of them.
-     *   @param contactDataCategories the ContactDataCategories to search
-     *   @return this
-     */
-    public ContactEmailSearchConstraint withContactDataCategories(ContactDataCategory... contactDataCategories)
-    {
-        _contactDataCategories = EnumSet.copyOf(Arrays.asList(contactDataCategories));
-        return this;
-    }
-
     @Override
     public void addCriteria(QLBuilder builder, Component constraintComponent)
     {
         Object val = getValue(constraintComponent);
-        if(val != null)
+        if (val != null)
         {
             String value = String.valueOf(val);
 
-            if(shouldReturnConstraintForValue(value) && getOperator() != null)
+            if (shouldReturnConstraintForValue(value) && getOperator() != null)
             {
                 JoinedQLBuilder contactJoin = builder.createJoin(
                     QLBuilder.JoinType.LEFT, getProperty(), "contactAlias_" + getName());
                 JoinedQLBuilder emailJoin = contactJoin.createJoin(
                     QLBuilder.JoinType.LEFT, "emailAddresses", "contactEmailAlias_" + getName());
                 emailJoin.appendCriteria("email", getOperator(), value);
-                if(!_contactDataCategories.isEmpty())
+                if (!_contactDataCategories.isEmpty())
                 {
                     emailJoin.appendCriteria(emailJoin.getAlias() + ".category in (:categories)")
                         .putParameter("categories", _contactDataCategories);
                 }
             }
         }
+    }
+
+    /**
+     * Specify one or more ContactDataCategories to search for in conjunction with the email address.
+     * If no contact data categories are specified, it simply searches all of them.
+     *
+     * @param contactDataCategories the ContactDataCategories to search
+     *
+     * @return this
+     */
+    public ContactEmailSearchConstraint withContactDataCategories(ContactDataCategory... contactDataCategories)
+    {
+        _contactDataCategories = EnumSet.copyOf(Arrays.asList(contactDataCategories));
+        return this;
     }
 }

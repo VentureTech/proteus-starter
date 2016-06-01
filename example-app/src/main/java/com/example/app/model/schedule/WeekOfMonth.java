@@ -30,31 +30,17 @@ public enum WeekOfMonth
     /** Week. May also be last. */
     FIFTH(5),
     /** Last Week. */
-    LAST(-1)
-    ;
+    LAST(-1);
 
     private final int _offset;
-
-    WeekOfMonth(int offset)
-    {
-        _offset = offset;
-    }
-
-    /**
-     * Get the offset.
-     *
-     * @return the offset.
-     */
-    public int getOffset()
-    {
-        return _offset;
-    }
 
     /**
      * Get the WeekOfMonth based on the offset.
      *
      * @param offset the offset.
+     *
      * @return the week of month.
+     *
      * @see #getOffset()
      */
     public static WeekOfMonth fromOffset(int offset)
@@ -76,5 +62,20 @@ public enum WeekOfMonth
             default:
                 throw new IllegalArgumentException("Invalid offset.");
         }
+    }
+
+    WeekOfMonth(int offset)
+    {
+        _offset = offset;
+    }
+
+    /**
+     * Get the offset.
+     *
+     * @return the offset.
+     */
+    public int getOffset()
+    {
+        return _offset;
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Test if load time weaving is occuring for this package.
+ *
  * @author Russ Tennant (russ@i2rd.com)
  */
 @Configurable
@@ -25,21 +26,23 @@ public class AspectWeavingTest
     private boolean _configured;
 
     /**
+     * Test if configured.
+     *
+     * @return true or false.
+     */
+    public boolean isConfigured()
+    {
+        return _configured;
+    }
+
+    /**
      * Spring injection.
+     *
      * @param config configuration.
      */
     @Autowired
     public void setAppConfig(ProjectConfig config)
     {
         _configured = (config != null);
-    }
-
-    /**
-     * Test if configured.
-     * @return true or false.
-     */
-    public boolean isConfigured()
-    {
-        return _configured;
     }
 }

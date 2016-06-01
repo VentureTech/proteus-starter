@@ -39,35 +39,14 @@ import java.net.URI;
 @BatchSize(size = 10)
 @Audited
 @SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + Resource.TABLE_NAME
-    + " SET " + URIResource.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + URIResource.ID_COLUMN + " = ?")
+                 + " SET " + URIResource.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + URIResource.ID_COLUMN + " = ?")
 @DiscriminatorValue("uri")
 public class URIResource extends Resource
 {
-    private static final long serialVersionUID = -4934440451406871988L;
-
     /** The database column and property: uri */
     public static final String URI_COLUMN_PROP = "uri";
-
+    private static final long serialVersionUID = -4934440451406871988L;
     private URI _uri;
-
-    /**
-     *   Get the URI stored by this Resource
-     *   @return the uri
-     */
-    @Column(name = URI_COLUMN_PROP)
-    @Nullable
-    public URI getUri()
-    {
-        return _uri;
-    }
-    /**
-     *   Set the URI stored by this Resource
-     *   @param uri the uri
-     */
-    public void setUri(@Nullable URI uri)
-    {
-        _uri = uri;
-    }
 
     @Override
     public URIResource clone()
@@ -75,5 +54,27 @@ public class URIResource extends Resource
         URIResource resource = (URIResource) super.clone();
         resource.setUri(getUri());
         return resource;
+    }
+
+    /**
+     * Get the URI stored by this Resource
+     *
+     * @return the uri
+     */
+    @Column(name = URI_COLUMN_PROP)
+    @Nullable
+    public URI getUri()
+    {
+        return _uri;
+    }
+
+    /**
+     * Set the URI stored by this Resource
+     *
+     * @param uri the uri
+     */
+    public void setUri(@Nullable URI uri)
+    {
+        _uri = uri;
     }
 }

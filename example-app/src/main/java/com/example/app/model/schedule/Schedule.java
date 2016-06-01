@@ -14,11 +14,8 @@ package com.example.app.model.schedule;
 import com.example.app.model.AbstractAuditableEntity;
 import org.hibernate.envers.Audited;
 
-import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.List;
-
-import net.proteusframework.core.locale.TextSource;
 
 /**
  * Scheduling configuration.
@@ -32,29 +29,34 @@ public abstract class Schedule extends AbstractAuditableEntity<Integer>
     private static final long serialVersionUID = -766887341561166550L;
 
     /**
-     * Test if the schedule repeats.
-     * @return true or false.
+     * Copy this Schedule
+     *
+     * @return a copied Schedule
      */
-    public abstract boolean isRepeat();
+    public abstract Schedule copy();
 
     /**
      * Get the schedule type.
+     *
      * @return the type.
      */
     public abstract ScheduleType getType();
 
     /**
+     * Test if the schedule repeats.
+     *
+     * @return true or false.
+     */
+    public abstract boolean isRepeat();
+
+    /**
      * Provide a list of zero or more schedule times.
+     *
      * @param scheduleContext the context.
+     *
      * @return the schedule times.
      */
     public abstract List<Instant> schedule(ScheduleContext scheduleContext);
-
-    /**
-     *   Copy this Schedule
-     *   @return a copied Schedule
-     */
-    public abstract Schedule copy();
 
 
 }

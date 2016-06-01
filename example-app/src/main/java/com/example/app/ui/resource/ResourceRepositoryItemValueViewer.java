@@ -50,11 +50,9 @@ public class ResourceRepositoryItemValueViewer extends Container
 {
     /** Logger. */
     private static final Logger _logger = LogManager.getLogger(ResourceRepositoryItemValueViewer.class);
-
+    private final ResourceRepositoryItem _value;
     @Autowired
     private EntityRetriever _er;
-
-    private final ResourceRepositoryItem _value;
 
     /**
      * Instantiate a new instance of ResourceRepositoryItemValueViewer
@@ -67,15 +65,6 @@ public class ResourceRepositoryItemValueViewer extends Container
         Preconditions.checkNotNull(value, "ResourceRepositoryItem was null.  This should not happen.");
         _value = value;
         addClassName("resource-viewer");
-    }
-
-    /**
-     *   Get the RepositoryItem being viewed
-     *   @return the Value
-     */
-    public ResourceRepositoryItem getValue()
-    {
-        return _er.reattachIfNecessary(_value);
     }
 
     @Override
@@ -92,12 +81,12 @@ public class ResourceRepositoryItemValueViewer extends Container
         LocaleContext lc = getLocaleContext();
 
         final ImageComponent resourceImage = new ImageComponent();
-        if(resource.getImage() != null)
+        if (resource.getImage() != null)
         {
             try
             {
                 final Dimension size = ImageFileUtil.getDimension(resource.getImage(), true);
-                if(size != null)
+                if (size != null)
                     resourceImage.setSize(size);
             }
             catch (IOException e)
@@ -132,12 +121,22 @@ public class ResourceRepositoryItemValueViewer extends Container
         if (hasAuthor) citeList.add(of("resource-author", ResourceText.LABEL_AUTHOR(), authorLabel));
 
         add(nameLabel);
-        if(resource.getImage() != null)
+        if (resource.getImage() != null)
             add(resourceImageField);
         if (!lc.isError(lc.getLocalizedText(resource.getDescription())))
             add(descriptionLabel);
         add(content);
         if (!citeList.isEmpty())
             add(of("resource-cite", citeList.toArray(new Component[citeList.size()])));
+    }
+
+    /**
+     * Get the RepositoryItem being viewed
+     *
+     * @return the Value
+     */
+    public ResourceRepositoryItem getValue()
+    {
+        return _er.reattachIfNecessary(_value);
     }
 }

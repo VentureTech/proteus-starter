@@ -32,6 +32,7 @@ import static com.example.app.support.RepositoryItemDataTypeLOK.NAME;
  * RepositoryItem data type.
  *
  * @param <RI> RepositoryItem subclass
+ *
  * @author Alan Holt (aholt@venturetech.net)
  * @since 4/8/16 3:33 PM
  */
@@ -46,16 +47,18 @@ public class RepositoryItemDataType<RI extends RepositoryItem> extends DataTypeI
     private static final Map<Class<? extends RepositoryItem>, RepositoryItemDataType<?>> _instances = new HashMap<>();
 
     /**
-     *   Get the data type for the given RepositoryItem subclass
-     *   @param clazz the RepositoryItem subclass
-     *   @param <RR> the RepositoryItem subclass
-     *   @return the Data Type
+     * Get the data type for the given RepositoryItem subclass
+     *
+     * @param clazz the RepositoryItem subclass
+     * @param <RR> the RepositoryItem subclass
+     *
+     * @return the Data Type
      */
     @SuppressWarnings("unchecked")
-    public synchronized static <RR extends RepositoryItem> RepositoryItemDataType<RR>  getDataType(Class<RR> clazz)
+    public synchronized static <RR extends RepositoryItem> RepositoryItemDataType<RR> getDataType(Class<RR> clazz)
     {
-        if(_instances.get(clazz) != null)
-            return (RepositoryItemDataType<RR>)_instances.get(clazz);
+        if (_instances.get(clazz) != null)
+            return (RepositoryItemDataType<RR>) _instances.get(clazz);
         else
         {
             RepositoryItemDataType<RR> instance = new RepositoryItemDataType<>(clazz);
@@ -66,8 +69,9 @@ public class RepositoryItemDataType<RI extends RepositoryItem> extends DataTypeI
 
 
     /**
-     *   Instantiates a new data type.
-     *   @param clazz the RepositoryItem class
+     * Instantiates a new data type.
+     *
+     * @param clazz the RepositoryItem class
      */
     public RepositoryItemDataType(Class<RI> clazz)
     {

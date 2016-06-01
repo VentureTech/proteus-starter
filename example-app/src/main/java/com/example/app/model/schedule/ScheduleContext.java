@@ -42,6 +42,7 @@ public class ScheduleContext
 
     /**
      * Get the duration to schedule.
+     *
      * @return the duration to schedule.
      */
     @Nonnull
@@ -52,6 +53,7 @@ public class ScheduleContext
 
     /**
      * Get the start time.
+     *
      * @return the start time.
      */
     @Nonnull

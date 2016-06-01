@@ -10,6 +10,6 @@
  */
 
 /**
- * FIXME : Document this package.
+ * Application services.
  */
 package com.example.app.service;

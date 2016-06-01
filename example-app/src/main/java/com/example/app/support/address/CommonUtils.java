@@ -204,6 +204,7 @@
 
 package com.example.app.support.address;
 //CHECKSTYLE:OFF
+
 import org.apache.commons.lang.time.DateUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -219,18 +220,29 @@ public class CommonUtils
 {
 
     /**
-     * Replace an object with a replacement object if it's <code>null</code>
+     * Replace an object with a replacement object if it's {@code null}
      *
      * @param <T> coalesced type.
      * @param value the object to test for a null value.
-     * @param replacement the value returned if input <code>value</code> is null.
+     * @param replacement the value returned if input {@code value} is null.
      *
-     * @return <code>replacement</code> if input <code>value</code> is <code>null<code>,
-     * <code>value</code> otherwise.
+     * @return <code>replacement</code> if input {@code value} is <code>null<code>,
+     * {@code value} otherwise.
      */
     public static <T> T nvl(T value, T replacement)
     {
         return value == null ? replacement : value;
+    }
+
+    /**
+     * Convenient method for printing elapsed time
+     *
+     * @param startInMilli start time.
+     * @param unit unit.
+     */
+    public static void printElapsed(long startInMilli, TimeUnit unit)
+    {
+        System.out.println("Elapsed time = " + getElapsed(startInMilli, unit) + " " + unit.name());
     }
 
     /**
@@ -268,16 +280,5 @@ public class CommonUtils
         {
             throw new UnsupportedOperationException(unit + " conversion is not supported");
         }
-    }
-
-    /**
-     * Convenient method for printing elapsed time
-     *
-     * @param startInMilli start time.
-     * @param unit unit.
-     */
-    public static void printElapsed(long startInMilli, TimeUnit unit)
-    {
-        System.out.println("Elapsed time = " + getElapsed(startInMilli, unit) + " " + unit.name());
     }
 }

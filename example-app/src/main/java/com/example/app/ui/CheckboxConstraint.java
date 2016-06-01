@@ -42,66 +42,22 @@ public class CheckboxConstraint extends SimpleConstraint
         return null;
     }
 
-    /**
-     *   Get the expected value for this CheckboxConstraint
-     *   Defaults to Boolean.TRUE if it is not set.
-     *   @return expected value
-     */
-    public Object getExpectedValue()
+    @Override
+    public Component getConstraintComponent()
     {
-        return _expectedValue;
-    }
-    /**
-     *   Set the expected value for this CheckboxConstraint
-     *   Defaults to Boolean.TRUE if it is not set.
-     *   @param expectedValue expected value
-     */
-    public void setExpectedValue(Object expectedValue)
-    {
-        this._expectedValue = expectedValue;
-    }
-    /**
-     *   Set the expected value for this CheckboxConstraint
-     *   Defaults to Boolean.TRUE if it is not set.
-     *   @param expectedValue expected value
-     *   @return this
-     */
-    public CheckboxConstraint withExpectedValue(Object expectedValue)
-    {
-        setExpectedValue(expectedValue);
-        return this;
+        Checkbox ch = new Checkbox(getCheckboxLabel());
+        ch.addClassName("checkbox-constrsint");
+        if (getButtonGroup() != null)
+        {
+            getButtonGroup().add(ch);
+        }
+        return ch;
     }
 
     /**
-     *   Get the ButtonGroup that this constraint is attached to
-     *   @return button group
-     */
-    public ButtonGroup getButtonGroup()
-    {
-        return _buttonGroup;
-    }
-    /**
-     *   Set the ButtonGroup that this constraint is attached to
-     *   @param buttonGroup button group
-     */
-    public void setButtonGroup(ButtonGroup buttonGroup)
-    {
-        _buttonGroup = buttonGroup;
-    }
-    /**
-     *   Set the ButtonGroup that this constraint is attached to
-     *   @param buttonGroup button group
-     *   @return this
-     */
-    public CheckboxConstraint withButtonGroup(ButtonGroup buttonGroup)
-    {
-        setButtonGroup(buttonGroup);
-        return this;
-    }
-
-    /**
-     *   Get the label to be used on the checkbox
-     *   @return the label
+     * Get the label to be used on the checkbox
+     *
+     * @return the label
      */
     @Nullable
     public TextSource getCheckboxLabel()
@@ -109,22 +65,30 @@ public class CheckboxConstraint extends SimpleConstraint
         return super.getLabel();
     }
 
-    @Override
-    public Component getConstraintComponent()
+    /**
+     * Get the ButtonGroup that this constraint is attached to
+     *
+     * @return button group
+     */
+    public ButtonGroup getButtonGroup()
     {
-        Checkbox ch = new Checkbox(getCheckboxLabel());
-        ch.addClassName("checkbox-constrsint");
-        if(getButtonGroup() != null)
-        {
-            getButtonGroup().add(ch);
-        }
-        return ch;
+        return _buttonGroup;
+    }
+
+    /**
+     * Set the ButtonGroup that this constraint is attached to
+     *
+     * @param buttonGroup button group
+     */
+    public void setButtonGroup(ButtonGroup buttonGroup)
+    {
+        _buttonGroup = buttonGroup;
     }
 
     @Override
     protected Object getValue(Component constraintComponent)
     {
-        if(constraintComponent instanceof Checkbox)
+        if (constraintComponent instanceof Checkbox)
         {
             return ((Checkbox) constraintComponent).isSelected();
         }
@@ -135,41 +99,39 @@ public class CheckboxConstraint extends SimpleConstraint
     protected void setValue(Component constraintComponent, Object value)
     {
         Boolean val = value != null && Objects.equals(value, getExpectedValue());
-        if(constraintComponent instanceof Checkbox)
-            ((Checkbox)constraintComponent).setSelected(val);
+        if (constraintComponent instanceof Checkbox)
+            ((Checkbox) constraintComponent).setSelected(val);
         else Optional.ofNullable(findCheckbox(constraintComponent)).ifPresent(ch -> ch.setSelected(val));
     }
 
-    @Override
-    protected boolean shouldReturnConstraintForValue(@Nullable Object value)
+    /**
+     * Get the expected value for this CheckboxConstraint
+     * Defaults to Boolean.TRUE if it is not set.
+     *
+     * @return expected value
+     */
+    public Object getExpectedValue()
     {
-        return value instanceof Boolean && (Boolean)value;
-    }
-
-    @Override
-    public void addCriteria(QLBuilder builder, Component constraintComponent)
-    {
-        Object val = getValue(constraintComponent);
-        if(shouldReturnConstraintForValue(val))
-        {
-            Operator operator = getOperator();
-            if(operator == null) operator = Operator.eq;
-            operator.addCriteria(builder, this, getExpectedValue());
-        }
-    }
-
-    @Override
-    public void reset(Component constraintComponent)
-    {
-        if(constraintComponent instanceof Checkbox)
-            ((Checkbox)constraintComponent).setSelected(false);
-        else Optional.ofNullable(findCheckbox(constraintComponent)).ifPresent(ch -> ch.setSelected(false));
+        return _expectedValue;
     }
 
     /**
-     *   Find the Checkbox from the given Component by iterating over the component tree
-     *   @param component the Component
-     *   @return checkbox or null
+     * Set the expected value for this CheckboxConstraint
+     * Defaults to Boolean.TRUE if it is not set.
+     *
+     * @param expectedValue expected value
+     */
+    public void setExpectedValue(Object expectedValue)
+    {
+        _expectedValue = expectedValue;
+    }
+
+    /**
+     * Find the Checkbox from the given Component by iterating over the component tree
+     *
+     * @param component the Component
+     *
+     * @return checkbox or null
      */
     @Nullable
     public static Checkbox findCheckbox(Component component)
@@ -177,14 +139,67 @@ public class CheckboxConstraint extends SimpleConstraint
         AtomicReference<Checkbox> checkbox = new AtomicReference<>(null);
         ComponentTreeIterator it = new ComponentTreeIterator(component);
         it.forEachRemaining(com -> {
-            if(checkbox.get() == null)
+            if (checkbox.get() == null)
             {
-                if(com instanceof Checkbox)
+                if (com instanceof Checkbox)
                 {
-                    checkbox.set((Checkbox)com);
+                    checkbox.set((Checkbox) com);
                 }
             }
         });
         return checkbox.get();
+    }
+
+    @Override
+    public void addCriteria(QLBuilder builder, Component constraintComponent)
+    {
+        Object val = getValue(constraintComponent);
+        if (shouldReturnConstraintForValue(val))
+        {
+            Operator operator = getOperator();
+            if (operator == null) operator = Operator.eq;
+            operator.addCriteria(builder, this, getExpectedValue());
+        }
+    }
+
+    @Override
+    protected boolean shouldReturnConstraintForValue(@Nullable Object value)
+    {
+        return value instanceof Boolean && (Boolean) value;
+    }
+
+    @Override
+    public void reset(Component constraintComponent)
+    {
+        if (constraintComponent instanceof Checkbox)
+            ((Checkbox) constraintComponent).setSelected(false);
+        else Optional.ofNullable(findCheckbox(constraintComponent)).ifPresent(ch -> ch.setSelected(false));
+    }
+
+    /**
+     * Set the ButtonGroup that this constraint is attached to
+     *
+     * @param buttonGroup button group
+     *
+     * @return this
+     */
+    public CheckboxConstraint withButtonGroup(ButtonGroup buttonGroup)
+    {
+        setButtonGroup(buttonGroup);
+        return this;
+    }
+
+    /**
+     * Set the expected value for this CheckboxConstraint
+     * Defaults to Boolean.TRUE if it is not set.
+     *
+     * @param expectedValue expected value
+     *
+     * @return this
+     */
+    public CheckboxConstraint withExpectedValue(Object expectedValue)
+    {
+        setExpectedValue(expectedValue);
+        return this;
     }
 }

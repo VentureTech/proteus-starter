@@ -51,7 +51,6 @@ import net.proteusframework.core.locale.NamedObject;
 import net.proteusframework.data.filesystem.FileEntity;
 import net.proteusframework.users.audit.FullyAuditable;
 
-import static com.example.app.model.SoftDeleteEntity.SOFT_DELETE_COLUMN_PROP;
 import static javax.persistence.FetchType.LAZY;
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
@@ -70,23 +69,19 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 @BatchSize(size = 10)
 @Audited
 @SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + Resource.TABLE_NAME
-    + " SET " + Resource.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + Resource.ID_COLUMN + " = ?")
+                 + " SET " + Resource.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + Resource.ID_COLUMN + " = ?")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = ProjectConfig.DISCRIMINATOR_COLUMN)
 public abstract class Resource extends AbstractAuditableSoftDeleteEntity implements NamedObject, Cloneable
 {
-    private static final long serialVersionUID = 4744893963830122039L;
-
     /** The database table name */
     public static final String TABLE_NAME = "resource";
     /** The database id column */
     public static final String ID_COLUMN = "resource_id";
-
-    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + ".resource_id_seq";
     /** Where clause for a collection containing Resources */
     public static final String COLLECTION_WHERE_CLAUSE = ID_COLUMN + " in (select resource." + ID_COLUMN + " from app."
-        + TABLE_NAME + " resource where resource." + SOFT_DELETE_COLUMN_PROP + "='false')";
-    
+                                                         + TABLE_NAME + " resource where resource." + SOFT_DELETE_COLUMN_PROP
+                                                         + "='false')";
     /** The database column and property: author */
     public static final String AUTHOR_COLUMN_PROP = "author";
     /** The database column and property: visibility */
@@ -111,7 +106,8 @@ public abstract class Resource extends AbstractAuditableSoftDeleteEntity impleme
     public static final String IMAGE_COLUMN = "image_id";
     /** The property: image */
     public static final String IMAGE_PROP = "image";
-
+    private static final long serialVersionUID = 4744893963830122039L;
+    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + ".resource_id_seq";
     private String _author;
     private ResourceVisibility _visibility = ResourceVisibility.Public;
     private List<Label> _tags = new ArrayList<>();
@@ -120,179 +116,6 @@ public abstract class Resource extends AbstractAuditableSoftDeleteEntity impleme
     private LocalizedObjectKey _name;
     private LocalizedObjectKey _description;
     private FileEntity _image;
-
-    @Id
-    @Column(name = ID_COLUMN)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = GENERATOR)
-    @SequenceGenerator(name = GENERATOR, sequenceName = GENERATOR)
-    @Override
-    @NotNull
-    @Nonnull
-    public Integer getId()
-    {
-        return super.getId();
-    }
-
-    /**
-     *   Get the author of this resource
-     *   @return the author of this resource
-     */
-    @Column(name = AUTHOR_COLUMN_PROP)
-    @Nullable
-    public String getAuthor()
-    {
-        return _author;
-    }
-    /**
-     *   Set the author of this resource
-     *   @param author the author of this resource
-     */
-    public void setAuthor(@Nullable  String author)
-    {
-        _author = author;
-    }
-
-    /**
-     *   Get the resource visibility
-     *   @return the resource visibility
-     */
-    @Column(name = VISIBILITY_COLUMN_PROP)
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    @Nonnull
-    public ResourceVisibility getVisibility()
-    {
-        return _visibility;
-    }
-    /**
-     *   Set the resource visibility
-     *   @param visibility the resource visibility
-     */
-    public void setVisibility(@Nonnull ResourceVisibility visibility)
-    {
-        _visibility = visibility;
-    }
-
-    /**
-     *   Get the categories that this resource belongs to
-     *   @return the categories that this resource belongs to
-     */
-    @ManyToMany
-    @JoinTable(name = TAGS_JOIN_TABLE, schema = ProjectConfig.PROJECT_SCHEMA,
-        joinColumns = { @JoinColumn(name = ID_COLUMN, nullable = false) },
-        inverseJoinColumns = { @JoinColumn(name = TAGS_INVERSE_JOIN, nullable = false) })
-    @Nonnull
-    @NotNull
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.ENTITY_DATA)
-    @BatchSize(size = 10)
-    @Audited(targetAuditMode = NOT_AUDITED)
-    public List<Label> getTags()
-    {
-        return _tags;
-    }
-    /**
-     *   Set the categories that this resource belongs to
-     *   @param tags the categories that this resource belongs to
-     */
-    public void setTags(@Nonnull List<Label> tags)
-    {
-        _tags = tags;
-    }
-
-    /**
-     *   Get the type of this resource -- used for display purposes
-     *   @return the type of this resource
-     */
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = CATEGORY_COLUMN)
-    @Nullable
-    @Audited(targetAuditMode = NOT_AUDITED)
-    public Label getCategory()
-    {
-        return _category;
-    }
-    /**
-     *   Set the type of this resource -- used for display purposes
-     *   @param category the type of this resource
-     */
-    public void setCategory(@Nullable  Label category)
-    {
-        _category = category;
-    }
-
-    /**
-     *   Get the internal resource type of this resource
-     *   @return the internal resource type of this resource
-     */
-    @Column(name = RESOURCE_TYPE_COLUMN_PROP)
-    @NotNull
-    @Nonnull
-    public ResourceType getResourceType()
-    {
-        return _resourceType;
-    }
-    /**
-     *   Set the internal resource type of this resource
-     *   @param resourceType the internal resource type of this resource
-     */
-    public void setResourceType(ResourceType resourceType)
-    {
-        _resourceType = resourceType;
-    }
-
-    @Column(name = NAME_COLUMN_PROP)
-    @Nonnull
-    @NotNull
-    @Override
-    public LocalizedObjectKey getName()
-    {
-        return _name;
-    }
-    /**
-     *   Set the name of this Resource
-     *   @param name the name of this Resource
-     */
-    public void setName(@Nonnull LocalizedObjectKey name)
-    {
-        _name = name;
-    }
-
-    @Column(name = DESCRIPTION_COLUMN_PROP)
-    @Nullable
-    @Override
-    public LocalizedObjectKey getDescription()
-    {
-        return _description;
-    }
-    /**
-     *   Set the description of this Resource
-     *   @param description the description of this Resource
-     */
-    public void setDescription(@Nullable LocalizedObjectKey description)
-    {
-        _description = description;
-    }
-
-    /**
-     *   Get the Resource Image
-     *   @return the resource Image
-     */
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = IMAGE_COLUMN)
-    @Audited(targetAuditMode = NOT_AUDITED)
-    @Nullable
-    public FileEntity getImage()
-    {
-        return _image;
-    }
-    /**
-     *   Get the Resource Image
-     *   @param image the resource Image
-     */
-    public void setImage(@Nullable FileEntity image)
-    {
-        _image = image;
-    }
 
     @Override
     @Transient
@@ -309,5 +132,200 @@ public abstract class Resource extends AbstractAuditableSoftDeleteEntity impleme
         clone.setCategory(getCategory());
         clone.setImage(getImage());
         return clone;
+    }
+
+    /**
+     * Get the internal resource type of this resource
+     *
+     * @return the internal resource type of this resource
+     */
+    @Column(name = RESOURCE_TYPE_COLUMN_PROP)
+    @NotNull
+    @Nonnull
+    public ResourceType getResourceType()
+    {
+        return _resourceType;
+    }
+
+    /**
+     * Get the resource visibility
+     *
+     * @return the resource visibility
+     */
+    @Column(name = VISIBILITY_COLUMN_PROP)
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    @Nonnull
+    public ResourceVisibility getVisibility()
+    {
+        return _visibility;
+    }
+
+    /**
+     * Get the author of this resource
+     *
+     * @return the author of this resource
+     */
+    @Column(name = AUTHOR_COLUMN_PROP)
+    @Nullable
+    public String getAuthor()
+    {
+        return _author;
+    }
+
+    /**
+     * Set the author of this resource
+     *
+     * @param author the author of this resource
+     */
+    public void setAuthor(@Nullable String author)
+    {
+        _author = author;
+    }
+
+    /**
+     * Get the categories that this resource belongs to
+     *
+     * @return the categories that this resource belongs to
+     */
+    @ManyToMany
+    @JoinTable(name = TAGS_JOIN_TABLE, schema = ProjectConfig.PROJECT_SCHEMA,
+        joinColumns = {@JoinColumn(name = ID_COLUMN, nullable = false)},
+        inverseJoinColumns = {@JoinColumn(name = TAGS_INVERSE_JOIN, nullable = false)})
+    @Nonnull
+    @NotNull
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.ENTITY_DATA)
+    @BatchSize(size = 10)
+    @Audited(targetAuditMode = NOT_AUDITED)
+    public List<Label> getTags()
+    {
+        return _tags;
+    }
+
+    /**
+     * Set the categories that this resource belongs to
+     *
+     * @param tags the categories that this resource belongs to
+     */
+    public void setTags(@Nonnull List<Label> tags)
+    {
+        _tags = tags;
+    }
+
+    @Column(name = NAME_COLUMN_PROP)
+    @Nonnull
+    @NotNull
+    @Override
+    public LocalizedObjectKey getName()
+    {
+        return _name;
+    }
+
+    /**
+     * Get the type of this resource -- used for display purposes
+     *
+     * @return the type of this resource
+     */
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = CATEGORY_COLUMN)
+    @Nullable
+    @Audited(targetAuditMode = NOT_AUDITED)
+    public Label getCategory()
+    {
+        return _category;
+    }
+
+    /**
+     * Set the type of this resource -- used for display purposes
+     *
+     * @param category the type of this resource
+     */
+    public void setCategory(@Nullable Label category)
+    {
+        _category = category;
+    }
+
+    /**
+     * Get the Resource Image
+     *
+     * @return the resource Image
+     */
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = IMAGE_COLUMN)
+    @Audited(targetAuditMode = NOT_AUDITED)
+    @Nullable
+    public FileEntity getImage()
+    {
+        return _image;
+    }
+
+    /**
+     * Get the Resource Image
+     *
+     * @param image the resource Image
+     */
+    public void setImage(@Nullable FileEntity image)
+    {
+        _image = image;
+    }
+
+    /**
+     * Set the name of this Resource
+     *
+     * @param name the name of this Resource
+     */
+    public void setName(@Nonnull LocalizedObjectKey name)
+    {
+        _name = name;
+    }
+
+    @Column(name = DESCRIPTION_COLUMN_PROP)
+    @Nullable
+    @Override
+    public LocalizedObjectKey getDescription()
+    {
+        return _description;
+    }
+
+    /**
+     * Set the description of this Resource
+     *
+     * @param description the description of this Resource
+     */
+    public void setDescription(@Nullable LocalizedObjectKey description)
+    {
+        _description = description;
+    }
+
+    /**
+     * Set the resource visibility
+     *
+     * @param visibility the resource visibility
+     */
+    public void setVisibility(@Nonnull ResourceVisibility visibility)
+    {
+        _visibility = visibility;
+    }
+
+    /**
+     * Set the internal resource type of this resource
+     *
+     * @param resourceType the internal resource type of this resource
+     */
+    public void setResourceType(ResourceType resourceType)
+    {
+        _resourceType = resourceType;
+    }
+
+    @Id
+    @Column(name = ID_COLUMN)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = GENERATOR)
+    @SequenceGenerator(name = GENERATOR, sequenceName = GENERATOR)
+    @Override
+    @NotNull
+    @Nonnull
+    public Integer getId()
+    {
+        return super.getId();
     }
 }

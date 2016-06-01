@@ -47,18 +47,14 @@ import net.proteusframework.core.locale.NamedObject;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.ENTITY_DATA)
 @Audited
 @SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + Repository.TABLE_NAME
-    + " SET " + Repository.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + Repository.ID_COLUMN + " = ?")
+                 + " SET " + Repository.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + Repository.ID_COLUMN + " = ?")
 public class Repository extends AbstractAuditableSoftDeleteEntity implements NamedObject
 {
-    private static final long serialVersionUID = -3033481916961512269L;
-
     /** The database table name */
     public static final String TABLE_NAME = "repository";
     /** The database ID column */
     public static final String ID_COLUMN = "repository_id";
-    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + '.' + ID_COLUMN + "_seq";
-
-    /** The database column and property: name */ 
+    /** The database column and property: name */
     public static final String NAME_COLUMN_PROP = "name";
     /** The database column and property: description */
     public static final String DESCRIPTION_COLUMN_PROP = "description";
@@ -70,7 +66,8 @@ public class Repository extends AbstractAuditableSoftDeleteEntity implements Nam
     public static final String ASSIGNED_INVERSE_JOIN = "assigned_id";
     /** The property: assigned */
     public static final String ASSIGNED_PROP = "assigned";
-
+    private static final long serialVersionUID = -3033481916961512269L;
+    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + '.' + ID_COLUMN + "_seq";
     private LocalizedObjectKey _name;
     private LocalizedObjectKey _description;
 
@@ -93,9 +90,11 @@ public class Repository extends AbstractAuditableSoftDeleteEntity implements Nam
     {
         return _name;
     }
+
     /**
-     *   Set the name of this Repository
-     *   @param name the name of is Repository
+     * Set the name of this Repository
+     *
+     * @param name the name of is Repository
      */
     public void setName(LocalizedObjectKey name)
     {
@@ -109,9 +108,11 @@ public class Repository extends AbstractAuditableSoftDeleteEntity implements Nam
     {
         return _description;
     }
+
     /**
-     *   Set the description of this Repository
-     *   @param description the description of this Repository
+     * Set the description of this Repository
+     *
+     * @param description the description of this Repository
      */
     public void setDescription(@Nullable LocalizedObjectKey description)
     {

@@ -29,20 +29,19 @@ import net.proteusframework.internet.http.resource.FactoryResource;
 import net.proteusframework.internet.http.resource.html.NDE;
 
 /**
- * Javascript files used by LR Labs
+ * Javascript files used by App.
  *
  * @author Alan Holt (aholt@venturetech.net)
  * @since 1/8/16 10:50 AM
  */
-public enum LRLabsJSLibrary implements ClassPathResourceLibrary
+public enum AppJSLibrary implements ClassPathResourceLibrary
 {
     /** Vector library used by justgage.js */
     vectorLib("gauge/raphael-2.1.4.min.js"),
     /** Gauge.js */
     gauge("gauge/justgage.min.js", vectorLib),
     /** Chart.js */
-    chart("chart/Chart.min.js")
-    ;
+    chart("chart/Chart.min.js");
 
     @Component
     static class LRSuccessJSLibraryInjector
@@ -53,7 +52,7 @@ public enum LRLabsJSLibrary implements ClassPathResourceLibrary
         @PostConstruct
         public void postConstruct()
         {
-            for(LRLabsJSLibrary js : EnumSet.allOf(LRLabsJSLibrary.class))
+            for (AppJSLibrary js : EnumSet.allOf(AppJSLibrary.class))
             {
                 js.setClassPathResourceLibraryHelper(_classPathResourceLibraryHelper);
             }
@@ -69,21 +68,23 @@ public enum LRLabsJSLibrary implements ClassPathResourceLibrary
     private ClassPathResourceLibraryHelper _classPathResourceLibraryHelper;
 
     /**
-     *   Create a new instance with no dependencies
-     *   @param classPath the resource classpath
+     * Create a new instance with no dependencies
+     *
+     * @param classPath the resource classpath
      */
-    LRLabsJSLibrary(String classPath)
+    AppJSLibrary(String classPath)
     {
         _classPath = classPath;
         _dependencies = Collections.emptyList();
     }
 
     /**
-     *   Create a new instance
-     *   @param classPath the resource classpath
-     *   @param dependencies list of dependencies
+     * Create a new instance
+     *
+     * @param classPath the resource classpath
+     * @param dependencies list of dependencies
      */
-    LRLabsJSLibrary(String classPath, ClassPathResourceLibrary... dependencies)
+    AppJSLibrary(String classPath, ClassPathResourceLibrary... dependencies)
     {
         _classPath = classPath;
         _dependencies = Arrays.asList(dependencies);

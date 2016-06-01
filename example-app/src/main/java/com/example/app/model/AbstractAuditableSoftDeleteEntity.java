@@ -71,6 +71,20 @@ public abstract class AbstractAuditableSoftDeleteEntity implements FullyAuditabl
     }
 
     @Override
+    @NotAudited
+    @Column(nullable = false)
+    public Date getCreateTime()
+    {
+        return _createTime;
+    }
+
+    @Override
+    public void setCreateTime(Date t)
+    {
+        _createTime = t;
+    }
+
+    @Override
     @GraphWalkerNoVisit(modes = HibernateUtil.DEEP_INIT_MODE_UI)
     @ManyToOne(fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -83,20 +97,6 @@ public abstract class AbstractAuditableSoftDeleteEntity implements FullyAuditabl
     public void setLastModUser(Principal p)
     {
         _lastModUser = p;
-    }
-
-    @Override
-    @NotAudited
-    @Column(nullable = false)
-    public Date getCreateTime()
-    {
-        return _createTime;
-    }
-
-    @Override
-    public void setCreateTime(Date t)
-    {
-        _createTime = t;
     }
 
     @Override
@@ -115,40 +115,12 @@ public abstract class AbstractAuditableSoftDeleteEntity implements FullyAuditabl
     }
 
     @Override
-    @Basic
-    @Column(name = SOFT_DELETE_COLUMN_PROP, nullable = false, columnDefinition = "boolean DEFAULT false")
-    public boolean isDeleted()
+    public int hashCode()
     {
-        return _deleted;
-    }
-
-    @Override
-    public void setDeleted(boolean deleted)
-    {
-        _deleted = deleted;
-    }
-
-    /**
-     * Get the id.
-     *
-     * @return the id.
-     */
-    @Override
-    @NotNull
-    @Transient
-    public Integer getId()
-    {
-        return _id;
-    }
-
-    /**
-     * Set the id.
-     *
-     * @param id the id.
-     */
-    public void setId(Integer id)
-    {
-        _id = id;
+        if (getId() == null)
+            return System.identityHashCode(this);
+        else
+            return getId().hashCode();
     }
 
     @Override
@@ -178,18 +150,46 @@ public abstract class AbstractAuditableSoftDeleteEntity implements FullyAuditabl
             return thisId.equals(otherId);
     }
 
+    /**
+     * Get the id.
+     *
+     * @return the id.
+     */
     @Override
-    public int hashCode()
+    @NotNull
+    @Transient
+    public Integer getId()
     {
-        if (getId() == null)
-            return System.identityHashCode(this);
-        else
-            return getId().hashCode();
+        return _id;
+    }
+
+    /**
+     * Set the id.
+     *
+     * @param id the id.
+     */
+    public void setId(Integer id)
+    {
+        _id = id;
     }
 
     @Override
     public String toString()
     {
         return Hibernate.getClass(this).getName() + '#' + getId();
+    }
+
+    @Override
+    @Basic
+    @Column(name = SOFT_DELETE_COLUMN_PROP, nullable = false, columnDefinition = "boolean DEFAULT false")
+    public boolean isDeleted()
+    {
+        return _deleted;
+    }
+
+    @Override
+    public void setDeleted(boolean deleted)
+    {
+        _deleted = deleted;
     }
 }

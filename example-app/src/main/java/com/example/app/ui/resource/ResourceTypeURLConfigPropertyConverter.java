@@ -37,9 +37,9 @@ public class ResourceTypeURLConfigPropertyConverter extends DefaultURLConfigProp
     @Override
     public <V> V convert(ParsedRequest request, String property, @Nullable String value, Class<V> type)
     {
-        if(ResourceType.class.isAssignableFrom(type) && !StringFactory.isEmptyString(value))
+        if (ResourceType.class.isAssignableFrom(type) && !StringFactory.isEmptyString(value))
         {
-            return (V)getResourceTypeService().getResourceType(ResourceTypeService.SPRING_FACTORY_IDENTIFIER, value);
+            return (V) getResourceTypeService().getResourceType(ResourceTypeService.SPRING_FACTORY_IDENTIFIER, value);
         }
         else return null;
     }
@@ -48,9 +48,9 @@ public class ResourceTypeURLConfigPropertyConverter extends DefaultURLConfigProp
     @Override
     public <V> String convert(String property, @Nullable V value)
     {
-        if(value instanceof ResourceType)
+        if (value instanceof ResourceType)
         {
-            return ((ResourceType)value).getIdentifier();
+            return ((ResourceType) value).getIdentifier();
         }
         else return null;
     }

@@ -33,7 +33,6 @@ import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
 import com.example.app.ui.URLProperties;
 import com.google.common.base.Supplier;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Nonnull;
@@ -46,12 +45,14 @@ import java.util.stream.Collectors;
 import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelHistoryContainer;
 
 import net.proteusframework.cms.category.CmsCategory;
+import net.proteusframework.cms.label.Label;
 import net.proteusframework.core.locale.ConcatTextSource;
 import net.proteusframework.core.locale.LocalizedNamedObjectComparator;
 import net.proteusframework.core.locale.TextSources;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
+import net.proteusframework.core.notification.NotificationImpl;
 import net.proteusframework.core.notification.NotificationType;
 import net.proteusframework.ui.column.FixedValueColumn;
 import net.proteusframework.ui.column.PropertyColumn;
@@ -67,7 +68,6 @@ import net.proteusframework.ui.miwt.component.PushButton;
 import net.proteusframework.ui.miwt.component.Table;
 import net.proteusframework.ui.miwt.component.TableCellRenderer;
 import net.proteusframework.ui.miwt.component.composite.CustomCellRenderer;
-import net.proteusframework.ui.miwt.component.composite.Message;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
 import net.proteusframework.ui.miwt.util.CommonColumnText;
 import net.proteusframework.ui.search.AbstractPropertyConstraint;
@@ -89,9 +89,9 @@ import net.proteusframework.ui.search.SearchUIOperationContext;
 import net.proteusframework.ui.search.SearchUIOperationHandler;
 import net.proteusframework.ui.search.SimpleConstraint;
 
-import static com.example.app.ui.resource.ResourceText.LABEL_AUTHOR;
 import static com.example.app.support.AppUtil.nullFirst;
 import static com.example.app.ui.resource.ResourceRepositoryItemManagementLOK.*;
+import static com.example.app.ui.resource.ResourceText.LABEL_AUTHOR;
 import static net.proteusframework.core.locale.TextSources.createText;
 
 /**
@@ -125,7 +125,7 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
 {
     private static class ResourceCategoryComboBoxConstraint extends ComboBoxConstraint
     {
-        public ResourceCategoryComboBoxConstraint(ArrayList<net.proteusframework.cms.label.Label> tags)
+        public ResourceCategoryComboBoxConstraint(ArrayList<Label> tags)
         {
             super(tags, null, CommonButtonText.ANY);
         }
@@ -164,11 +164,11 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
     private ProfileService _profileService;
 
     private User _currentUser;
-    private Profile _userProfile;
-
-
+    private Profile _adminProfile;
+    private SearchUIImpl _searchUI;
+    private Menu _addMenu;
     /**
-     *   Instantiate a new instance of ResourceRepositoryItemManagement
+     * Instantiate a new instance of ResourceRepositoryItemManagement
      */
     public ResourceRepositoryItemManagement()
     {
@@ -178,9 +178,6 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
         addCategory(CmsCategory.ClientBackend);
         addClassName("resource-repo-item-mgt");
     }
-
-    private SearchUIImpl _searchUI;
-    private Menu _addMenu;
 
     @Override
     public void init()
@@ -204,10 +201,10 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
                 HashMap<String, Object> props = new HashMap<>();
                 props.put(URLProperties.REPOSITORY_ITEM, URLConfigPropertyConverter.ENTITY_NEW);
                 props.put(URLProperties.RESOURCE_TYPE, resourceType);
-                props.put(URLProperties.REPOSITORY_OWNER, _userProfile);
-                if(_userProfile.getRepository() != null)
+                props.put(URLProperties.REPOSITORY_OWNER, _adminProfile);
+                if (_adminProfile.getRepository() != null)
                 {
-                    props.put(URLProperties.REPOSITORY, _userProfile.getRepository());
+                    props.put(URLProperties.REPOSITORY, _adminProfile.getRepository());
                 }
                 addDest.apply(props);
                 addDest.actionPerformed(ev);
@@ -225,54 +222,6 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
         setBuilderSupplierAndAddActionAvailability(_currentUser);
     }
 
-    @Override
-    public boolean supportsOperation(SearchUIOperation operation)
-    {
-        switch(operation)
-        {
-            case add:
-            case edit:
-            case view:
-            case delete:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    @Override
-    public void handle(SearchUIOperationContext context)
-    {
-        switch(context.getOperation())
-        {
-            //case add: handled by menu
-            //case edit: handled by NavigationLinkColumn
-            //case view: handled by NavigationLinkColumn
-            case delete:
-                ResourceRepositoryItem rri = context.getData();
-                if(rri != null)
-                {
-                    Repository repo = Optional.ofNullable(_userProfile)
-                        .map(Profile::getRepository).orElse(null);
-                    if(repo != null)
-                    {
-                        RepositoryItemRelation relation = _repositoryDAO.getRelation(repo, rri).orElse(null);
-                        if(relation != null)
-                        {
-                            _repositoryDAO.deleteRepositoryItemRelation(relation);
-                            _searchUI.sendNotification(new Message(NotificationType.SUCCESS,
-                                createText(MESSAGE_RESOURCE_DELETED_FMT(), _terms.resource())));
-                        }
-                    }
-                }
-                _searchUI.doAction(SearchUIAction.search);
-                break;
-            default:
-                break;
-        }
-    }
-
-    @SuppressWarnings("Duplicates")
     @Nonnull
     private SearchSupplierImpl getSearchSupplier()
     {
@@ -292,14 +241,29 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
         return searchSupplier;
     }
 
-    @SuppressWarnings("Duplicates")
+    private void setBuilderSupplierAndAddActionAvailability(User currentUser)
+    {
+        assert _searchUI.getSearchSupplier() != null : "Search Supplier was null.  This should not happen.";
+        final TimeZone tz = getSession().getTimeZone();
+        ((SearchSupplierImpl) _searchUI.getSearchSupplier()).setBuilderSupplier(getBuilderSupplier());
+        if (_adminProfile != null)
+        {
+            if (currentUser == null)
+                currentUser = _userDAO.getAssertedCurrentUser();
+
+            _addMenu.setVisible(_profileDAO.canOperate(currentUser, _adminProfile, tz, _mop.viewRepositoryResources())
+                                && _profileDAO.canOperate(currentUser, _adminProfile, tz, _mop.modifyRepositoryResources()));
+        }
+        else _addMenu.setVisible(false);
+    }
+
     private void addConstraints(SearchModelImpl searchModel)
     {
         searchModel.getConstraints().add(new SimpleConstraint("name").withLabel(LABEL_NAME())
             .withProperty(ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.NAME_COLUMN_PROP)
             .withOperator(PropertyConstraint.Operator.like));
 
-        ArrayList<net.proteusframework.cms.label.Label> categories = new ArrayList<>();
+        ArrayList<Label> categories = new ArrayList<>();
         categories.add(null);
         categories.addAll(_rclp.getEnabledLabels(Optional.empty()).stream().sorted(
             new LocalizedNamedObjectComparator(getLocaleContext())).collect(Collectors.toList()));
@@ -307,14 +271,14 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
             .withLabel(_rclp.getLabelDomain().getName())
             .withProperty(ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.TAGS_PROP)
             .withOperator(PropertyConstraint.Operator.in)
-            .withValueType(net.proteusframework.cms.label.Label.class);
+            .withValueType(Label.class);
         searchModel.getConstraints().add(categoryConstraint);
 
         searchModel.getConstraints().add(new SimpleConstraint("author").withLabel(LABEL_AUTHOR())
             .withProperty(ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.AUTHOR_COLUMN_PROP)
             .withOperator(PropertyConstraint.Operator.like));
 
-        ArrayList<net.proteusframework.cms.label.Label> types = new ArrayList<>();
+        ArrayList<Label> types = new ArrayList<>();
         types.add(null);
         types.addAll(_rtlp.getEnabledLabels(Optional.empty()).stream().sorted(
             new LocalizedNamedObjectComparator(getLocaleContext())).collect(Collectors.toList()));
@@ -323,7 +287,7 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
             .withProperty(ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.CATEGORY_PROP)
             .withOperator(PropertyConstraint.Operator.eq)
             .withCoerceValue(false)
-            .withValueType(net.proteusframework.cms.label.Label.class);
+            .withValueType(Label.class);
         searchModel.getConstraints().add(typeConstraint);
 
         searchModel.getConstraints().add(new ComboBoxConstraint(nullFirst(RepositoryItemStatus.values()), RepositoryItemStatus
@@ -338,44 +302,23 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
         final TimeZone tz = getSession().getTimeZone();
         NavigationLinkColumn actions = new NavigationLinkColumn()
         {
-            private boolean userCanPerformModification(ResourceRepositoryItem rri)
-            {
-                User currentUser = _userDAO.getAssertedCurrentUser();
-                if(rri != null)
-                {
-                    return _repositoryDAO.canOperate(
-                        currentUser, _repositoryDAO.getOwnerOfRepositoryItem(rri), tz, _mop.modifyRepositoryResources());
-                }
-                else return false;
-            }
-
-            private boolean userCanPerformView(ResourceRepositoryItem rri)
-            {
-                User currentUser = _userDAO.getAssertedCurrentUser();
-                if(rri != null)
-                {
-                    return _repositoryDAO.canOperate(
-                        currentUser, _repositoryDAO.getOwnerOfRepositoryItem(rri), tz, _mop.viewRepositoryResources());
-                }
-                else return false;
-            }
-
             @Override
             public TableCellRenderer getTableCellRenderer(SearchUI searchUI)
             {
                 getDeleteAction().setActionListener(ev ->
-                    ResourceRepositoryItemManagement.this.handle(
+                    handle(
                         new SearchUIOperationContext(
                             searchUI, SearchUIOperation.delete, SearchUIOperationContext.DataContext.lead_selection)));
                 PushButton deleteButton = new PushButton(getDeleteAction());
 
-                Container con = new Container(){
+                Container con = new Container()
+                {
                     @Override
                     public Component getTableCellRendererComponent(Table table, Object value,
                         boolean isSelected, boolean hasFocus, int row,
                         int column)
                     {
-                        ResourceRepositoryItem rri = (ResourceRepositoryItem)value;
+                        ResourceRepositoryItem rri = (ResourceRepositoryItem) value;
                         boolean v = userCanPerformModification(rri);
                         getEditLink().setVisible(v);
                         getViewLink().setVisible(userCanPerformView(rri));
@@ -389,6 +332,28 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
                 con.add(deleteButton);
                 con.addClassName("actions");
                 return con;
+            }
+
+            private boolean userCanPerformModification(ResourceRepositoryItem rri)
+            {
+                User currentUser = _userDAO.getAssertedCurrentUser();
+                if (rri != null)
+                {
+                    return _repositoryDAO.canOperate(
+                        currentUser, _repositoryDAO.getOwnerOfRepositoryItem(rri), tz, _mop.modifyRepositoryResources());
+                }
+                else return false;
+            }
+
+            private boolean userCanPerformView(ResourceRepositoryItem rri)
+            {
+                User currentUser = _userDAO.getAssertedCurrentUser();
+                if (rri != null)
+                {
+                    return _repositoryDAO.canOperate(
+                        currentUser, _repositoryDAO.getOwnerOfRepositoryItem(rri), tz, _mop.viewRepositoryResources());
+                }
+                else return false;
             }
         };
         actions.configure()
@@ -406,14 +371,14 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
             .withTableColumn(new PropertyColumn(ResourceRepositoryItem.class,
                 ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.NAME_COLUMN_PROP).withColumnName(LABEL_NAME()))
             .withOrderBy(new QLOrderByImpl("getTextValue("
-                + "rriAlias." + ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.NAME_COLUMN_PROP
-                + ", '" + getLocaleContext().getLanguage() + "', '', '')")));
+                                           + "rriAlias." + ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.NAME_COLUMN_PROP
+                                           + ", '" + getLocaleContext().getLanguage() + "', '', '')")));
 
         searchModel.getResultColumns().add(new SearchResultColumnImpl()
             .withName("categories")
             .withTableColumn(new FixedValueColumn().withColumnName(_rclp.getLabelDomain().getName()))
             .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
-                ResourceRepositoryItem rri = (ResourceRepositoryItem)input;
+                ResourceRepositoryItem rri = (ResourceRepositoryItem) input;
                 return ConcatTextSource.create(
                     rri.getResource().getTags().stream()
                         .sorted(new LocalizedNamedObjectComparator(getLocaleContext()))
@@ -432,7 +397,7 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
             .withName("owner")
             .withTableColumn(new FixedValueColumn().withColumnName(LABEL_OWNER()))
             .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
-                ResourceRepositoryItem rri = (ResourceRepositoryItem)input;
+                ResourceRepositoryItem rri = (ResourceRepositoryItem) input;
                 return _repositoryDAO.getOwnerOfRepositoryItem(rri).getName();
             })));
 
@@ -442,8 +407,9 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
                 ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.CATEGORY_PROP)
                 .withColumnName(_rtlp.getLabelDomain().getName()))
             .withOrderBy(new QLOrderByImpl("getTextValue("
-                + "rriAlias." + ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.CATEGORY_PROP + ".name"
-                + ", '" + getLocaleContext().getLanguage() + "', '', '')")));
+                                           + "rriAlias." + ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.CATEGORY_PROP
+                                           + ".name"
+                                           + ", '" + getLocaleContext().getLanguage() + "', '', '')")));
 
         searchModel.getResultColumns().add(new SearchResultColumnImpl()
             .withName("status")
@@ -461,13 +427,13 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
             QLBuilder builder = new QLBuilderImpl(ResourceRepositoryItem.class, "rriAlias");
 
             builder.appendCriteria("rriAlias.id in(\n"
-                + "SELECT rirel.repositoryItem.id\n"
-                + "FROM Profile as profile, RepositoryItemRelation rirel \n"
-                + "INNER JOIN profile.repository as repo \n"
-                + "WHERE profile.id = :repoOwnerId\n"
-                + "AND repo.id = rirel.repository.id\n"
-                + "AND rirel.relationType = :owned)");
-            builder.putParameter("repoOwnerId", _userProfile.getId());
+                                   + "SELECT rirel.repositoryItem.id\n"
+                                   + "FROM Profile as profile, RepositoryItemRelation rirel \n"
+                                   + "INNER JOIN profile.repository as repo \n"
+                                   + "WHERE profile.id = :repoOwnerId\n"
+                                   + "AND repo.id = rirel.repository.id\n"
+                                   + "AND rirel.relationType = :owned)");
+            builder.putParameter("repoOwnerId", _adminProfile.getId());
             builder.putParameter("owned", RepositoryItemRelationType.owned);
 
             builder.setProjection(builder.getAlias());
@@ -475,30 +441,62 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
         };
     }
 
-    private void setBuilderSupplierAndAddActionAvailability(User currentUser)
+    @Override
+    public boolean supportsOperation(SearchUIOperation operation)
     {
-        assert _searchUI.getSearchSupplier() != null : "Search Supplier was null.  This should not happen.";
-        final TimeZone tz = getSession().getTimeZone();
-        ((SearchSupplierImpl)_searchUI.getSearchSupplier()).setBuilderSupplier(getBuilderSupplier());
-        if(_userProfile != null)
+        switch (operation)
         {
-            if(currentUser == null)
-                currentUser = _userDAO.getAssertedCurrentUser();
-
-            _addMenu.setVisible(_profileDAO.canOperate(currentUser, _userProfile, tz, _mop.viewRepositoryResources())
-                && _profileDAO.canOperate(currentUser, _userProfile, tz, _mop.modifyRepositoryResources()));
+            case add:
+            case edit:
+            case view:
+            case delete:
+                return true;
+            default:
+                return false;
         }
-        else _addMenu.setVisible(false);
     }
 
-    @SuppressWarnings("unused") //used by ApplicationFunction
+    @Override
+    public void handle(SearchUIOperationContext context)
+    {
+        switch (context.getOperation())
+        {
+            //case add: handled by menu
+            //case edit: handled by NavigationLinkColumn
+            //case view: handled by NavigationLinkColumn
+            case delete:
+                ResourceRepositoryItem rri = context.getData();
+                if (rri != null)
+                {
+                    Repository repo = Optional.ofNullable(_adminProfile)
+                        .map(Profile::getRepository).orElse(null);
+                    if (repo != null)
+                    {
+                        RepositoryItemRelation relation = _repositoryDAO.getRelation(repo, rri).orElse(null);
+                        if (relation != null)
+                        {
+                            _repositoryDAO.deleteRepositoryItemRelation(relation);
+                            _searchUI.sendNotification(new NotificationImpl(NotificationType.SUCCESS,
+                                createText(MESSAGE_RESOURCE_DELETED_FMT(), _terms.resource())));
+                        }
+                    }
+                }
+                _searchUI.doAction(SearchUIAction.search);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @SuppressWarnings("unused")
+        //used by ApplicationFunction
     void configure(ParsedRequest request)
     {
         _currentUser = _userDAO.getAssertedCurrentUser();
-        _userProfile = _profileService.getOwnerProfileForUser(_currentUser)
-            .orElseThrow(() -> new IllegalStateException("Users must have an owner profile."));
+        _adminProfile = _profileService.getAdminProfileForUser(_currentUser)
+            .orElseThrow(() -> new IllegalStateException("Users must have an admin profile."));
 
-        if(!_profileDAO.canOperate(_currentUser, _userProfile, AppUtil.UTC, _mop.viewRepositoryResources()))
+        if (!_profileDAO.canOperate(_currentUser, _adminProfile, AppUtil.UTC, _mop.viewRepositoryResources()))
             throw new IllegalArgumentException("Invalid Permissions To View Page");
     }
 }

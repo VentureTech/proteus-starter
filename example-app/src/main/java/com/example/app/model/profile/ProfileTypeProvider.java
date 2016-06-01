@@ -52,75 +52,10 @@ public class ProfileTypeProvider implements ApplicationListener<ApplicationConte
 
     private boolean _initialized;
 
-    /**
-     *   Get the Company Profile Type Kind.
-     *   @return the Company Profile Type Kind
-     */
-    @Bean
-    public Label kindCompany()
-    {
-        String progId = "profile-type-kind-company";
-        Label kind = _typeKindLabelProvider.getLabelOrNew(progId);
-        if(_profileDAO.isTransient(kind))
-        {
-            kind.setName(LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Company"));
-            _typeKindLabelProvider.addLabel(kind);
-            kind = _typeKindLabelProvider.getLabel(progId).orElseThrow(() -> new IllegalStateException(
-                "Profile Type Kind could not be found, even after it was created."));
-        }
-        return kind;
-    }
-
-
-    /**
-     *   Get the Location Profile Type Kind.
-     *   @return the Location Profile Type Kind
-     */
-    @Bean
-    public Label kindLocation()
-    {
-        String progId = "profile-type-kind-location";
-        Label kind = _typeKindLabelProvider.getLabelOrNew(progId);
-        if(_profileDAO.isTransient(kind))
-        {
-            kind.setName(LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Location"));
-            _typeKindLabelProvider.addLabel(kind);
-            kind = _typeKindLabelProvider.getLabel(progId).orElseThrow(() -> new IllegalStateException(
-                "Profile Type Kind could not be found, even after it was created."));
-        }
-        return kind;
-    }
-
-    /**
-     *   Get the company profile type.
-     *   @return the company profile type
-     */
-    @SuppressWarnings("ConstantConditions")
-    @Bean
-    public ProfileType company()
-    {
-        return _profileDAO.getProfileTypeOrNew("company",
-            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Company"),
-            this::kindCompany);
-    }
-
-    /**
-     *   Get the location profile type.
-     *   @return the location profile type
-     */
-    @SuppressWarnings("ConstantConditions")
-    @Bean
-    public ProfileType location()
-    {
-        return _profileDAO.getProfileTypeOrNew("location",
-            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Location"),
-            this::kindLocation);
-    }
-
     @Override
     public void onApplicationEvent(ApplicationContextEvent event)
     {
-        if(!_initialized && (event instanceof ContextRefreshedEvent || event instanceof ContextStartedEvent))
+        if (!_initialized && (event instanceof ContextRefreshedEvent || event instanceof ContextStartedEvent))
         {
             final HibernateSessionHandler handler =
                 (HibernateSessionHandler) event.getApplicationContext().getBean(HibernateSessionHandler.RESOURCE_NAME);
@@ -130,7 +65,7 @@ public class ProfileTypeProvider implements ApplicationListener<ApplicationConte
                 initialize();
                 _initialized = true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logger.fatal("ProfileTypeProvider failed to initialize.", e);
             }
@@ -139,6 +74,15 @@ public class ProfileTypeProvider implements ApplicationListener<ApplicationConte
                 handler.clearSessions();
             }
         }
+    }
+
+    /**
+     * Initializes ProfileTypes and Profile Type Kinds that are specified by this provider, ensuring they are within the database.
+     */
+    private void initialize()
+    {
+        initKinds();
+        initTypes();
     }
 
     private void initKinds()
@@ -154,11 +98,68 @@ public class ProfileTypeProvider implements ApplicationListener<ApplicationConte
     }
 
     /**
-     *   Initializes ProfileTypes and Profile Type Kinds that are specified by this provider, ensuring they are within the database.
+     * Get the Company Profile Type Kind.
+     *
+     * @return the Company Profile Type Kind
      */
-    private void initialize()
+    @Bean
+    public Label kindCompany()
     {
-        initKinds();
-        initTypes();
+        String progId = "profile-type-kind-company";
+        Label kind = _typeKindLabelProvider.getLabelOrNew(progId);
+        if (_profileDAO.isTransient(kind))
+        {
+            kind.setName(LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Company"));
+            _typeKindLabelProvider.addLabel(kind);
+            kind = _typeKindLabelProvider.getLabel(progId).orElseThrow(() -> new IllegalStateException(
+                "Profile Type Kind could not be found, even after it was created."));
+        }
+        return kind;
+    }
+
+    /**
+     * Get the Location Profile Type Kind.
+     *
+     * @return the Location Profile Type Kind
+     */
+    @Bean
+    public Label kindLocation()
+    {
+        String progId = "profile-type-kind-location";
+        Label kind = _typeKindLabelProvider.getLabelOrNew(progId);
+        if (_profileDAO.isTransient(kind))
+        {
+            kind.setName(LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Location"));
+            _typeKindLabelProvider.addLabel(kind);
+            kind = _typeKindLabelProvider.getLabel(progId).orElseThrow(() -> new IllegalStateException(
+                "Profile Type Kind could not be found, even after it was created."));
+        }
+        return kind;
+    }
+
+    /**
+     * Get the company profile type.
+     *
+     * @return the company profile type
+     */
+    @Bean
+    public ProfileType company()
+    {
+        return _profileDAO.getProfileTypeOrNew("company",
+            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Company"),
+            this::kindCompany);
+    }
+
+    /**
+     * Get the location profile type.
+     *
+     * @return the location profile type
+     */
+    @Bean
+    public ProfileType location()
+    {
+        return _profileDAO.getProfileTypeOrNew("location",
+            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Location"),
+            this::kindLocation);
     }
 }

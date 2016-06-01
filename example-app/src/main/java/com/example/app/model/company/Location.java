@@ -52,7 +52,7 @@ import static net.proteusframework.core.locale.annotation.I18NFile.Visibility.PU
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.PROFILE_DATA)
 @Audited
 @SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + Profile.TABLE_NAME
-    + " SET " + Profile.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + Profile.ID_COLUMN + " = ?")
+                 + " SET " + Profile.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + Profile.ID_COLUMN + " = ?")
 @DiscriminatorValue("location")
 @I18NFile(
     symbolPrefix = "com.example.app.model.company.Location",
@@ -112,6 +112,29 @@ public class Location extends Profile
     }
 
     /**
+     * Get the address
+     *
+     * @return the address
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.PERSIST, CascadeType.MERGE, CascadeType.SAVE_UPDATE})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    public Address getAddress()
+    {
+        return _address;
+    }
+
+    /**
+     * Set the address
+     *
+     * @param address the address
+     */
+    public void setAddress(Address address)
+    {
+        _address = address;
+    }
+
+    /**
      * Get the {@link Company} this location belongs to
      *
      * @return the company
@@ -125,6 +148,7 @@ public class Location extends Profile
 
     /**
      * Set the company
+     *
      * @param company the company
      */
     public void setCompany(Company company)
@@ -133,69 +157,8 @@ public class Location extends Profile
     }
 
     /**
-     * Get the status
-     * @return the status
-     */
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    public LocationStatus getStatus()
-    {
-        return _status;
-    }
-
-    /**
-     * Set the status
-     * @param status the status
-     */
-    public void setStatus(LocationStatus status)
-    {
-        _status = status;
-    }
-
-    /**
-     * Get the address
-     * @return the address
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.PERSIST, CascadeType.MERGE, CascadeType.SAVE_UPDATE})
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    public Address getAddress()
-    {
-        return _address;
-    }
-
-    /**
-     * Set the address
-     * @param address the address
-     */
-    public void setAddress(Address address)
-    {
-        _address = address;
-    }
-
-    /**
-     * Get the phone number
-     * @return the phone number
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.PERSIST, CascadeType.MERGE, CascadeType.SAVE_UPDATE})
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    public PhoneNumber getPhoneNumber()
-    {
-        return _phoneNumber;
-    }
-
-    /**
-     * Set the phone number
-     * @param phoneNumber the phone number
-     */
-    public void setPhoneNumber(PhoneNumber phoneNumber)
-    {
-        _phoneNumber = phoneNumber;
-    }
-
-    /**
      * Get primary contact email address
+     *
      * @return the primary email address
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -208,11 +171,57 @@ public class Location extends Profile
 
     /**
      * Set the email address
+     *
      * @param emailAddress the email address
      */
     public void setEmailAddress(EmailAddress emailAddress)
     {
         _emailAddress = emailAddress;
+    }
+
+    /**
+     * Get the phone number
+     *
+     * @return the phone number
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.PERSIST, CascadeType.MERGE, CascadeType.SAVE_UPDATE})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    public PhoneNumber getPhoneNumber()
+    {
+        return _phoneNumber;
+    }
+
+    /**
+     * Set the phone number
+     *
+     * @param phoneNumber the phone number
+     */
+    public void setPhoneNumber(PhoneNumber phoneNumber)
+    {
+        _phoneNumber = phoneNumber;
+    }
+
+    /**
+     * Get the status
+     *
+     * @return the status
+     */
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    public LocationStatus getStatus()
+    {
+        return _status;
+    }
+
+    /**
+     * Set the status
+     *
+     * @param status the status
+     */
+    public void setStatus(LocationStatus status)
+    {
+        _status = status;
     }
 
 }

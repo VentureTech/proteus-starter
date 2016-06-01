@@ -22,14 +22,13 @@ import com.example.app.model.resource.ResourceVisibility;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
 import com.example.app.service.ResourceCategoryLabelProvider;
+import com.example.app.support.AppUtil;
 import com.example.app.support.EntityIdCollector;
 import com.example.app.support.InstantDayComparator;
-import com.example.app.support.AppUtil;
 import com.example.app.terminology.ProfileTermProvider;
 import com.example.app.ui.KeywordConstraint;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -118,8 +117,7 @@ public abstract class ResourceListing extends MIWTPageElementModelContainer
         /** Sort Method */
         AssignmentDateDESC(SORT_METHOD_ASSIGNMENT_DATE_DESC(), (rirel1, rirel2) ->
             InstantDayComparator.getDescInstance().compare(rirel1.getCreateTime().toInstant(),
-                rirel2.getCreateTime().toInstant()))
-        ;
+                rirel2.getCreateTime().toInstant()));
 
         private final TextSource _name;
         private final Comparator<RepositoryItemRelation> _relationComparator;
@@ -131,8 +129,9 @@ public abstract class ResourceListing extends MIWTPageElementModelContainer
         }
 
         /**
-         *   Get the comparator used for sorting the RepositoryItemRelations
-         *   @return comparator
+         * Get the comparator used for sorting the RepositoryItemRelations
+         *
+         * @return comparator
          */
         public Comparator<RepositoryItemRelation> getRelationComparator()
         {
@@ -153,14 +152,14 @@ public abstract class ResourceListing extends MIWTPageElementModelContainer
             return getName();
         }
     }
-
+    /** Permanent Messages */
+    protected final MessageContainer _permanentMessages = new MessageContainer();
     /** Autowired */
     @Autowired
     protected ApplicationRegistry _applicationRegistry;
     /** Autowired */
     @Autowired
     protected EntityRetriever _er;
-
     /** Autowired */
     @Autowired
     protected ProfileTermProvider _terms;
@@ -176,17 +175,13 @@ public abstract class ResourceListing extends MIWTPageElementModelContainer
     /** Autowired */
     @Autowired
     protected ResourceCategoryLabelProvider _rclp;
-
     private final BiMap<RepositoryItemRelation, Component> _currentResults = HashBiMap.create();
     private final Map<SearchConstraint, Pair<Component, Container>> _constraints = new HashMap<>();
     private final Map<ReflectiveAction, PushButton> _actions = new HashMap<>();
-
-    /** Permanent Messages */
-    protected final MessageContainer _permanentMessages = new MessageContainer();
-    private ComboBoxValueEditor<SortMethod> _sortBy;
     private final Container _constraintsCon = of("constraints").withHTMLElement(HTMLElement.span);
     private final Container _actionsCon = of("actions search-actions").withHTMLElement(HTMLElement.span);
     private final Container _resultsCon = of("search-results resource-listing");
+    private ComboBoxValueEditor<SortMethod> _sortBy;
     private boolean _includePublicOnly;
     private EnumSet<SortMethod> _sortMethods;
 
@@ -197,184 +192,6 @@ public abstract class ResourceListing extends MIWTPageElementModelContainer
     {
         addClassName("search-wrapper");
         setHTMLElement(HTMLElement.section);
-    }
-
-    /**
-     *   Get the Repositories that this ResourceListing is listing resources from
-     *   @return repositories
-     */
-    protected abstract List<Repository> getRepositories();
-
-    /**
-     *   Get the boolean flag determining if public resources should be included within this listing
-     *   @return include public flag -- if true, public resources will be included
-     */
-    public boolean isIncludePublicOnly()
-    {
-        return _includePublicOnly;
-    }
-    /**
-     *   Set the boolean flag determining if public resources should be included within this listing
-     *   @param includePublicOnly if true, public resources will be included
-     */
-    public void setIncludePublicOnly(boolean includePublicOnly)
-    {
-        _includePublicOnly = includePublicOnly;
-    }
-
-    /**
-     *   Get the supported Sort Methods
-     *   @return the sort methods
-     */
-    public EnumSet<SortMethod> getSortMethods()
-    {
-        return _sortMethods;
-    }
-    /**
-     *   Set the supported Sort Methods
-     *   @param sortMethods the sort methods
-     */
-    public void setSortMethods(EnumSet<SortMethod> sortMethods)
-    {
-        _sortMethods = sortMethods;
-    }
-
-    private void addConstraint(SearchConstraint constraint)
-    {
-        Pair<Component, Container> pair;
-        if((pair = _constraints.get(constraint)) != null)
-        {
-            _constraintsCon.remove(pair.getTwo());
-        }
-        Component constraintComponent = constraint.getConstraintComponent();
-        if(constraintComponent != null)
-        {
-            pair = new Pair<>(constraintComponent,
-                of("constraint " + ofNullable(constraint.getHTMLClass()).orElse(""),
-                    new Label(constraint.getLabel()), constraintComponent).withHTMLElement(HTMLElement.span));
-            ComponentTreeIterator it = new ComponentTreeIterator(constraintComponent, false, false);
-            while(it.hasNext())
-            {
-                final Component next = it.next();
-                if (next instanceof Field)
-                {
-                    final Field field = (Field) next;
-                    field.watchIncremental();
-                    field.addPropertyChangeListener(Field.PROP_TEXT,
-                        evt -> setupResultsUI(getResults()));
-                }
-                else if(next instanceof ComboBox)
-                {
-                    final ComboBox comboBox = (ComboBox) next;
-                    comboBox.addActionListener(ev -> setupResultsUI(getResults()));
-                }
-                else
-                    HTMLFeature.watch.add(next);
-            }
-        }
-        else
-        {
-            pair = new Pair<>(null, null);
-        }
-        _constraints.put(constraint, pair);
-        if(pair.getTwo() != null)
-        {
-            _constraintsCon.add(pair.getTwo());
-        }
-    }
-
-    private void addAction(ReflectiveAction action)
-    {
-        PushButton button;
-        if((button = _actions.get(action)) != null)
-        {
-            _actionsCon.remove(button);
-        }
-        button = new PushButton(action);
-        _actions.put(action, button);
-        _actionsCon.add(button);
-    }
-
-    private List<RepositoryItemRelation> getResults()
-    {
-        QLBuilderImpl builder = new QLBuilderImpl(RepositoryItemRelation.class, "rirel");
-
-        List<Integer> repoIds = getRepositories().stream().map(Repository::getId).collect(new EntityIdCollector<>(() -> 0));
-        JoinedQLBuilder repoItemBuilder = builder.createJoin(
-            QLBuilder.JoinType.INNER, RepositoryItemRelation.REPOSITORY_ITEM_PROP, "ri");
-        repoItemBuilder.appendCriteria(RepositoryItem.STATUS_COLUMN_PROP,
-            PropertyConstraint.Operator.eq, RepositoryItemStatus.Active);
-        repoItemBuilder.appendCriteria("ri.id in (SELECT rri.id FROM ResourceRepositoryItem rri)");
-
-        if(_includePublicOnly)
-        {
-            builder.startGroup(JunctionOperator.AND);
-            repoItemBuilder.appendCriteria("ri.id in (SELECT rri.id FROM ResourceRepositoryItem rri inner join rri.resource res "
-                + "where res.visibility = :public)")
-                .putParameter("public", ResourceVisibility.Public);
-            builder.appendCriteria(RepositoryItemRelation.RELATION_TYPE_PROP, PropertyConstraint.Operator.eq,
-                RepositoryItemRelationType.owned);
-            builder.endGroup();
-        }
-        else
-        {
-            builder.appendCriteria(builder.getAlias() + '.' + RepositoryItemRelation.REPOSITORY_PROP + ".id in (:repoIds)")
-                .putParameter("repoIds", repoIds);
-        }
-
-        _constraints.keySet().forEach(constraint -> constraint.addCriteria(builder, _constraints.get(constraint).getOne()));
-
-        return builder.getQueryResolver().list();
-    }
-
-    private void setupResultsUI(List<RepositoryItemRelation> results)
-    {
-        List<RepositoryItemRelation> relationsToRemove = new ArrayList<>();
-        _currentResults.keySet().forEach(currRes -> {
-            if(!results.contains(currRes))
-            {
-                _resultsCon.remove(_currentResults.get(currRes));
-                relationsToRemove.add(currRes);
-            }
-        });
-        relationsToRemove.forEach(_currentResults::remove);
-        results.forEach(result -> {
-            if(!_currentResults.keySet().contains(result))
-            {
-                ResourceRepositoryItem rri;
-                if((rri = result.getCastRepositoryItem(ResourceRepositoryItem.class)) != null)
-                {
-                    ResourceRepositoryItemValueViewer vv = new ResourceRepositoryItemValueViewer(rri);
-                    Container container = of("resource", vv);
-                    _resultsCon.add(container);
-                    _currentResults.put(result, container);
-                }
-            }
-        });
-        if(!getSortMethods().isEmpty())
-        {
-            _resultsCon.sort((com1, com2) -> {
-                RepositoryItemRelation rirel1 = _currentResults.inverse().get(com1);
-                RepositoryItemRelation rirel2 = _currentResults.inverse().get(com2);
-                SortMethod sortMethod = _sortBy.commitValue();
-                if(sortMethod != null)
-                {
-                    return sortMethod.getRelationComparator().compare(rirel1, rirel2);
-                }
-                else return 0;
-            });
-        }
-    }
-
-    @Override
-    public void preRenderProcess(Request request, Response response, RendererEditorState<?> state)
-    {
-        super.preRenderProcess(request, response, state);
-
-        if(!request.isPartial() && isInited())
-        {
-            setupResultsUI(getResults());
-        }
     }
 
     @Override
@@ -408,23 +225,24 @@ public abstract class ResourceListing extends MIWTPageElementModelContainer
 
         //Set up Constraints
         @SuppressWarnings("AnonymousInnerClassMayBeStatic")
-        SearchConstraint keywordConstraint = new KeywordConstraint(){
-                @Override
-                public void addCriteria(QLBuilder builder, Component constraintComponent)
+        SearchConstraint keywordConstraint = new KeywordConstraint()
+        {
+            @Override
+            public void addCriteria(QLBuilder builder, Component constraintComponent)
+            {
+                Object val = getValue(constraintComponent);
+                if (shouldReturnConstraintForValue(val))
                 {
-                    Object val = getValue(constraintComponent);
-                    if(shouldReturnConstraintForValue(val))
-                    {
-                        QLBuilderImpl rriBuilder = new QLBuilderImpl(ResourceRepositoryItem.class, "rri");
-                        rriBuilder.setProjection("distinct rri.id");
-                        super.addCriteria(rriBuilder, constraintComponent);
-                        List<Integer> rriIds = rriBuilder.getQueryResolver().list();
-                        String property = builder.getAlias() + '.' + RepositoryItemRelation.REPOSITORY_ITEM_PROP + ".id";
-                        builder.appendCriteria(property + " in (:keywordrriIds)")
-                            .putParameter("keywordrriIds", rriIds.stream().collect(new EntityIdCollector<>(() -> 0)));
-                    }
+                    QLBuilderImpl rriBuilder = new QLBuilderImpl(ResourceRepositoryItem.class, "rri");
+                    rriBuilder.setProjection("distinct rri.id");
+                    super.addCriteria(rriBuilder, constraintComponent);
+                    List<Integer> rriIds = rriBuilder.getQueryResolver().list();
+                    String property = builder.getAlias() + '.' + RepositoryItemRelation.REPOSITORY_ITEM_PROP + ".id";
+                    builder.appendCriteria(property + " in (:keywordrriIds)")
+                        .putParameter("keywordrriIds", rriIds.stream().collect(new EntityIdCollector<>(() -> 0)));
                 }
             }
+        }
             .withProperties(
                 ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.NAME_COLUMN_PROP,
                 ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.DESCRIPTION_COLUMN_PROP)
@@ -439,23 +257,24 @@ public abstract class ResourceListing extends MIWTPageElementModelContainer
             new LocalizedNamedObjectComparator(getLocaleContext())).collect(Collectors.toList()));
         @SuppressWarnings("AnonymousInnerClassMayBeStatic")
         ComboBoxConstraint categoryConstraint = new ComboBoxConstraint(categories, null,
-            new CustomCellRenderer(CommonButtonText.ANY)) {
-                @Override
-                public void addCriteria(QLBuilder builder, Component constraintComponent)
+            new CustomCellRenderer(CommonButtonText.ANY))
+        {
+            @Override
+            public void addCriteria(QLBuilder builder, Component constraintComponent)
+            {
+                Object val = getValue(constraintComponent);
+                if (shouldReturnConstraintForValue(val))
                 {
-                    Object val = getValue(constraintComponent);
-                    if(shouldReturnConstraintForValue(val))
-                    {
-                        QLBuilderImpl rriBuilder = new QLBuilderImpl(ResourceRepositoryItem.class, "rri");
-                        rriBuilder.setProjection("distinct rri.id");
-                        super.addCriteria(rriBuilder, constraintComponent);
-                        List<Integer> rriIds = rriBuilder.getQueryResolver().list();
-                        String property = builder.getAlias() + '.' + RepositoryItemRelation.REPOSITORY_ITEM_PROP + ".id";
-                        builder.appendCriteria(property + " in (:catrriids)")
-                            .putParameter("catrriids", rriIds.stream().collect(new EntityIdCollector<>(() -> 0)));
-                    }
+                    QLBuilderImpl rriBuilder = new QLBuilderImpl(ResourceRepositoryItem.class, "rri");
+                    rriBuilder.setProjection("distinct rri.id");
+                    super.addCriteria(rriBuilder, constraintComponent);
+                    List<Integer> rriIds = rriBuilder.getQueryResolver().list();
+                    String property = builder.getAlias() + '.' + RepositoryItemRelation.REPOSITORY_ITEM_PROP + ".id";
+                    builder.appendCriteria(property + " in (:catrriids)")
+                        .putParameter("catrriids", rriIds.stream().collect(new EntityIdCollector<>(() -> 0)));
                 }
-            };
+            }
+        };
         categoryConstraint.withName("category");
         categoryConstraint.withHTMLClass("category");
         categoryConstraint.withLabel(LABEL_CATEGORY())
@@ -466,5 +285,190 @@ public abstract class ResourceListing extends MIWTPageElementModelContainer
         addConstraint(categoryConstraint);
 
         setupResultsUI(getResults());
+    }
+
+    private void addAction(ReflectiveAction action)
+    {
+        PushButton button;
+        if ((button = _actions.get(action)) != null)
+        {
+            _actionsCon.remove(button);
+        }
+        button = new PushButton(action);
+        _actions.put(action, button);
+        _actionsCon.add(button);
+    }
+
+    private void addConstraint(SearchConstraint constraint)
+    {
+        Pair<Component, Container> pair;
+        if ((pair = _constraints.get(constraint)) != null)
+        {
+            _constraintsCon.remove(pair.getTwo());
+        }
+        Component constraintComponent = constraint.getConstraintComponent();
+        if (constraintComponent != null)
+        {
+            pair = new Pair<>(constraintComponent,
+                of("constraint " + ofNullable(constraint.getHTMLClass()).orElse(""),
+                    new Label(constraint.getLabel()), constraintComponent).withHTMLElement(HTMLElement.span));
+            ComponentTreeIterator it = new ComponentTreeIterator(constraintComponent, false, false);
+            while (it.hasNext())
+            {
+                final Component next = it.next();
+                if (next instanceof Field)
+                {
+                    final Field field = (Field) next;
+                    field.watchIncremental();
+                    field.addPropertyChangeListener(Field.PROP_TEXT,
+                        evt -> setupResultsUI(getResults()));
+                }
+                else if (next instanceof ComboBox)
+                {
+                    final ComboBox comboBox = (ComboBox) next;
+                    comboBox.addActionListener(ev -> setupResultsUI(getResults()));
+                }
+                else
+                    HTMLFeature.watch.add(next);
+            }
+        }
+        else
+        {
+            pair = new Pair<>(null, null);
+        }
+        _constraints.put(constraint, pair);
+        if (pair.getTwo() != null)
+        {
+            _constraintsCon.add(pair.getTwo());
+        }
+    }
+
+    @Override
+    public void preRenderProcess(Request request, Response response, RendererEditorState<?> state)
+    {
+        super.preRenderProcess(request, response, state);
+
+        if (!request.isPartial() && isInited())
+        {
+            setupResultsUI(getResults());
+        }
+    }
+
+    private void setupResultsUI(List<RepositoryItemRelation> results)
+    {
+        List<RepositoryItemRelation> relationsToRemove = new ArrayList<>();
+        _currentResults.keySet().forEach(currRes -> {
+            if (!results.contains(currRes))
+            {
+                _resultsCon.remove(_currentResults.get(currRes));
+                relationsToRemove.add(currRes);
+            }
+        });
+        relationsToRemove.forEach(_currentResults::remove);
+        results.forEach(result -> {
+            if (!_currentResults.keySet().contains(result))
+            {
+                ResourceRepositoryItem rri;
+                if ((rri = result.getCastRepositoryItem(ResourceRepositoryItem.class)) != null)
+                {
+                    ResourceRepositoryItemValueViewer vv = new ResourceRepositoryItemValueViewer(rri);
+                    Container container = of("resource", vv);
+                    _resultsCon.add(container);
+                    _currentResults.put(result, container);
+                }
+            }
+        });
+        if (!getSortMethods().isEmpty())
+        {
+            _resultsCon.sort((com1, com2) -> {
+                RepositoryItemRelation rirel1 = _currentResults.inverse().get(com1);
+                RepositoryItemRelation rirel2 = _currentResults.inverse().get(com2);
+                SortMethod sortMethod = _sortBy.commitValue();
+                if (sortMethod != null)
+                {
+                    return sortMethod.getRelationComparator().compare(rirel1, rirel2);
+                }
+                else return 0;
+            });
+        }
+    }
+
+    private List<RepositoryItemRelation> getResults()
+    {
+        QLBuilderImpl builder = new QLBuilderImpl(RepositoryItemRelation.class, "rirel");
+
+        List<Integer> repoIds = getRepositories().stream().map(Repository::getId).collect(new EntityIdCollector<>(() -> 0));
+        JoinedQLBuilder repoItemBuilder = builder.createJoin(
+            QLBuilder.JoinType.INNER, RepositoryItemRelation.REPOSITORY_ITEM_PROP, "ri");
+        repoItemBuilder.appendCriteria(RepositoryItem.STATUS_COLUMN_PROP,
+            PropertyConstraint.Operator.eq, RepositoryItemStatus.Active);
+        repoItemBuilder.appendCriteria("ri.id in (SELECT rri.id FROM ResourceRepositoryItem rri)");
+
+        if (_includePublicOnly)
+        {
+            builder.startGroup(JunctionOperator.AND);
+            repoItemBuilder.appendCriteria("ri.id in (SELECT rri.id FROM ResourceRepositoryItem rri inner join rri.resource res "
+                                           + "where res.visibility = :public)")
+                .putParameter("public", ResourceVisibility.Public);
+            builder.appendCriteria(RepositoryItemRelation.RELATION_TYPE_PROP, PropertyConstraint.Operator.eq,
+                RepositoryItemRelationType.owned);
+            builder.endGroup();
+        }
+        else
+        {
+            builder.appendCriteria(builder.getAlias() + '.' + RepositoryItemRelation.REPOSITORY_PROP + ".id in (:repoIds)")
+                .putParameter("repoIds", repoIds);
+        }
+
+        _constraints.keySet().forEach(constraint -> constraint.addCriteria(builder, _constraints.get(constraint).getOne()));
+
+        return builder.getQueryResolver().list();
+    }
+
+    /**
+     * Get the supported Sort Methods
+     *
+     * @return the sort methods
+     */
+    public EnumSet<SortMethod> getSortMethods()
+    {
+        return _sortMethods;
+    }
+
+    /**
+     * Get the Repositories that this ResourceListing is listing resources from
+     *
+     * @return repositories
+     */
+    protected abstract List<Repository> getRepositories();
+
+    /**
+     * Set the supported Sort Methods
+     *
+     * @param sortMethods the sort methods
+     */
+    public void setSortMethods(EnumSet<SortMethod> sortMethods)
+    {
+        _sortMethods = sortMethods;
+    }
+
+    /**
+     * Get the boolean flag determining if public resources should be included within this listing
+     *
+     * @return include public flag -- if true, public resources will be included
+     */
+    public boolean isIncludePublicOnly()
+    {
+        return _includePublicOnly;
+    }
+
+    /**
+     * Set the boolean flag determining if public resources should be included within this listing
+     *
+     * @param includePublicOnly if true, public resources will be included
+     */
+    public void setIncludePublicOnly(boolean includePublicOnly)
+    {
+        _includePublicOnly = includePublicOnly;
     }
 }

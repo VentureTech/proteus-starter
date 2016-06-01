@@ -41,12 +41,25 @@ import static com.example.app.model.resource.ResourceVisibilityLOK.NAME_PUBLIC;
 )
 public enum ResourceVisibility implements NamedObject
 {
-    /** Public Visibility */ 
+    /** Public Visibility */
     Public(NAME_PUBLIC()),
     /** Private Visibility */
     Private(NAME_PRIVATE());
 
     private final TextSource _name;
+
+    /**
+     * Get a list of values for a combo box. This includes a null value at the 0 index.
+     *
+     * @return a list of values for a combo box
+     */
+    public static List<ResourceVisibility> getValuesForCombo()
+    {
+        List<ResourceVisibility> values = new ArrayList<>();
+        Collections.addAll(values, ResourceVisibility.values());
+        values.add(0, null);
+        return values;
+    }
 
     ResourceVisibility(@Nonnull TextSource name)
     {
@@ -65,18 +78,6 @@ public enum ResourceVisibility implements NamedObject
     public TextSource getDescription()
     {
         return null;
-    }
-
-    /**
-     *   Get a list of values for a combo box. This includes a null value at the 0 index.
-     *   @return a list of values for a combo box
-     */
-    public static List<ResourceVisibility> getValuesForCombo()
-    {
-        List<ResourceVisibility> values = new ArrayList<>();
-        Collections.addAll(values, ResourceVisibility.values());
-        values.add(0, null);
-        return values;
     }
 
 

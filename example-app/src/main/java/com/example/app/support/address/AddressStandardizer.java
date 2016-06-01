@@ -204,6 +204,7 @@
 
 package com.example.app.support.address;
 //CHECKSTYLE:OFF
+
 import org.apache.commons.lang.StringUtils;
 
 import java.util.EnumMap;
@@ -216,7 +217,6 @@ import static com.example.app.support.address.AddressRegexLibrary.LINE2A_GROUPED
 import static com.example.app.support.address.Data.*;
 import static com.example.app.support.address.RegexLibrary.TXT_NUM_0_19;
 import static com.example.app.support.address.Utils.nvl;
-import static net.proteusframework.ui.search.PropertyConstraint.Operator.le;
 
 //TODO might want to consider synonym resolutions for common city names
 
@@ -228,54 +228,11 @@ import static net.proteusframework.ui.search.PropertyConstraint.Operator.le;
 public class AddressStandardizer
 {
 
-    /**
-     * Turn input map into one line of format
-     *
-     * {name, num predir street type postdir, line2, city, state, zip}
-     *
-     * @param parsedAddr the parsed address
-     *
-     * @return the string.
-     */
-    public static String toSingleLine(Map<AddressComponent, String> parsedAddr)
-    {
-        if (parsedAddr == null)
-        {
-            return null;
-        }
-        StringBuilder sb = new StringBuilder();
-        appendIfNotNull(sb, parsedAddr.get(NAME), ", ");
-        appendIfNotNull(sb, parsedAddr.get(NUMBER), " ");
-        appendIfNotNull(sb, parsedAddr.get(PREDIR), " ");
-        appendIfNotNull(sb, parsedAddr.get(STREET), " ");
-        if (parsedAddr.get(STREET2) != null)
-        {
-            appendIfNotNull(sb, parsedAddr.get(TYPE2), " ");
-            appendIfNotNull(sb, parsedAddr.get(POSTDIR2), " ");
-            sb.append("& ");
-            appendIfNotNull(sb, parsedAddr.get(PREDIR2), " ");
-            appendIfNotNull(sb, parsedAddr.get(STREET2), " ");
-        }
-        appendIfNotNull(sb, parsedAddr.get(TYPE), " ");
-        appendIfNotNull(sb, parsedAddr.get(POSTDIR), " ");
-        if (StringUtils.isNotBlank(sb.toString()))
-        {
-            sb.append(", ");
-        }
-        appendIfNotNull(sb, parsedAddr.get(LINE2), ", ");
-        appendIfNotNull(sb, parsedAddr.get(CITY), ", ");
-        appendIfNotNull(sb, parsedAddr.get(STATE), " ");
-        appendIfNotNull(sb, parsedAddr.get(ZIP), " ");
-        return sb.toString().replaceAll(" ,", ",");
-    }
-
-    private static void appendIfNotNull(StringBuilder sb, String s, String suffix)
-    {
-        if (s != null)
-        {
-            sb.append(s).append(suffix);
-        }
-    }
+    //oh man... what had i got myself into...
+    //XXX this class is tightly coupled with the regex library classes
+    private static final Pattern TXT_NUM = Pattern.compile("^\\W*(" + TXT_NUM_0_19 + ")\\W*");
+    private static final Pattern DIGIT = Pattern.compile("(.*?\\d+)\\W*(.+)?");
+    private static final Pattern LINE2A = Pattern.compile("\\W*(?:" + LINE2A_GROUPED + ")\\W*");
 
     /**
      * Normalize the input parsedAddr map into a standardize format
@@ -286,7 +243,7 @@ public class AddressStandardizer
      */
     public static Map<AddressComponent, String> normalizeParsedAddress(Map<AddressComponent, String> parsedAddr)
     {
-        Map<AddressComponent, String> ret = new EnumMap<AddressComponent, String>(AddressComponent.class);
+        Map<AddressComponent, String> ret = new EnumMap<>(AddressComponent.class);
         //just take the digits from the number component
         for (Map.Entry<AddressComponent, String> e : parsedAddr.entrySet())
         {
@@ -341,10 +298,17 @@ public class AddressStandardizer
         return ret;
     }
 
-    //oh man... what had i got myself into...
-    //XXX this class is tightly coupled with the regex library classes
-    private static final Pattern TXT_NUM = Pattern.compile("^\\W*(" + TXT_NUM_0_19 + ")\\W*");
-    private static final Pattern DIGIT = Pattern.compile("(.*?\\d+)\\W*(.+)?");
+    private static String normalizeDir(String dir)
+    {
+        if (dir == null) return null;
+        dir = dir.replace(" ", "");
+        return dir.length() > 2 ? getDIRECTIONAL_MAP().get(dir) : dir;
+    }
+
+    private static String normalizeStreetType(String type)
+    {
+        return nvl(getSTREET_TYPE_MAP().get(type), type);
+    }
 
     private static String normalizeNum(String num)
     {
@@ -376,18 +340,6 @@ public class AddressStandardizer
         return nvl(ret, num);
     }
 
-    private static String normalizeDir(String dir)
-    {
-        if (dir == null) return null;
-        dir = dir.replace(" ", "");
-        return dir.length() > 2 ? getDIRECTIONAL_MAP().get(dir) : dir;
-    }
-
-    private static String normalizeStreetType(String type)
-    {
-        return nvl(getSTREET_TYPE_MAP().get(type), type);
-    }
-
     /**
      * Normalize state string.
      *
@@ -400,7 +352,10 @@ public class AddressStandardizer
         return nvl(getSTATE_CODE_MAP().get(state), state);
     }
 
-    private static final Pattern LINE2A = Pattern.compile("\\W*(?:" + LINE2A_GROUPED + ")\\W*");
+    private static String normalizeZip(String zip)
+    {
+        return (zip != null ? zip.length() : 0) > 5 ? zip.substring(0, 5) : zip;
+    }
 
     private static String normalizeLine2(String line2)
     {
@@ -418,17 +373,6 @@ public class AddressStandardizer
             }
         }
         return line2;
-    }
-
-
-    private static String normalizeZip(String zip)
-    {
-        return (zip != null ? zip.length() : 0) > 5 ? zip.substring(0, 5) : zip;
-    }
-
-    private static String resolveCityAlias(String city, String state)
-    {
-        return AliasResolver.resolveCityAlias(city, state);
     }
 
     //TODO: document this craziness
@@ -450,6 +394,60 @@ public class AddressStandardizer
             return ordinal;
         }
         return street;
+    }
+
+    private static String resolveCityAlias(String city, String state)
+    {
+        return AliasResolver.resolveCityAlias(city, state);
+    }
+
+    /**
+     * Turn input map into one line of format
+     *
+     * {name, num predir street type postdir, line2, city, state, zip}
+     *
+     * @param parsedAddr the parsed address
+     *
+     * @return the string.
+     */
+    public static String toSingleLine(Map<AddressComponent, String> parsedAddr)
+    {
+        if (parsedAddr == null)
+        {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        appendIfNotNull(sb, parsedAddr.get(NAME), ", ");
+        appendIfNotNull(sb, parsedAddr.get(NUMBER), " ");
+        appendIfNotNull(sb, parsedAddr.get(PREDIR), " ");
+        appendIfNotNull(sb, parsedAddr.get(STREET), " ");
+        if (parsedAddr.get(STREET2) != null)
+        {
+            appendIfNotNull(sb, parsedAddr.get(TYPE2), " ");
+            appendIfNotNull(sb, parsedAddr.get(POSTDIR2), " ");
+            sb.append("& ");
+            appendIfNotNull(sb, parsedAddr.get(PREDIR2), " ");
+            appendIfNotNull(sb, parsedAddr.get(STREET2), " ");
+        }
+        appendIfNotNull(sb, parsedAddr.get(TYPE), " ");
+        appendIfNotNull(sb, parsedAddr.get(POSTDIR), " ");
+        if (StringUtils.isNotBlank(sb.toString()))
+        {
+            sb.append(", ");
+        }
+        appendIfNotNull(sb, parsedAddr.get(LINE2), ", ");
+        appendIfNotNull(sb, parsedAddr.get(CITY), ", ");
+        appendIfNotNull(sb, parsedAddr.get(STATE), " ");
+        appendIfNotNull(sb, parsedAddr.get(ZIP), " ");
+        return sb.toString().replaceAll(" ,", ",");
+    }
+
+    private static void appendIfNotNull(StringBuilder sb, String s, String suffix)
+    {
+        if (s != null)
+        {
+            sb.append(s).append(suffix);
+        }
     }
 
 

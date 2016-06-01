@@ -67,18 +67,11 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.MEMBER_DATA)
 @Audited
 @SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + MembershipType.TABLE_NAME
-    + " SET " + MembershipType.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + MembershipType.ID_COLUMN + " = ?")
+                 + " SET " + MembershipType.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + MembershipType.ID_COLUMN + " = ?")
 public class MembershipType extends AbstractAuditableSoftDeleteEntity implements NamedObject
 {
-    /** The serial version UID */
-    private static final long serialVersionUID = -7073389536889912205L;
-
     /** The database table name for this entity */
     public static final String TABLE_NAME = "MembershipType";
-
-    /** The ID generator identifier for this entity */
-    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + ".membershiptype_id_seq";
-
     /** The database id column for this entity */
     public static final String ID_COLUMN = "membershiptype_id";
     /** The database column name and property: name */
@@ -89,11 +82,41 @@ public class MembershipType extends AbstractAuditableSoftDeleteEntity implements
     public static final String PROGRAMMATIC_ID_COLUMN_PROP = "programmaticIdentifier";
     /** The property: profileType */
     public static final String PROFILE_TYPE_PROP = "profileType";
-
+    /** The serial version UID */
+    private static final long serialVersionUID = -7073389536889912205L;
+    /** The ID generator identifier for this entity */
+    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + ".membershiptype_id_seq";
     private LocalizedObjectKey _name;
     private String _programmaticIdentifier;
     private ProfileType _profileType;
     private List<MembershipOperation> _defaultOperations = new ArrayList<>();
+
+    /**
+     * Get the default operations for new Memberships.
+     *
+     * @return the operations.
+     */
+    @ManyToMany
+    @JoinTable(schema = ProjectConfig.PROJECT_SCHEMA, name = "membershiptype_operations",
+        joinColumns = {@JoinColumn(name = ID_COLUMN)},
+        inverseJoinColumns = {@JoinColumn(name = MembershipOperation.ID_COLUMN)})
+    @Cascade(CascadeType.ALL)
+    @Nonnull
+    @Audited(targetAuditMode = NOT_AUDITED)
+    public List<MembershipOperation> getDefaultOperations()
+    {
+        return _defaultOperations;
+    }
+
+    /**
+     * Set the default operations for new Memberships.
+     *
+     * @param defaultOperations the operations.
+     */
+    public void setDefaultOperations(List<MembershipOperation> defaultOperations)
+    {
+        _defaultOperations = defaultOperations;
+    }
 
     @Id
     @Column(name = ID_COLUMN)
@@ -124,6 +147,7 @@ public class MembershipType extends AbstractAuditableSoftDeleteEntity implements
 
     /**
      * Set the name of this Membership Type
+     *
      * @param name the name of this Membership Type
      */
     public void setName(@Nonnull LocalizedObjectKey name)
@@ -132,29 +156,9 @@ public class MembershipType extends AbstractAuditableSoftDeleteEntity implements
     }
 
     /**
-     *   Get the programmatic identifier of this MembershipType
-     *   @return the programmatic identifier of this MembershipType
-     */
-    @Column(name = PROGRAMMATIC_ID_COLUMN_PROP)
-    @Nonnull
-    @NotNull
-    @NotEmpty
-    public String getProgrammaticIdentifier()
-    {
-        return _programmaticIdentifier;
-    }
-    /**
-     *   Set the programmatic identifier of this MembershipType
-     *   @param programmaticIdentifier the programmatic identifier of this MembershipType
-     */
-    public void setProgrammaticIdentifier(@Nonnull String programmaticIdentifier)
-    {
-        _programmaticIdentifier = programmaticIdentifier;
-    }
-
-    /**
-     *   Get the ProfileType that owns this MembershipType
-     *   @return the owning ProfileType
+     * Get the ProfileType that owns this MembershipType
+     *
+     * @return the owning ProfileType
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = ProfileType.ID_COLUMN)
@@ -164,9 +168,11 @@ public class MembershipType extends AbstractAuditableSoftDeleteEntity implements
     {
         return _profileType;
     }
+
     /**
-     *   Set the ProfileType that owns this MembershipType
-     *   @param profileType the owning ProfileType
+     * Set the ProfileType that owns this MembershipType
+     *
+     * @param profileType the owning ProfileType
      */
     public void setProfileType(ProfileType profileType)
     {
@@ -174,27 +180,26 @@ public class MembershipType extends AbstractAuditableSoftDeleteEntity implements
     }
 
     /**
-     * Get the default operations for new Memberships.
-     * @return the operations.
+     * Get the programmatic identifier of this MembershipType
+     *
+     * @return the programmatic identifier of this MembershipType
      */
-    @ManyToMany
-    @JoinTable(schema = ProjectConfig.PROJECT_SCHEMA, name = "membershiptype_operations",
-        joinColumns = { @JoinColumn(name = ID_COLUMN) },
-        inverseJoinColumns = { @JoinColumn(name = MembershipOperation.ID_COLUMN) })
-    @Cascade(CascadeType.ALL)
+    @Column(name = PROGRAMMATIC_ID_COLUMN_PROP)
     @Nonnull
-    @Audited(targetAuditMode = NOT_AUDITED)
-    public List<MembershipOperation> getDefaultOperations()
+    @NotNull
+    @NotEmpty
+    public String getProgrammaticIdentifier()
     {
-        return _defaultOperations;
+        return _programmaticIdentifier;
     }
 
     /**
-     * Set the default operations for new Memberships.
-     * @param defaultOperations the operations.
+     * Set the programmatic identifier of this MembershipType
+     *
+     * @param programmaticIdentifier the programmatic identifier of this MembershipType
      */
-    public void setDefaultOperations(List<MembershipOperation> defaultOperations)
+    public void setProgrammaticIdentifier(@Nonnull String programmaticIdentifier)
     {
-        _defaultOperations = defaultOperations;
+        _programmaticIdentifier = programmaticIdentifier;
     }
 }

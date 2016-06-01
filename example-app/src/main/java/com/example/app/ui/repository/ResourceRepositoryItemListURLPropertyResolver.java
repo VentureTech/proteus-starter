@@ -43,7 +43,7 @@ public class ResourceRepositoryItemListURLPropertyResolver extends DefaultURLCon
     @Override
     public <V> V convert(ParsedRequest parsedRequest, String property, @Nullable String value, Class<V> type)
     {
-        if(List.class.isAssignableFrom(type) && !StringFactory.isEmptyString(value))
+        if (List.class.isAssignableFrom(type) && !StringFactory.isEmptyString(value))
         {
             value = value.replace("%5B", "").replace("%5D", "");
             String[] values = value.split(SEPARATOR_ENCODED);
@@ -62,9 +62,10 @@ public class ResourceRepositoryItemListURLPropertyResolver extends DefaultURLCon
     @Override
     public <V> String convert(String property, V value)
     {
-        if(value != null)
+        if (value != null)
         {
-            @SuppressWarnings("unchecked") List<ResourceRepositoryItem> resources = (List<ResourceRepositoryItem>) value;
+            @SuppressWarnings("unchecked")
+            List<ResourceRepositoryItem> resources = (List<ResourceRepositoryItem>) value;
             StringBuilder str = new StringBuilder();
             str.append('[');
             AtomicReference<Integer> counter = new AtomicReference<>(0);
@@ -72,7 +73,7 @@ public class ResourceRepositoryItemListURLPropertyResolver extends DefaultURLCon
                 .map(ResourceRepositoryItem::getId)
                 .forEach(id -> {
                     str.append(id);
-                    if(counter.getAndAccumulate(1, (i1, i2) -> i1 + i2) < resources.size() - 1)
+                    if (counter.getAndAccumulate(1, (i1, i2) -> i1 + i2) < resources.size() - 1)
                         str.append(SEPARATOR);
                 });
             str.append(']');

@@ -36,10 +36,11 @@ public class ApplicationFunctionTagListener extends TagListener<TagListenerConfi
     private final Supplier<String> _urlSupplier;
 
     /**
-     *   Creates a new instance.
-     *   @param applicationFunctionName the ApplicationFunction name -- used to
-     *   @param urlSupplier supplier for creating a url to the application function.
-     *   Supplier may return null or an empty string if a url could not be created.
+     * Creates a new instance.
+     *
+     * @param applicationFunctionName the ApplicationFunction name -- used to
+     * @param urlSupplier supplier for creating a url to the application function.
+     * Supplier may return null or an empty string if a url could not be created.
      */
     public ApplicationFunctionTagListener(String applicationFunctionName, Supplier<String> urlSupplier)
     {
@@ -50,18 +51,18 @@ public class ApplicationFunctionTagListener extends TagListener<TagListenerConfi
     @Override
     public String[] getSupportedTags()
     {
-        return new String[]{ "a" };
+        return new String[]{"a"};
     }
 
     @Override
     public boolean startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
     {
         String appFunction = attributes.getValue("data-app-function");
-        if(!StringFactory.isEmptyString(appFunction)
+        if (!StringFactory.isEmptyString(appFunction)
             && appFunction.equals(_applicationFunctionName))
         {
             String url = _urlSupplier.get();
-            if(!StringFactory.isEmptyString(url))
+            if (!StringFactory.isEmptyString(url))
             {
                 getConfiguration().getWriter().append("<a href=\"")
                     .append(url).append("\"");
@@ -85,7 +86,7 @@ public class ApplicationFunctionTagListener extends TagListener<TagListenerConfi
     @Override
     public boolean characters(String characters, boolean closedStartElement) throws SAXException
     {
-        if(!StringFactory.isEmptyString(characters))
+        if (!StringFactory.isEmptyString(characters))
         {
             getConfiguration().getWriter().append(characters);
         }

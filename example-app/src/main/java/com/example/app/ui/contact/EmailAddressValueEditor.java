@@ -77,7 +77,6 @@ public class EmailAddressValueEditor extends CompositeValueEditor<EmailAddress>
      *
      * @author Alan Holt (aholt@venturetech.net)
      */
-    @SuppressWarnings("RedundantFieldInitialization")
     public static class EmailAddressValueEditorConfig
     {
         private final EnumSet<EmailAddressField> _includedFields = EnumSet.of(EmailAddressField.email);
@@ -88,84 +87,14 @@ public class EmailAddressValueEditor extends CompositeValueEditor<EmailAddress>
         private Supplier<ValueEditor<?>> _emailSupplier;
 
         /**
-         *   Get an EnumSet of all included fields for the EmailAddress Editor.
-         *   <br/>
-         *   By default, the only included field is {@link EmailAddressField#email}
-         *   @return EnumSet of included fields
+         * Get the Supplier for the category property.  By default, this is just a comboBox editor.
+         *
+         * @return a Supplier for a ValueEditor
          */
-        @Nonnull
-        public EnumSet<EmailAddressField> getIncludedFields()
-        {
-            return _includedFields;
-        }
-        /**
-         *   Set an EnumSet of all included fields for the EmailAddress Editor.
-         *   <br/>
-         *   By default, the only included field is {@link EmailAddressField#email}
-         *   @param includedFields Array of included fields
-         */
-        public void setIncludedFields(@Nullable EmailAddressField... includedFields)
-        {
-            _includedFields.clear();
-            if(includedFields != null)
-                Collections.addAll(_includedFields, includedFields);
-        }
-
-        /**
-         *   Get an EnumSet of all required fields for the EmailAddress Editor.
-         *   <br/>
-         *   This is only used if the Supplier for the field has not been set.
-         *   <br/>
-         *   By default, the only required field is {@link EmailAddressField#email}
-         *   @return EnumSet of required fields
-         */
-        @Nonnull
-        public EnumSet<EmailAddressField> getRequiredFields()
-        {
-            return _requiredFields;
-        }
-        /**
-         *   Set an EnumSet of all required fields for the EmailAddress Editor.
-         *   <br/>
-         *   This is only used if the Supplier for the field has not been set.
-         *   <br/>
-         *   By default, the only required field is {@link EmailAddressField#email}
-         *   @param requiredFields Array of required fields
-         */
-        public void setRequiredFields(@Nullable EmailAddressField... requiredFields)
-        {
-            _requiredFields.clear();
-            if(requiredFields != null)
-                Collections.addAll(_requiredFields, requiredFields);
-        }
-
-        /**
-         *   Get the default ContactDataCategory to be used in the case of it not being selectable on the UI
-         *   @return the default ContactDataCategory
-         */
-        @Nonnull
-        public ContactDataCategory getDefaultContactDataCategory()
-        {
-            return _defaultContactDataCategory;
-        }
-        /**
-         *   Set the default ContactDataCategory to be used in the case of it not being selectable on the UI
-         *   @param defaultContactDataCategory the default ContactDataCategory
-         */
-        public void setDefaultContactDataCategory(@Nonnull ContactDataCategory defaultContactDataCategory)
-        {
-            _defaultContactDataCategory = defaultContactDataCategory;
-        }
-
-        /**
-         *   Get the Supplier for the category property.  By default, this is just a comboBox editor.
-         *   @return a Supplier for a ValueEditor
-         */
-        @SuppressWarnings("Duplicates")
         @Nonnull
         public Supplier<ValueEditor<?>> getCategorySupplier()
         {
-            if(_categorySupplier != null)
+            if (_categorySupplier != null)
             {
                 return _categorySupplier;
             }
@@ -176,16 +105,70 @@ public class EmailAddressValueEditor extends CompositeValueEditor<EmailAddress>
                     LABEL_CATEGORY(), categories, getDefaultContactDataCategory());
                 editor.addClassName("category");
                 editor.setCellRenderer(new CustomCellRenderer(CommonButtonText.PLEASE_SELECT));
-                if(getRequiredFields().contains(EmailAddressField.category))
+                if (getRequiredFields().contains(EmailAddressField.category))
                 {
                     editor.setRequiredValueValidator();
                 }
                 return editor;
             };
         }
+
         /**
-         *   Set the Supplier for the category property.  By default, this is just a comboBox editor.
-         *   @param categorySupplier a Supplier for a ValueEditor
+         * Get the default ContactDataCategory to be used in the case of it not being selectable on the UI
+         *
+         * @return the default ContactDataCategory
+         */
+        @Nonnull
+        public ContactDataCategory getDefaultContactDataCategory()
+        {
+            return _defaultContactDataCategory;
+        }
+
+        /**
+         * Get an EnumSet of all required fields for the EmailAddress Editor.
+         * <br/>
+         * This is only used if the Supplier for the field has not been set.
+         * <br/>
+         * By default, the only required field is {@link EmailAddressField#email}
+         *
+         * @return EnumSet of required fields
+         */
+        @Nonnull
+        public EnumSet<EmailAddressField> getRequiredFields()
+        {
+            return _requiredFields;
+        }
+
+        /**
+         * Set an EnumSet of all required fields for the EmailAddress Editor.
+         * <br/>
+         * This is only used if the Supplier for the field has not been set.
+         * <br/>
+         * By default, the only required field is {@link EmailAddressField#email}
+         *
+         * @param requiredFields Array of required fields
+         */
+        public void setRequiredFields(@Nullable EmailAddressField... requiredFields)
+        {
+            _requiredFields.clear();
+            if (requiredFields != null)
+                Collections.addAll(_requiredFields, requiredFields);
+        }
+
+        /**
+         * Set the default ContactDataCategory to be used in the case of it not being selectable on the UI
+         *
+         * @param defaultContactDataCategory the default ContactDataCategory
+         */
+        public void setDefaultContactDataCategory(@Nonnull ContactDataCategory defaultContactDataCategory)
+        {
+            _defaultContactDataCategory = defaultContactDataCategory;
+        }
+
+        /**
+         * Set the Supplier for the category property.  By default, this is just a comboBox editor.
+         *
+         * @param categorySupplier a Supplier for a ValueEditor
          */
         public void setCategorySupplier(@Nullable Supplier<ValueEditor<?>> categorySupplier)
         {
@@ -193,30 +176,32 @@ public class EmailAddressValueEditor extends CompositeValueEditor<EmailAddress>
         }
 
         /**
-         *   Get the Supplier for the dataVisibility property.  By default, this is just a text editor.
-         *   @return a Supplier for a ValueEditor
+         * Get the Supplier for the dataVisibility property.  By default, this is just a text editor.
+         *
+         * @return a Supplier for a ValueEditor
          */
-        @SuppressWarnings("Duplicates")
         @Nonnull
         public Supplier<ValueEditor<?>> getDataVisibilitySupplier()
         {
-            if(_dataVisibilitySupplier != null)
+            if (_dataVisibilitySupplier != null)
             {
                 return _dataVisibilitySupplier;
             }
             return () -> {
                 TextEditor editor = new TextEditor(LABEL_DATA_VISIBILITY(), null);
                 editor.addClassName("data-visibility");
-                if(getRequiredFields().contains(EmailAddressField.dataVisibility))
+                if (getRequiredFields().contains(EmailAddressField.dataVisibility))
                 {
                     editor.setRequiredValueValidator();
                 }
                 return editor;
             };
         }
+
         /**
-         *   Set the Supplier for the dataVisibility property.  By default, this is just a text editor.
-         *   @param dataVisibilitySupplier a Supplier for a ValueEditor
+         * Set the Supplier for the dataVisibility property.  By default, this is just a text editor.
+         *
+         * @param dataVisibilitySupplier a Supplier for a ValueEditor
          */
         public void setDataVisibilitySupplier(@Nullable Supplier<ValueEditor<?>> dataVisibilitySupplier)
         {
@@ -224,14 +209,15 @@ public class EmailAddressValueEditor extends CompositeValueEditor<EmailAddress>
         }
 
         /**
-         *   Get the Supplier for the email property.  By default, this is a text editor that includes
-         *   validation that the input is a valid email address
-         *   @return a Supplier for a ValueEditor
+         * Get the Supplier for the email property.  By default, this is a text editor that includes
+         * validation that the input is a valid email address
+         *
+         * @return a Supplier for a ValueEditor
          */
         @Nonnull
         public Supplier<ValueEditor<?>> getEmailSupplier()
         {
-            if(_emailSupplier != null)
+            if (_emailSupplier != null)
             {
                 return _emailSupplier;
             }
@@ -245,21 +231,50 @@ public class EmailAddressValueEditor extends CompositeValueEditor<EmailAddress>
                 return editor;
             };
         }
+
         /**
-         *   Set the Supplier for the email property.  By default, this is a text editor that includes
-         *   validation that the input is a valid email address
-         *   @param emailSupplier a Supplier for a ValueEditor
+         * Set the Supplier for the email property.  By default, this is a text editor that includes
+         * validation that the input is a valid email address
+         *
+         * @param emailSupplier a Supplier for a ValueEditor
          */
         public void setEmailSupplier(@Nullable Supplier<ValueEditor<?>> emailSupplier)
         {
             _emailSupplier = emailSupplier;
+        }
+
+        /**
+         * Get an EnumSet of all included fields for the EmailAddress Editor.
+         * <br/>
+         * By default, the only included field is {@link EmailAddressField#email}
+         *
+         * @return EnumSet of included fields
+         */
+        @Nonnull
+        public EnumSet<EmailAddressField> getIncludedFields()
+        {
+            return _includedFields;
+        }
+
+        /**
+         * Set an EnumSet of all included fields for the EmailAddress Editor.
+         * <br/>
+         * By default, the only included field is {@link EmailAddressField#email}
+         *
+         * @param includedFields Array of included fields
+         */
+        public void setIncludedFields(@Nullable EmailAddressField... includedFields)
+        {
+            _includedFields.clear();
+            if (includedFields != null)
+                Collections.addAll(_includedFields, includedFields);
         }
     }
 
     private EmailAddressValueEditorConfig _config = new EmailAddressValueEditorConfig();
 
     /**
-     *   Instantiate a new instance of EmailAddressValueEditor
+     * Instantiate a new instance of EmailAddressValueEditor
      */
     public EmailAddressValueEditor()
     {
@@ -267,50 +282,28 @@ public class EmailAddressValueEditor extends CompositeValueEditor<EmailAddress>
     }
 
     /**
-     *   Instantiate a new instance of EmailAddressValueEditor
-     *   @param config the config for this EmailAddressValueEditor.  If null, uses a config with default values.
+     * Instantiate a new instance of EmailAddressValueEditor
+     *
+     * @param config the config for this EmailAddressValueEditor.  If null, uses a config with default values.
      */
     public EmailAddressValueEditor(@Nullable EmailAddressValueEditorConfig config)
     {
         super(EmailAddress.class);
-        if(config != null)
+        if (config != null)
             _config = config;
         addClassName("prop-group email-address");
         setNewInstanceSupplier(() -> new EmailAddress("hint: you didn't set the email field!"));
     }
 
     /**
-     *   Get the config for this EmailAddressValueEditor
-     *   @return the config
+     * Get the config for this EmailAddressValueEditor
+     *
+     * @return the config
      */
     @Nonnull
     public EmailAddressValueEditorConfig getConfig()
     {
         return _config;
-    }
-    /**
-     *   Set the config for this EmailAddressValueEditor
-     *   @param config the config
-     *   @return this
-     */
-    @Nonnull
-    public EmailAddressValueEditor withConfig(@Nonnull EmailAddressValueEditorConfig config)
-    {
-        _config = config;
-        return this;
-    }
-
-    @Override
-    public void init()
-    {
-        super.init();
-
-        if(_config.getIncludedFields().contains(EmailAddressField.category))
-            addEditorForProperty(_config.getCategorySupplier(), "category");
-        if(_config.getIncludedFields().contains(EmailAddressField.dataVisibility))
-            addEditorForProperty(_config.getDataVisibilitySupplier(), "dataVisibility");
-        if(_config.getIncludedFields().contains(EmailAddressField.email))
-            addEditorForProperty(_config.getEmailSupplier(), "email");
     }
 
     @SuppressWarnings("Duplicates")
@@ -319,11 +312,11 @@ public class EmailAddressValueEditor extends CompositeValueEditor<EmailAddress>
     public EmailAddress getUIValue(Level logErrorLevel)
     {
         EmailAddress result = super.getUIValue(logErrorLevel);
-        if(result != null)
+        if (result != null)
         {
-            if(!_config.getIncludedFields().contains(EmailAddressField.category))
+            if (!_config.getIncludedFields().contains(EmailAddressField.category))
                 result.setCategory(_config.getDefaultContactDataCategory());
-            if(StringFactory.isEmptyString(result.getEmail()))
+            if (StringFactory.isEmptyString(result.getEmail()))
                 result = null;
         }
         return result;
@@ -335,13 +328,40 @@ public class EmailAddressValueEditor extends CompositeValueEditor<EmailAddress>
     public EmailAddress commitValue() throws MIWTException
     {
         EmailAddress result = super.commitValue();
-        if(result != null)
+        if (result != null)
         {
-            if(!_config.getIncludedFields().contains(EmailAddressField.category))
+            if (!_config.getIncludedFields().contains(EmailAddressField.category))
                 result.setCategory(_config.getDefaultContactDataCategory());
-            if(StringFactory.isEmptyString(result.getEmail()))
+            if (StringFactory.isEmptyString(result.getEmail()))
                 result = null;
         }
         return result;
+    }
+
+    @Override
+    public void init()
+    {
+        super.init();
+
+        if (_config.getIncludedFields().contains(EmailAddressField.category))
+            addEditorForProperty(_config.getCategorySupplier(), "category");
+        if (_config.getIncludedFields().contains(EmailAddressField.dataVisibility))
+            addEditorForProperty(_config.getDataVisibilitySupplier(), "dataVisibility");
+        if (_config.getIncludedFields().contains(EmailAddressField.email))
+            addEditorForProperty(_config.getEmailSupplier(), "email");
+    }
+
+    /**
+     * Set the config for this EmailAddressValueEditor
+     *
+     * @param config the config
+     *
+     * @return this
+     */
+    @Nonnull
+    public EmailAddressValueEditor withConfig(@Nonnull EmailAddressValueEditorConfig config)
+    {
+        _config = config;
+        return this;
     }
 }

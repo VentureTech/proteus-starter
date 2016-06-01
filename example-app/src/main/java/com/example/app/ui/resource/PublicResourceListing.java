@@ -27,7 +27,6 @@ import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
 import net.proteusframework.internet.http.resource.ClassPathResourceLibraryHelper;
 import net.proteusframework.ui.management.ApplicationFunction;
-import net.proteusframework.ui.management.ParsedRequest;
 
 import static com.example.app.ui.resource.PublicResourceListingLOK.COMPONENT_NAME;
 
@@ -55,7 +54,7 @@ public class PublicResourceListing extends ResourceListing
     private ClassPathResourceLibraryHelper _classPathResourceLibraryHelper;
 
     /**
-     *   Instantiates a new Public Resource Listing
+     * Instantiates a new Public Resource Listing
      */
     public PublicResourceListing()
     {
@@ -67,12 +66,6 @@ public class PublicResourceListing extends ResourceListing
         setSortMethods(EnumSet.allOf(SortMethod.class));
     }
 
-    @Override
-    protected List<Repository> getRepositories()
-    {
-        return Collections.emptyList();
-    }
-
     /**
      * Post construction.
      */
@@ -82,10 +75,10 @@ public class PublicResourceListing extends ResourceListing
         setIcon(_classPathResourceLibraryHelper.createResource("lr/cms/icons/plan-resources.png"));
     }
 
-
-    @SuppressWarnings("unused") //Used by ApplicationFunction
-    void configure(ParsedRequest request)
+    @Override
+    protected List<Repository> getRepositories()
     {
-        //Do Nothing.
+        return Collections.emptyList();
     }
+
 }

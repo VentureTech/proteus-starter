@@ -32,6 +32,6 @@ public class ValueEditorValidator implements Validator
     @Override
     public boolean validate(Component component, Notifiable notifiable)
     {
-        return ((ValueEditor<?>)component).validateUIValue(notifiable);
+        return ((ValueEditor<?>) component).validateUIValue(notifiable);
     }
 }

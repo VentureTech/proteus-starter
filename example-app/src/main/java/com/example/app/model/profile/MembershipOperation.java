@@ -45,67 +45,19 @@ import net.proteusframework.core.locale.TextSource;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.ENTITY_DATA)
 public class MembershipOperation implements Entity<Integer>, Serializable, NamedObject
 {
-    private static final long serialVersionUID = 219265821931910750L;
-
     /** The database table name */
     public static final String TABLE_NAME = "MembershipOperation";
     /** The database id column */
     public static final String ID_COLUMN = "membershipOperation_id";
-    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + '.' + ID_COLUMN + "_seq";
-
     /** The database column and property: programmaticIdentifier */
     public static final String PROGRAMMATIC_IDENTIFIER_COLUMN_PROP = "programmaticIdentifier";
     /** The database column and property: name */
     public static final String NAME_COLUMN_PROP = "name";
-
+    private static final long serialVersionUID = 219265821931910750L;
+    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + '.' + ID_COLUMN + "_seq";
     private Integer _id;
     private String _programmaticIdentifier;
     private LocalizedObjectKey _name;
-
-    @Override
-    @Id
-    @Column(name = ID_COLUMN, unique = true)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = GENERATOR)
-    @SequenceGenerator(name = GENERATOR, sequenceName = GENERATOR)
-    @NotNull
-    public Integer getId()
-    {
-        return _id;
-    }
-
-    /**
-     * Set the identifier.
-     *
-     * @param id the identifier.
-     */
-    public void setId(@Nonnull Integer id)
-    {
-        _id = id;
-    }
-
-    /**
-     * Get the programmatic identifier
-     *
-     * @return the programmatic identifier
-     */
-    @Column(name = PROGRAMMATIC_IDENTIFIER_COLUMN_PROP, unique = true)
-    @NotNull
-    @Nonnull
-    @NotEmpty
-    public String getProgrammaticIdentifier()
-    {
-        return _programmaticIdentifier;
-    }
-
-    /**
-     * Set the programmatic identifier
-     *
-     * @param programmaticIdentifier the desired programmatic identifier
-     */
-    public void setProgrammaticIdentifier(@Nonnull String programmaticIdentifier)
-    {
-        _programmaticIdentifier = programmaticIdentifier;
-    }
 
     @Column(name = NAME_COLUMN_PROP)
     @NotNull
@@ -134,6 +86,43 @@ public class MembershipOperation implements Entity<Integer>, Serializable, Named
         return null;
     }
 
+    /**
+     * Get the programmatic identifier
+     *
+     * @return the programmatic identifier
+     */
+    @Column(name = PROGRAMMATIC_IDENTIFIER_COLUMN_PROP, unique = true)
+    @NotNull
+    @Nonnull
+    @NotEmpty
+    public String getProgrammaticIdentifier()
+    {
+        return _programmaticIdentifier;
+    }
+
+    /**
+     * Set the programmatic identifier
+     *
+     * @param programmaticIdentifier the desired programmatic identifier
+     */
+    public void setProgrammaticIdentifier(@Nonnull String programmaticIdentifier)
+    {
+        _programmaticIdentifier = programmaticIdentifier;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        if (getId() == null)
+        {
+            return System.identityHashCode(this);
+        }
+        else
+        {
+            return getId().hashCode();
+        }
+    }
+
     @Override
     public boolean equals(Object obj)
     {
@@ -153,15 +142,23 @@ public class MembershipOperation implements Entity<Integer>, Serializable, Named
     }
 
     @Override
-    public int hashCode()
+    @Id
+    @Column(name = ID_COLUMN, unique = true)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = GENERATOR)
+    @SequenceGenerator(name = GENERATOR, sequenceName = GENERATOR)
+    @NotNull
+    public Integer getId()
     {
-        if (getId() == null)
-        {
-            return System.identityHashCode(this);
-        }
-        else
-        {
-            return getId().hashCode();
-        }
+        return _id;
+    }
+
+    /**
+     * Set the identifier.
+     *
+     * @param id the identifier.
+     */
+    public void setId(@Nonnull Integer id)
+    {
+        _id = id;
     }
 }

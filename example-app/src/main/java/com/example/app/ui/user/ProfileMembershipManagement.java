@@ -98,8 +98,8 @@ import net.proteusframework.ui.search.QLResolverOptions;
 import net.proteusframework.users.model.Principal;
 import net.proteusframework.users.model.PrincipalStatus;
 
-import static com.example.app.ui.UIText.*;
 import static com.example.app.support.AppUtil.*;
+import static com.example.app.ui.UIText.*;
 import static com.example.app.ui.user.ProfileMembershipManagementLOK.*;
 import static com.example.app.ui.user.UserMembershipManagementLOK.BUTTON_TEXT_MODIFY;
 import static com.example.app.ui.user.UserMembershipManagementLOK.DELETE_CONFIRM_TEXT_FMT;
@@ -108,6 +108,7 @@ import static net.proteusframework.core.locale.TextSources.createText;
 /**
  * Management UI for Memberships between a Profile and User(s)
  * This UI doesn't persist any changes to Profile. Caller must do that.
+ *
  * @author Russ Tennant (russ@venturetech.net)
  */
 @SuppressWarnings("unused")
@@ -128,6 +129,11 @@ import static net.proteusframework.core.locale.TextSources.createText;
 @Configurable
 public class ProfileMembershipManagement extends HistoryContainer
 {
+    private final Set<MembershipType> _excludedMembershipTypes = new HashSet<>();
+    private final Set<MembershipType> _requiredMembershipTypes = new HashSet<>();
+    @Nonnull
+    private final Profile _profile;
+    private final ComboBox _activeConstraint = new ComboBox(new SimpleListModel<>(Arrays.asList(ACTIVE(), INACTIVE())));
     @Autowired
     private ProfileDAO _profileDAO;
     @Autowired
@@ -140,20 +146,33 @@ public class ProfileMembershipManagement extends HistoryContainer
     private ProfileTermProvider _terms;
     @Autowired
     private MembershipTypeProvider _membershipTypeProvider;
-
-    private final Set<MembershipType> _excludedMembershipTypes = new HashSet<>();
-    private final Set<MembershipType> _requiredMembershipTypes = new HashSet<>();
-
-    @Nonnull
-    private final Profile _profile;
-
-    private final ComboBox _activeConstraint = new ComboBox(new SimpleListModel<>(Arrays.asList(ACTIVE(), INACTIVE())));
     private DataColumnTable<Membership> _membershipTable;
     private boolean _allowEditActive;
 
+    private static boolean isOverlapped(List<Membership> list)
+    {
+        for (Membership m1 : list)
+        {
+            final Date startA = m1.getStartDate();
+            final Date endA = m1.getEndDate();
+
+            for (Membership m2 : list)
+            {
+                if (m1 == m2) continue;
+                final Date startB = m2.getStartDate();
+                final Date endB = m2.getEndDate();
+                if ((startA == null || endB == null || startA.before(endB) || startA.equals(endB))
+                    && (endA == null || startB == null || endA.after(startB) || endA.equals(startB)))
+                    return true;
+            }
+        }
+        return false;
+    }
+
     /**
-     *   Instantiate a new instance of UserMembershipManagement
-     *   @param profile the profile for which this manager is managing the Roles.
+     * Instantiate a new instance of UserMembershipManagement
+     *
+     * @param profile the profile for which this manager is managing the Roles.
      */
     public ProfileMembershipManagement(@Nonnull Profile profile)
     {
@@ -168,6 +187,7 @@ public class ProfileMembershipManagement extends HistoryContainer
      * Initialize a profile for use with this class.
      * <p>This is called in the constructor, but may be called elsewhere if this class
      * is instantiated with a detached entity.</p>
+     *
      * @param profile the profile
      */
     public static void initializeProfile(@Nonnull Profile profile)
@@ -195,33 +215,12 @@ public class ProfileMembershipManagement extends HistoryContainer
     }
 
     /**
-     * Test if user is allowed to edit the active properties of
-     * membership: {@link Membership#setStartDate(Date)} and {@link Membership#setEndDate(Date)}.
-     *
-     * @return true or false.
-     */
-    public boolean isAllowEditActive()
-    {
-        return _allowEditActive;
-    }
-
-    /**
-     * Set if user is allowed to edit the active properties of
-     * membership: {@link Membership#setStartDate(Date)} and {@link Membership#setEndDate(Date)}.
-     *
-     * @param allowEditActive the allow edit active
-     */
-    public void setAllowEditActive(boolean allowEditActive)
-    {
-        _allowEditActive = allowEditActive;
-    }
-
-    /**
      * Add one or more excluded membership types.
      * Excluded membership types will not be shown in the UI.
+     *
      * @param types the types.
      */
-    public void addExcludedMembershipType(@Nonnull  MembershipType ...types)
+    public void addExcludedMembershipType(@Nonnull MembershipType... types)
     {
         Collections.addAll(_excludedMembershipTypes, types);
     }
@@ -231,16 +230,25 @@ public class ProfileMembershipManagement extends HistoryContainer
      *
      * @param types the types.
      */
-    public void addRequiredMembershipType(@Nonnull  MembershipType ...types)
+    public void addRequiredMembershipType(@Nonnull MembershipType... types)
     {
         Collections.addAll(_requiredMembershipTypes, types);
         _requiredMembershipTypes.removeAll(_excludedMembershipTypes);
     }
 
-    @Nonnull
-    private Profile getProfile()
+    /**
+     * Get the membership for the membership type.
+     *
+     * @param membershipType the membership type.
+     *
+     * @return list of he membership.
+     */
+    public List<Membership> getMemberships(MembershipType membershipType)
     {
-        return _profile;
+        return getProfile().getMembershipSet().stream().filter(membership -> {
+            final MembershipType type = membership.getMembershipType();
+            return Objects.equals(type, membershipType);
+        }).collect(Collectors.toList());
     }
 
     @Override
@@ -250,11 +258,11 @@ public class ProfileMembershipManagement extends HistoryContainer
         setValidator(CompositeValidator.of(
             (component, notifiable) -> validateSupporters(notifiable),
             (component, notifiable) -> {
-                if(_requiredMembershipTypes.isEmpty())
+                if (_requiredMembershipTypes.isEmpty())
                     return true;
                 final HashSet<MembershipType> toCheck = new HashSet<>(_requiredMembershipTypes);
                 getProfile().getMembershipSet().forEach(membership -> toCheck.remove(membership.getMembershipType()));
-                toCheck.forEach( mt -> {
+                toCheck.forEach(mt -> {
                     NotificationImpl notification = new NotificationImpl(NotificationType.ERROR,
                         createText(CommonValidationText.ARG0_IS_REQUIRED, mt.getName()));
                     notification.setSource(this);
@@ -268,11 +276,11 @@ public class ProfileMembershipManagement extends HistoryContainer
         Hibernate.initialize(currentUser);
         Hibernate.initialize(currentUser.getPrincipal());
         Hibernate.initialize(currentUser.getPrincipal().getContact());
-        final Profile userProfile = _profileService.getOwnerProfileForUser(currentUser)
+        final Profile adminProfile = _profileService.getAdminProfileForUser(currentUser)
             .orElseThrow(() -> new IllegalArgumentException("A user must have a coaching entity."));
         final TimeZone timeZone = getSession().getTimeZone();
-        boolean isAdminish = _profileDAO.canOperate(currentUser, userProfile, timeZone, _mop.modifyCompany());
-        if(!_profileDAO.canOperate(currentUser, userProfile, timeZone, _mop.modifyUserRoles()))
+        boolean isAdminish = _profileDAO.canOperate(currentUser, adminProfile, timeZone, _mop.modifyCompany());
+        if (!_profileDAO.canOperate(currentUser, adminProfile, timeZone, _mop.modifyUserRoles()))
         {
             Label label = new Label(createText(INSUFFICIENT_PERMISSIONS(), _terms.membership()))
                 .withHTMLElement(HTMLElement.h3);
@@ -281,13 +289,14 @@ public class ProfileMembershipManagement extends HistoryContainer
         }
         final SimpleDateFormat dateFormat = getDateFormat(getLocaleContext().getLocale());
         dateFormat.setTimeZone(getSession().getTimeZone());
-        final DateFormatLabel dateRenderer = new DateFormatLabel(dateFormat){
+        final DateFormatLabel dateRenderer = new DateFormatLabel(dateFormat)
+        {
             @Override
             public Component getTableCellRendererComponent(Table table, Object cellValue, boolean isSelected, boolean hasFocus,
                 int row,
                 int column)
             {
-                Date value = (Date)cellValue;
+                Date value = (Date) cellValue;
                 value = toDate(convertFromPersisted(value, getSession().getTimeZone()));
                 return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             }
@@ -313,13 +322,14 @@ public class ProfileMembershipManagement extends HistoryContainer
             : new DataColumnTable<>(actionColumn, userColumn, membershipTypeColumn);
         _membershipTable.setTableCellRenderer(dateRenderer, Date.class);
         _membershipTable.getDefaultModel().setAutoReattachEntities(false);
-        _membershipTable.setRowModel(new RowModelImpl(){
+        _membershipTable.setRowModel(new RowModelImpl()
+        {
             @Override
             public Row getRow(Table table, int row)
             {
                 final Row r = super.getRow(table, row);
                 final Membership membership = _membershipTable.getDefaultModel().getRow(row);
-                if(membership.isActive())
+                if (membership.isActive())
                 {
                     r.removeClassName("member-inactive");
                     r.addClassName("member-active");
@@ -337,7 +347,8 @@ public class ProfileMembershipManagement extends HistoryContainer
         resolverOptions.setFetchSize(1);
         resolverOptions.setCacheRegion(ProjectCacheRegions.MEMBER_QUERY);
 
-        PushButton editOperationsBtn = new PushButton(BUTTON_TEXT_MODIFY()){
+        PushButton editOperationsBtn = new PushButton(BUTTON_TEXT_MODIFY())
+        {
             @Override
             public Component getTableCellRendererComponent(Table table, @Nullable Object value, boolean isSelected,
                 boolean hasFocus,
@@ -345,7 +356,7 @@ public class ProfileMembershipManagement extends HistoryContainer
             {
                 Membership mem = (Membership) value;
                 boolean hasOperations = false;
-                if(mem != null)
+                if (mem != null)
                 {
                     final QLBuilderImpl qb = new QLBuilderImpl(ProfileType.class, "ptAlias");
                     qb.setQLResolverOptions(resolverOptions);
@@ -356,7 +367,7 @@ public class ProfileMembershipManagement extends HistoryContainer
 
                     try (CloseableIterator<?> it = qb.getQueryResolver().iterate())
                     {
-                        if(it.hasNext())
+                        if (it.hasNext())
                         {
                             final Number next = (Number) it.next();
                             hasOperations = next.intValue() > 0;
@@ -406,12 +417,12 @@ public class ProfileMembershipManagement extends HistoryContainer
             reloadTableData();
         });
         Container actions = of("actions", editOperationsBtn);
-        if(isAllowEditActive())
+        if (isAllowEditActive())
         {
             actions.add(editActivationDatesBtn);
             actions.add(deactivateBtn);
         }
-        if(isAdminish)
+        if (isAdminish)
             actions.add(deleteBtn);
         final Column uiColumn = _membershipTable.getUIColumn(actionColumn);
         assert uiColumn != null;
@@ -428,11 +439,11 @@ public class ProfileMembershipManagement extends HistoryContainer
             .filter(membershipType -> !_excludedMembershipTypes.contains(membershipType))
             .sorted(new NamedObjectComparator(lc))
             .forEach(mt -> {
-            TextSource menuItemText = mt.getName();
-            MenuItem mi = new MenuItem(menuItemText);
-            mi.addActionListener(ev -> doSelectUserAndCreateMembership(mt));
-            menu.add(mi);
-        });
+                TextSource menuItemText = mt.getName();
+                MenuItem mi = new MenuItem(menuItemText);
+                mi.addActionListener(ev -> doSelectUserAndCreateMembership(mt));
+                menu.add(mi);
+            });
 
         _activeConstraint.setSelectedObject(ACTIVE());
         _activeConstraint.addActionListener(this::reloadTableData);
@@ -445,40 +456,122 @@ public class ProfileMembershipManagement extends HistoryContainer
         reloadTableData();
     }
 
-    void reloadTableData(ActionEvent actionEvent)
+    /**
+     * Test if user is allowed to edit the active properties of
+     * membership: {@link Membership#setStartDate(Date)} and {@link Membership#setEndDate(Date)}.
+     *
+     * @return true or false.
+     */
+    public boolean isAllowEditActive()
     {
-        reloadTableData();
+        return _allowEditActive;
     }
 
-    void reloadTableData()
+    /**
+     * Set if user is allowed to edit the active properties of
+     * membership: {@link Membership#setStartDate(Date)} and {@link Membership#setEndDate(Date)}.
+     *
+     * @param allowEditActive the allow edit active
+     */
+    public void setAllowEditActive(boolean allowEditActive)
     {
-        final Set<Membership> membershipSet = getProfile().getMembershipSet().stream()
-            .filter(membership -> !_excludedMembershipTypes.contains(membership.getMembershipType()))
-            .filter(membership -> {
-                if(ACTIVE().equals(_activeConstraint.getSelectedObject()))
-                    return membership.isActive();
-                else
-                    return !membership.isActive();
-            })
-            .collect(Collectors.toSet());
-        showHideConstraints();
-        _membershipTable.getDefaultModel().setRows(membershipSet);
+        _allowEditActive = allowEditActive;
     }
 
-    void showHideConstraints()
+    /**
+     * Validate the supporters.
+     *
+     * @param notifiable the notifiable.
+     *
+     * @return true of it's valid.
+     */
+    public boolean validateSupporters(Notifiable notifiable)
     {
-        final boolean hasInactive = getProfile().getMembershipSet().stream()
-            .filter(membership -> !membership.isActive())
-            .findAny().isPresent();
-        if(!hasInactive)
-        {
-            _activeConstraint.setSelectedObject(ACTIVE());
-            _activeConstraint.setVisible(false);
-        }
-        else
-        {
-            _activeConstraint.setVisible(true);
-        }
+        boolean valid = true;
+        // FUTURE : check for singleton membership types
+        return valid;
+    }
+
+    void doDatesEdit(@Nullable Membership membership)
+    {
+        if (membership == null)
+            return;
+        final MembershipType membershipType = membership.getMembershipType();
+        assert membershipType != null;
+        Label heading = new Label(createText(EDIT_DATES_UI_HEADING_FORMAT(),
+            membership.getUser().getName(), membershipType.getName()));
+        heading.setHTMLElement(HTMLElement.h3);
+        MessageContainer messages = new MessageContainer(35_000L);
+        PushButton saveButton = CommonActions.SAVE.push();
+        PushButton cancelButton = CommonActions.CANCEL.push();
+        RelativeOffsetRange range = new RelativeOffsetRange(5, 2);
+        CalendarValueEditor startDateEditor = new CalendarValueEditor(START_DATE(), membership.getStartDate(), range);
+        CalendarValueEditor endDateEditor = new CalendarValueEditor(END_DATE(), membership.getEndDate(), range);
+
+        Container ui = of("edit-membership prop-wrapper prop-editor",
+            messages,
+            heading,
+            of("prop-body", startDateEditor, endDateEditor),
+            of("actions persistence-actions bottom", saveButton, cancelButton));
+
+        ActionListener closer = ev -> ui.close();
+
+        saveButton.addActionListener(ev -> {
+            if (((Supplier<Boolean>) () -> {
+                final Date startDate = startDateEditor.commitValue();
+                final Date endDate = endDateEditor.commitValue();
+                membership.setStartDate(convertForPersistence(toZonedDateTime(startDate, getSession().getTimeZone())));
+                ZonedDateTime endDateTime = toZonedDateTime(endDate, getSession().getTimeZone());
+                membership.setEndDate(convertForPersistence(endDateTime != null
+                    ? endDateTime.minus(1, ChronoUnit.DAYS) : null));
+                if (startDate != null && endDate != null && startDate.after(endDate))
+                {
+                    messages.sendNotification(NotificationImpl.error(
+                        ERROR_START_DATE_AFTER_END_DATE()
+                    ));
+                    return false;
+                }
+                return true;
+            }).get())
+            {
+                closer.actionPerformed(ev);
+                showHideConstraints();
+            }
+        });
+        cancelButton.addActionListener(closer);
+
+        getHistory().add(new HistoryElement(ui));
+        navigateBackOnClose(ui);
+    }
+
+    void doOperationEdit(@Nullable Membership membership)
+    {
+        if (membership == null)
+            return;
+        MembershipOperationsEditorUI editor = new MembershipOperationsEditorUI(membership, getHistory());
+        PushButton saveButton = CommonActions.SAVE.push();
+        PushButton cancelButton = CommonActions.CANCEL.push();
+
+        Container ui = of("edit-membership prop-wrapper prop-editor",
+            editor,
+            of("actions persistence-actions bottom", saveButton, cancelButton));
+
+        ActionListener closer = ev -> ui.close();
+
+        saveButton.addActionListener(ev -> {
+            if (((Supplier<Boolean>) () -> {
+                membership.getOperations().clear();
+                membership.getOperations().addAll(editor.getSelectedOperations());
+                return true;
+            }).get())
+            {
+                closer.actionPerformed(ev);
+            }
+        });
+        cancelButton.addActionListener(closer);
+
+        getHistory().add(new HistoryElement(ui));
+        navigateBackOnClose(ui);
     }
 
     void doSelectUserAndCreateMembership(MembershipType membershipType)
@@ -554,130 +647,45 @@ public class ProfileMembershipManagement extends HistoryContainer
         });
     }
 
-    void doOperationEdit(@Nullable Membership membership)
+    void reloadTableData(ActionEvent actionEvent)
     {
-        if(membership == null)
-            return;
-        MembershipOperationsEditorUI editor = new MembershipOperationsEditorUI(membership, getHistory());
-        PushButton saveButton = CommonActions.SAVE.push();
-        PushButton cancelButton = CommonActions.CANCEL.push();
-
-        Container ui = of("edit-membership prop-wrapper prop-editor",
-                editor,
-                of("actions persistence-actions bottom", saveButton, cancelButton));
-
-        ActionListener closer = ev -> ui.close();
-
-        saveButton.addActionListener(ev -> {
-            if (((Supplier<Boolean>) () -> {
-                membership.getOperations().clear();
-                membership.getOperations().addAll(editor.getSelectedOperations());
-                return true;
-            }).get())
-            {
-                closer.actionPerformed(ev);
-            }
-        });
-        cancelButton.addActionListener(closer);
-
-        getHistory().add(new HistoryElement(ui));
-        navigateBackOnClose(ui);
+        reloadTableData();
     }
 
-    void doDatesEdit(@Nullable Membership membership)
+    void reloadTableData()
     {
-        if(membership == null)
-            return;
-        final MembershipType membershipType = membership.getMembershipType();
-        assert membershipType != null;
-        Label heading = new Label(createText(EDIT_DATES_UI_HEADING_FORMAT(),
-            membership.getUser().getName(), membershipType.getName()));
-        heading.setHTMLElement(HTMLElement.h3);
-        MessageContainer messages = new MessageContainer(35_000L);
-        PushButton saveButton = CommonActions.SAVE.push();
-        PushButton cancelButton = CommonActions.CANCEL.push();
-        RelativeOffsetRange range = new RelativeOffsetRange(5, 2);
-        CalendarValueEditor startDateEditor = new CalendarValueEditor(START_DATE(), membership.getStartDate(), range);
-        CalendarValueEditor endDateEditor = new CalendarValueEditor(END_DATE(), membership.getEndDate(), range);
-
-        Container ui = of("edit-membership prop-wrapper prop-editor",
-                messages,
-                heading,
-                of("prop-body", startDateEditor, endDateEditor),
-                of("actions persistence-actions bottom", saveButton, cancelButton));
-
-        ActionListener closer = ev -> ui.close();
-
-        saveButton.addActionListener(ev -> {
-            if (((Supplier<Boolean>) () -> {
-                final Date startDate = startDateEditor.commitValue();
-                final Date endDate = endDateEditor.commitValue();
-                membership.setStartDate(convertForPersistence(toZonedDateTime(startDate, getSession().getTimeZone())));
-                ZonedDateTime endDateTime = toZonedDateTime(endDate, getSession().getTimeZone());
-                membership.setEndDate(convertForPersistence(endDateTime != null
-                    ? endDateTime.minus(1, ChronoUnit.DAYS) : null));
-                if(startDate != null && endDate != null && startDate.after(endDate))
-                {
-                    messages.sendNotification(NotificationImpl.error(
-                        ERROR_START_DATE_AFTER_END_DATE()
-                    ));
-                    return false;
-                }
-                return true;
-            }).get())
-            {
-                closer.actionPerformed(ev);
-                showHideConstraints();
-            }
-        });
-        cancelButton.addActionListener(closer);
-
-        getHistory().add(new HistoryElement(ui));
-        navigateBackOnClose(ui);
+        final Set<Membership> membershipSet = getProfile().getMembershipSet().stream()
+            .filter(membership -> !_excludedMembershipTypes.contains(membership.getMembershipType()))
+            .filter(membership -> {
+                if (ACTIVE().equals(_activeConstraint.getSelectedObject()))
+                    return membership.isActive();
+                else
+                    return !membership.isActive();
+            })
+            .collect(Collectors.toSet());
+        showHideConstraints();
+        _membershipTable.getDefaultModel().setRows(membershipSet);
     }
 
-    /**
-     * Validate the supporters.
-     * @param notifiable the notifiable.
-     * @return true of it's valid.
-     */
-    public boolean validateSupporters(Notifiable notifiable)
+    @Nonnull
+    private Profile getProfile()
     {
-        boolean valid = true;
-        // FUTURE : check for singleton membership types
-        return valid;
+        return _profile;
     }
 
-    /**
-     * Get the membership for the membership type.
-     * @param membershipType the membership type.
-     * @return list of he membership.
-     */
-    public List<Membership> getMemberships(MembershipType membershipType)
+    void showHideConstraints()
     {
-        return getProfile().getMembershipSet().stream().filter(membership -> {
-            final MembershipType type = membership.getMembershipType();
-            return Objects.equals(type, membershipType);
-        }).collect(Collectors.toList());
-    }
-
-    private static boolean isOverlapped(List<Membership> list)
-    {
-        for (Membership m1 : list)
+        final boolean hasInactive = getProfile().getMembershipSet().stream()
+            .filter(membership -> !membership.isActive())
+            .findAny().isPresent();
+        if (!hasInactive)
         {
-            final Date startA = m1.getStartDate();
-            final Date endA = m1.getEndDate();
-
-            for (Membership m2 : list)
-            {
-                if (m1 == m2) continue;
-                final Date startB = m2.getStartDate();
-                final Date endB = m2.getEndDate();
-                if ((startA == null || endB == null || startA.before(endB) || startA.equals(endB))
-                    && (endA == null || startB == null || endA.after(startB) || endA.equals(startB)))
-                    return true;
-            }
+            _activeConstraint.setSelectedObject(ACTIVE());
+            _activeConstraint.setVisible(false);
         }
-        return false;
+        else
+        {
+            _activeConstraint.setVisible(true);
+        }
     }
 }

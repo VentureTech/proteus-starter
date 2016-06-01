@@ -35,6 +35,19 @@ public class InstantDayComparator implements Comparator<Instant>, Serializable
     private final TemporalDirection _direction;
 
     /**
+     * Get the singleton instance of InstantDayComparator that is used for sorting based on the given TemporalDirection
+     *
+     * @param direction the direction to sort.  {@link TemporalDirection#FUTURE} for ascending, {@link TemporalDirection#PAST}
+     * for descending.
+     *
+     * @return ActivityInstantComparator
+     */
+    public static InstantDayComparator getFromComputedTemporalDirection(TemporalDirection direction)
+    {
+        return direction == FUTURE ? getAscInstance() : getDescInstance();
+    }
+
+    /**
      * Get the singleton instance of InstantDayComparator that is used for sorting in ascending order
      *
      * @return ActivityInstantComparator
@@ -52,18 +65,6 @@ public class InstantDayComparator implements Comparator<Instant>, Serializable
     public static InstantDayComparator getDescInstance()
     {
         return _descInstance;
-    }
-
-    /**
-     * Get the singleton instance of InstantDayComparator that is used for sorting based on the given TemporalDirection
-     *
-     * @param direction the direction to sort.  {@link TemporalDirection#FUTURE} for ascending, {@link TemporalDirection#PAST}
-     * for descending.
-     * @return ActivityInstantComparator
-     */
-    public static InstantDayComparator getFromComputedTemporalDirection(TemporalDirection direction)
-    {
-        return direction == FUTURE ? getAscInstance() : getDescInstance();
     }
 
     /**

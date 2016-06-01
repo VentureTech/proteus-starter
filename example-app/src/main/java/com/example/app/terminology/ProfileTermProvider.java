@@ -131,6 +131,7 @@ public interface ProfileTermProvider extends Serializable
     /**
      * Return the term.
      * This is the profile type name that owns users.
+     *
      * @return the term.
      */
     TextSource userProfile();

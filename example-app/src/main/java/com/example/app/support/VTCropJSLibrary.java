@@ -40,8 +40,7 @@ public enum VTCropJSLibrary implements ClassPathResourceLibrary
     /** DndFile */
     DndFile("vtcrop/dnd-file.js"),
     /** VTCropPictureEditor */
-    VTCropPictureEditor("vtcrop/vt-img-cropper.js", DndFile, VTCrop)
-    ;
+    VTCropPictureEditor("vtcrop/vt-img-cropper.js", DndFile, VTCrop);
 
     @Component
     static class VTCropJSLibraryInjector
@@ -52,7 +51,7 @@ public enum VTCropJSLibrary implements ClassPathResourceLibrary
         @PostConstruct
         public void postConstruct()
         {
-            for(VTCropJSLibrary js : EnumSet.allOf(VTCropJSLibrary.class))
+            for (VTCropJSLibrary js : EnumSet.allOf(VTCropJSLibrary.class))
             {
                 js.setClassPathResourceLibraryHelper(_classPathResourceLibraryHelper);
             }
@@ -68,8 +67,9 @@ public enum VTCropJSLibrary implements ClassPathResourceLibrary
     private ClassPathResourceLibraryHelper _classPathResourceLibraryHelper;
 
     /**
-     *   Create a new instance with no dependencies
-     *   @param classPath the resource classpath
+     * Create a new instance with no dependencies
+     *
+     * @param classPath the resource classpath
      */
     VTCropJSLibrary(String classPath)
     {
@@ -78,9 +78,10 @@ public enum VTCropJSLibrary implements ClassPathResourceLibrary
     }
 
     /**
-     *   Create a new instance
-     *   @param classPath the resource classpath
-     *   @param dependencies list of dependencies
+     * Create a new instance
+     *
+     * @param classPath the resource classpath
+     * @param dependencies list of dependencies
      */
     VTCropJSLibrary(String classPath, ClassPathResourceLibrary... dependencies)
     {

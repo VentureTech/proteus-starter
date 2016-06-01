@@ -35,6 +35,7 @@ public class TimeZoneValueEditor extends ComboBoxValueEditor<TimeZone>
 {
     /**
      * The enum Timezone render style.
+     *
      * @author Alan Holt (aholt@venturetech.net)
      */
     public static enum TimezoneRenderStyle
@@ -69,15 +70,20 @@ public class TimeZoneValueEditor extends ComboBoxValueEditor<TimeZone>
             return _renderStyle;
         }
     }
+    private final TimezoneRenderStyle _renderStyle;
+    private final TextSource _nullValueLabel;
+    private final TimeZone _defaultValue;
 
     /**
-     *   Create a new instance of TimeZoneValueEditor by using TimeZone IDs rather than the TimeZones themselves.
-     *   @param label the Label for the editor
-     *   @param timeZones the TimeZones to include in the dropdown
-     *   @param defaultValue the initial selected TimeZone
-     *   @param renderStyle the render style of the TimeZones within the dropdown
-     *   @param nullValueLabel the label to use on a null value within the dropdown.  defaults to "Please Select"
-     *   @return a new instance of TimeZoneValueEditor
+     * Create a new instance of TimeZoneValueEditor by using TimeZone IDs rather than the TimeZones themselves.
+     *
+     * @param label the Label for the editor
+     * @param timeZones the TimeZones to include in the dropdown
+     * @param defaultValue the initial selected TimeZone
+     * @param renderStyle the render style of the TimeZones within the dropdown
+     * @param nullValueLabel the label to use on a null value within the dropdown.  defaults to "Please Select"
+     *
+     * @return a new instance of TimeZoneValueEditor
      */
     public static TimeZoneValueEditor create(@Nullable TextSource label, @NotNull List<String> timeZones,
         @Nullable String defaultValue, @NotNull TimezoneRenderStyle renderStyle, @Nullable TextSource nullValueLabel)
@@ -87,13 +93,15 @@ public class TimeZoneValueEditor extends ComboBoxValueEditor<TimeZone>
     }
 
     /**
-     *   Create a new instance of TimeZoneValueEditor by using TimeZone IDs rather than the TimeZones themselves.
-     *   @param label the Label for the editor
-     *   @param timeZones the TimeZones to include in the dropdown
-     *   @param defaultValue the initial selected TimeZone
-     *   @param renderStyle the render style of the TimeZones within the dropdown
-     *   @param nullValueLabel the label to use on a null value within the dropdown.  defaults to "Please Select"
-     *   @return a new instance of TimeZoneValueEditor
+     * Create a new instance of TimeZoneValueEditor by using TimeZone IDs rather than the TimeZones themselves.
+     *
+     * @param label the Label for the editor
+     * @param timeZones the TimeZones to include in the dropdown
+     * @param defaultValue the initial selected TimeZone
+     * @param renderStyle the render style of the TimeZones within the dropdown
+     * @param nullValueLabel the label to use on a null value within the dropdown.  defaults to "Please Select"
+     *
+     * @return a new instance of TimeZoneValueEditor
      */
     public static TimeZoneValueEditor create(@Nullable TextSource label, @NotNull List<String> timeZones,
         @Nullable TimeZone defaultValue, @NotNull TimezoneRenderStyle renderStyle, @Nullable TextSource nullValueLabel)
@@ -102,17 +110,14 @@ public class TimeZoneValueEditor extends ComboBoxValueEditor<TimeZone>
         return new TimeZoneValueEditor(label, options, defaultValue, renderStyle, nullValueLabel);
     }
 
-    private final TimezoneRenderStyle _renderStyle;
-    private final TextSource _nullValueLabel;
-    private final TimeZone _defaultValue;
-
     /**
-     *   Instantiate a new instance of TimeZoneValueEditor
-     *   @param label the Label for the editor
-     *   @param timeZones the TimeZones to include in the dropdown
-     *   @param defaultValue the initial selected TimeZone
-     *   @param renderStyle the render style of the TimeZones within the dropdown
-     *   @param nullValueLabel the label to use on a null value within the dropdown.  defaults to "Please Select"
+     * Instantiate a new instance of TimeZoneValueEditor
+     *
+     * @param label the Label for the editor
+     * @param timeZones the TimeZones to include in the dropdown
+     * @param defaultValue the initial selected TimeZone
+     * @param renderStyle the render style of the TimeZones within the dropdown
+     * @param nullValueLabel the label to use on a null value within the dropdown.  defaults to "Please Select"
      */
     public TimeZoneValueEditor(@Nullable TextSource label, @NotNull List<TimeZone> timeZones, @Nullable TimeZone defaultValue,
         @NotNull TimezoneRenderStyle renderStyle, @Nullable TextSource nullValueLabel)
@@ -130,8 +135,8 @@ public class TimeZoneValueEditor extends ComboBoxValueEditor<TimeZone>
     public void init()
     {
         setCellRenderer(new CustomCellRenderer(_nullValueLabel, input -> {
-            TimeZone tz = (TimeZone)input;
-            if(_renderStyle != TimezoneRenderStyle.ID)
+            TimeZone tz = (TimeZone) input;
+            if (_renderStyle != TimezoneRenderStyle.ID)
             {
                 return tz.getDisplayName(false, _renderStyle.getRenderStyle(), getLocaleContext().getLocale());
             }

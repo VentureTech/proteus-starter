@@ -71,18 +71,11 @@ import static com.i2rd.users.miwt.PrincipalRenderer.DEFAULT_FORMAT_WITHOUT_USER;
 @BatchSize(size = 10)
 @Audited
 @SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + User.TABLE_NAME
-    + " SET " + User.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + User.ID_COLUMN + " = ?")
+                 + " SET " + User.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + User.ID_COLUMN + " = ?")
 public class User extends AbstractAuditableSoftDeleteEntity implements NamedObject
 {
-    /** the serial version UID */
-    private static final long serialVersionUID = -5249238131672936683L;
-
     /** the database table name for this entity */
     public static final String TABLE_NAME = "User";
-
-    /** the ID generator identifier for this entity */
-    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + ".user_id_seq";
-
     /** the database id column for this entity */
     public static final String ID_COLUMN = "user_id";
     /** the database column name for the property: principal */
@@ -111,12 +104,14 @@ public class User extends AbstractAuditableSoftDeleteEntity implements NamedObje
     public static final String PREFERRED_CONTACT_METHOD_PROP = "preferredContactMethod";
     /** The database column for property: preferredContactMethodProcess */
     public static final String PREFERRED_CONTACT_METHOD_COLUMN = "preferredContactMethod";
-
     /** Preference Node for Login */
-    public static final String LOGIN_PREF_NODE  = "LOGIN_PREF";
-    /** Prefernce for Login Landing Page*/
+    public static final String LOGIN_PREF_NODE = "LOGIN_PREF";
+    /** Prefernce for Login Landing Page */
     public static final String LOGIN_PREF_NODE_LANDING_PAGE = "LANDING_PAGE";
-
+    /** the serial version UID */
+    private static final long serialVersionUID = -5249238131672936683L;
+    /** the ID generator identifier for this entity */
+    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + ".user_id_seq";
     /** the underlying principal for this user */
     private Principal _principal;
     /** the user image for this user */
@@ -144,6 +139,50 @@ public class User extends AbstractAuditableSoftDeleteEntity implements NamedObje
         super();
     }
 
+    /**
+     * Get the user's Facebook profile URL
+     *
+     * @return the user's Facebook profile URL
+     */
+    @Column(name = FACEBOOK_LINK_COLUMN_PROP)
+    @URL
+    public String getFacebookLink()
+    {
+        return _facebookLink;
+    }
+
+    /**
+     * Set the user's Facebook profile URL
+     *
+     * @param facebookLink the user's Facebook profile URL
+     */
+    public void setFacebookLink(String facebookLink)
+    {
+        _facebookLink = facebookLink;
+    }
+
+    /**
+     * Get the user's Google Plus profile URL
+     *
+     * @return the user's Google Plus profile URL
+     */
+    @Column(name = GOOGLEPLUS_LINK_COLUMN_PROP)
+    @URL
+    public String getGooglePlusLink()
+    {
+        return _googlePlusLink;
+    }
+
+    /**
+     * Set the user's Google Plus profile URL
+     *
+     * @param googlePlusLink the user's Google Plus profile URL
+     */
+    public void setGooglePlusLink(String googlePlusLink)
+    {
+        _googlePlusLink = googlePlusLink;
+    }
+
     @Id
     @Column(name = ID_COLUMN)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = GENERATOR)
@@ -155,32 +194,9 @@ public class User extends AbstractAuditableSoftDeleteEntity implements NamedObje
     }
 
     /**
-    *   Get the underlying {@link Principal} for this
-    *   @return the underlying Principal for this
-    */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = PRINCIPAL_COLUMN, unique = true)
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
-    @NotNull
-    @Nonnull
-    public Principal getPrincipal()
-    {
-        return _principal;
-    }
-
-    /**
-     *   Set the underlying {@link Principal} for this
-     *   @param principal the new underlying Principal for this
-     */
-    public void setPrincipal(Principal principal)
-    {
-        _principal = principal;
-    }
-
-    /**
-     *   Get this User's Image {@link FileEntity}
-     *   @return this User's Image FileEntity
+     * Get this User's Image {@link FileEntity}
+     *
+     * @return this User's Image FileEntity
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = IMAGE_COLUMN)
@@ -192,17 +208,19 @@ public class User extends AbstractAuditableSoftDeleteEntity implements NamedObje
     }
 
     /**
-     *   Set this User's Image {@link FileEntity}
-     *   @param image the new Image
+     * Set this User's Image {@link FileEntity}
+     *
+     * @param image the new Image
      */
-    public void setImage(@Nullable  FileEntity image)
+    public void setImage(@Nullable FileEntity image)
     {
         _image = image;
     }
 
     /**
-     *   Get the user's LinkedIn profile URL
-     *   @return the user's LinkedIn profile URL
+     * Get the user's LinkedIn profile URL
+     *
+     * @return the user's LinkedIn profile URL
      */
     @Column(name = LINKEDIN_LINK_COLUMN_PROP)
     @URL
@@ -212,17 +230,111 @@ public class User extends AbstractAuditableSoftDeleteEntity implements NamedObje
     }
 
     /**
-     *   Set the user's LinkedIn profile URL
-     *   @param linkedInLink the user's LinkedIn profile URL
+     * Set the user's LinkedIn profile URL
+     *
+     * @param linkedInLink the user's LinkedIn profile URL
      */
     public void setLinkedInLink(String linkedInLink)
     {
         _linkedInLink = linkedInLink;
     }
 
+    @Transient
+    @Nonnull
+    @Override
+    public TextSource getName()
+    {
+        PrincipalRenderer renderer = new PrincipalRenderer();
+        renderer.setFormat(DEFAULT_FORMAT_WITHOUT_USER);
+        return renderer.getFormattedTextSource(getPrincipal());
+    }
+
     /**
-     *   Get the user's Twitter profile URL
-     *   @return the user's Twitter profile URL
+     * Get the underlying {@link Principal} for this
+     *
+     * @return the underlying Principal for this
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = PRINCIPAL_COLUMN, unique = true)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @NotNull
+    @Nonnull
+    public Principal getPrincipal()
+    {
+        return _principal;
+    }
+
+    /**
+     * Set the underlying {@link Principal} for this
+     *
+     * @param principal the new underlying Principal for this
+     */
+    public void setPrincipal(Principal principal)
+    {
+        _principal = principal;
+    }
+
+    @Transient
+    @Nullable
+    @Override
+    public TextSource getDescription()
+    {
+        return new PrincipalRenderer().getFormattedTextSource(getPrincipal());
+    }
+
+    /**
+     * Get the preferred contact method.
+     *
+     * @return the preferred contact method.
+     */
+    @Column(name = PREFERRED_CONTACT_METHOD_COLUMN)
+    @Enumerated(EnumType.STRING)
+    @Nullable
+    public ContactMethod getPreferredContactMethod()
+    {
+        return _preferredContactMethod;
+    }
+
+    /**
+     * Set the preferred contact method.
+     *
+     * @param preferredContactMethod the preferred contact method
+     */
+    public void setPreferredContactMethod(@Nullable ContactMethod preferredContactMethod)
+    {
+        _preferredContactMethod = preferredContactMethod;
+    }
+
+    /**
+     * Get the preferred phone number for receiving SMS messages for this User
+     *
+     * @return phone number
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = SMS_PHONE_COLUMN)
+    @Cascade(CascadeType.ALL)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Nullable
+    public PhoneNumber getSmsPhone()
+    {
+        return _smsPhone;
+    }
+
+    /**
+     * Set the preferred phone number ofr receiving SMS messages for this User
+     *
+     * @param smsPhone phone number
+     */
+    public void setSmsPhone(@Nullable PhoneNumber smsPhone)
+    {
+        _smsPhone = smsPhone;
+    }
+
+    /**
+     * Get the user's Twitter profile URL
+     *
+     * @return the user's Twitter profile URL
      */
     @Column(name = TWITTER_LINK_COLUMN_PROP)
     @URL
@@ -232,8 +344,9 @@ public class User extends AbstractAuditableSoftDeleteEntity implements NamedObje
     }
 
     /**
-     *   Set the user's Twitter profile URL
-     *   @param twitterLink the user's Twitter profile URL
+     * Set the user's Twitter profile URL
+     *
+     * @param twitterLink the user's Twitter profile URL
      */
     public void setTwitterLink(String twitterLink)
     {
@@ -241,48 +354,9 @@ public class User extends AbstractAuditableSoftDeleteEntity implements NamedObje
     }
 
     /**
-     *   Get the user's Facebook profile URL
-     *   @return the user's Facebook profile URL
-     */
-    @Column(name = FACEBOOK_LINK_COLUMN_PROP)
-    @URL
-    public String getFacebookLink()
-    {
-        return _facebookLink;
-    }
-
-    /**
-     *   Set the user's Facebook profile URL
-     *   @param facebookLink the user's Facebook profile URL
-     */
-    public void setFacebookLink(String facebookLink)
-    {
-        _facebookLink = facebookLink;
-    }
-
-    /**
-     *   Get the user's Google Plus profile URL
-     *   @return the user's Google Plus profile URL
-     */
-    @Column(name = GOOGLEPLUS_LINK_COLUMN_PROP)
-    @URL
-    public String getGooglePlusLink()
-    {
-        return _googlePlusLink;
-    }
-
-    /**
-     *   Set the user's Google Plus profile URL
-     *   @param googlePlusLink the user's Google Plus profile URL
-     */
-    public void setGooglePlusLink(String googlePlusLink)
-    {
-        _googlePlusLink = googlePlusLink;
-    }
-
-    /**
-     *   Get list of {@link UserPosition}s that this user holds or has held
-     *   @return list of UserPositions
+     * Get list of {@link UserPosition}s that this user holds or has held
+     *
+     * @return list of UserPositions
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = UserPosition.USER_PROP)
     @Cascade(CascadeType.ALL)
@@ -296,72 +370,13 @@ public class User extends AbstractAuditableSoftDeleteEntity implements NamedObje
     }
 
     /**
-     *   Set list of {@link UserPosition}s that this user holds or has held
-     *   @param userPositions list of UserPositions
+     * Set list of {@link UserPosition}s that this user holds or has held
+     *
+     * @param userPositions list of UserPositions
      */
     public void setUserPositions(List<UserPosition> userPositions)
     {
         _userPositions = userPositions;
-    }
-
-    @Transient
-    @Nonnull
-    @Override
-    public TextSource getName()
-    {
-        PrincipalRenderer renderer = new PrincipalRenderer();
-        renderer.setFormat(DEFAULT_FORMAT_WITHOUT_USER);
-        return renderer.getFormattedTextSource(getPrincipal());
-    }
-
-    @Transient
-    @Nullable
-    @Override
-    public TextSource getDescription()
-    {
-        return new PrincipalRenderer().getFormattedTextSource(getPrincipal());
-    }
-
-    /**
-     *   Get the preferred phone number for receiving SMS messages for this User
-     *   @return phone number
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = SMS_PHONE_COLUMN)
-    @Cascade(CascadeType.ALL)
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @Nullable
-    public PhoneNumber getSmsPhone()
-    {
-        return _smsPhone;
-    }
-    /**
-     *   Set the preferred phone number ofr receiving SMS messages for this User
-     *   @param smsPhone phone number
-     */
-    public void setSmsPhone(@Nullable PhoneNumber smsPhone)
-    {
-        _smsPhone = smsPhone;
-    }
-
-    /**
-     *   Get the preferred contact method.
-     *   @return the preferred contact method.
-     */
-    @Column(name = PREFERRED_CONTACT_METHOD_COLUMN)
-    @Enumerated(EnumType.STRING)
-    @Nullable
-    public ContactMethod getPreferredContactMethod()
-    {
-        return _preferredContactMethod;
-    }
-    /**
-     *   Set the preferred contact method.
-     *   @param preferredContactMethod the preferred contact method
-     */
-    public void setPreferredContactMethod(@Nullable ContactMethod preferredContactMethod)
-    {
-        _preferredContactMethod = preferredContactMethod;
     }
 
 }

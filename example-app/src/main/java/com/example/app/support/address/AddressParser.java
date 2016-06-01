@@ -219,10 +219,10 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.example.app.support.address.AddressRegexLibrary.*;
 import static com.example.app.support.address.AddressComponent.*;
 import static com.example.app.support.address.AddressComponent.LINE2;
 import static com.example.app.support.address.AddressComponent.NUMBER;
+import static com.example.app.support.address.AddressRegexLibrary.*;
 //CHECKSTYLE:OFF
 
 //TODO: support theses
@@ -245,68 +245,10 @@ public class AddressParser
     private static final Pattern CLEANUP = Pattern.compile("^\\W+|\\W+$|[\\s\\p{Punct}&&[^\\)\\(#&,:;@'`-]]");
     private static final Pattern STREET_TYPES = Pattern.compile(RegexLibrary.STREET_DESIGNATOR);
     private static final Pattern STATES = Pattern.compile(RegexLibrary.US_STATES);
-
-    private static String getCleanSttring(String rawAddr)
-    {
-        return CLEANUP.matcher(rawAddr).replaceAll(" ").replaceAll("\\s+", " ").trim();
-    }
-
-    /**
-     * Parses a raw address string
-     *
-     * @param rawAddr the raw address
-     * @param autoCorrectStateSpelling swith on/off auto correction on state mis-spelling
-     *
-     * @return a map of parsed address components
-     */
-    private static Map<AddressComponent, String> jGeocodeParseAddress(String rawAddr, boolean autoCorrectStateSpelling)
-    {
-        rawAddr = getCleanSttring(rawAddr);
-        if (autoCorrectStateSpelling)
-        {
-            rawAddr = SpellingCorrector.correctStateSpelling(rawAddr);
-        }
-        Matcher m = STREET_ADDRESS.matcher(rawAddr);
-        Map<AddressComponent, String> ret = null;
-        if (m.matches())
-        {
-            ret = getAddrMap(m, P_STREET_ADDRESS.getNamedGroupMap());
-            postProcess(ret);
-            String splitRawAddr = null;
-            String line12sep = ret.get(TLID);//HACK!
-            if (!line12sep.contains(",")
-                && (splitRawAddr = designatorConfusingCitiesCorrection(ret, rawAddr)) != null)
-            {
-                m = STREET_ADDRESS.matcher(splitRawAddr);
-                if (m.matches())
-                {
-                    ret = getAddrMap(m, P_STREET_ADDRESS.getNamedGroupMap());
-                    ret.remove(TLID);//HACK!
-                    return ret;
-                }
-            }
-            ret.remove(TLID);//HACK!
-        }
-        m = CORNER.matcher(rawAddr);
-        if (ret == null && m.find())
-        {
-            m = INTERSECTION.matcher(rawAddr);
-            if (m.matches())
-            {
-                ret = getAddrMap(m, P_INTERSECTION.getNamedGroupMap());
-            }
-        }
-
-        if (ret == null)
-        {
-            m = CSZ.matcher(rawAddr);
-            if (m.matches())
-            {
-                ret = getAddrMap(m, P_CSZ.getNamedGroupMap());
-            }
-        }
-        return ret;
-    }
+    //TODO: document this craziness
+    private static final Pattern STREET_DESIGNATOR_CHECK = Pattern.compile("\\b(?i:(?:" + RegexLibrary.STREET_DESIGNATOR + "))\\b");
+    //code used to replace hashcodes so they don't get removed by the address parser
+    private static final String HASHCODE_VALUE = "48914631374";
 
     /**
      * Parses a raw address string, this delegates to {@linkplain AddressParser#parseAddress(String, boolean)}
@@ -320,107 +262,6 @@ public class AddressParser
     {
         return parseAddress(rawAddr, true);
     }
-
-    private static void postProcess(Map<AddressComponent, String> m)
-    {
-        //these are (temporary?) hacks...
-        if (m.get(TYPE) == null && m.get(STREET) != null
-            && STREET_TYPES.matcher(m.get(STREET).toUpperCase()).matches())
-        {
-            m.put(TYPE, m.get(STREET));
-            m.put(STREET, m.get(PREDIR));
-            m.put(PREDIR, null);
-        }
-        if (m.get(STATE) == null && m.get(LINE2) != null
-            && STATES.matcher(m.get(LINE2).toUpperCase()).matches())
-        {
-            m.put(STATE, m.get(LINE2));
-            m.put(LINE2, null);
-        }
-    }
-
-    private static Map<AddressComponent, String> getAddrMap(Matcher m, Map<Integer, String> groupMap)
-    {
-        Map<AddressComponent, String> ret = new EnumMap<AddressComponent, String>(AddressComponent.class);
-        for (int i = 1; i <= m.groupCount(); i++)
-        {
-            String name = groupMap.get(i);
-            AddressComponent comp = valueOf(name);
-            if (ret.get(comp) == null)
-            {
-                putIfNotNull(ret, comp, m.group(i));
-            }
-        }
-        return ret;
-    }
-
-    private static void putIfNotNull(Map<AddressComponent, String> m, AddressComponent ac, String v)
-    {
-        if (v != null)
-            m.put(ac, v);
-    }
-
-    //TODO: document this craziness
-    private static final Pattern STREET_DESIGNATOR_CHECK = Pattern.compile("\\b(?i:(?:" + RegexLibrary.STREET_DESIGNATOR + "))\\b");
-
-    private static String designatorConfusingCitiesCorrection(Map<AddressComponent, String> parsedLocation, String input)
-    {
-        String street = parsedLocation.get(STREET);
-        String type = parsedLocation.get(TYPE);
-        String line2 = parsedLocation.get(LINE2);
-        if (street == null || type == null || line2 != null || street.split(" ").length < 2)
-        {
-            return null;
-        }
-        Matcher m = STREET_DESIGNATOR_CHECK.matcher(street);
-        if (m.find())
-        {
-            String parsedstate = parsedLocation.get(STATE);
-            if (parsedstate == null)
-            {
-                String parsedcity = parsedLocation.get(CITY);
-                if (parsedcity != null && parsedcity.length() == 2)
-                {
-                    parsedstate = parsedcity;
-                }
-            }
-            String normalizedState = AddressStandardizer.normalizeState(StringUtils.upperCase(parsedstate));
-            String inputUpper = input.toUpperCase();
-            String ret = null;
-            Set<String> stateSet = new HashSet<String>();
-            if (normalizedState != null)
-            {
-                stateSet.add(normalizedState);
-            }
-            else
-            { //if no state in put, this needs to work much harder
-                stateSet.addAll(SpecialData.C_MAP.keySet());
-            }
-            int stateIdx = parsedstate == null ? input.length() : input.lastIndexOf(parsedstate);
-            for (String state : stateSet)
-            {
-                for (String s : SpecialData.C_MAP.get(state))
-                {
-                    int idx = -1;
-                    if ((idx = inputUpper.lastIndexOf(s)) != -1)
-                    { //and the input has one of the city names that can confuse the parser
-                        //this almost guaranteed to break the parser, help the parser by putting a comma separator before the city
-                        if (idx + s.length() >= stateIdx - 2)
-                        {
-                            return input.substring(0, idx) + "," + input.substring(idx);
-                        }
-                    }
-                }
-            }
-            return ret;
-        }
-        return null;
-
-    }
-
-    //code used to replace hashcodes so they don't get removed by the address parser
-    private static final String HASHCODE_VALUE = "48914631374";
-
 
     /**
      * This is the main method that calls all the other method
@@ -501,7 +342,7 @@ public class AddressParser
      */
     private static Map<String, String> getReplacementStrings()
     {
-        Map<String, String> replacementMap = new HashMap<String, String>();
+        Map<String, String> replacementMap = new HashMap<>();
         replacementMap.put("Undefined", "TBD"); // replace Undefined with TBD
         replacementMap.put("undefined", "TBD"); // replace undefined with TBD
         replacementMap.put("UNDEFINED", "TBD"); // replace undefined with TBD
@@ -540,80 +381,6 @@ public class AddressParser
             stringToEscape = stringToEscape.replaceAll(key, codeMaps.get(key));
         }
         return stringToEscape;
-    }
-
-    /**
-     * This method takes a map containing fill values that were
-     * temporarily inserted into the address, mapped to
-     * the strings that they originally replaced. Next, this
-     * method iterates through the split up street fields and
-     * replaces instances of the fillvalues with their originals.
-     *
-     * @param results parse results.
-     * @param codeMaps code maps.
-     *
-     * @return the parse results.
-     */
-
-    private static Map<AddressComponent, String> replaceOriginalStringsInSplitUpFields(Map<AddressComponent, String> results,
-        BiMap<String, String> codeMaps)
-    {
-        for (String oldString : codeMaps.keySet()) // contains a map of the form <stringToBeReplaced><StringToReplaceWith>
-        {
-
-            for (AddressComponent fieldKey : results.keySet())
-            {
-                if (results.get(fieldKey) == null) // only update fields that are not null
-                {
-                    continue;
-                }
-                else
-                {
-                    String originalString = results.get(fieldKey);
-                    String updatedString = originalString.replaceAll(oldString, codeMaps.get(oldString));
-                    results.put(fieldKey, updatedString);
-                }
-            }
-        }
-        return results;
-    }
-
-    /**
-     * This method stores the strings that match regular
-     * expressions in the regular expression map and
-     * returns a map containing the strings as well as
-     * the fill values they are being replaced with.
-     *
-     * @param address the address.
-     * @param regexpMap regex mapping.
-     *
-     * @return results.
-     */
-    private static HashBiMap<String, String> getMatchingStrings(String address, Map<String, String> regexpMap)
-    {
-        HashBiMap<String, String> matchingStrings = HashBiMap.create();
-        for (String key : regexpMap.keySet())
-        {
-            Pattern p = Pattern.compile(key);
-            Matcher m = p.matcher(address);
-            boolean matching = m.find();
-
-            if (matching)
-            {
-                String from = m.group(1);
-                String to = regexpMap.get(key);
-                matchingStrings.put(from, to);
-            }
-            /*if (m.find())
-            {
-                // If there are two of these regex patterns in the address this may cause an error,
-                // as only one will be replaced by the filler string
-
-                logger.debug("~~~Warning~~~ -- multiple matches found for regexp: " + key + "\n" +
-                        "On address: " + address);
-            }*/
-        }
-        return matchingStrings;
     }
 
     /**
@@ -701,6 +468,44 @@ public class AddressParser
         savedRegexpStrings.put("(\\d{5}\\-\\d{4})", "zipCodeRegExp");
 
         return savedRegexpStrings;
+    }
+
+    /**
+     * This method stores the strings that match regular
+     * expressions in the regular expression map and
+     * returns a map containing the strings as well as
+     * the fill values they are being replaced with.
+     *
+     * @param address the address.
+     * @param regexpMap regex mapping.
+     *
+     * @return results.
+     */
+    private static HashBiMap<String, String> getMatchingStrings(String address, Map<String, String> regexpMap)
+    {
+        HashBiMap<String, String> matchingStrings = HashBiMap.create();
+        for (String key : regexpMap.keySet())
+        {
+            Pattern p = Pattern.compile(key);
+            Matcher m = p.matcher(address);
+            boolean matching = m.find();
+
+            if (matching)
+            {
+                String from = m.group(1);
+                String to = regexpMap.get(key);
+                matchingStrings.put(from, to);
+            }
+            /*if (m.find())
+            {
+                // If there are two of these regex patterns in the address this may cause an error,
+                // as only one will be replaced by the filler string
+
+                logger.debug("~~~Warning~~~ -- multiple matches found for regexp: " + key + "\n" +
+                        "On address: " + address);
+            }*/
+        }
+        return matchingStrings;
     }
 
     /**
@@ -855,6 +660,115 @@ public class AddressParser
     }
 
     /**
+     * This method takes a map containing fill values that were
+     * temporarily inserted into the address, mapped to
+     * the strings that they originally replaced. Next, this
+     * method iterates through the split up street fields and
+     * replaces instances of the fillvalues with their originals.
+     *
+     * @param results parse results.
+     * @param codeMaps code maps.
+     *
+     * @return the parse results.
+     */
+
+    private static Map<AddressComponent, String> replaceOriginalStringsInSplitUpFields(Map<AddressComponent, String> results,
+        BiMap<String, String> codeMaps)
+    {
+        for (String oldString : codeMaps.keySet()) // contains a map of the form <stringToBeReplaced><StringToReplaceWith>
+        {
+
+            for (AddressComponent fieldKey : results.keySet())
+            {
+                if (results.get(fieldKey) == null) // only update fields that are not null
+                {
+                    continue;
+                }
+                else
+                {
+                    String originalString = results.get(fieldKey);
+                    String updatedString = originalString.replaceAll(oldString, codeMaps.get(oldString));
+                    results.put(fieldKey, updatedString);
+                }
+            }
+        }
+        return results;
+    }
+
+    /**
+     * Parses a raw address string
+     *
+     * @param rawAddr the raw address
+     * @param autoCorrectStateSpelling swith on/off auto correction on state mis-spelling
+     *
+     * @return a map of parsed address components
+     */
+    private static Map<AddressComponent, String> jGeocodeParseAddress(String rawAddr, boolean autoCorrectStateSpelling)
+    {
+        rawAddr = getCleanSttring(rawAddr);
+        if (autoCorrectStateSpelling)
+        {
+            rawAddr = SpellingCorrector.correctStateSpelling(rawAddr);
+        }
+        Matcher m = STREET_ADDRESS.matcher(rawAddr);
+        Map<AddressComponent, String> ret = null;
+        if (m.matches())
+        {
+            ret = getAddrMap(m, P_STREET_ADDRESS.getNamedGroupMap());
+            postProcess(ret);
+            String splitRawAddr = null;
+            String line12sep = ret.get(TLID);//HACK!
+            if (!line12sep.contains(",")
+                && (splitRawAddr = designatorConfusingCitiesCorrection(ret, rawAddr)) != null)
+            {
+                m = STREET_ADDRESS.matcher(splitRawAddr);
+                if (m.matches())
+                {
+                    ret = getAddrMap(m, P_STREET_ADDRESS.getNamedGroupMap());
+                    ret.remove(TLID);//HACK!
+                    return ret;
+                }
+            }
+            ret.remove(TLID);//HACK!
+        }
+        m = CORNER.matcher(rawAddr);
+        if (ret == null && m.find())
+        {
+            m = INTERSECTION.matcher(rawAddr);
+            if (m.matches())
+            {
+                ret = getAddrMap(m, P_INTERSECTION.getNamedGroupMap());
+            }
+        }
+
+        if (ret == null)
+        {
+            m = CSZ.matcher(rawAddr);
+            if (m.matches())
+            {
+                ret = getAddrMap(m, P_CSZ.getNamedGroupMap());
+            }
+        }
+        return ret;
+    }
+
+    private static Collection<String> getStreetDirs()
+    {
+
+        Collection<String> streetDirs = new ArrayList<>();
+        streetDirs.add("e");
+        streetDirs.add("w");
+        streetDirs.add("n");
+        streetDirs.add("s");
+        streetDirs.add("sw");
+        streetDirs.add("nw");
+        streetDirs.add("se");
+        streetDirs.add("ne");
+
+        return streetDirs;
+    }
+
+    /**
      * Creates the street name from the summation of the original
      * streetName + streetType (if non null) + part of the street
      * name split off from the unit number
@@ -892,22 +806,6 @@ public class AddressParser
         return splitStreetName;
     }
 
-    private static Collection<String> getStreetDirs()
-    {
-
-        Collection<String> streetDirs = new ArrayList<String>();
-        streetDirs.add("e");
-        streetDirs.add("w");
-        streetDirs.add("n");
-        streetDirs.add("s");
-        streetDirs.add("sw");
-        streetDirs.add("nw");
-        streetDirs.add("se");
-        streetDirs.add("ne");
-
-        return streetDirs;
-    }
-
     private static boolean isNumeric(String str)
     {
         for (char c : str.toCharArray())
@@ -915,5 +813,104 @@ public class AddressParser
             if (!Character.isDigit(c)) return false;
         }
         return true;
+    }
+
+    private static String getCleanSttring(String rawAddr)
+    {
+        return CLEANUP.matcher(rawAddr).replaceAll(" ").replaceAll("\\s+", " ").trim();
+    }
+
+    private static Map<AddressComponent, String> getAddrMap(Matcher m, Map<Integer, String> groupMap)
+    {
+        Map<AddressComponent, String> ret = new EnumMap<>(AddressComponent.class);
+        for (int i = 1; i <= m.groupCount(); i++)
+        {
+            String name = groupMap.get(i);
+            AddressComponent comp = valueOf(name);
+            if (ret.get(comp) == null)
+            {
+                putIfNotNull(ret, comp, m.group(i));
+            }
+        }
+        return ret;
+    }
+
+    private static void postProcess(Map<AddressComponent, String> m)
+    {
+        //these are (temporary?) hacks...
+        if (m.get(TYPE) == null && m.get(STREET) != null
+            && STREET_TYPES.matcher(m.get(STREET).toUpperCase()).matches())
+        {
+            m.put(TYPE, m.get(STREET));
+            m.put(STREET, m.get(PREDIR));
+            m.put(PREDIR, null);
+        }
+        if (m.get(STATE) == null && m.get(LINE2) != null
+            && STATES.matcher(m.get(LINE2).toUpperCase()).matches())
+        {
+            m.put(STATE, m.get(LINE2));
+            m.put(LINE2, null);
+        }
+    }
+
+    private static String designatorConfusingCitiesCorrection(Map<AddressComponent, String> parsedLocation, String input)
+    {
+        String street = parsedLocation.get(STREET);
+        String type = parsedLocation.get(TYPE);
+        String line2 = parsedLocation.get(LINE2);
+        if (street == null || type == null || line2 != null || street.split(" ").length < 2)
+        {
+            return null;
+        }
+        Matcher m = STREET_DESIGNATOR_CHECK.matcher(street);
+        if (m.find())
+        {
+            String parsedstate = parsedLocation.get(STATE);
+            if (parsedstate == null)
+            {
+                String parsedcity = parsedLocation.get(CITY);
+                if (parsedcity != null && parsedcity.length() == 2)
+                {
+                    parsedstate = parsedcity;
+                }
+            }
+            String normalizedState = AddressStandardizer.normalizeState(StringUtils.upperCase(parsedstate));
+            String inputUpper = input.toUpperCase();
+            String ret = null;
+            Set<String> stateSet = new HashSet<>();
+            if (normalizedState != null)
+            {
+                stateSet.add(normalizedState);
+            }
+            else
+            { //if no state in put, this needs to work much harder
+                stateSet.addAll(SpecialData.C_MAP.keySet());
+            }
+            int stateIdx = parsedstate == null ? input.length() : input.lastIndexOf(parsedstate);
+            for (String state : stateSet)
+            {
+                for (String s : SpecialData.C_MAP.get(state))
+                {
+                    int idx = -1;
+                    if ((idx = inputUpper.lastIndexOf(s)) != -1)
+                    { //and the input has one of the city names that can confuse the parser
+                        //this almost guaranteed to break the parser, help the parser by putting a comma separator before the city
+                        if (idx + s.length() >= stateIdx - 2)
+                        {
+                            return input.substring(0, idx) + "," + input.substring(idx);
+                        }
+                    }
+                }
+            }
+            return ret;
+        }
+        return null;
+
+    }
+
+    private static void putIfNotNull(Map<AddressComponent, String> m, AddressComponent ac, String v)
+    {
+        if (v != null)
+            m.put(ac, v);
     }
 }

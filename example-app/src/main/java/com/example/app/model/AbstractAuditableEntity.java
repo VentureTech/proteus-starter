@@ -35,6 +35,7 @@ import net.proteusframework.users.model.Principal;
  * Entity {@link MappedSuperclass} Implementation that is also {@link FullyAuditable}
  *
  * @param <T> the type of the ID
+ *
  * @author Alan Holt (aholt@venturetech.net)
  */
 @MappedSuperclass
@@ -59,27 +60,30 @@ public abstract class AbstractAuditableEntity<T extends Serializable> implements
     }
 
     @Override
-    @Transient
-    @NotNull
-    public T getId()
-    {
-        return _id;
-    }
-
-    /**
-     *   Set the Id.
-     *   @param id the Id
-     */
-    public void setId(T id)
-    {
-        _id = id;
-    }
-
-    @Override
     @Column(nullable = false)
     public Date getLastModTime()
     {
         return _lastModTime;
+    }
+
+    @Override
+    public void setLastModTime(Date t)
+    {
+        _lastModTime = t;
+    }
+
+    @Override
+    @Column(nullable = false)
+    public Date getCreateTime()
+    {
+        return _createTime;
+    }
+
+    @Override
+    @NotAudited
+    public void setCreateTime(Date t)
+    {
+        _createTime = t;
     }
 
     @Override
@@ -91,35 +95,9 @@ public abstract class AbstractAuditableEntity<T extends Serializable> implements
     }
 
     @Override
-    public void setLastModTime(Date t)
-    {
-        _lastModTime = t;
-    }
-
-    @Override
     public void setLastModUser(Principal p)
     {
         _lastModUser = p;
-    }
-
-    @Override
-    @NotAudited
-    public void setCreateTime(Date t)
-    {
-        _createTime = t;
-    }
-
-    @Override
-    public void setCreateUser(Principal p)
-    {
-        _createUser = p;
-    }
-
-    @Override
-    @Column(nullable = false)
-    public Date getCreateTime()
-    {
-        return _createTime;
     }
 
     @Override
@@ -129,6 +107,21 @@ public abstract class AbstractAuditableEntity<T extends Serializable> implements
     public Principal getCreateUser()
     {
         return _createUser;
+    }
+
+    @Override
+    public void setCreateUser(Principal p)
+    {
+        _createUser = p;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        if (getId() == null)
+            return System.identityHashCode(this);
+        else
+            return getId().hashCode();
     }
 
     @Override
@@ -159,12 +152,21 @@ public abstract class AbstractAuditableEntity<T extends Serializable> implements
     }
 
     @Override
-    public int hashCode()
+    @Transient
+    @NotNull
+    public T getId()
     {
-        if (getId() == null)
-            return System.identityHashCode(this);
-        else
-            return getId().hashCode();
+        return _id;
+    }
+
+    /**
+     * Set the Id.
+     *
+     * @param id the Id
+     */
+    public void setId(T id)
+    {
+        _id = id;
     }
 
     @Override

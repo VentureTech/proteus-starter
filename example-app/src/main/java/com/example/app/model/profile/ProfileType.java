@@ -62,21 +62,14 @@ import static javax.persistence.FetchType.LAZY;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.PROFILE_DATA)
 @Audited
 @SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + ProfileType.TABLE_NAME
-    + " SET " + ProfileType.SOFT_DELETE_COLUMN_PROP + " = true WHERE " + ProfileType.ID_COLUMN + " = ?")
+                 + " SET " + ProfileType.SOFT_DELETE_COLUMN_PROP + " = true WHERE " + ProfileType.ID_COLUMN + " = ?")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = ProjectConfig.DISCRIMINATOR_COLUMN)
 @DiscriminatorValue("default")
 public class ProfileType extends AbstractAuditableSoftDeleteEntity implements NamedObject
 {
-    /** The serial version UID */
-    private static final long serialVersionUID = -8546697320416386303L;
-
     /** The database table name for this entity */
     public static final String TABLE_NAME = "ProfileType";
-
-    /** The ID generator identifier for this entity */
-    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + ".profiletype_id_seq";
-
     /** The database id column for this entity */
     public static final String ID_COLUMN = "profiletype_id";
     /** The database column name and property: name */
@@ -91,7 +84,10 @@ public class ProfileType extends AbstractAuditableSoftDeleteEntity implements Na
     public static final String KIND_COLUMN = "kind_id";
     /** The property: kind */
     public static final String KIND_PROP = "kind";
-
+    /** The serial version UID */
+    private static final long serialVersionUID = -8546697320416386303L;
+    /** The ID generator identifier for this entity */
+    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + ".profiletype_id_seq";
     private LocalizedObjectKey _name;
     private LocalizedObjectKey _description;
     private Set<MembershipType> _membershipTypeSet;
@@ -108,6 +104,52 @@ public class ProfileType extends AbstractAuditableSoftDeleteEntity implements Na
         return super.getId();
     }
 
+    /**
+     * Get the Kind of this ProfileType
+     *
+     * @return the Kind
+     */
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = KIND_COLUMN)
+    @Nullable
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    public Label getKind()
+    {
+        return _kind;
+    }
+
+    /**
+     * Set the Kind of this ProfileType
+     *
+     * @param kind the Kind
+     */
+    public void setKind(@Nullable Label kind)
+    {
+        _kind = kind;
+    }
+
+    /**
+     * Get the MembershipTypes associated with this ProfileType
+     *
+     * @return the MembershipTypes associated with this ProfileType
+     */
+    @OneToMany(mappedBy = MembershipType.PROFILE_TYPE_PROP, orphanRemoval = true)
+    @Cascade(CascadeType.ALL)
+    public Set<MembershipType> getMembershipTypeSet()
+    {
+        return _membershipTypeSet;
+    }
+
+    /**
+     * Set the MembershipTypes associated with this ProfileType
+     *
+     * @param membershipTypeSet the MembershipTypes to associate with this ProfileType
+     */
+    public void setMembershipTypeSet(Set<MembershipType> membershipTypeSet)
+    {
+        _membershipTypeSet = membershipTypeSet;
+    }
+
     @NotNull
     @Column(name = NAME_COLUMN_PROP)
     @Nonnull
@@ -119,9 +161,10 @@ public class ProfileType extends AbstractAuditableSoftDeleteEntity implements Na
 
     /**
      * Set the name of this NamedObject (ProfileType)
+     *
      * @param name the intended name of this NamedObject, cannot be null.
      */
-    public void setName(@Nonnull  LocalizedObjectKey name)
+    public void setName(@Nonnull LocalizedObjectKey name)
     {
         _name = name;
     }
@@ -136,6 +179,7 @@ public class ProfileType extends AbstractAuditableSoftDeleteEntity implements Na
 
     /**
      * Set the description of this NamedObject (ProfileType)
+     *
      * @param description the intended description of this NamedObject, may be null.
      */
     public void setDescription(@Nullable LocalizedObjectKey description)
@@ -144,28 +188,9 @@ public class ProfileType extends AbstractAuditableSoftDeleteEntity implements Na
     }
 
     /**
-    *   Get the MembershipTypes associated with this ProfileType
-    *   @return the MembershipTypes associated with this ProfileType
-    */
-    @OneToMany(mappedBy = MembershipType.PROFILE_TYPE_PROP, orphanRemoval = true)
-    @Cascade(CascadeType.ALL)
-    public Set<MembershipType> getMembershipTypeSet()
-    {
-        return _membershipTypeSet;
-    }
-
-    /**
-    *   Set the MembershipTypes associated with this ProfileType
-    *   @param membershipTypeSet the MembershipTypes to associate with this ProfileType 
-    */
-    public void setMembershipTypeSet(Set<MembershipType> membershipTypeSet)
-    {
-        _membershipTypeSet = membershipTypeSet;
-    }
-
-    /**
-     *   Get the programmatic identifier of this ProfileType
-     *   @return the programmatic identifier
+     * Get the programmatic identifier of this ProfileType
+     *
+     * @return the programmatic identifier
      */
     @Column(name = PROGRAMMATIC_ID_COLUMN_PROP, unique = true)
     @Nonnull
@@ -175,33 +200,14 @@ public class ProfileType extends AbstractAuditableSoftDeleteEntity implements Na
     {
         return _programmaticIdentifier;
     }
+
     /**
-     *   Set the programmatic identifier of this ProfileType
-     *   @param programmaticIdentifier the programmatic identifier
+     * Set the programmatic identifier of this ProfileType
+     *
+     * @param programmaticIdentifier the programmatic identifier
      */
     public void setProgrammaticIdentifier(@Nonnull String programmaticIdentifier)
     {
         _programmaticIdentifier = programmaticIdentifier;
-    }
-
-    /**
-     *   Get the Kind of this ProfileType
-     *   @return the Kind
-     */
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = KIND_COLUMN)
-    @Nullable
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    public Label getKind()
-    {
-        return _kind;
-    }
-    /**
-     *   Set the Kind of this ProfileType
-     *   @param kind the Kind
-     */
-    public void setKind(@Nullable Label kind)
-    {
-        _kind = kind;
     }
 }

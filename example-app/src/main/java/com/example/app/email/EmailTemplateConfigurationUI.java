@@ -122,7 +122,7 @@ import static net.proteusframework.core.locale.TextSources.createText;
         @I18N(symbol = "Label Email Template Variables", l10n = @L10N("Email Template Variables")),
         @I18N(symbol = "Label Add {0} Recipients", l10n = @L10N("Add {0} Recipients")),
         @I18N(symbol = "Instructions Add Recipient", l10n =
-            @L10N("Enter the email address of the recipient(s) or add a user/role for a {0} User")),
+        @L10N("Enter the email address of the recipient(s) or add a user/role for a {0} User")),
         @I18N(symbol = "Action Add Recipient", l10n = @L10N("Add Email Recipient")),
         @I18N(symbol = "Action Update Preview", l10n = @L10N("Update Preview")),
         @I18N(symbol = "Title Variables", l10n = @L10N("Variables")),
@@ -146,7 +146,6 @@ public class EmailTemplateConfigurationUI extends Container
      */
     private static class Recipient extends Container
     {
-        @Nullable
         private final UnparsedAddress _address;
 
         private TextSource _label;
@@ -154,13 +153,6 @@ public class EmailTemplateConfigurationUI extends Container
         public Recipient(@Nonnull UnparsedAddress address)
         {
             _address = address;
-        }
-
-
-        @Nullable
-        public UnparsedAddress getAddress()
-        {
-            return _address;
         }
 
         @Override
@@ -174,6 +166,12 @@ public class EmailTemplateConfigurationUI extends Container
             add(new Label(_label));
             add(removeButton);
             removeButton.addActionListener(ev -> close());
+        }
+
+        @Nullable
+        public UnparsedAddress getAddress()
+        {
+            return _address;
         }
 
         @Nullable
@@ -204,7 +202,7 @@ public class EmailTemplateConfigurationUI extends Container
             String value = ofNullable(_variableValues.get(_variable)).orElse("");
             final String variableName = getVariableName(_variable);
             final TextSource labelText = createText(variableName);
-            if(variableName.contains("Link"))
+            if (variableName.contains("Link"))
             {
                 addClassName("variable-wrapper");
                 LinkChooser chooser = new LinkChooser();
@@ -213,7 +211,7 @@ public class EmailTemplateConfigurationUI extends Container
                 linkField.setValueChooser(chooser);
                 chooser.addValueListener(event -> {
                     final Link link = event.getValue();
-                    if(link == null || link.getURI() == null)
+                    if (link == null || link.getURI() == null)
                     {
                         _variableValues.remove(_variable);
                     }
@@ -250,13 +248,13 @@ public class EmailTemplateConfigurationUI extends Container
                 linkField.addClassName("prop").addClassName("variable");
                 add(linkField);
             }
-            else if(variableName.contains("File"))
+            else if (variableName.contains("File"))
             {
                 addClassName("variable-wrapper");
                 FileField fileField = new FileField();
                 fileField.setLabel(labelText);
                 fileField.addActionListener(ev -> {
-                    if(ev.getSource() instanceof FileEntity)
+                    if (ev.getSource() instanceof FileEntity)
                     {
                         final FileEntity fileEntity = (FileEntity) ev.getSource();
                         final URI localURI = FileSystemDAO.getInstance().getLocalURI(Event.getRequest(), fileEntity);
@@ -289,10 +287,10 @@ public class EmailTemplateConfigurationUI extends Container
                 add(field);
                 field/*.watchIncremental()*/.addPropertyChangeListener(Field.PROP_TEXT, evt -> {
                     String text = field.getText();
-                    if(field.isRichEditor())
+                    if (field.isRichEditor())
                     {
                         final Document document = Jsoup.parse(text);
-                        if(document.text().trim().isEmpty())
+                        if (document.text().trim().isEmpty())
                             text = "";
                     }
                     _variableValues.put(_variable, text);
@@ -305,7 +303,12 @@ public class EmailTemplateConfigurationUI extends Container
 
     @Nullable
     private final Profile _profile;
-
+    private final ComboBox _emailTemplateChoice = new ComboBox(new SimpleListModel<EmailTemplate>());
+    private final HTMLComponent _emailTemplatePreview = new HTMLComponent("");
+    private final Field _emailTemplateSubjectField = new Field("", 75);
+    private final Map<String, String> _variableValues = new HashMap<>();
+    private final Container _recipientContainer = new Container();
+    private final Container _variableContainer = new Container();
     @Autowired
     private EmailTemplateProcessor _emailTemplateProcessor;
     @Autowired
@@ -314,13 +317,6 @@ public class EmailTemplateConfigurationUI extends Container
     private CmsFrontendDAO _siteContext;
     @Autowired
     private EntityRetriever _entityRetriever;
-
-    private final ComboBox _emailTemplateChoice = new ComboBox(new SimpleListModel<EmailTemplate>());
-    private final HTMLComponent _emailTemplatePreview = new HTMLComponent("");
-    private final Field _emailTemplateSubjectField = new Field("", 75);
-    private final Map<String, String> _variableValues = new HashMap<>();
-    private final Container _recipientContainer = new Container();
-    private final Container _variableContainer = new Container();
     @Nullable
     private Consumer<EmailTemplateContext> _configurator;
     @Nullable
@@ -328,32 +324,6 @@ public class EmailTemplateConfigurationUI extends Container
     private EmailTemplate _lastEmailTemplate;
     private Optional<String> _modifiedSubject = empty();
     private String _processedSubject;
-
-    /**
-     * Get the variables.
-     *
-     * @param emailTemplate the email template
-     *
-     * @return the variables.
-     */
-    public static List<String> getEmailTemplateVariables(EmailTemplate emailTemplate)
-    {
-        List<String> list = new ArrayList<>();
-        _getVariables(list, emailTemplate.getPlainTextBody());
-        _getVariables(list, emailTemplate.getHtmlBody());
-        return list;
-    }
-
-    /**
-     * Get the value for preview / testing.
-     * @param element the element.
-     * @param value the value.
-     * @return the updated value.
-     */
-    public static String getPreviewValue(HTMLElement element, String value)
-    {
-        return '<' + element.name() + " class=\"et-user-variable\">" + value + "</" + element.name() + '>';
-    }
 
     private static void _getVariables(List<String> list, String body)
     {
@@ -363,25 +333,9 @@ public class EmailTemplateConfigurationUI extends Container
         while (matcher.find())
         {
             final String variable = matcher.group(1);
-            if(!list.contains(variable))
+            if (!list.contains(variable))
                 list.add(variable);
         }
-    }
-
-    /**
-     * Get the variable name for the specified variable.
-     *
-     * @param variable the variable.
-     *
-     * @return the name.
-     */
-    public static String getVariableName(String variable)
-    {
-        String vn = variable;
-        if (vn.startsWith(VAR_PREFIX))
-            vn = vn.substring(VAR_PREFIX.length());
-        vn = vn.replace('_', ' ');
-        return capitalize(vn);
     }
 
     /**
@@ -421,6 +375,50 @@ public class EmailTemplateConfigurationUI extends Container
     }
 
     /**
+     * Get the variables.
+     *
+     * @param emailTemplate the email template
+     *
+     * @return the variables.
+     */
+    public static List<String> getEmailTemplateVariables(EmailTemplate emailTemplate)
+    {
+        List<String> list = new ArrayList<>();
+        _getVariables(list, emailTemplate.getPlainTextBody());
+        _getVariables(list, emailTemplate.getHtmlBody());
+        return list;
+    }
+
+    /**
+     * Get the value for preview / testing.
+     *
+     * @param element the element.
+     * @param value the value.
+     *
+     * @return the updated value.
+     */
+    public static String getPreviewValue(HTMLElement element, String value)
+    {
+        return '<' + element.name() + " class=\"et-user-variable\">" + value + "</" + element.name() + '>';
+    }
+
+    /**
+     * Get the variable name for the specified variable.
+     *
+     * @param variable the variable.
+     *
+     * @return the name.
+     */
+    public static String getVariableName(String variable)
+    {
+        String vn = variable;
+        if (vn.startsWith(VAR_PREFIX))
+            vn = vn.substring(VAR_PREFIX.length());
+        vn = vn.replace('_', ' ');
+        return capitalize(vn);
+    }
+
+    /**
      * Instantiates a new Email template sending ui.
      *
      * @param emailTemplates the email templates
@@ -451,13 +449,6 @@ public class EmailTemplateConfigurationUI extends Container
         addClassName("email-configuration-ui");
     }
 
-    @Nullable
-    Profile getProfile()
-    {
-        return _entityRetriever.reattachIfNecessary(_profile);
-    }
-
-
     /**
      * Get the selected email template - hibernate attached.
      *
@@ -480,11 +471,43 @@ public class EmailTemplateConfigurationUI extends Container
     public void setEmailTemplate(EmailTemplate emailTemplate)
     {
         _emailTemplateChoice.setSelectedObject(emailTemplate);
-        if(isInited())
+        if (isInited())
             updateEmailTemplatePreview(null);
     }
 
-    @Override
+    /**
+     * Get the selected recipients.
+     *
+     * @return the recipients.
+     */
+    public List<UnparsedAddress> getRecipients()
+    {
+        List<UnparsedAddress> addressList = new ArrayList<>(_recipientContainer.getComponentCount());
+        _recipientContainer.components().forEachRemaining(
+            component -> {
+                if (component instanceof Recipient)
+                {
+                    final Recipient recipient = (Recipient) component;
+                    if (recipient.getAddress() != null)
+                        addressList.add(recipient.getAddress());
+                }
+            }
+        );
+        return addressList;
+    }
+
+    /**
+     * Set the recipients.
+     *
+     * @param recipients the recipients.
+     */
+    public void setRecipients(List<UnparsedAddress> recipients)
+    {
+        _recipientContainer.removeAllComponents();
+        for (UnparsedAddress address : recipients)
+            _recipientContainer.add(new Recipient(address));
+        sortRecipientContainer();
+    }    @Override
     public void init()
     {
         super.init();
@@ -520,42 +543,26 @@ public class EmailTemplateConfigurationUI extends Container
         updateEmailTemplatePreview(null);
     }
 
-    /**
-     * Get the selected recipients.
-     *
-     * @return the recipients.
-     */
-    public List<UnparsedAddress> getRecipients()
+    private void sortRecipientContainer()
     {
-        List<UnparsedAddress> addressList = new ArrayList<>(_recipientContainer.getComponentCount());
-        _recipientContainer.components().forEachRemaining(
-            component -> {
-                if (component instanceof Recipient)
-                {
-                    final Recipient recipient = (Recipient) component;
-                    if(recipient.getAddress() != null)
-                        addressList.add(recipient.getAddress());
-                }
+        if (!isAttached())
+            return;
+        final LocaleContext lc = getLocaleContext();
+        _recipientContainer.sort((o1, o2) -> {
+            if (o1 instanceof Recipient && o2 instanceof Recipient)
+            {
+                final Recipient r1 = (Recipient) o1;
+                final Recipient r2 = (Recipient) o2;
+                return lc.compareIgnoreCase(r1.getLabel(), r2.getLabel());
             }
-        );
-        return addressList;
-    }
+            return 0;
+        });
 
-    /**
-     * Set the recipients.
-     *
-     * @param recipients the recipients.
-     */
-    public void setRecipients(List<UnparsedAddress> recipients)
-    {
-        _recipientContainer.removeAllComponents();
-        for (UnparsedAddress address : recipients)
-            _recipientContainer.add(new Recipient(address));
-        sortRecipientContainer();
     }
 
     /**
      * Get the modified subject.
+     *
      * @return the subject if modified.
      */
     public Optional<String> getSubject()
@@ -583,10 +590,10 @@ public class EmailTemplateConfigurationUI extends Container
     {
         final List<String> currentVariables = getEmailTemplateVariables(getEmailTemplate());
         final Iterator<String> iterator = _variableValues.keySet().iterator();
-        while(iterator.hasNext())
+        while (iterator.hasNext())
         {
             final String key = iterator.next();
-            if(!currentVariables.contains(key))
+            if (!currentVariables.contains(key))
                 iterator.remove();
         }
         return _variableValues;
@@ -597,7 +604,7 @@ public class EmailTemplateConfigurationUI extends Container
      *
      * @param variableValues the variable values.
      */
-    public void setVariableValues(Map<String,String> variableValues)
+    public void setVariableValues(Map<String, String> variableValues)
     {
         _lastEmailTemplate = null;
         _variableValues.putAll(variableValues);
@@ -621,40 +628,6 @@ public class EmailTemplateConfigurationUI extends Container
     public void setNotifiable(@Nullable Notifiable notifiable)
     {
         _notifiable = notifiable;
-    }
-
-    void sendNotification(Notification notification)
-    {
-        if (_notifiable != null)
-        {
-            _notifiable.sendNotification(notification);
-        }
-        else
-        {
-            Level level;
-            switch (notification.getType())
-            {
-
-                case INFO:
-                    level = Level.INFO;
-                    break;
-                case IMPORTANT:
-                    level = Level.WARN;
-                    break;
-                case ERROR:
-                default:
-                    level = Level.ERROR;
-                    break;
-            }
-            final LocaleContext localeContext = getLocaleContext();
-            String message = notification.getMessage().getText(localeContext).toString();
-            if (notification.getMessageDetail() != null)
-            {
-                message += '\n';
-                message += notification.getMessageDetail().getText(localeContext).toString();
-            }
-            _logger.log(level, message);
-        }
     }
 
     /**
@@ -697,10 +670,10 @@ public class EmailTemplateConfigurationUI extends Container
                 .forEach(entry -> {
                     String value = entry.getValue();
                     final String key = entry.getKey();
-                    if(!(key.contains("_file") || key.contains("_link")))
+                    if (!(key.contains("_file") || key.contains("_link")))
                     {
                         HTMLElement el = HTMLElement.span;
-                        if(key.contains("_content"))
+                        if (key.contains("_content"))
                             el = HTMLElement.div;
                         value = getPreviewValue(el, value);
                     }
@@ -711,7 +684,7 @@ public class EmailTemplateConfigurationUI extends Container
             String newBody = getBody(emailData);
             _emailTemplatePreview.setText(new LocalizedText(newBody));
             _processedSubject = emailData.getSubject();
-            if(!emailTemplate.equals(_lastEmailTemplate))
+            if (!emailTemplate.equals(_lastEmailTemplate))
             {
                 _modifiedSubject = empty();
                 _emailTemplateSubjectField.setText(_processedSubject);
@@ -722,6 +695,46 @@ public class EmailTemplateConfigurationUI extends Container
         catch (MailDataHandlerException | EmailTemplateException | IllegalArgumentException | AddressException | IOException e)
         {
             sendNotification(NotificationImpl.create(e));
+        }
+    }
+
+    @Nullable
+    Profile getProfile()
+    {
+        return _entityRetriever.reattachIfNecessary(_profile);
+    }
+
+    void sendNotification(Notification notification)
+    {
+        if (_notifiable != null)
+        {
+            _notifiable.sendNotification(notification);
+        }
+        else
+        {
+            Level level;
+            switch (notification.getType())
+            {
+
+                case INFO:
+                    level = Level.INFO;
+                    break;
+                case IMPORTANT:
+                    level = Level.WARN;
+                    break;
+                case ERROR:
+                default:
+                    level = Level.ERROR;
+                    break;
+            }
+            final LocaleContext localeContext = getLocaleContext();
+            String message = notification.getMessage().getText(localeContext).toString();
+            if (notification.getMessageDetail() != null)
+            {
+                message += '\n';
+                message += notification.getMessageDetail().getText(localeContext).toString();
+            }
+            _logger.log(level, message);
         }
     }
 
@@ -755,41 +768,26 @@ public class EmailTemplateConfigurationUI extends Container
 
     }
 
-    private void sortRecipientContainer()
-    {
-        if(!isAttached())
-            return;
-        final LocaleContext lc = getLocaleContext();
-        _recipientContainer.sort((o1, o2) -> {
-            if(o1 instanceof Recipient && o2 instanceof Recipient)
-            {
-                final Recipient r1 = (Recipient) o1;
-                final Recipient r2 = (Recipient) o2;
-                return lc.compareIgnoreCase(r1.getLabel(), r2.getLabel());
-            }
-            return 0;
-        });
-
-    }
-
     private void updateVariables(EmailTemplate emailTemplate)
     {
         final List<String> variableList = getEmailTemplateVariables(emailTemplate);
         final Component variableContainerParent = _variableContainer.getParent();
         if (variableList.isEmpty())
         {
-            if(variableContainerParent != null)
+            if (variableContainerParent != null)
                 variableContainerParent.setVisible(false);
             return;
         }
         _variableContainer.removeAllComponents();
-        if(variableContainerParent != null)
+        if (variableContainerParent != null)
             variableContainerParent.setVisible(true);
         for (String variable : variableList)
         {
             _variableContainer.add(new Variable(variable));
         }
     }
+
+
 
 
 }

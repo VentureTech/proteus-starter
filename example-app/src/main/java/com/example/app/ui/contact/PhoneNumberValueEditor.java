@@ -29,11 +29,11 @@ import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
 import net.proteusframework.core.notification.Notifiable;
+import net.proteusframework.core.notification.NotificationImpl;
 import net.proteusframework.ui.miwt.MIWTException;
 import net.proteusframework.ui.miwt.component.Component;
 import net.proteusframework.ui.miwt.component.Field;
 import net.proteusframework.ui.miwt.component.composite.CustomCellRenderer;
-import net.proteusframework.ui.miwt.component.composite.Message;
 import net.proteusframework.ui.miwt.component.composite.editor.ComboBoxValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.CompositeValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
@@ -45,7 +45,6 @@ import net.proteusframework.users.model.ContactDataCategory;
 import net.proteusframework.users.model.PhoneNumber;
 import net.proteusframework.users.model.PhoneNumberType;
 
-import static com.example.app.ui.contact.PhoneNumberValueEditorLOK.ERROR_MESSAGE_INVALID_PHONE_NUMBER;
 import static com.example.app.ui.contact.PhoneNumberValueEditorLOK.*;
 import static net.proteusframework.core.validation.CommonValidationText.ARG0_IS_REQUIRED;
 import static net.proteusframework.ui.miwt.validation.RequiredValueValidator.createRequiredValueValidator;
@@ -69,39 +68,6 @@ import static net.proteusframework.ui.miwt.validation.RequiredValueValidator.cre
 public class PhoneNumberValueEditor extends CompositeValueEditor<PhoneNumber>
 {
     /**
-     * Validator for validating that the input value is a valid phone number
-     *
-     * @author Alan Holt (aholt@venturetech.net)
-     */
-    public static class PhoneNumberValidator implements Validator
-    {
-        @Override
-        public boolean isComponentValidationSupported(Component component)
-        {
-            return component instanceof Field;
-        }
-
-        @Override
-        @SuppressWarnings("rawTypes")
-        public boolean validate(Component component, Notifiable notifiable)
-        {
-            boolean valid;
-            String text = ((Field)component).getText();
-            if(StringFactory.isEmptyString(text))   //If the value is empty, assume it is not required.  Required value validation
-            {                                       // should be done by a RequiredValueValidator, not this Validator.
-                return true;
-            }
-            if(!(valid = !PhoneNumber.valueOf(text).isEmpty()))
-            {
-                Message error = Message.error(ERROR_MESSAGE_INVALID_PHONE_NUMBER());
-                error.setSource(component);
-                notifiable.sendNotification(error);
-            }
-            return valid;
-        }
-    }
-
-    /**
      * Enum defining fields within the PhoneNumberValueEditor
      *
      * @author Alan Holt (aholt@venturetech.net)
@@ -116,6 +82,38 @@ public class PhoneNumberValueEditor extends CompositeValueEditor<PhoneNumber>
         dataVisibility,
         /** phone number field */
         phoneNumber
+    }
+
+    /**
+     * Validator for validating that the input value is a valid phone number
+     *
+     * @author Alan Holt (aholt@venturetech.net)
+     */
+    public static class PhoneNumberValidator implements Validator
+    {
+        @Override
+        public boolean isComponentValidationSupported(Component component)
+        {
+            return component instanceof Field;
+        }
+
+        @Override
+        public boolean validate(Component component, Notifiable notifiable)
+        {
+            boolean valid;
+            String text = ((Field) component).getText();
+            if (StringFactory.isEmptyString(text))   //If the value is empty, assume it is not required.  Required value validation
+            {                                       // should be done by a RequiredValueValidator, not this Validator.
+                return true;
+            }
+            if (!(valid = !PhoneNumber.valueOf(text).isEmpty()))
+            {
+                NotificationImpl error = NotificationImpl.error(ERROR_MESSAGE_INVALID_PHONE_NUMBER());
+                error.setSource(component);
+                notifiable.sendNotification(error);
+            }
+            return valid;
+        }
     }
 
     /**
@@ -135,84 +133,14 @@ public class PhoneNumberValueEditor extends CompositeValueEditor<PhoneNumber>
         private Supplier<ValueEditor<String>> _singleFieldSupplier;
 
         /**
-         *   Get an EnumSet of all included fields for the Editor
-         *   <br/>
-         *   By default only includes {@link PhoneNumberField#phoneNumber}
-         *   @return an EnumSet of all included fields for the Editor
+         * Get the Supplier for the category property.  By default, this is just a comboBox editor.
+         *
+         * @return a Supplier for a ValueEditor
          */
-        @Nonnull
-        public EnumSet<PhoneNumberField> getIncludedFields()
-        {
-            return _includedFields;
-        }
-        /**
-         *   Set an EnumSet of all included fields for the Editor
-         *   <br/>
-         *   By default only includes {@link PhoneNumberField#phoneNumber}
-         *   @param includedFields an Array of all included fields for the Editor
-         */
-        public void setIncludedFields(@Nullable PhoneNumberField... includedFields)
-        {
-            _includedFields.clear();
-            if(includedFields != null)
-                Collections.addAll(_includedFields, includedFields);
-        }
-
-        /**
-         *   Get an EnumSet of all required fields for the Editor
-         *   <br/>
-         *   By default is empty
-         *   <br/>
-         *   This is only used if the Supplier for the field has not been set
-         *   @return an EnumSet of all required fields for the Editor
-         */
-        @Nonnull
-        public EnumSet<PhoneNumberField> getRequiredFields()
-        {
-            return _requiredFields;
-        }
-        /**
-         *   Set an EnumSet of all required fields for the Editor
-         *   <br/>
-         *   By default is empty
-         *   <br/>
-         *   This is only used if the Supplier for the field has not been set
-         *   @param requiredFields an Array of all required fields for the Editor
-         */
-        public void setRequiredFields(@Nullable PhoneNumberField... requiredFields)
-        {
-            _requiredFields.clear();
-            if(requiredFields != null)
-                Collections.addAll(_requiredFields, requiredFields);
-        }
-
-        /**
-         *   Get the default ContactDataCategory to be used in the case of it not being selectable on the UI
-         *   @return the default ContactDataCategory
-         */
-        @Nonnull
-        public ContactDataCategory getDefaultContactDataCategory()
-        {
-            return _defaultContactDataCategory;
-        }
-        /**
-         *   Set the default ContactDataCategory to be used in the case of it not being selectable on the UI
-         *   @param defaultContactDataCategory the default ContactDataCategory
-         */
-        public void setDefaultContactDataCategory(@Nonnull ContactDataCategory defaultContactDataCategory)
-        {
-            _defaultContactDataCategory = defaultContactDataCategory;
-        }
-
-        /**
-         *   Get the Supplier for the category property.  By default, this is just a comboBox editor.
-         *   @return a Supplier for a ValueEditor
-         */
-        @SuppressWarnings("Duplicates")
         @Nonnull
         public Supplier<ValueEditor<?>> getCategorySupplier()
         {
-            if(_categorySupplier != null)
+            if (_categorySupplier != null)
             {
                 return _categorySupplier;
             }
@@ -224,16 +152,70 @@ public class PhoneNumberValueEditor extends CompositeValueEditor<PhoneNumber>
                     LABEL_CATEGORY(), categories, getDefaultContactDataCategory());
                 editor.addClassName("category");
                 editor.setCellRenderer(new CustomCellRenderer(CommonButtonText.PLEASE_SELECT));
-                if(getRequiredFields().contains(PhoneNumberField.category))
+                if (getRequiredFields().contains(PhoneNumberField.category))
                 {
                     editor.setRequiredValueValidator();
                 }
                 return editor;
             };
         }
+
         /**
-         *   Set the Supplier for the category property.  By default, this is just a comboBox editor.
-         *   @param categorySupplier a Supplier for a ValueEditor
+         * Get the default ContactDataCategory to be used in the case of it not being selectable on the UI
+         *
+         * @return the default ContactDataCategory
+         */
+        @Nonnull
+        public ContactDataCategory getDefaultContactDataCategory()
+        {
+            return _defaultContactDataCategory;
+        }
+
+        /**
+         * Get an EnumSet of all required fields for the Editor
+         * <br/>
+         * By default is empty
+         * <br/>
+         * This is only used if the Supplier for the field has not been set
+         *
+         * @return an EnumSet of all required fields for the Editor
+         */
+        @Nonnull
+        public EnumSet<PhoneNumberField> getRequiredFields()
+        {
+            return _requiredFields;
+        }
+
+        /**
+         * Set an EnumSet of all required fields for the Editor
+         * <br/>
+         * By default is empty
+         * <br/>
+         * This is only used if the Supplier for the field has not been set
+         *
+         * @param requiredFields an Array of all required fields for the Editor
+         */
+        public void setRequiredFields(@Nullable PhoneNumberField... requiredFields)
+        {
+            _requiredFields.clear();
+            if (requiredFields != null)
+                Collections.addAll(_requiredFields, requiredFields);
+        }
+
+        /**
+         * Set the default ContactDataCategory to be used in the case of it not being selectable on the UI
+         *
+         * @param defaultContactDataCategory the default ContactDataCategory
+         */
+        public void setDefaultContactDataCategory(@Nonnull ContactDataCategory defaultContactDataCategory)
+        {
+            _defaultContactDataCategory = defaultContactDataCategory;
+        }
+
+        /**
+         * Set the Supplier for the category property.  By default, this is just a comboBox editor.
+         *
+         * @param categorySupplier a Supplier for a ValueEditor
          */
         public void setCategorySupplier(@Nullable Supplier<ValueEditor<?>> categorySupplier)
         {
@@ -241,82 +223,32 @@ public class PhoneNumberValueEditor extends CompositeValueEditor<PhoneNumber>
         }
 
         /**
-         *   Get the default PhoneNumberType to be used in the case of it not being selectable on the UI
-         *   @return the default PhoneNumberType
+         * Get the Supplier for the dataVisibility property.  By default, this is just a text editor.
+         *
+         * @return a Supplier for a ValueEditor
          */
-        @Nonnull
-        public PhoneNumberType getDefaultPhoneNumberType()
-        {
-            return _defaultPhoneNumberType;
-        }
-        /**
-         *   Set the default PhoneNumberType to be used in the case of it not being selectable on the UI
-         *   @param defaultPhoneNumberType the default PhoneNumberType
-         */
-        public void setDefaultPhoneNumberType(@Nonnull PhoneNumberType defaultPhoneNumberType)
-        {
-            _defaultPhoneNumberType = defaultPhoneNumberType;
-        }
-
-        /**
-         *   Get the Supplier for the type property.  By default, this is just a comboBox editor.
-         *   @return a Supplier for a ValueEditor
-         */
-        @Nonnull
-        public Supplier<ValueEditor<?>> getTypeSupplier()
-        {
-            if(_typeSupplier != null)
-            {
-                return _typeSupplier;
-            }
-            return () -> {
-                List<PhoneNumberType> types = new ArrayList<>(Arrays.asList(PhoneNumberType.values()));
-                types.add(0, null);
-                ComboBoxValueEditor<PhoneNumberType> editor =  new ComboBoxValueEditor<>(
-                    LABEL_TYPE(), types, getDefaultPhoneNumberType());
-                editor.addClassName("type");
-                editor.setCellRenderer(new CustomCellRenderer(CommonButtonText.PLEASE_SELECT));
-                if(getRequiredFields().contains(PhoneNumberField.type))
-                {
-                    editor.setRequiredValueValidator();
-                }
-                return editor;
-            };
-        }
-        /**
-         *   Set the Supplier for the type property.  By default, this is just a comboBox editor.
-         *   @param typeSupplier a Supplier for a ValueEditor
-         */
-        public void setTypeSupplier(@Nullable Supplier<ValueEditor<?>> typeSupplier)
-        {
-            _typeSupplier = typeSupplier;
-        }
-
-        /**
-         *   Get the Supplier for the dataVisibility property.  By default, this is just a text editor.
-         *   @return a Supplier for a ValueEditor
-         */
-        @SuppressWarnings("Duplicates")
         @Nonnull
         public Supplier<ValueEditor<?>> getDataVisibilitySupplier()
         {
-            if(_dataVisibilitySupplier != null)
+            if (_dataVisibilitySupplier != null)
             {
                 return _dataVisibilitySupplier;
             }
             return () -> {
                 TextEditor editor = new TextEditor(LABEL_DATA_VISIBILITY(), null);
                 editor.addClassName("data-visibility");
-                if(getRequiredFields().contains(PhoneNumberField.dataVisibility))
+                if (getRequiredFields().contains(PhoneNumberField.dataVisibility))
                 {
                     editor.setRequiredValueValidator();
                 }
                 return editor;
             };
         }
+
         /**
-         *   Set the Supplier for the dataVisibility property.  By default, this is just a text editor.
-         *   @param dataVisibilitySupplier a Supplier for a ValueEditor
+         * Set the Supplier for the dataVisibility property.  By default, this is just a text editor.
+         *
+         * @param dataVisibilitySupplier a Supplier for a ValueEditor
          */
         public void setDataVisibilitySupplier(@Nullable Supplier<ValueEditor<?>> dataVisibilitySupplier)
         {
@@ -324,15 +256,42 @@ public class PhoneNumberValueEditor extends CompositeValueEditor<PhoneNumber>
         }
 
         /**
-         *   Get the Supplier for the PhoneNumber.  By default, this is just a text editor that does verification on whether the
-         *   input is a valid phone number.
-         *   @return a Supplier for a ValueEditor
+         * Get an EnumSet of all included fields for the Editor
+         * <br/>
+         * By default only includes {@link PhoneNumberField#phoneNumber}
+         *
+         * @return an EnumSet of all included fields for the Editor
          */
-        @SuppressWarnings("AnonymousInnerClassMayBeStatic")
+        @Nonnull
+        public EnumSet<PhoneNumberField> getIncludedFields()
+        {
+            return _includedFields;
+        }
+
+        /**
+         * Set an EnumSet of all included fields for the Editor
+         * <br/>
+         * By default only includes {@link PhoneNumberField#phoneNumber}
+         *
+         * @param includedFields an Array of all included fields for the Editor
+         */
+        public void setIncludedFields(@Nullable PhoneNumberField... includedFields)
+        {
+            _includedFields.clear();
+            if (includedFields != null)
+                Collections.addAll(_includedFields, includedFields);
+        }
+
+        /**
+         * Get the Supplier for the PhoneNumber.  By default, this is just a text editor that does verification on whether the
+         * input is a valid phone number.
+         *
+         * @return a Supplier for a ValueEditor
+         */
         @Nonnull
         public Supplier<ValueEditor<String>> getSingleFieldSupplier()
         {
-            if(_singleFieldSupplier != null)
+            if (_singleFieldSupplier != null)
             {
                 return _singleFieldSupplier;
             }
@@ -340,7 +299,7 @@ public class PhoneNumberValueEditor extends CompositeValueEditor<PhoneNumber>
                 TextEditor editor = new TextEditor(LABEL_PHONE_NUMBER(), null);
                 editor.addClassName("phone");
                 editor.setInputType(Field.InputType.tel);
-                if(getRequiredFields().contains(PhoneNumberField.phoneNumber))
+                if (getRequiredFields().contains(PhoneNumberField.phoneNumber))
                 {
                     editor.addClassName(CSSUtil.CSS_REQUIRED_FIELD);
                     editor.setValueValidator(new CompositeValidator(
@@ -355,14 +314,74 @@ public class PhoneNumberValueEditor extends CompositeValueEditor<PhoneNumber>
                 return editor;
             };
         }
+
         /**
-         *   Set the Supplier for the PhoneNumber.  By default, this is just a text editor that does verification on whether the
-         *   input is a valid phone number.
-         *   @param singleFieldSupplier a Supplier for a ValueEditor
+         * Set the Supplier for the PhoneNumber.  By default, this is just a text editor that does verification on whether the
+         * input is a valid phone number.
+         *
+         * @param singleFieldSupplier a Supplier for a ValueEditor
          */
         public void setSingleFieldSupplier(@Nullable Supplier<ValueEditor<String>> singleFieldSupplier)
         {
             _singleFieldSupplier = singleFieldSupplier;
+        }
+
+        /**
+         * Get the Supplier for the type property.  By default, this is just a comboBox editor.
+         *
+         * @return a Supplier for a ValueEditor
+         */
+        @Nonnull
+        public Supplier<ValueEditor<?>> getTypeSupplier()
+        {
+            if (_typeSupplier != null)
+            {
+                return _typeSupplier;
+            }
+            return () -> {
+                List<PhoneNumberType> types = new ArrayList<>(Arrays.asList(PhoneNumberType.values()));
+                types.add(0, null);
+                ComboBoxValueEditor<PhoneNumberType> editor = new ComboBoxValueEditor<>(
+                    LABEL_TYPE(), types, getDefaultPhoneNumberType());
+                editor.addClassName("type");
+                editor.setCellRenderer(new CustomCellRenderer(CommonButtonText.PLEASE_SELECT));
+                if (getRequiredFields().contains(PhoneNumberField.type))
+                {
+                    editor.setRequiredValueValidator();
+                }
+                return editor;
+            };
+        }
+
+        /**
+         * Get the default PhoneNumberType to be used in the case of it not being selectable on the UI
+         *
+         * @return the default PhoneNumberType
+         */
+        @Nonnull
+        public PhoneNumberType getDefaultPhoneNumberType()
+        {
+            return _defaultPhoneNumberType;
+        }
+
+        /**
+         * Set the default PhoneNumberType to be used in the case of it not being selectable on the UI
+         *
+         * @param defaultPhoneNumberType the default PhoneNumberType
+         */
+        public void setDefaultPhoneNumberType(@Nonnull PhoneNumberType defaultPhoneNumberType)
+        {
+            _defaultPhoneNumberType = defaultPhoneNumberType;
+        }
+
+        /**
+         * Set the Supplier for the type property.  By default, this is just a comboBox editor.
+         *
+         * @param typeSupplier a Supplier for a ValueEditor
+         */
+        public void setTypeSupplier(@Nullable Supplier<ValueEditor<?>> typeSupplier)
+        {
+            _typeSupplier = typeSupplier;
         }
     }
 
@@ -372,7 +391,7 @@ public class PhoneNumberValueEditor extends CompositeValueEditor<PhoneNumber>
     private ValueEditor<String> _singleFieldEditor;
 
     /**
-     *   Instantiate a new instance of PhoneNumberValueEditor
+     * Instantiate a new instance of PhoneNumberValueEditor
      */
     public PhoneNumberValueEditor()
     {
@@ -380,37 +399,94 @@ public class PhoneNumberValueEditor extends CompositeValueEditor<PhoneNumber>
     }
 
     /**
-     *   Instantiate a new instance of PhoneNumberValueEditor
-     *   @param config the config for this PhoneNumberValueEditor.  If null, uses a config with default values.
+     * Instantiate a new instance of PhoneNumberValueEditor
+     *
+     * @param config the config for this PhoneNumberValueEditor.  If null, uses a config with default values.
      */
     public PhoneNumberValueEditor(@Nullable PhoneNumberValueEditorConfig config)
     {
         super(PhoneNumber.class);
-        if(config != null)
+        if (config != null)
             _config = config;
 
         addClassName("prop-group phone");
     }
 
     /**
-     *   Get the config for this PhoneNumberValueEditor
-     *   @return the config
+     * Get the config for this PhoneNumberValueEditor
+     *
+     * @return the config
      */
     @Nonnull
     public PhoneNumberValueEditorConfig getConfig()
     {
         return _config;
     }
-    /**
-     *   Set the config for this PhoneNumberValueEditor
-     *   @param config the config
-     *   @return this
-     */
-    @Nonnull
-    public PhoneNumberValueEditor withConfig(@Nonnull PhoneNumberValueEditorConfig config)
+
+    @Override
+    public void setValue(@Nullable PhoneNumber value)
     {
-        _config = config;
-        return this;
+        super.setValue(value);
+
+        if (isInited())
+        {
+            setUIValues(value);
+        }
+    }
+
+    @Override
+    public ModificationState getModificationState()
+    {
+        ModificationState modState = super.getModificationState();
+        if (!modState.isModified() && _singleFieldEditor != null)
+        {
+            if (_singleFieldEditor.getModificationState().isModified()) return ModificationState.CHANGED;
+        }
+        return modState;
+    }
+
+    @Nullable
+    @Override
+    public PhoneNumber getUIValue(Level logErrorLevel)
+    {
+        PhoneNumber result = super.getUIValue(logErrorLevel);
+        if (result != null)
+        {
+            if (!_config.getIncludedFields().contains(PhoneNumberField.category))
+                result.setCategory(_config.getDefaultContactDataCategory());
+            if (!_config.getIncludedFields().contains(PhoneNumberField.type))
+                result.setPhoneType(_config.getDefaultPhoneNumberType());
+            result = setUIValuesOnValue(result, false);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean validateUIValue(Notifiable notifiable)
+    {
+        boolean valid = super.validateUIValue(notifiable);
+        if (_config.getIncludedFields().contains(PhoneNumberField.phoneNumber))
+        {
+            assert _singleFieldEditor != null;
+            valid = valid && _singleFieldEditor.validateUIValue(notifiable);
+        }
+        return valid;
+    }
+
+    @Nullable
+    @Override
+    public PhoneNumber commitValue() throws MIWTException
+    {
+        PhoneNumber result = super.commitValue();
+        if (result != null)
+        {
+            if (!_config.getIncludedFields().contains(PhoneNumberField.category))
+                result.setCategory(_config.getDefaultContactDataCategory());
+            if (!_config.getIncludedFields().contains(PhoneNumberField.type))
+                result.setPhoneType(_config.getDefaultPhoneNumberType());
+            result = setUIValuesOnValue(result, true);
+        }
+        return result;
     }
 
     @Override
@@ -418,13 +494,13 @@ public class PhoneNumberValueEditor extends CompositeValueEditor<PhoneNumber>
     {
         super.init();
 
-        if(_config.getIncludedFields().contains(PhoneNumberField.category))
+        if (_config.getIncludedFields().contains(PhoneNumberField.category))
             addEditorForProperty(_config.getCategorySupplier(), "category");
-        if(_config.getIncludedFields().contains(PhoneNumberField.type))
+        if (_config.getIncludedFields().contains(PhoneNumberField.type))
             addEditorForProperty(_config.getTypeSupplier(), "type");
-        if(_config.getIncludedFields().contains(PhoneNumberField.dataVisibility))
+        if (_config.getIncludedFields().contains(PhoneNumberField.dataVisibility))
             addEditorForProperty(_config.getDataVisibilitySupplier(), "dataVisibility");
-        if(_config.getIncludedFields().contains(PhoneNumberField.phoneNumber))
+        if (_config.getIncludedFields().contains(PhoneNumberField.phoneNumber))
         {
             _singleFieldEditor = _config.getSingleFieldSupplier().get();
             setUIValues(getValue());
@@ -434,88 +510,22 @@ public class PhoneNumberValueEditor extends CompositeValueEditor<PhoneNumber>
 
     private void setUIValues(@Nullable PhoneNumber value)
     {
-        if(_config.getIncludedFields().contains(PhoneNumberField.phoneNumber))
+        if (_config.getIncludedFields().contains(PhoneNumberField.phoneNumber))
         {
             assert _singleFieldEditor != null;
             _singleFieldEditor.setValue(value != null ? value.toExternalForm() : null);
         }
     }
 
-    @Override
-    public boolean validateUIValue(Notifiable notifiable)
-    {
-        boolean valid = super.validateUIValue(notifiable);
-        if(_config.getIncludedFields().contains(PhoneNumberField.phoneNumber))
-        {
-            assert _singleFieldEditor != null;
-            valid = valid && _singleFieldEditor.validateUIValue(notifiable);
-        }
-        return valid;
-    }
-
-    @Override
-    public void setValue(@Nullable PhoneNumber value)
-    {
-        super.setValue(value);
-
-        if(isInited())
-        {
-            setUIValues(value);
-        }
-    }
-
-    @Nullable
-    @Override
-    public PhoneNumber getUIValue(Level logErrorLevel)
-    {
-        PhoneNumber result = super.getUIValue(logErrorLevel);
-        if(result != null)
-        {
-            if(!_config.getIncludedFields().contains(PhoneNumberField.category))
-                result.setCategory(_config.getDefaultContactDataCategory());
-            if(!_config.getIncludedFields().contains(PhoneNumberField.type))
-                result.setPhoneType(_config.getDefaultPhoneNumberType());
-            result = setUIValuesOnValue(result, false);
-        }
-        return result;
-    }
-
-    @Nullable
-    @Override
-    public PhoneNumber commitValue() throws MIWTException
-    {
-        PhoneNumber result = super.commitValue();
-        if(result != null)
-        {
-            if(!_config.getIncludedFields().contains(PhoneNumberField.category))
-                result.setCategory(_config.getDefaultContactDataCategory());
-            if(!_config.getIncludedFields().contains(PhoneNumberField.type))
-                result.setPhoneType(_config.getDefaultPhoneNumberType());
-            result = setUIValuesOnValue(result, true);
-        }
-        return result;
-    }
-
-    @Override
-    public ModificationState getModificationState()
-    {
-        ModificationState modState = super.getModificationState();
-        if(!modState.isModified() && _singleFieldEditor != null)
-        {
-            if(_singleFieldEditor.getModificationState().isModified()) return ModificationState.CHANGED;
-        }
-        return modState;
-    }
-
     private PhoneNumber setUIValuesOnValue(@Nonnull PhoneNumber value, boolean committing)
     {
-        if(_config.getIncludedFields().contains(PhoneNumberField.phoneNumber))
+        if (_config.getIncludedFields().contains(PhoneNumberField.phoneNumber))
         {
             assert _singleFieldEditor != null;
             PhoneNumber fromField = PhoneNumber.valueOf(committing
                 ? _singleFieldEditor.commitValue()
                 : _singleFieldEditor.getUIValue());
-            if(fromField != null)
+            if (fromField != null)
             {
                 value.setCountryCode(fromField.getCountryCode());
                 value.setAreaCode(fromField.getAreaCode());
@@ -525,5 +535,19 @@ public class PhoneNumberValueEditor extends CompositeValueEditor<PhoneNumber>
             }
         }
         return value;
+    }
+
+    /**
+     * Set the config for this PhoneNumberValueEditor
+     *
+     * @param config the config
+     *
+     * @return this
+     */
+    @Nonnull
+    public PhoneNumberValueEditor withConfig(@Nonnull PhoneNumberValueEditorConfig config)
+    {
+        _config = config;
+        return this;
     }
 }

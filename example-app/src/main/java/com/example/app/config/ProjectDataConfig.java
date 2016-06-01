@@ -32,24 +32,12 @@ import net.proteusframework.config.ProteusDataConfig;
  *
  * @author Alan Holt (aholt@venturetech.net)
  */
-@SuppressWarnings("SameReturnValue")
 @EnableAsync
 @EnableScheduling
 @Configuration
 @Primary
 public class ProjectDataConfig extends ProteusDataConfig
 {
-
-    @Bean
-    @Override
-    public Properties sessionFactoryHibernateProperties()
-    {
-        final Properties props = super.sessionFactoryHibernateProperties();
-
-        props.put("org.hibernate.envers.default_schema", ProjectConfig.ENVERS_SCHEMA);
-
-        return props;
-    }
 
     @Override
     @Bean
@@ -65,5 +53,16 @@ public class ProjectDataConfig extends ProteusDataConfig
         sessionFactorySQLFunctions().entrySet().forEach(e -> lsf.addSqlFunction(e.getKey(), e.getValue()));
 
         return lsf;
+    }
+
+    @Bean
+    @Override
+    public Properties sessionFactoryHibernateProperties()
+    {
+        final Properties props = super.sessionFactoryHibernateProperties();
+
+        props.put("org.hibernate.envers.default_schema", ProjectConfig.ENVERS_SCHEMA);
+
+        return props;
     }
 }

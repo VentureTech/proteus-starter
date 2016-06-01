@@ -49,16 +49,15 @@ public enum LoginLandingLinks
     OP_USERS(
         ApplicationFunctions.User.MANAGEMENT,
         daos -> daos.mop.modifyUser(),
-        (daos, lc)-> "Operation / " + daos.terms.users().getText(lc)
+        (daos, lc) -> "Operation / " + daos.terms.users().getText(lc)
     ),
 
     /** configuration / resouce management */
     CNF_RESOURCES(
         ApplicationFunctions.ResourceRepositoryItem.MANAGEMENT,
         daos -> daos.mop.modifyRepositoryResources(),
-        (daos, lc)-> "Configuration / " + daos.terms.resources().getText(lc)
-    )
-    ;
+        (daos, lc) -> "Configuration / " + daos.terms.resources().getText(lc)
+    );
 
     @Configurable
     private static class DAOs
@@ -77,30 +76,25 @@ public enum LoginLandingLinks
     final private Function<DAOs, MembershipOperation> _operation;
     final private BiFunction<DAOs, LocaleContext, String> _label;
 
-    LoginLandingLinks(String functionName, Function<DAOs, MembershipOperation> operation, BiFunction<DAOs, LocaleContext, String>
-        label)
+    /**
+     * Get available links.
+     *
+     * @param currentUser the current user.
+     * @param lc the locale context.
+     *
+     * @return the list of links.
+     */
+    static List<Link> getAvailableLinks(User currentUser, LocaleContext lc)
     {
-        _functionName = functionName;
-        _operation = operation;
-        _label = label;
-    }
-    private MembershipOperation getOperation(DAOs daos)
-    {
-        return _operation.apply(daos);
-    }
-    private String getLabel(DAOs daos, LocaleContext lc)
-    {
-        return _label.apply(daos, lc);
-    }
-    private String getFunctionName()
-    {
-        return _functionName;
-    }
-    private static boolean canAccessMenuLink(MembershipOperation mop, List<Membership> memberships)
-    {
-        if (memberships.isEmpty())
-            return false;
-        return memberships.stream().anyMatch(m -> m.getOperations().contains(mop));
+        final DAOs daos = new DAOs();
+        final List<Membership> memberships = daos.profileDAO.getMembershipsForUser(
+            currentUser, "membership.lastModTime desc", AppUtil.UTC);
+        return Arrays.stream(LoginLandingLinks.values())
+            .map(availbaleLinks -> availbaleLinks.getLink(memberships, lc))
+            .flatMap(link -> link.map(Stream::of).orElseGet(Stream::empty))
+            .collect(Collectors.toList());
+
+
     }
 
     /**
@@ -108,6 +102,7 @@ public enum LoginLandingLinks
      *
      * @param memberships Membership list.
      * @param lc the LocaleContext.
+     *
      * @return the link.
      */
     public Optional<Link> getLink(List<Membership> memberships, LocaleContext lc)
@@ -128,24 +123,34 @@ public enum LoginLandingLinks
         return Optional.empty();
     }
 
-    /**
-     * Get available links.
-     *
-     * @param currentUser the current user.
-     * @param lc the locale context.
-     * @return the list of links.
-     */
-    static List<Link> getAvailableLinks(User currentUser, LocaleContext lc)
+    private static boolean canAccessMenuLink(MembershipOperation mop, List<Membership> memberships)
     {
-        final DAOs daos = new DAOs();
-        final List<Membership> memberships = daos.profileDAO.getMembershipsForUser(
-            currentUser, "membership.lastModTime desc", AppUtil.UTC);
-        return Arrays.stream(LoginLandingLinks.values())
-            .map(availbaleLinks -> availbaleLinks.getLink(memberships, lc))
-            .flatMap(link -> link.map(Stream::of).orElseGet(Stream::empty))
-            .collect(Collectors.toList());
+        if (memberships.isEmpty())
+            return false;
+        return memberships.stream().anyMatch(m -> m.getOperations().contains(mop));
+    }
 
+    private MembershipOperation getOperation(DAOs daos)
+    {
+        return _operation.apply(daos);
+    }
 
+    private String getFunctionName()
+    {
+        return _functionName;
+    }
+
+    private String getLabel(DAOs daos, LocaleContext lc)
+    {
+        return _label.apply(daos, lc);
+    }
+
+    LoginLandingLinks(String functionName, Function<DAOs, MembershipOperation> operation, BiFunction<DAOs, LocaleContext, String>
+        label)
+    {
+        _functionName = functionName;
+        _operation = operation;
+        _label = label;
     }
 
 }

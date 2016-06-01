@@ -204,6 +204,7 @@
 
 package com.example.app.support.address;
 //CHECKSTYLE:OFF
+
 import com.example.app.support.address.Utils.NamedGroupPattern;
 
 import static com.example.app.support.address.RegexLibrary.*;
@@ -271,11 +272,11 @@ class AddressRegexLibrary
         "(?:\\b\\p{Alpha}{1}\\s+|\\p{Alpha}*[-/]?)?" +
         "(?:\\d+|\\b\\p{Alpha}\\b(?=\\s|$))" +
         "(?:[ ]*\\p{Alpha}\\b|-\\w+)?";
+    public static final String LINE2A_GROUPED = "(" + ADDR_UNIT + ")[s]?\\W*?(" + UNIT_NUMBER + ")";
     private static final String ZIP = "\\d{5}(?:[- ]\\d{3,4})?";
     private static final String NOT_STATE_OR_ZIP =
         "(?![^,]*\\W+(?:\\b(?:" + US_STATES + ")\\b(?:\\W*$|(?:" + ZIP + ")\\W*$))|(?:\\b(?:" + ZIP + ")\\b\\W*$))";
     private static final String LINE2A = "(?:" + ADDR_UNIT + ")[s]?\\W*?(?:" + UNIT_NUMBER + ")";
-    public static final String LINE2A_GROUPED = "(" + ADDR_UNIT + ")[s]?\\W*?(" + UNIT_NUMBER + ")";
     private static final String LINE2B = "(?:(?:" + TXT_ORDINAL_0_19 + "|" + ORDINAL_ALL + ")\\W*(?:" + ADDR_UNIT + ")[s]?)";
     private static final String LINE2 = "(?:(?P<line2>" + LINE2A + "|" + LINE2B + "|[^,]*?" + NOT_STATE_OR_ZIP + ")\\W+)??";
 
@@ -285,22 +286,17 @@ class AddressRegexLibrary
         "\\b(?P<state>(?:" + US_STATES + ")\\b)?\\W*" + //state
         ")?" +
         "(?P<zip>" + ZIP + ")?";      //zip
-
+    public static final NamedGroupPattern P_CSZ = compile("(?i:" + LASTLINE + ")");
     private static final String ADDR_NAME = "(?:(?P<name>[^,]+)\\W+)??";
-
     private static final String STREET_ADDRESS =
         ADDR_NAME + LINE1 + "(?P<tlid>\\W+)" + LINE2 + LASTLINE + "\\W*"; //the group name is a hack
-
+    public static final NamedGroupPattern P_STREET_ADDRESS = compile("(?i:" + STREET_ADDRESS + ")");
     private static final String CORNER = "(?:\\band\\b|\\bat\\b|&|\\@)";
-
+    public static final NamedGroupPattern P_CORNER = compile("(?i:" + CORNER + ")");
     private static final String INTERSECTION = ADDR_NAME +
                                                "(?:" + LINE1A + "|" + LINE1B + ")" + "\\W*\\s+" + CORNER + "\\s+" +
                                                "(?:" + LINE1A2 + "|" + LINE1B2 + ")" + "\\W+" + LASTLINE + "\\W*";
-
-    public static final NamedGroupPattern P_CSZ = compile("(?i:" + LASTLINE + ")");
-    public static final NamedGroupPattern P_STREET_ADDRESS = compile("(?i:" + STREET_ADDRESS + ")");
     public static final NamedGroupPattern P_INTERSECTION = compile("(?i:" + INTERSECTION + ")");
-    public static final NamedGroupPattern P_CORNER = compile("(?i:" + CORNER + ")");
 
 
 }

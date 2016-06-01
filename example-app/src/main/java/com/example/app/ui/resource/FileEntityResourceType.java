@@ -63,6 +63,14 @@ public class FileEntityResourceType implements ResourceType
     private transient EntityRetriever _er;
 
     @Override
+    public Resource createInstance(IImplementationModel<Resource> model)
+    {
+        FileEntityResource resource = new FileEntityResource();
+        resource.setResourceType(this);
+        return resource;
+    }
+
+    @Override
     @Nonnull
     public Renderer<?> createRenderer(Resource resource)
     {
@@ -70,10 +78,10 @@ public class FileEntityResourceType implements ResourceType
     }
 
     /**
-     *   {@inheritDoc}
-     *   <br><br>
-     *   Before attempting to add this editor into a UI, the editor must be configured by calling
-     *   {@link FileEntityResourceEditor#setFileChooser(FileChooser)}.
+     * {@inheritDoc}
+     * <br><br>
+     * Before attempting to add this editor into a UI, the editor must be configured by calling
+     * {@link FileEntityResourceEditor#setFileChooser(FileChooser)}.
      */
     @Override
     @Nonnull
@@ -100,14 +108,6 @@ public class FileEntityResourceType implements ResourceType
     public TextSource getDescription()
     {
         return DESCRIPTION();
-    }
-
-    @Override
-    public Resource createInstance(IImplementationModel<Resource> model)
-    {
-        FileEntityResource resource = new FileEntityResource();
-        resource.setResourceType(this);
-        return resource;
     }
 
     private Object readResolve() throws ObjectStreamException

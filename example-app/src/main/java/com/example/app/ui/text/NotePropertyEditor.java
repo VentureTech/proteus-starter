@@ -38,28 +38,12 @@ public class NotePropertyEditor extends PropertyEditor<Note>
     private NoteDAO _noteDAO;
 
     /**
-     *   Instantiates a new instance of NotePropertyEditor
+     * Instantiates a new instance of NotePropertyEditor
      */
     public NotePropertyEditor()
     {
         super();
         setValueEditor(new NoteValueEditor());
-    }
-
-    private void fireValueSaved(Note saved)
-    {
-        firePropertyChange(PROP_VALUE_SAVED, null, saved);
-    }
-
-    /**
-     *  Add a listener for when the value is successfully saved
-     *  @param listener the listener
-     *  @return this
-     */
-    public NotePropertyEditor withValueSaveListener(PropertyChangeListener listener)
-    {
-        addPropertyChangeListener(PROP_VALUE_SAVED, listener);
-        return this;
     }
 
     @Override
@@ -71,7 +55,7 @@ public class NotePropertyEditor extends PropertyEditor<Note>
 
         ReflectiveAction save = CommonActions.SAVE.defaultAction();
         save.setActionListener(ev -> {
-            if(persist(input -> {
+            if (persist(input -> {
                 assert input != null;
                 _noteDAO.saveNote(input);
                 fireValueSaved(input);
@@ -86,5 +70,23 @@ public class NotePropertyEditor extends PropertyEditor<Note>
         cancel.setActionListener(closer);
 
         setPersistenceActions(save, cancel);
+    }
+
+    private void fireValueSaved(Note saved)
+    {
+        firePropertyChange(PROP_VALUE_SAVED, null, saved);
+    }
+
+    /**
+     * Add a listener for when the value is successfully saved
+     *
+     * @param listener the listener
+     *
+     * @return this
+     */
+    public NotePropertyEditor withValueSaveListener(PropertyChangeListener listener)
+    {
+        addPropertyChangeListener(PROP_VALUE_SAVED, listener);
+        return this;
     }
 }

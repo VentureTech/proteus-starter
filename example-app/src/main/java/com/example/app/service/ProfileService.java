@@ -31,33 +31,40 @@ public interface ProfileService
     // Typically you will have a DAO that all users are tied to that implements this interface.
 
     /**
-     * Get the owner profile for a user.
+     * Get the admin profile for a user.
      * User's have at most one profile that is considered
-     * the owner of the user.
+     * the admin of the user.
+     *
      * @param user the user.
+     *
      * @return the profile.
      */
-    Optional<Profile> getOwnerProfileForUser(@Nullable User user);
+    Optional<Profile> getAdminProfileForUser(@Nullable User user);
+
+    /**
+     * Get a profile by programmatic identifier.
+     *
+     * @param profileId the profile identifier.
+     *
+     * @return the profile.
+     */
+    @Nullable
+    Profile getProfileByProgrammaticIdentifier(String profileId);
 
     /**
      * Get the QLBuilder for the profile that owns users.
+     *
      * @return the builder.
      */
     QLBuilder getQLBuilder();
 
     /**
-     * Set the owner profile for a user.
+     * Set the admin profile for a user.
+     *
      * @param user the user.
      * @param profile the profile.
+     *
      * @return true if this is a new assignment; otherwise false.
      */
-    boolean setOwnerProfileForUser(User user, Profile profile);
-
-    /**
-     * Get a profile by programmatic identifier.
-     * @param profileId the profile identifier.
-     * @return the profile.
-     */
-    @Nullable
-    Profile getProfileByProgrammaticIdentifier(String profileId);
+    boolean setAdminProfileForUser(User user, Profile profile);
 }

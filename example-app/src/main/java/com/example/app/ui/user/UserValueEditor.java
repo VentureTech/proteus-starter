@@ -92,6 +92,7 @@ import static net.proteusframework.core.locale.TextSources.createText;
 @Configurable
 public class UserValueEditor extends CompositeValueEditor<User>
 {
+    private final List<AuthenticationDomain> _authDomains = new ArrayList<>();
     @Autowired
     private EntityRetriever _er;
     @Autowired
@@ -109,9 +110,7 @@ public class UserValueEditor extends CompositeValueEditor<User>
     private ProfileTermProvider _terms;
     @Autowired
     private MembershipTypeProvider _mtp;
-
     private boolean _adminMode = true;
-    private final List<AuthenticationDomain> _authDomains = new ArrayList<>();
     private VTCropPictureEditor _userPictureEditor;
     private Profile _initialProfile;
     private ComboBoxValueEditor<Profile> profileEntitySelector;
@@ -122,7 +121,7 @@ public class UserValueEditor extends CompositeValueEditor<User>
     private List<Link> _links;
 
     /**
-     *   Instantiate an new instance of UserValueEditor
+     * Instantiate an new instance of UserValueEditor
      */
     public UserValueEditor()
     {
@@ -130,39 +129,9 @@ public class UserValueEditor extends CompositeValueEditor<User>
     }
 
     /**
-     *   Get the initial Profile.  This will either be the currently assigned Profile, if the already exists in
-     *   the database, or it will be the value set by {@link #setInitialProfile(Profile)}.  If neither of those values
-     *   are present an {@link IllegalStateException} is thrown.
-     *   @return the initial Profile
-     */
-    @Nonnull
-    public Profile getInitialProfile()
-    {
-        return _profileService.getOwnerProfileForUser(getValue())
-            .orElse(Optional.ofNullable(_er.reattachIfNecessary(_initialProfile))
-            .orElseThrow(() -> new IllegalStateException("Profile was null.  You have to set it before using it!")));
-    }
-    /**
-     *   Set the initial Profile.
-     *   @param initialProfile the initial Profile
-     */
-    public void setInitialProfile(@Nonnull Profile initialProfile)
-    {
-        _initialProfile = initialProfile;
-    }
-    /**
-     *   Get the Commit Value of the Profile Selector,
-     *   or the Initial Profile in the case that there is not a selection
-     *   @return the Commit Value or the Initial Profile.
-     */
-    @Nonnull
-    public Profile commitValueUserProfileOwner()
-    {
-        return Optional.ofNullable(profileEntitySelector.commitValue()).orElse(getInitialProfile());
-    }
-    /**
-     *   Get an Optional possibly containing the Commit Value of the Profile Role Selector, if one was selected.
-     *   @return an Optional containing the Commit Value of the Profile Role Selector
+     * Get an Optional possibly containing the Commit Value of the Profile Role Selector, if one was selected.
+     *
+     * @return an Optional containing the Commit Value of the Profile Role Selector
      */
     @Nonnull
     public List<MembershipType> commitValueCoachingMemType()
@@ -171,18 +140,9 @@ public class UserValueEditor extends CompositeValueEditor<User>
     }
 
     /**
-     *   Get the excluded contact methods from the UI for the User
-     *   @return a list of excluded contact methods
-     */
-    @Nullable
-    public ContactMethod commitValuePreferredContactMethod()
-    {
-        return _contactMethodSelector.commitValue().stream().findFirst().isPresent() ? ContactMethod.PhoneSms : null;
-    }
-
-    /**
-     *  Get the login landing page link.
-     *  @return the link
+     * Get the login landing page link.
+     *
+     * @return the link
      */
     @Nullable
     public Link commitValueLoginLandingPage()
@@ -191,18 +151,79 @@ public class UserValueEditor extends CompositeValueEditor<User>
     }
 
     /**
-     *   Get boolean flag.  If true, this viewer is being displayed in admin mode
-     *   <br>
-     *   defaults to true.
-     *   @return boolean flag
+     * Get the excluded contact methods from the UI for the User
+     *
+     * @return a list of excluded contact methods
+     */
+    @Nullable
+    public ContactMethod commitValuePreferredContactMethod()
+    {
+        return _contactMethodSelector.commitValue().stream().findFirst().isPresent() ? ContactMethod.PhoneSms : null;
+    }
+
+    /**
+     * Get the Commit Value of the Profile Selector,
+     * or the Initial Profile in the case that there is not a selection
+     *
+     * @return the Commit Value or the Initial Profile.
+     */
+    @Nonnull
+    public Profile commitValueUserProfileOwner()
+    {
+        return Optional.ofNullable(profileEntitySelector.commitValue()).orElse(getInitialProfile());
+    }
+
+    /**
+     * Get the initial Profile.  This will either be the currently assigned Profile, if the already exists in
+     * the database, or it will be the value set by {@link #setInitialProfile(Profile)}.  If neither of those values
+     * are present an {@link IllegalStateException} is thrown.
+     *
+     * @return the initial Profile
+     */
+    @Nonnull
+    public Profile getInitialProfile()
+    {
+        return _profileService.getAdminProfileForUser(getValue())
+            .orElse(Optional.ofNullable(_er.reattachIfNecessary(_initialProfile))
+                .orElseThrow(() -> new IllegalStateException("Profile was null.  You have to set it before using it!")));
+    }
+
+    /**
+     * Set the initial Profile.
+     *
+     * @param initialProfile the initial Profile
+     */
+    public void setInitialProfile(@Nonnull Profile initialProfile)
+    {
+        _initialProfile = initialProfile;
+    }
+
+    /**
+     * Get the User Image editor.
+     *
+     * @return the User Image editor
+     */
+    @Nonnull
+    public VTCropPictureEditor getPictureEditor()
+    {
+        return Optional.ofNullable(_userPictureEditor).orElseThrow(() -> new IllegalStateException(
+            "PictureEditor was null.  Do not call getPictureEditor before initialization!"));
+    }    /**
+     * Get boolean flag.  If true, this viewer is being displayed in admin mode
+     * <br>
+     * defaults to true.
+     *
+     * @return boolean flag
      */
     public boolean isAdminMode()
     {
         return _adminMode;
     }
+
     /**
-     *   Set boolean flag.  If true, this viewer is being displayed in admin mode
-     *   @param adminMode boolean flag
+     * Set boolean flag.  If true, this viewer is being displayed in admin mode
+     *
+     * @param adminMode boolean flag
      */
     public void setAdminMode(boolean adminMode)
     {
@@ -210,23 +231,26 @@ public class UserValueEditor extends CompositeValueEditor<User>
     }
 
     /**
-     *   Get the list of AuthenticationDomains to check for username uniqueness
-     *   @return a list of AuthenticationDomains
+     * Get the list of AuthenticationDomains to check for username uniqueness
+     *
+     * @return a list of AuthenticationDomains
      */
     @Nonnull
     public List<AuthenticationDomain> getAuthDomains()
     {
         return _authDomains;
     }
+
     /**
-     *   Set the list of AuthenticationDomains to check for username uniqueness
-     *   @param authDomains a list of AuthenticationDomains
+     * Set the list of AuthenticationDomains to check for username uniqueness
+     *
+     * @param authDomains a list of AuthenticationDomains
      */
     public void setAuthDomains(@Nonnull List<AuthenticationDomain> authDomains)
     {
         _authDomains.clear();
         _authDomains.addAll(authDomains);
-        if(isInited())
+        if (isInited())
         {
             _principalValueEditor.setAuthDomains(_authDomains);
         }
@@ -254,8 +278,7 @@ public class UserValueEditor extends CompositeValueEditor<User>
             getInitialProfile());
         profileEntitySelector.setRequiredValueValidator();
 
-        List<MembershipType> initialMemTypes = new ArrayList<>();
-        initialMemTypes.addAll(_profileDAO.getMembershipTypesForProfile(getInitialProfile()));
+        List<MembershipType> initialMemTypes = new ArrayList<>(_profileDAO.getMembershipTypesForProfile(getInitialProfile()));
         _profileEntityMembershipTypeSelector = new ListComponentValueEditor<>(
             createText(UserValueEditorLOK.LABEL_PROFILE_ROLE_FMT(), _terms.userProfile()),
             initialMemTypes,
@@ -271,11 +294,11 @@ public class UserValueEditor extends CompositeValueEditor<User>
         _contactMethodSelector.setVisible(
             Objects.equals(currentUser.getId(), Optional.ofNullable(getValue()).map(User::getId).orElse(0)));
         AppUtil.walkComponentTree(_contactMethodSelector.getValueComponent(), (comp) -> {
-            if(comp instanceof Checkbox)
+            if (comp instanceof Checkbox)
             {
-                Checkbox cb = (Checkbox)comp;
+                Checkbox cb = (Checkbox) comp;
                 cb.addActionListener(ev -> {
-                    if(cb.isSelected())
+                    if (cb.isSelected())
                     {
                         _principalValueEditor.getSmsEditor().setRequiredValueValidator();
                     }
@@ -297,7 +320,7 @@ public class UserValueEditor extends CompositeValueEditor<User>
         // AND only to the user who has a particular membership under the Profile.
         _loginLandingPage.setVisible(
             Objects.equals(currentUser.getId(), Optional.ofNullable(getValue()).map(User::getId).orElse(0))
-                && _profileDAO.getMembershipsForUser(getValue(), null, timeZone).stream()
+            && _profileDAO.getMembershipsForUser(getValue(), null, timeZone).stream()
                 .map(Membership::getMembershipType).filter(membershipType1 -> membershipType1 != null)
                 .anyMatch(membershipType ->
                     membershipType.equals(_mtp.companyAdmin()))
@@ -319,18 +342,17 @@ public class UserValueEditor extends CompositeValueEditor<User>
             readProp -> {
                 Principal p = _er.reattachIfNecessary(readProp.getPrincipal());
                 //noinspection ConstantConditions
-                if(p == null) return p;
-                if(p.getContact() == null)
+                if (p == null) return p;
+                if (p.getContact() == null)
                     p.setContact(new Contact());
-                if(p.getContact().getPhoneNumbers().isEmpty())
+                if (p.getContact().getPhoneNumbers().isEmpty())
                     p.getContact().getPhoneNumbers().add(new PhoneNumber());
-                if(readProp.getSmsPhone() != null)
+                if (readProp.getSmsPhone() != null)
                     p.getContact().getPhoneNumbers().add(readProp.getSmsPhone());
                 return p;
             },
             (writeProp, val) -> {
-                Principal value = val;
-                if(value == null)
+                if (val == null)
                 {
                     //noinspection ConstantConditions
                     writeProp.setPrincipal(null);
@@ -338,14 +360,14 @@ public class UserValueEditor extends CompositeValueEditor<User>
                 }
                 else
                 {
-                    writeProp.setPrincipal(value);
-                    if(value.getContact() != null)
+                    writeProp.setPrincipal(val);
+                    if (val.getContact() != null)
                     {
                         Optional<PhoneNumber> phoneNumber =
-                            ContactUtil.getPhoneNumber(value.getContact(), ContactDataCategory.PERSONAL);
-                        if(phoneNumber.isPresent())
+                            ContactUtil.getPhoneNumber(val.getContact(), ContactDataCategory.PERSONAL);
+                        if (phoneNumber.isPresent())
                         {
-                            value.getContact().getPhoneNumbers().remove(phoneNumber.get());
+                            val.getContact().getPhoneNumbers().remove(phoneNumber.get());
                             writeProp.setSmsPhone(phoneNumber.get());
                             return;
                         }
@@ -356,10 +378,9 @@ public class UserValueEditor extends CompositeValueEditor<User>
 
         profileEntitySelector.getValueComponent().addActionListener(ev -> {
             Profile profile;
-            if((profile = profileEntitySelector.getUIValue()) != null)
+            if ((profile = profileEntitySelector.getUIValue()) != null)
             {
-                List<MembershipType> memTypes = new ArrayList<>();
-                memTypes.addAll(_profileDAO.getMembershipTypesForProfile(profile));
+                List<MembershipType> memTypes = new ArrayList<>(_profileDAO.getMembershipTypesForProfile(profile));
                 //Set the options
                 _profileEntityMembershipTypeSelector.setOptions(memTypes);
                 //Set editable flag
@@ -387,9 +408,9 @@ public class UserValueEditor extends CompositeValueEditor<User>
     private <V> void removeRequiredValueValidator(AbstractSimpleValueEditor<V> editor)
     {
         Validator validator = editor.getValueComponent().getValidator();
-        if(validator instanceof CompositeValidator)
+        if (validator instanceof CompositeValidator)
         {
-            CompositeValidator cVl = (CompositeValidator)validator;
+            CompositeValidator cVl = (CompositeValidator) validator;
             List<Validator> vals = Arrays.stream(cVl.getValidators())
                 .filter(v -> !(v instanceof RequiredValueValidator))
                 .collect(Collectors.toList());
@@ -397,30 +418,21 @@ public class UserValueEditor extends CompositeValueEditor<User>
             editor.getValueComponent().setValidator(cVl);
             editor.removeClassName(CSSUtil.CSS_REQUIRED_FIELD);
         }
-        else if(validator instanceof RequiredValueValidator)
+        else if (validator instanceof RequiredValueValidator)
         {
             editor.getValueComponent().setValidator(new PassAllValidator());
             editor.removeClassName(CSSUtil.CSS_REQUIRED_FIELD);
         }
     }
 
-    /**
-     *   Get the User Image editor.
-     *   @return the User Image editor
-     */
-    @Nonnull
-    public VTCropPictureEditor getPictureEditor()
-    {
-        return Optional.ofNullable(_userPictureEditor).orElseThrow(() -> new IllegalStateException(
-            "PictureEditor was null.  Do not call getPictureEditor before initialization!"));
-    }
+
 
     @Override
     public void setValue(@Nullable User value)
     {
         super.setValue(value);
 
-        if(isInited())
+        if (isInited())
         {
             User currentUser = _userDAO.getAssertedCurrentUser();
 
@@ -450,7 +462,7 @@ public class UserValueEditor extends CompositeValueEditor<User>
             // AND only to the user who has a particular membership under the Profile.
             _loginLandingPage.setVisible(
                 Objects.equals(currentUser.getId(), Optional.ofNullable(getValue()).map(User::getId).orElse(0))
-                    && _profileDAO.getMembershipsForUser(getValue(), null, getSession().getTimeZone()).stream()
+                && _profileDAO.getMembershipsForUser(getValue(), null, getSession().getTimeZone()).stream()
                     .map(Membership::getMembershipType)
                     .anyMatch(membershipType ->
                         membershipType.equals(_mtp.companyAdmin()))
@@ -463,7 +475,7 @@ public class UserValueEditor extends CompositeValueEditor<User>
     {
         super.setEditable(b);
 
-        if(isInited())
+        if (isInited())
         {
             _userPictureEditor.setEditable(b);
             profileEntitySelector.setEditable(b);

@@ -18,6 +18,7 @@ import net.proteusframework.ui.miwt.component.event.ComponentEvent;
 /**
  * Component adapter that closes the given Component when the component the listener it is attached to closes.
  * You can use this to have to close a component when another, different, component is closed.
+ *
  * @author Alan Holt (aholt@venturetech.net)
  */
 public class ComponentCloserComponentListener extends ComponentAdapter
@@ -25,7 +26,8 @@ public class ComponentCloserComponentListener extends ComponentAdapter
     private final Component _component;
 
     /**
-     *   Instantiates a new ComponentCloserComponentListener
+     * Instantiates a new ComponentCloserComponentListener
+     *
      * @param component the Component to close
      */
     public ComponentCloserComponentListener(Component component)

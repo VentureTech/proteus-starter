@@ -14,7 +14,6 @@ package com.example.app.ui;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 
-import net.proteusframework.core.StringFactory;
 import net.proteusframework.ui.miwt.component.Component;
 import net.proteusframework.ui.search.QLBuilder;
 import net.proteusframework.ui.search.SimpleConstraint;
@@ -29,38 +28,18 @@ import static net.proteusframework.core.StringFactory.PATTERN_COMMA;
  */
 public class KeywordConstraint extends SimpleConstraint
 {
-    /**
-     *   Set the Properties to search on.
-     *   @param properties the Properties
-     *   @return this
-     */
-    public KeywordConstraint withProperties(String... properties)
-    {
-        AtomicReference<Integer> counter = new AtomicReference<>(0);
-        StringBuilder builder = new StringBuilder();
-        Arrays.stream(properties).forEach(property -> {
-            builder.append(property);
-            if(counter.accumulateAndGet(1, (i1, i2) -> i1 + i2) < properties.length)
-            {
-                builder.append(',');
-            }
-        });
-        setProperty(builder.toString());
-        return this;
-    }
-
     @Override
     public void addCriteria(QLBuilder builder, Component constraintComponent)
     {
         Object value = getValue(constraintComponent);
-        if(shouldReturnConstraintForValue(value))
+        if (shouldReturnConstraintForValue(value))
         {
             String[] properties = PATTERN_COMMA.split(getProperty());
-            for(String property : properties)
+            for (String property : properties)
             {
                 SimpleConstraint propConst = new SimpleConstraint(getName() + '-' + property);
                 propConst.setProperty(property);
-                if(getOperator() == null)
+                if (getOperator() == null)
                 {
                     setOperator(Operator.like);
                 }
@@ -69,5 +48,27 @@ public class KeywordConstraint extends SimpleConstraint
                 getOperator().addCriteria(builder, propConst, value);
             }
         }
+    }
+
+    /**
+     * Set the Properties to search on.
+     *
+     * @param properties the Properties
+     *
+     * @return this
+     */
+    public KeywordConstraint withProperties(String... properties)
+    {
+        AtomicReference<Integer> counter = new AtomicReference<>(0);
+        StringBuilder builder = new StringBuilder();
+        Arrays.stream(properties).forEach(property -> {
+            builder.append(property);
+            if (counter.accumulateAndGet(1, (i1, i2) -> i1 + i2) < properties.length)
+            {
+                builder.append(',');
+            }
+        });
+        setProperty(builder.toString());
+        return this;
     }
 }

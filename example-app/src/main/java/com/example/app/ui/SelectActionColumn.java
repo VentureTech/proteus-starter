@@ -38,84 +38,6 @@ public class SelectActionColumn extends ActionColumn
     private Function<Object, String> _htmlClassExtractor;
     private Function<Object, Boolean> _isSelectedChecker;
 
-    /**
-     *   Get the button text extractor.  If one was not supplied, simply uses CommonActions.SELECT.getName()
-     *   @return the button text extractor.
-     */
-    public Function<Object, TextSource> getButtonTextExtractor()
-    {
-        if(_buttonTextExtractor == null)
-        {
-            return (obj) -> CommonActions.SELECT.getName();
-        }
-        return _buttonTextExtractor;
-    }
-
-    /**
-     *   Set the button text extractor.  If one is not supplied, SelectActionColumn simply uses CommonActions.SELECT.getName()
-     *   @param buttonTextExtractor the button text extractor
-     *   @return this
-     */
-    public SelectActionColumn withButtonTextExtractor(
-        @Nullable Function<Object, TextSource> buttonTextExtractor)
-    {
-        _buttonTextExtractor = buttonTextExtractor;
-        return this;
-    }
-
-    /**
-     *   Get the html class extractor.  If one was not supplied, simply returns "select"
-     *   @return the html class extractor.
-     */
-    public Function<Object, String> getHtmlClassExtractor()
-    {
-        if(_htmlClassExtractor == null)
-        {
-            return (obj) -> "select";
-        }
-        return _htmlClassExtractor;
-    }
-
-    /**
-     *   Set the html class extractor.  If one is not supplied, SelectActionColumn simply returns "select"
-     *   @param htmlClassExtractor the html class extractor
-     *   @return this
-     */
-    public SelectActionColumn withHtmlClassExtractor(
-        @Nullable Function<Object, String> htmlClassExtractor)
-    {
-        _htmlClassExtractor = htmlClassExtractor;
-        return this;
-    }
-
-    /**
-     *   Get the function for verifying if the current object is selected.  By default returns false for everything.
-     *
-     *   Passing null into the checker should return a boolean flag telling if there is a value selected.
-     *   @return the isSelectedChecker
-     */
-    public Function<Object, Boolean> getIsSelectedChecker()
-    {
-        if(_isSelectedChecker == null)
-        {
-            return (obj) -> false;
-        }
-        return _isSelectedChecker;
-    }
-
-    /**
-     *   Set the function for verifying if the current object is selected.  By default returns false for everything.
-     *
-     *   Passing null into the checker should return a boolean flag telling if there is a value selected.
-     *   @param isSelectedChecker the isSelectedChecker
-     *   @return this
-     */
-    public SelectActionColumn withIsSelectedChecker(@Nullable Function<Object, Boolean> isSelectedChecker)
-    {
-        _isSelectedChecker = isSelectedChecker;
-        return this;
-    }
-
     @Override
     public TableCellRenderer getTableCellRenderer(SearchUI searchUI)
     {
@@ -124,14 +46,15 @@ public class SelectActionColumn extends ActionColumn
         select.addActionListener(ev -> handler.handle(new SearchUIOperationContext(searchUI, SearchUIOperation.select,
             SearchUIOperationContext.DataContext.lead_selection)));
 
-        Container con = new Container(){
+        Container con = new Container()
+        {
             @Override
             public Component getTableCellRendererComponent(Table table, Object value, boolean isSelected, boolean hasFocus, int row,
                 int column)
             {
                 select.getButtonDisplay().setLabel(getButtonTextExtractor().apply(value));
                 select.setClassName(getHtmlClassExtractor().apply(value));
-                if(getIsSelectedChecker().apply(value))
+                if (getIsSelectedChecker().apply(value))
                 {
                     select.addClassName("active");
                 }
@@ -141,5 +64,92 @@ public class SelectActionColumn extends ActionColumn
         con.getDisplay().appendDisplayClass("actions");
         con.add(select);
         return con;
+    }
+
+    /**
+     * Get the button text extractor.  If one was not supplied, simply uses CommonActions.SELECT.getName()
+     *
+     * @return the button text extractor.
+     */
+    public Function<Object, TextSource> getButtonTextExtractor()
+    {
+        if (_buttonTextExtractor == null)
+        {
+            return (obj) -> CommonActions.SELECT.getName();
+        }
+        return _buttonTextExtractor;
+    }
+
+    /**
+     * Get the html class extractor.  If one was not supplied, simply returns "select"
+     *
+     * @return the html class extractor.
+     */
+    public Function<Object, String> getHtmlClassExtractor()
+    {
+        if (_htmlClassExtractor == null)
+        {
+            return (obj) -> "select";
+        }
+        return _htmlClassExtractor;
+    }
+
+    /**
+     * Get the function for verifying if the current object is selected.  By default returns false for everything.
+     *
+     * Passing null into the checker should return a boolean flag telling if there is a value selected.
+     *
+     * @return the isSelectedChecker
+     */
+    public Function<Object, Boolean> getIsSelectedChecker()
+    {
+        if (_isSelectedChecker == null)
+        {
+            return (obj) -> false;
+        }
+        return _isSelectedChecker;
+    }
+
+    /**
+     * Set the button text extractor.  If one is not supplied, SelectActionColumn simply uses CommonActions.SELECT.getName()
+     *
+     * @param buttonTextExtractor the button text extractor
+     *
+     * @return this
+     */
+    public SelectActionColumn withButtonTextExtractor(
+        @Nullable Function<Object, TextSource> buttonTextExtractor)
+    {
+        _buttonTextExtractor = buttonTextExtractor;
+        return this;
+    }
+
+    /**
+     * Set the html class extractor.  If one is not supplied, SelectActionColumn simply returns "select"
+     *
+     * @param htmlClassExtractor the html class extractor
+     *
+     * @return this
+     */
+    public SelectActionColumn withHtmlClassExtractor(
+        @Nullable Function<Object, String> htmlClassExtractor)
+    {
+        _htmlClassExtractor = htmlClassExtractor;
+        return this;
+    }
+
+    /**
+     * Set the function for verifying if the current object is selected.  By default returns false for everything.
+     *
+     * Passing null into the checker should return a boolean flag telling if there is a value selected.
+     *
+     * @param isSelectedChecker the isSelectedChecker
+     *
+     * @return this
+     */
+    public SelectActionColumn withIsSelectedChecker(@Nullable Function<Object, Boolean> isSelectedChecker)
+    {
+        _isSelectedChecker = isSelectedChecker;
+        return this;
     }
 }

@@ -53,19 +53,16 @@ import net.proteusframework.core.locale.TextSource;
 @DiscriminatorColumn(name = ProjectConfig.DISCRIMINATOR_COLUMN)
 public abstract class RepositoryItem extends AbstractAuditableEntity<Integer> implements NamedObject
 {
-    private static final long serialVersionUID = -1157448594050392156L;
-
     /** The database table name */
     public static final String TABLE_NAME = "repositoryItem";
     /** The database ID column */
     public static final String ID_COLUMN = "repositoryItem_id";
-    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + '.' + ID_COLUMN + "_seq";
-
     /** The database column and property: source */
     public static final String SOURCE_COLUMN_PROP = "source";
     /** The database column and property: status */
     public static final String STATUS_COLUMN_PROP = "status";
-
+    private static final long serialVersionUID = -1157448594050392156L;
+    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + '.' + ID_COLUMN + "_seq";
     private String _source;
     private RepositoryItemStatus _status = RepositoryItemStatus.Draft;
 
@@ -80,8 +77,19 @@ public abstract class RepositoryItem extends AbstractAuditableEntity<Integer> im
         return super.getId();
     }
 
+    @Transient
+    @Nonnull
+    @Override
+    public abstract TextSource getName();
+
+    @Transient
+    @Nullable
+    @Override
+    public abstract TextSource getDescription();
+
     /**
      * Get the source or licensing entity of the item.
+     *
      * @return the source.
      */
     @Column(name = SOURCE_COLUMN_PROP)
@@ -92,9 +100,11 @@ public abstract class RepositoryItem extends AbstractAuditableEntity<Integer> im
     {
         return _source;
     }
+
     /**
-     *   Set the source or licensing entity of the item.
-     *   @param source the source
+     * Set the source or licensing entity of the item.
+     *
+     * @param source the source
      */
     public void setSource(String source)
     {
@@ -102,8 +112,9 @@ public abstract class RepositoryItem extends AbstractAuditableEntity<Integer> im
     }
 
     /**
-     *   Get the status of this RepositoryItem
-     *   @return the status
+     * Get the status of this RepositoryItem
+     *
+     * @return the status
      */
     @Enumerated(EnumType.STRING)
     @Column(name = STATUS_COLUMN_PROP)
@@ -113,22 +124,14 @@ public abstract class RepositoryItem extends AbstractAuditableEntity<Integer> im
     {
         return _status;
     }
+
     /**
-     *   Set the status of this RepositoryItem
-     *   @param status the status
+     * Set the status of this RepositoryItem
+     *
+     * @param status the status
      */
     public void setStatus(@Nonnull RepositoryItemStatus status)
     {
         _status = status;
     }
-
-    @Transient
-    @Nonnull
-    @Override
-    public abstract TextSource getName();
-
-    @Transient
-    @Nullable
-    @Override
-    public abstract TextSource getDescription();
 }

@@ -17,7 +17,6 @@ import com.example.app.model.user.UserPosition;
 import com.example.app.support.AppUtil;
 import com.example.app.terminology.ProfileTermProvider;
 import com.google.common.base.Preconditions;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -83,8 +82,8 @@ public class UserPositionManagement extends HistoryContainer implements SearchUI
             int row,
             int column)
         {
-            Checkbox cb = (Checkbox)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            UserPosition position = (UserPosition)value;
+            Checkbox cb = (Checkbox) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            UserPosition position = (UserPosition) value;
 
             cb.setSelected(position.isCurrent());
             cb.setEnabled(false);
@@ -92,21 +91,20 @@ public class UserPositionManagement extends HistoryContainer implements SearchUI
             return cb;
         }
     }
-
+    private final User _user;
     @Autowired
     private EntityRetriever _er;
     @Autowired
     private UserDAO _userDAO;
     @Autowired
     private ProfileTermProvider _terms;
-
-    private final User _user;
     private SearchUIImpl _searchUI;
     private boolean _canBeModified = true;
 
     /**
-     *   Instantiate a new instance of UserPositionManagement
-     *   @param user the User to manage the Positions for
+     * Instantiate a new instance of UserPositionManagement
+     *
+     * @param user the User to manage the Positions for
      */
     public UserPositionManagement(@Nonnull User user)
     {
@@ -116,30 +114,6 @@ public class UserPositionManagement extends HistoryContainer implements SearchUI
         _user = user;
 
         addClassName("user-positions");
-    }
-
-    @Nonnull
-    private User getUser()
-    {
-        return _er.reattachIfNecessary(_user);
-    }
-
-    /**
-     *   Get boolean flag -- if true, this management UI will display the add, edit, and delete buttons
-     *   By default, this is true.
-     *   @return boolean flag
-     */
-    public boolean canBeModified()
-    {
-        return _canBeModified;
-    }
-    /**
-     *   Set boolean flag -- if true, this management UI will display the add, edit, and delete buttons
-     *   @param canBeModified boolean flag
-     */
-    public void setCanBeModified(boolean canBeModified)
-    {
-        _canBeModified = canBeModified;
     }
 
     @Override
@@ -155,7 +129,7 @@ public class UserPositionManagement extends HistoryContainer implements SearchUI
         options.addSearchSupplier(searchSupplier);
         options.setHistory(getHistory());
 
-        if(canBeModified())
+        if (canBeModified())
         {
             final ReflectiveAction addAction = CommonActions.ADD.defaultAction();
             addAction.setActionListener(ev -> doEdit(new UserPosition()));
@@ -165,42 +139,6 @@ public class UserPositionManagement extends HistoryContainer implements SearchUI
         _searchUI = new SearchUIImpl(options);
 
         setDefaultComponent(of("search-wrapper user-position-search", _searchUI));
-    }
-
-    @Override
-    public boolean supportsOperation(SearchUIOperation operation)
-    {
-        switch(operation)
-        {
-            case add:
-            case edit:
-            case delete:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    @Override
-    public void handle(SearchUIOperationContext context)
-    {
-        UserPosition uPos = context.getData();
-        switch(context.getOperation())
-        {
-//            case add: handled by Entity Action
-            case edit:
-                if(uPos != null)
-                    doEdit(uPos);
-                _searchUI.doAction(SearchUIAction.search);
-                break;
-            case delete:
-                if(uPos != null)
-                    _userDAO.deleteUserPosition(uPos);
-                _searchUI.doAction(SearchUIAction.search);
-                break;
-            default:
-                break;
-        }
     }
 
     @Nonnull
@@ -251,10 +189,21 @@ public class UserPositionManagement extends HistoryContainer implements SearchUI
 
         searchSupplier.setBuilderSupplier(() ->
             new QLBuilderImpl(UserPosition.class, "positionAlias")
-            .appendCriteria(UserPosition.USER_PROP, PropertyConstraint.Operator.eq, getUser())
-            .setOrderBy("positionAlias._" + UserPosition.START_DATE_COLUMN_PROP + " ASC"));
+                .appendCriteria(UserPosition.USER_PROP, PropertyConstraint.Operator.eq, getUser())
+                .setOrderBy("positionAlias._" + UserPosition.START_DATE_COLUMN_PROP + " ASC"));
 
         return searchSupplier;
+    }
+
+    /**
+     * Get boolean flag -- if true, this management UI will display the add, edit, and delete buttons
+     * By default, this is true.
+     *
+     * @return boolean flag
+     */
+    public boolean canBeModified()
+    {
+        return _canBeModified;
     }
 
     private void doEdit(@Nonnull UserPosition uPos)
@@ -268,5 +217,57 @@ public class UserPositionManagement extends HistoryContainer implements SearchUI
         editor.setValue(uPos);
 
         getHistory().add(new HistoryElement(editor));
+    }
+
+    @Nonnull
+    private User getUser()
+    {
+        return _er.reattachIfNecessary(_user);
+    }
+
+    /**
+     * Set boolean flag -- if true, this management UI will display the add, edit, and delete buttons
+     *
+     * @param canBeModified boolean flag
+     */
+    public void setCanBeModified(boolean canBeModified)
+    {
+        _canBeModified = canBeModified;
+    }
+
+    @Override
+    public boolean supportsOperation(SearchUIOperation operation)
+    {
+        switch (operation)
+        {
+            case add:
+            case edit:
+            case delete:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public void handle(SearchUIOperationContext context)
+    {
+        UserPosition uPos = context.getData();
+        switch (context.getOperation())
+        {
+            //            case add: handled by Entity Action
+            case edit:
+                if (uPos != null)
+                    doEdit(uPos);
+                _searchUI.doAction(SearchUIAction.search);
+                break;
+            case delete:
+                if (uPos != null)
+                    _userDAO.deleteUserPosition(uPos);
+                _searchUI.doAction(SearchUIAction.search);
+                break;
+            default:
+                break;
+        }
     }
 }

@@ -25,6 +25,7 @@ import java.util.stream.Collector;
  * {@link Collector} implementation for collecting a stream of Entity IDs
  *
  * @param <I> the type of the entity Id
+ *
  * @author Alan Holt (aholt@venturetech.net)
  * @since 4/5/16 3:20 PM
  */
@@ -33,8 +34,9 @@ public class EntityIdCollector<I extends Number> implements Collector<I, List<I>
     private final Supplier<I> _zeroValueSupplier;
 
     /**
-     *   Instantiates a new EntityIdCollector
-     *   @param zeroValueSupplier Supplier for the zero value of the ID type
+     * Instantiates a new EntityIdCollector
+     *
+     * @param zeroValueSupplier Supplier for the zero value of the ID type
      */
     public EntityIdCollector(Supplier<I> zeroValueSupplier)
     {
@@ -56,14 +58,17 @@ public class EntityIdCollector<I extends Number> implements Collector<I, List<I>
     @Override
     public BinaryOperator<List<I>> combiner()
     {
-        return (left, right) -> { left.addAll(right); return left; };
+        return (left, right) -> {
+            left.addAll(right);
+            return left;
+        };
     }
 
     @Override
     public Function<List<I>, List<I>> finisher()
     {
         return (list) -> {
-            if(list.isEmpty())
+            if (list.isEmpty())
                 list.add(_zeroValueSupplier.get());
             return list;
         };

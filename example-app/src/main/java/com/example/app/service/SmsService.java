@@ -39,7 +39,6 @@ import net.proteusframework.users.model.PhoneNumber;
  * @author Alan Holt (aholt@venturetech.net)
  * @since 11/10/15 12:42 PM
  */
-@SuppressWarnings({"ELValidationInJSP", "SpringElInspection"})
 @Service(SmsService.SERVICE_NAME)
 public class SmsService
 {
@@ -58,10 +57,12 @@ public class SmsService
     private String _tropoMessageApiKey;
 
     /**
-     *   Send an Sms message to the specified phone number with the given content.
-     *   @param recipient the intended recipient of the message
-     *   @param content the content of the message
-     *   @return a Future representing the success of the action.
+     * Send an Sms message to the specified phone number with the given content.
+     *
+     * @param recipient the intended recipient of the message
+     * @param content the content of the message
+     *
+     * @return a Future representing the success of the action.
      */
     public Future<Boolean> sendSms(@Nonnull final PhoneNumber recipient, @Nonnull final String content)
     {
@@ -84,15 +85,15 @@ public class SmsService
                     .addHeader("content-type", "application/json")
                     .bodyString(gson.toJson(request), ContentType.APPLICATION_JSON)
                     .execute().handleResponse(httpResponse -> {
-                        if(httpResponse.getStatusLine().getStatusCode() != ResponseStatus.OK.getCode())
+                        if (httpResponse.getStatusLine().getStatusCode() != ResponseStatus.OK.getCode())
                         {
                             _logger.warn("Sms Message sending failed.  Status code: "
-                                + httpResponse.getStatusLine().getStatusCode() + " was returned.");
+                                         + httpResponse.getStatusLine().getStatusCode() + " was returned.");
                             return false;
                         }
                         String responseString = EntityUtils.toString(httpResponse.getEntity());
                         TropoResponse response = gson.fromJson(responseString, TropoResponse.class);
-                        if(response.success == null || !response.success)
+                        if (response.success == null || !response.success)
                         {
                             _logger.warn("Sms Message sending failed. Tropo Response: " + responseString);
                             return false;
@@ -100,7 +101,7 @@ public class SmsService
                         return true;
                     });
             }
-            catch(IOException e)
+            catch (IOException e)
             {
                 _logger.error("Unable to send Sms message request to Tropo.", e);
                 return false;

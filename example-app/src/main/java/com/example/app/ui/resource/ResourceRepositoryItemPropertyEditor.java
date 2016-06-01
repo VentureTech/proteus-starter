@@ -123,8 +123,54 @@ public class ResourceRepositoryItemPropertyEditor extends MIWTPageElementModelPr
         setHTMLElement(HTMLElement.section);
     }
 
-    /**
+    @SuppressWarnings("unused")
+        //Used by ApplicationFunction
+    void configure(ParsedRequest request)
+    {
+        ResourceRepositoryItem value = request.getPropertyValue(URLProperties.REPOSITORY_ITEM);
+        ResourceType resourceType = request.getPropertyValue(URLProperties.RESOURCE_TYPE);
+        Repository repo = request.getPropertyValue(URLProperties.REPOSITORY);
+        Optional<Profile> owner = Optional.ofNullable(request.getPropertyValue(URLProperties.REPOSITORY_OWNER));
+
+        if (value != null && !_repositoryDAO.isTransient(value))
+        {
+            resourceType = value.getResource().getResourceType();
+            owner = _repositoryDAO.getOwnerOfRepository(_repositoryDAO.getOwnerOfRepositoryItem(value));
+        }
+        assert resourceType != null : "ResourceType was null.  This should not happen unless the URL params are screwed up.";
+        getValueEditor().setResourceType(resourceType);
+        repo = owner.map(Profile::getRepository).orElse(repo);
+        getValueEditor().setOwner(repo);
+        final TimeZone tz = Event.getRequest().getTimeZone();
+        _currentUser = _userDAO.getAssertedCurrentUser();
+        _canEdit =
+            owner.map(profile -> _profileDAO.canOperate(_currentUser, profile, tz, _mop.viewRepositoryResources()))
+                .orElse(false)
+            && owner.map(profile -> _profileDAO.canOperate(_currentUser, profile, tz, _mop.modifyRepositoryResources()))
+                .orElse(false);
+
+        final Repository fRepo = repo;
+        _relation = value != null && value.getId() != null && value.getId() > 0
+            ? _repositoryDAO.getRelation(repo, value).orElse(null)
+            : ((Supplier<RepositoryItemRelation>) () -> {
+                RepositoryItemRelation relation = new RepositoryItemRelation();
+                relation.setRelationType(RepositoryItemRelationType.owned);
+                relation.setRepository(fRepo);
+                return relation;
+            }).get();
+
+        if (_canEdit && _relation != null)
+        {
+            getValueEditor().setValue(value);
+            setSaved(value);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Invalid Permissions To View Page");
+        }
+    }    /**
      * Set the saved ResourceRepositoryItem to be used for constructing URL properties after saving the ResourceRepositoryItem
+     *
      * @param saved the persisted ResourceRepositoryItem
      */
     public void setSaved(@Nullable ResourceRepositoryItem saved)
@@ -182,49 +228,5 @@ public class ResourceRepositoryItemPropertyEditor extends MIWTPageElementModelPr
         }
     }
 
-    @SuppressWarnings("unused") //Used by ApplicationFunction
-    void configure(ParsedRequest request)
-    {
-        ResourceRepositoryItem value = request.getPropertyValue(URLProperties.REPOSITORY_ITEM);
-        ResourceType resourceType = request.getPropertyValue(URLProperties.RESOURCE_TYPE);
-        Repository repo = request.getPropertyValue(URLProperties.REPOSITORY);
-        Optional<Profile> owner = Optional.ofNullable(request.getPropertyValue(URLProperties.REPOSITORY_OWNER));
 
-        if (value != null && !_repositoryDAO.isTransient(value))
-        {
-            resourceType = value.getResource().getResourceType();
-            owner = _repositoryDAO.getOwnerOfRepository(_repositoryDAO.getOwnerOfRepositoryItem(value));
-        }
-        assert resourceType != null : "ResourceType was null.  This should not happen unless the URL params are screwed up.";
-        getValueEditor().setResourceType(resourceType);
-        repo = owner.map(Profile::getRepository).orElse(repo);
-        getValueEditor().setOwner(repo);
-        final TimeZone tz = Event.getRequest().getTimeZone();
-        _currentUser = _userDAO.getAssertedCurrentUser();
-        _canEdit =
-            owner.map(profile -> _profileDAO.canOperate(_currentUser, profile, tz, _mop.viewRepositoryResources()))
-            .orElse(false)
-            && owner.map(profile -> _profileDAO.canOperate(_currentUser, profile, tz, _mop.modifyRepositoryResources()))
-            .orElse(false);
-
-        final Repository fRepo = repo;
-        _relation = value != null && value.getId() != null && value.getId() > 0
-            ? _repositoryDAO.getRelation(repo, value).orElse(null)
-            : ((Supplier<RepositoryItemRelation>)() -> {
-                RepositoryItemRelation relation = new RepositoryItemRelation();
-                relation.setRelationType(RepositoryItemRelationType.owned);
-                relation.setRepository(fRepo);
-                return relation;
-            }).get();
-
-        if (_canEdit && _relation != null)
-        {
-            getValueEditor().setValue(value);
-            setSaved(value);
-        }
-        else
-        {
-            throw new IllegalArgumentException("Invalid Permissions To View Page");
-        }
-    }
 }

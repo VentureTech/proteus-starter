@@ -56,8 +56,6 @@ import net.proteusframework.ui.miwt.validation.ValidatorUtil;
 
 import static com.example.app.ui.UIText.DONE;
 import static com.example.app.ui.UIText.SELECT_FMT;
-import static com.example.app.ui.UIText.DONE;
-import static com.example.app.ui.UIText.SELECT_FMT;
 import static com.example.app.ui.resource.ResourceSelectorEditorLOK.ERROR_MESSAGE_AT_LEAST_ONE_RESOURCE_REQUIRED_FMT;
 import static net.proteusframework.core.locale.TextSources.createText;
 
@@ -68,7 +66,8 @@ import static net.proteusframework.core.locale.TextSources.createText;
  * @since 4/8/16 4:33 PM
  */
 @I18NFile(symbolPrefix = "com.lrsuccess.ldp.ui.resource.ResourceSelectorEditor", i18n = @I18N(symbol = "Error Message At Least "
-    + "One Resource Required FMT",
+                                                                                                       + "One Resource Required "
+                                                                                                       + "FMT",
     l10n = @L10N("You must select at least one {0}.")))
 @Configurable
 public class ResourceSelectorEditor extends Container implements ValueEditor<List<ResourceRepositoryItem>>
@@ -77,24 +76,65 @@ public class ResourceSelectorEditor extends Container implements ValueEditor<Lis
     public static final String PROP_EDITABLE = "editable";
     /** Bound property fired when value of editor changes */
     public static final String PROP_VALUE = "value";
-
+    private final List<Repository> _repositories = new ArrayList<>();
+    private final Set<Class<? extends Resource>> _includedResourceTypes = new HashSet<>();
+    private final Set<Class<? extends Resource>> _excludedResourceTypes = new HashSet<>();
     @Autowired
     private ProfileTermProvider _terms;
     @Autowired
     private EntityRetriever _er;
-
-    private final List<Repository> _repositories = new ArrayList<>();
     private List<ResourceRepositoryItem> _value = new ArrayList<>();
-
     private TextSource _labelText;
     private ModificationState _modState = ModificationState.UNCHANGED;
     private boolean _editable = true;
-
     private DataColumnTable<ResourceRepositoryItem> _table;
     private boolean _required;
 
-    private final Set<Class<? extends Resource>> _includedResourceTypes = new HashSet<>();
-    private final Set<Class<? extends Resource>> _excludedResourceTypes = new HashSet<>();
+    @Nullable
+    @Override
+    public List<ResourceRepositoryItem> getValue()
+    {
+        return _value;
+    }
+
+    @Override
+    public void setValue(@Nullable List<ResourceRepositoryItem> value)
+    {
+        List<ResourceRepositoryItem> oldValue = _value;
+        _value = value;
+        if (isInited())
+        {
+            firePropertyChange(PROP_VALUE, value == null ? oldValue : null, value);
+        }
+    }
+
+    @Override
+    public ModificationState getModificationState()
+    {
+        return _modState;
+    }
+
+    @Override
+    public List<ResourceRepositoryItem> getUIValue(Level logErrorLevel)
+    {
+        return _table.getDefaultModel().getRows();
+    }
+
+    @Override
+    public boolean validateUIValue(Notifiable notifiable)
+    {
+        boolean valid = ValidatorUtil.getInstance().validateComponentTree(this, notifiable);
+        return valid && getValidator().validate(this, notifiable);
+    }
+
+    @Nullable
+    @Override
+    public List<ResourceRepositoryItem> commitValue() throws MIWTException
+    {
+        _modState = ModificationState.UNCHANGED;
+        setValue(getUIValue());
+        return _value;
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -119,7 +159,7 @@ public class ResourceSelectorEditor extends Container implements ValueEditor<Lis
             selector.withExcludeResourceTypes(_excludedResourceTypes);
             selector.withIncludeResourceTypes(_includedResourceTypes);
             selector.addRepoItemSelectedListener(evt -> {
-                ResourceRepositoryItem rri = _er.reattachIfNecessary((ResourceRepositoryItem)evt.getNewValue());
+                ResourceRepositoryItem rri = _er.reattachIfNecessary((ResourceRepositoryItem) evt.getNewValue());
                 _modState = ModificationState.CHANGED;
                 _table.getDefaultModel().addRow(rri);
                 selector.withSelectedResources(getUIValue());
@@ -149,25 +189,25 @@ public class ResourceSelectorEditor extends Container implements ValueEditor<Lis
         actionUICol.setDisplayClass("action-column");
         _table.setUICellRenderer(actionColumn, rowActions);
         _table.setUICellRenderer(nameColumn, new CustomCellRenderer(TextSources.EMPTY,
-            rri -> ((ResourceRepositoryItem)rri).getName()));
+            rri -> ((ResourceRepositoryItem) rri).getName()));
         _table.setCaption(new Label(getLabelText()));
         add(of("entity-actions actions", addButton));
         add(_table);
 
         addPropertyChangeListener(PROP_VALUE, evt ->
-            _table.getDefaultModel().setRows((List<ResourceRepositoryItem>)evt.getNewValue()));
+            _table.getDefaultModel().setRows((List<ResourceRepositoryItem>) evt.getNewValue()));
         addPropertyChangeListener(PROP_EDITABLE, evt -> {
             addButton.setVisible(_editable);
             removeButton.setVisible(_editable);
             actionUICol.setVisible(_editable);
         });
 
-        if(_required)
+        if (_required)
         {
             _table.addClassName(CSSUtil.CSS_REQUIRED_FIELD);
             addValidator((component, notifiable) -> {
                 List<ResourceRepositoryItem> uiVal = getUIValue();
-                if(uiVal == null || uiVal.isEmpty())
+                if (uiVal == null || uiVal.isEmpty())
                 {
                     NotificationImpl error = new NotificationImpl(NotificationType.ERROR,
                         createText(ERROR_MESSAGE_AT_LEAST_ONE_RESOURCE_REQUIRED_FMT(), _terms.resource()));
@@ -186,129 +226,13 @@ public class ResourceSelectorEditor extends Container implements ValueEditor<Lis
     }
 
     /**
-     *   Set the Repositories to use for selecting Resources
-     *   @param repositories the Repositories
-     *   @return this
-     */
-    public ResourceSelectorEditor withRepositories(List<Repository> repositories)
-    {
-        _repositories.clear();
-
-        if(repositories != null)
-            _repositories.addAll(repositories);
-
-        return this;
-    }
-
-    /**
-     *   Get the Label Text for this ValueEditor
-     *   @return the Label Text
+     * Get the Label Text for this ValueEditor
+     *
+     * @return the Label Text
      */
     public TextSource getLabelText()
     {
         return _labelText != null ? _labelText : TextSources.EMPTY;
-    }
-
-    /**
-     *   Set the Label Text for this Value Editor
-     *   @param labelText the Label Text
-     *   @return this
-     */
-    public ResourceSelectorEditor withLabelText(TextSource labelText)
-    {
-        _labelText = labelText;
-        return this;
-    }
-
-    /**
-     *   Set the value on this ValueEditor
-     *   @param value the value
-     *   @return this
-     */
-    public ResourceSelectorEditor withValue(List<ResourceRepositoryItem> value)
-    {
-        setValue(value);
-        return this;
-    }
-
-    /**
-     * Set some resource types to include in being selectable.  If empty, then all our included.
-     * @param includeTypes the included resource types
-     * @return this
-     */
-    public ResourceSelectorEditor withIncludeResourceTypes(@NotNull Set<Class<? extends Resource>> includeTypes)
-    {
-        _includedResourceTypes.clear();
-        _includedResourceTypes.addAll(includeTypes);
-        return this;
-    }
-
-    /**
-     * Set some resource types to exclude from being selectable, if empty then none are excluded.
-     * @param excludeResourceTypes the excluded resource types
-     * @return this
-     */
-    public ResourceSelectorEditor withExcludeResourceTypes(@NotNull Set<Class<? extends Resource>> excludeResourceTypes)
-    {
-        _excludedResourceTypes.clear();
-        _excludedResourceTypes.addAll(excludeResourceTypes);
-        return this;
-    }
-
-    /**
-     *   Set that there should at least be one resource selected for validation
-     *   @return this
-     */
-    public ResourceSelectorEditor withRequiredValueValidator()
-    {
-        _required = true;
-        return this;
-    }
-
-    @Nullable
-    @Override
-    public List<ResourceRepositoryItem> getValue()
-    {
-        return _value;
-    }
-
-    @Override
-    public void setValue(@Nullable List<ResourceRepositoryItem> value)
-    {
-        List<ResourceRepositoryItem> oldValue = _value;
-        _value = value;
-        if(isInited())
-        {
-            firePropertyChange(PROP_VALUE, value == null ? oldValue : null, value);
-        }
-    }
-
-    @Override
-    public ModificationState getModificationState()
-    {
-        return _modState;
-    }
-
-    @Override
-    public List<ResourceRepositoryItem> getUIValue(Level logErrorLevel)
-    {
-        return _table.getDefaultModel().getRows();
-    }
-
-    @Override
-    public boolean validateUIValue(Notifiable notifiable)
-    {
-        boolean valid =  ValidatorUtil.getInstance().validateComponentTree(this, notifiable);
-        return valid && getValidator().validate(this, notifiable);
-    }
-
-    @Nullable
-    @Override
-    public List<ResourceRepositoryItem> commitValue() throws MIWTException
-    {
-        _modState = ModificationState.UNCHANGED;
-        setValue(getUIValue());
-        return _value;
     }
 
     @Override
@@ -321,9 +245,91 @@ public class ResourceSelectorEditor extends Container implements ValueEditor<Lis
     public void setEditable(boolean b)
     {
         _editable = b;
-        if(isInited())
+        if (isInited())
         {
             firePropertyChange(PROP_EDITABLE, null, _editable);
         }
+    }
+
+    /**
+     * Set some resource types to exclude from being selectable, if empty then none are excluded.
+     *
+     * @param excludeResourceTypes the excluded resource types
+     *
+     * @return this
+     */
+    public ResourceSelectorEditor withExcludeResourceTypes(@NotNull Set<Class<? extends Resource>> excludeResourceTypes)
+    {
+        _excludedResourceTypes.clear();
+        _excludedResourceTypes.addAll(excludeResourceTypes);
+        return this;
+    }
+
+    /**
+     * Set some resource types to include in being selectable.  If empty, then all our included.
+     *
+     * @param includeTypes the included resource types
+     *
+     * @return this
+     */
+    public ResourceSelectorEditor withIncludeResourceTypes(@NotNull Set<Class<? extends Resource>> includeTypes)
+    {
+        _includedResourceTypes.clear();
+        _includedResourceTypes.addAll(includeTypes);
+        return this;
+    }
+
+    /**
+     * Set the Label Text for this Value Editor
+     *
+     * @param labelText the Label Text
+     *
+     * @return this
+     */
+    public ResourceSelectorEditor withLabelText(TextSource labelText)
+    {
+        _labelText = labelText;
+        return this;
+    }
+
+    /**
+     * Set the Repositories to use for selecting Resources
+     *
+     * @param repositories the Repositories
+     *
+     * @return this
+     */
+    public ResourceSelectorEditor withRepositories(List<Repository> repositories)
+    {
+        _repositories.clear();
+
+        if (repositories != null)
+            _repositories.addAll(repositories);
+
+        return this;
+    }
+
+    /**
+     * Set that there should at least be one resource selected for validation
+     *
+     * @return this
+     */
+    public ResourceSelectorEditor withRequiredValueValidator()
+    {
+        _required = true;
+        return this;
+    }
+
+    /**
+     * Set the value on this ValueEditor
+     *
+     * @param value the value
+     *
+     * @return this
+     */
+    public ResourceSelectorEditor withValue(List<ResourceRepositoryItem> value)
+    {
+        setValue(value);
+        return this;
     }
 }

@@ -45,31 +45,21 @@ import static com.example.app.ui.resource.URIResourceRendererLOK.LABEL_OPEN_URL;
 class URIResourceRenderer extends GeneratorImpl<PageElement>
 {
 
+    private final URIResource _resource;
     @Autowired
     private EntityRetriever _er;
-
-    private final URIResource _resource;
     private CacheableBuilder _cacheableBuilder;
 
     /**
-     *   Instantiate a new instance
-     *   @param resource the resource to render
+     * Instantiate a new instance
+     *
+     * @param resource the resource to render
      */
     public URIResourceRenderer(URIResource resource)
     {
         super();
         _resource = resource;
     }
-
-    /**
-     *   Get the resource.  Makes a call to {@link EntityRetriever#reattachIfNecessary(Object)} before returning.
-     *   @return the reattached (if necessary) resource
-     */
-    public URIResource getResource()
-    {
-        return _er.reattachIfNecessary(_resource);
-    }
-
 
     @Override
     public void preRenderProcess(CmsRequest<PageElement> request, CmsResponse response, ProcessChain chain)
@@ -78,10 +68,14 @@ class URIResourceRenderer extends GeneratorImpl<PageElement>
         _cacheableBuilder.addEntity(getResource());
     }
 
-    @Override
-    public String getIdentity(CmsRequest<PageElement> request)
+    /**
+     * Get the resource.  Makes a call to {@link EntityRetriever#reattachIfNecessary(Object)} before returning.
+     *
+     * @return the reattached (if necessary) resource
+     */
+    public URIResource getResource()
     {
-        return _cacheableBuilder.makeCacheable().getIdentity(request);
+        return _er.reattachIfNecessary(_resource);
     }
 
     @Override
@@ -91,7 +85,7 @@ class URIResourceRenderer extends GeneratorImpl<PageElement>
 
         String uri = StringFactory.uriToString(getResource().getUri());
 
-        if(uri != null)
+        if (uri != null)
         {
             pw.append("<span").appendEscapedAttribute("class", "resource uri-resource").append(">");
 
@@ -106,5 +100,11 @@ class URIResourceRenderer extends GeneratorImpl<PageElement>
             pw.append("</span>");
             pw.append("</span>");
         }
+    }
+
+    @Override
+    public String getIdentity(CmsRequest<PageElement> request)
+    {
+        return _cacheableBuilder.makeCacheable().getIdentity(request);
     }
 }

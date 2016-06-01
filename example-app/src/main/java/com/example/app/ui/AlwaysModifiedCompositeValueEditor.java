@@ -15,7 +15,9 @@ import net.proteusframework.ui.miwt.component.composite.editor.CompositeValueEdi
 
 /**
  * Value editor that is always modified..
+ *
  * @param <C> class type.
+ *
  * @author Alan Holt (aholt@venturetech.net)
  */
 public class AlwaysModifiedCompositeValueEditor<C> extends CompositeValueEditor<C>

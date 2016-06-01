@@ -28,8 +28,9 @@ public class MessageContext
     private String _emailSubject;
 
     /**
-     *   Instantiate a new instance of ContactUser with the given ContactMethod
-     *   @param contactMethod the contactMethod to use
+     * Instantiate a new instance of ContactUser with the given ContactMethod
+     *
+     * @param contactMethod the contactMethod to use
      */
     public MessageContext(@Nonnull ContactMethod contactMethod)
     {
@@ -37,17 +38,20 @@ public class MessageContext
     }
 
     /**
-     *   Get the contact method for this ContactUser instance
-     *   @return the contact method
+     * Get the contact method for this ContactUser instance
+     *
+     * @return the contact method
      */
     @Nonnull
     public ContactMethod getContactMethod()
     {
         return _contactMethod;
     }
+
     /**
-     *   Set the contact method for this ContactUser instance
-     *   @param contactMethod the contact method
+     * Set the contact method for this ContactUser instance
+     *
+     * @param contactMethod the contact method
      */
     public void setContactMethod(@Nonnull ContactMethod contactMethod)
     {
@@ -55,16 +59,19 @@ public class MessageContext
     }
 
     /**
-     *   Get the content for this ContactUser instance
-     *   @return the message content
+     * Get the content for this ContactUser instance
+     *
+     * @return the message content
      */
     public String getContent()
     {
         return _content;
     }
+
     /**
-     *   Set the content for this ContactUser instance
-     *   @param content the message content
+     * Set the content for this ContactUser instance
+     *
+     * @param content the message content
      */
     public void setContent(String content)
     {
@@ -72,20 +79,23 @@ public class MessageContext
     }
 
     /**
-     *   Get the email subject for this ContactUser instance
-     *   <br>
-     *   Only used if {@link #getContactMethod()} returns {@link ContactMethod#Email}
-     *   @return the email subject
+     * Get the email subject for this ContactUser instance
+     * <br>
+     * Only used if {@link #getContactMethod()} returns {@link ContactMethod#Email}
+     *
+     * @return the email subject
      */
     public String getEmailSubject()
     {
         return _emailSubject;
     }
+
     /**
-     *   Set the email subject for this ContactUser instance
-     *   <br>
-     *   Only used if {@link #getContactMethod()} returns {@link ContactMethod#Email}
-     *   @param emailSubject the email subject
+     * Set the email subject for this ContactUser instance
+     * <br>
+     * Only used if {@link #getContactMethod()} returns {@link ContactMethod#Email}
+     *
+     * @param emailSubject the email subject
      */
     public void setEmailSubject(String emailSubject)
     {

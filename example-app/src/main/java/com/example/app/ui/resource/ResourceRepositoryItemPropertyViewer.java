@@ -45,9 +45,9 @@ import net.proteusframework.ui.miwt.util.CommonActions;
 
 import static com.example.app.ui.UIText.ERROR_MESSAGE_INSUFFICIENT_PERMISSIONS_FMT;
 import static com.example.app.ui.resource.PublicResourceListingLOK.COMPONENT_NAME;
-import static com.example.app.ui.resource.ResourceRepositoryItemPropertyViewerLOK.*;
+import static com.example.app.ui.resource.ResourceRepositoryItemPropertyViewerLOK.ERROR_UNABLE_TO_FIND_RESOURCE_FMT;
 import static net.proteusframework.core.locale.TextSources.createText;
-import static net.proteusframework.ui.miwt.component.composite.Message.error;
+import static net.proteusframework.core.notification.NotificationImpl.error;
 
 /**
  * {@link PropertyViewer} for {@link ResourceRepositoryItem}
@@ -78,6 +78,7 @@ import static net.proteusframework.ui.miwt.component.composite.Message.error;
 )
 public class ResourceRepositoryItemPropertyViewer extends MIWTPageElementModelPropertyViewer
 {
+    private final MessageContainer _messages = new MessageContainer(35_000L);
     @Autowired
     private RepositoryDAO _repositoryDAO;
     @Autowired
@@ -86,12 +87,10 @@ public class ResourceRepositoryItemPropertyViewer extends MIWTPageElementModelPr
     private MembershipOperationProvider _mop;
     @Autowired
     private ProfileTermProvider _terms;
-
-    private final MessageContainer _messages = new MessageContainer(35_000L);
     private boolean _canEdit;
 
     /**
-     *   Instantiate a new instance of ResourceRepositoryItemPropertyViewer
+     * Instantiate a new instance of ResourceRepositoryItemPropertyViewer
      */
     public ResourceRepositoryItemPropertyViewer()
     {
@@ -118,7 +117,7 @@ public class ResourceRepositoryItemPropertyViewer extends MIWTPageElementModelPr
         backAction.configure().toReturnPath(ApplicationFunctions.ResourceRepositoryItem.MANAGEMENT)
             .usingCurrentURLData().withSourceComponent(this);
 
-        if(_canEdit)
+        if (_canEdit)
         {
             setPersistenceActions(editAction, backAction);
         }
@@ -130,19 +129,20 @@ public class ResourceRepositoryItemPropertyViewer extends MIWTPageElementModelPr
         moveToTop(_messages);
     }
 
-    @SuppressWarnings("unused") //Used by ApplicationFunction
+    @SuppressWarnings("unused")
+        //Used by ApplicationFunction
     void configure(ParsedRequest request)
     {
         ResourceRepositoryItem value = request.getPropertyValue(URLProperties.REPOSITORY_ITEM);
 
-        if(value == null)
+        if (value == null)
             _messages.sendNotification(error(createText(ERROR_UNABLE_TO_FIND_RESOURCE_FMT(), _terms.resource())));
         else
         {
             final TimeZone timeZone = Event.getRequest().getTimeZone();
             User currentUser = _userDAO.getAssertedCurrentUser();
             Repository repo = _repositoryDAO.getOwnerOfRepositoryItem(value);
-            if(_repositoryDAO.canOperate(currentUser, repo, timeZone, _mop.viewRepositoryResources()))
+            if (_repositoryDAO.canOperate(currentUser, repo, timeZone, _mop.viewRepositoryResources()))
             {
                 _canEdit = _repositoryDAO.canOperate(currentUser, repo, timeZone, _mop.modifyRepositoryResources());
                 setValueViewer(new ResourceRepositoryItemValueViewer(value));

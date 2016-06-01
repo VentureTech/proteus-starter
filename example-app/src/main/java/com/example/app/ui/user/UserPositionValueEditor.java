@@ -54,14 +54,14 @@ import static com.example.app.ui.user.UserPositionValueEditorLOK.*;
 @Configurable
 public class UserPositionValueEditor extends CompositeValueEditor<UserPosition>
 {
+    private final User _user;
     @Autowired
     private EntityRetriever _er;
 
-    private final User _user;
-
     /**
-     *   Instantiate a new instance of UserPositionValueEditor
-     *   @param user the User for which this UserPosition is.
+     * Instantiate a new instance of UserPositionValueEditor
+     *
+     * @param user the User for which this UserPosition is.
      */
     public UserPositionValueEditor(@Nonnull User user)
     {
@@ -72,10 +72,30 @@ public class UserPositionValueEditor extends CompositeValueEditor<UserPosition>
         _user = user;
     }
 
+    @Nullable
+    @Override
+    public UserPosition getUIValue(Level logErrorLevel)
+    {
+        UserPosition result = Optional.ofNullable(super.getUIValue(logErrorLevel))
+            .orElseThrow(() -> new IllegalStateException("UserPosition was null.  This should not happen."));
+        result.setUser(getUser());
+        return result;
+    }
+
     @Nonnull
     private User getUser()
     {
         return _er.reattachIfNecessary(_user);
+    }
+
+    @Nullable
+    @Override
+    public UserPosition commitValue() throws MIWTException
+    {
+        UserPosition result = Optional.ofNullable(super.commitValue())
+            .orElseThrow(() -> new IllegalStateException("UserPosition was null.  This should not happen."));
+        result.setUser(getUser());
+        return result;
     }
 
     @Override
@@ -106,25 +126,5 @@ public class UserPositionValueEditor extends CompositeValueEditor<UserPosition>
         addEditorForProperty(() -> {
             return new BooleanValueEditor(LABEL_CURRENT(), null);
         }, UserPosition.CURRENT_COLUMN_PROP);
-    }
-
-    @Nullable
-    @Override
-    public UserPosition getUIValue(Level logErrorLevel)
-    {
-        UserPosition result = Optional.ofNullable(super.getUIValue(logErrorLevel))
-            .orElseThrow(() -> new IllegalStateException("UserPosition was null.  This should not happen."));
-        result.setUser(getUser());
-        return result;
-    }
-
-    @Nullable
-    @Override
-    public UserPosition commitValue() throws MIWTException
-    {
-        UserPosition result = Optional.ofNullable(super.commitValue())
-            .orElseThrow(() -> new IllegalStateException("UserPosition was null.  This should not happen."));
-        result.setUser(getUser());
-        return result;
     }
 }

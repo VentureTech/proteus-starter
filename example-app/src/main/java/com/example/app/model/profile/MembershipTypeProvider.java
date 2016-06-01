@@ -31,6 +31,7 @@ import net.proteusframework.core.locale.LocalizedObjectKey;
 
 /**
  * Configuration that provides MembershipTypes.
+ *
  * @author Alan Holt (aholt@venturetech.net)
  */
 @Configuration
@@ -51,22 +52,10 @@ public class MembershipTypeProvider implements ApplicationListener<ApplicationCo
 
     private boolean _initialized;
 
-    /**
-     *   Get the system admin membership type
-     *   @return membership type
-     */
-    @Bean
-    public MembershipType companyAdmin()
-    {
-        return _profileDAO.getMembershipTypeOrNew(_profileTypeProvider.company(), "admin",
-            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "System Admin For Companies"),
-            () -> _mop.getOperations());
-    }
-
     @Override
     public void onApplicationEvent(ApplicationContextEvent event)
     {
-        if(!_initialized && (event instanceof ContextRefreshedEvent || event instanceof ContextStartedEvent))
+        if (!_initialized && (event instanceof ContextRefreshedEvent || event instanceof ContextStartedEvent))
         {
             //Ensure that the profile type provider is initialized
             _profileTypeProvider.onApplicationEvent(event);
@@ -78,7 +67,7 @@ public class MembershipTypeProvider implements ApplicationListener<ApplicationCo
                 initialize();
                 _initialized = true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logger.fatal("MembershipTypeProvider failed to initialize.", e);
             }
@@ -92,5 +81,18 @@ public class MembershipTypeProvider implements ApplicationListener<ApplicationCo
     private void initialize()
     {
         companyAdmin();
+    }
+
+    /**
+     * Get the system admin membership type
+     *
+     * @return membership type
+     */
+    @Bean
+    public MembershipType companyAdmin()
+    {
+        return _profileDAO.getMembershipTypeOrNew(_profileTypeProvider.company(), "admin",
+            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "System Admin For Companies"),
+            () -> _mop.getOperations());
     }
 }

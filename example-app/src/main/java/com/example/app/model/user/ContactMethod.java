@@ -29,8 +29,7 @@ public enum ContactMethod implements NamedObject
     /** contact method */
     Email(EMAIL_NAME(), EMAIL_DESCRIPTION()),
     /** contact method */
-    PhoneSms(PHONE_SMS_NAME(), PHONE_SMS_DESCRIPTION())
-    ;
+    PhoneSms(PHONE_SMS_NAME(), PHONE_SMS_DESCRIPTION());
 
     private final TextSource _name;
     private final TextSource _description;

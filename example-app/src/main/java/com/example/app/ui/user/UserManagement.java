@@ -46,7 +46,6 @@ import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelHistoryContainer;
 import net.proteusframework.cms.category.CmsCategory;
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.core.locale.ConcatTextSource;
-import net.proteusframework.core.locale.NamedObjectComparator;
 import net.proteusframework.core.locale.TextSource;
 import net.proteusframework.core.locale.TextSources;
 import net.proteusframework.core.locale.annotation.I18N;
@@ -149,21 +148,13 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
     private Profile _userProfile;
 
     /**
-     *   Instantiates a new instance of UserManagement
+     * Instantiates a new instance of UserManagement
      */
     public UserManagement()
     {
         setName(COMPONENT_NAME());
         addCategory(CmsCategory.ClientBackend);
         addClassName("user-mgt");
-    }
-
-    @Override
-    public void preRenderProcess(Request request, Response response, RendererEditorState<?> state)
-    {
-        super.preRenderProcess(request, response, state);
-
-        _currentUser = _userDAO.getAssertedCurrentUser();
     }
 
     @Override
@@ -179,7 +170,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
         _addAction = CommonActions.ADD.navAction();
         _addAction.configure().toPage(ApplicationFunctions.User.EDIT);
         _addAction.setPropertyValueResolver(parameter -> {
-            HashMap<String,Object> map = new HashMap<>();
+            HashMap<String, Object> map = new HashMap<>();
             map.put(URLProperties.USER, URLConfigPropertyConverter.ENTITY_NEW);
             map.put(URLProperties.PROFILE, _userProfile);
             return map;
@@ -199,32 +190,11 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
     }
 
     @Override
-    public boolean supportsOperation(SearchUIOperation operation)
+    public void preRenderProcess(Request request, Response response, RendererEditorState<?> state)
     {
-        switch(operation)
-        {
-            case add:
-            case view:
-                return true;
-            case delete:
-            case edit:
-            case select:
-            case copy:
-            default:
-                return false;
-        }
-    }
+        super.preRenderProcess(request, response, state);
 
-    @Override
-    public void handle(SearchUIOperationContext context)
-    {
-//        switch(context.getOperation())
-//        {
-//            // case add: handled by entity action
-//            // case view: handled by NavigationLinkColumn
-//            default:
-//                break;
-//        }
+        _currentUser = _userDAO.getAssertedCurrentUser();
     }
 
     @Nonnull
@@ -246,6 +216,88 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
         searchSupplier.setSearchModel(searchModel);
 
         return searchSupplier;
+    }
+
+    private void setBuilderSupplierAndAddActionAvailability()
+    {
+        assert (_searchUI.getSearchSupplier()) != null : "Search Supplier was null.  This should not happen.";
+        ((SearchSupplierImpl) _searchUI.getSearchSupplier()).setBuilderSupplier(getBuilderSupplier());
+        final TimeZone tz = getSession().getTimeZone();
+        _addAction.setEnabled(_profileDAO.canOperate(_currentUser, _userProfile, tz, _mop.modifyUser()));
+    }
+
+    private void addConstraints(SearchModelImpl searchModel)
+    {
+
+
+        searchModel.getConstraints().add(
+            new ComboBoxConstraint()
+            {
+
+                private ComboBox _constraintComponent;
+
+                @Override
+                public void addCriteria(QLBuilder builder, net.proteusframework.ui.miwt.component.Component constraintComponent)
+                {
+                    ComboBox combo = (ComboBox) constraintComponent;
+                    MembershipType memType = (MembershipType) combo.getSelectedObject();
+                    if (memType != null && shouldReturnConstraintForValue(memType))
+                    {
+                        QLBuilder membershipBuilder = _profileDAO.getMembershipQLBuilder();
+                        membershipBuilder.setProjection("distinct " + membershipBuilder.getAlias() + '.'
+                                                        + Membership.USER_PROP + ".id");
+                        membershipBuilder.appendCriteria(Membership.MEMBERSHIP_TYPE_PROP, getOperator(), memType);
+                        membershipBuilder.appendCriteria(Membership.PROFILE_PROP, Operator.eq,
+                            _userProfile);
+                        List<Integer> userIDs = membershipBuilder.getQueryResolver().list();
+                        if (userIDs.isEmpty())
+                            userIDs.add(0);
+                        builder.appendCriteria(builder.getAlias() + ".id in (:usersWithRole)")
+                            .putParameter("usersWithRole", userIDs);
+                    }
+                }
+
+                @Override
+                public net.proteusframework.ui.miwt.component.Component getConstraintComponent()
+                {
+                    if (_constraintComponent == null || _constraintComponent.isClosed())
+                    {
+                        List<MembershipType> memTypes = new ArrayList<>();
+                        memTypes.add(null);
+                        memTypes.addAll(_profileDAO.getMembershipTypesForProfile(_userProfile));
+
+                        _constraintComponent = new ComboBox(new SimpleListModel<>(memTypes));
+                        _constraintComponent.setCellRenderer(new CustomCellRenderer(CommonButtonText.ANY));
+                    }
+                    return _constraintComponent;
+                }
+            }
+                .withLabel(CONSTRAINT_ROLE())
+                .withOperator(Operator.eq));
+
+        searchModel.getConstraints().add(new SimpleConstraint("first-name").withLabel(CommonColumnText.FIRST_NAME)
+            .withProperty(User.PRINCIPAL_PROP + ".contact.name.first")
+            .withOperator(Operator.like));
+
+        searchModel.getConstraints().add(new SimpleConstraint("last-name").withLabel(CommonColumnText.LAST_NAME)
+            .withProperty(User.PRINCIPAL_PROP + ".contact.name.last")
+            .withOperator(Operator.like));
+
+        searchModel.getConstraints().add(new SimpleConstraint("username").withLabel(CommonColumnText.EMAIL)
+            .withProperty(User.PRINCIPAL_PROP + ".credentials.username")
+            .withOperator(Operator.like));
+
+        searchModel.getConstraints().add(new UserPositionConstraint()
+            .withLabel(CommonColumnText.TITLE)
+            .withOperator(Operator.like));
+
+        List<PrincipalStatus> statuses = new ArrayList<>();
+        statuses.add(null);
+        Collections.addAll(statuses, PrincipalStatus.values());
+        searchModel.getConstraints().add(new ComboBoxConstraint(statuses, PrincipalStatus.active, CommonButtonText.ANY)
+            .withLabel(CommonColumnText.STATUS)
+            .withProperty(User.PRINCIPAL_PROP + ".status")
+            .withOperator(Operator.eq));
     }
 
     private void addResultColumns(SearchModelImpl searchModel)
@@ -291,7 +343,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
             .withName("title")
             .withTableColumn(new FixedValueColumn().withColumnName(CommonColumnText.TITLE))
             .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
-                User user = (User)input;
+                User user = (User) input;
                 return _userDAO.getCurrentUserPosition(user)
                     .map(UserPosition::getPosition)
                     .orElse("");
@@ -301,14 +353,14 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
             .withName("role")
             .withTableColumn(new FixedValueColumn().withColumnName(CONSTRAINT_ROLE()))
             .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
-                User user = (User)input;
+                User user = (User) input;
                 List<MembershipType> roles = _profileDAO.getMemberships(
                     _userProfile, user, getSession().getTimeZone())
                     .stream()
                     .filter(mem -> mem.getMembershipType() != null)
                     .map(Membership::getMembershipType)
                     .collect(Collectors.toList());
-                if(roles.isEmpty())
+                if (roles.isEmpty())
                     return TextSources.EMPTY;
                 else
                 {
@@ -328,7 +380,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
             .withName("contact-phone")
             .withTableColumn(new FixedValueColumn().withColumnName(COLUMN_CONTACT_PHONE()))
             .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
-                User user = (User)input;
+                User user = (User) input;
                 return ContactUtil.getPhoneNumber(user.getPrincipal().getContact(), ContactDataCategory.values())
                     .map(PhoneNumber::toExternalForm).orElse("");
             })));
@@ -339,79 +391,6 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
                 .withColumnName(CommonColumnText.STATUS)));
 
         searchModel.setDefaultSortColumn(defaultSortColumn);
-    }
-
-    private void addConstraints(SearchModelImpl searchModel)
-    {
-
-
-        searchModel.getConstraints().add(
-            new ComboBoxConstraint(){
-
-                private ComboBox _constraintComponent;
-
-                @Override
-                public net.proteusframework.ui.miwt.component.Component getConstraintComponent()
-                {
-                    if(_constraintComponent == null || _constraintComponent.isClosed())
-                    {
-                        List<MembershipType> memTypes = new ArrayList<>();
-                        memTypes.add(null);
-                        memTypes.addAll(_profileDAO.getMembershipTypesForProfile(_userProfile));
-
-                        _constraintComponent = new ComboBox(new SimpleListModel<>(memTypes));
-                        _constraintComponent.setCellRenderer(new CustomCellRenderer(CommonButtonText.ANY));
-                    }
-                    return _constraintComponent;
-                }
-
-                @Override
-                public void addCriteria(QLBuilder builder, net.proteusframework.ui.miwt.component.Component constraintComponent)
-                {
-                    ComboBox combo = (ComboBox)constraintComponent;
-                    MembershipType memType = (MembershipType)combo.getSelectedObject();
-                    if(memType != null && shouldReturnConstraintForValue(memType))
-                    {
-                        QLBuilder membershipBuilder = _profileDAO.getMembershipQLBuilder();
-                        membershipBuilder.setProjection("distinct " + membershipBuilder.getAlias() + '.'
-                            + Membership.USER_PROP + ".id");
-                        membershipBuilder.appendCriteria(Membership.MEMBERSHIP_TYPE_PROP, getOperator(), memType);
-                        membershipBuilder.appendCriteria(Membership.PROFILE_PROP, Operator.eq,
-                            _userProfile);
-                        List<Integer> userIDs = membershipBuilder.getQueryResolver().list();
-                        if(userIDs.isEmpty())
-                            userIDs.add(0);
-                        builder.appendCriteria(builder.getAlias() + ".id in (:usersWithRole)")
-                            .putParameter("usersWithRole", userIDs);
-                    }
-                }
-            }
-            .withLabel(CONSTRAINT_ROLE())
-            .withOperator(Operator.eq));
-
-        searchModel.getConstraints().add(new SimpleConstraint("first-name").withLabel(CommonColumnText.FIRST_NAME)
-            .withProperty(User.PRINCIPAL_PROP + ".contact.name.first")
-            .withOperator(Operator.like));
-
-        searchModel.getConstraints().add(new SimpleConstraint("last-name").withLabel(CommonColumnText.LAST_NAME)
-            .withProperty(User.PRINCIPAL_PROP + ".contact.name.last")
-            .withOperator(Operator.like));
-
-        searchModel.getConstraints().add(new SimpleConstraint("username").withLabel(CommonColumnText.EMAIL)
-            .withProperty(User.PRINCIPAL_PROP + ".credentials.username")
-            .withOperator(Operator.like));
-
-        searchModel.getConstraints().add(new UserPositionConstraint()
-            .withLabel(CommonColumnText.TITLE)
-            .withOperator(Operator.like));
-
-        List<PrincipalStatus> statuses = new ArrayList<>();
-        statuses.add(null);
-        Collections.addAll(statuses, PrincipalStatus.values());
-        searchModel.getConstraints().add(new ComboBoxConstraint(statuses, PrincipalStatus.active, CommonButtonText.ANY)
-            .withLabel(CommonColumnText.STATUS)
-            .withProperty(User.PRINCIPAL_PROP + ".status")
-            .withOperator(Operator.eq));
     }
 
     private void addBulkActions(SearchModelImpl searchModel)
@@ -453,11 +432,25 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
         }.withName(ContactMethod.Email.getName()));
     }
 
+    private Supplier<QLBuilder> getBuilderSupplier()
+    {
+        return () -> {
+            final Integer userProfileId = _userProfile.getId();
+
+            QLBuilder profileQB = _profileService.getQLBuilder();
+            profileQB.appendCriteria("id", Operator.eq, userProfileId);
+            // FIXME : you may need to update this based on your mapping of AdminProfile <-> user
+            final JoinedQLBuilder userQB = profileQB.createJoin(JoinType.INNER, "users", UserDAO.ALIAS);
+            profileQB.setProjection(userQB.getAlias());
+            return userQB;
+        };
+    }
+
     private void performPrincipalStatusBulkAction(@Nonnull PrincipalStatus status)
     {
         @SuppressWarnings("unchecked")
         List<User> selection = (List<User>) _searchUI.getSelection();
-        for(User user : selection)
+        for (User user : selection)
         {
             user = _er.reattachIfNecessary(user);
             user.getPrincipal().setStatus(status);
@@ -473,7 +466,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
         @SuppressWarnings("unchecked")
         List<User> selection = (List<User>) _searchUI.getSelection();
 
-        if(!selection.isEmpty())
+        if (!selection.isEmpty())
         {
             final Dialog dlg = new Dialog(getApplication(), contactMethod.getName());
             dlg.addClassName("message-ctx-editor-dialog");
@@ -489,36 +482,44 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
         }
     }
 
-    private Supplier<QLBuilder> getBuilderSupplier()
+    @Override
+    public boolean supportsOperation(SearchUIOperation operation)
     {
-        return () -> {
-            final Integer ceId = _userProfile.getId();
-
-            QLBuilder builder = _profileService.getQLBuilder();
-            builder.appendCriteria("id", Operator.eq, ceId);
-            // FIXME : is this how we want to map profile <-> user
-            final JoinedQLBuilder userQB = builder.createJoin(JoinType.INNER, "users", UserDAO.ALIAS);
-            builder.setProjection(userQB.getAlias());
-            return userQB;
-        };
+        switch (operation)
+        {
+            case add:
+            case view:
+                return true;
+            case delete:
+            case edit:
+            case select:
+            case copy:
+            default:
+                return false;
+        }
     }
 
-    private void setBuilderSupplierAndAddActionAvailability()
+    @Override
+    public void handle(SearchUIOperationContext context)
     {
-        assert (_searchUI.getSearchSupplier()) != null : "Search Supplier was null.  This should not happen.";
-        ((SearchSupplierImpl)_searchUI.getSearchSupplier()).setBuilderSupplier(getBuilderSupplier());
-        final TimeZone tz = getSession().getTimeZone();
-        _addAction.setEnabled(_profileDAO.canOperate(_currentUser, _userProfile, tz, _mop.modifyUser()));
+        //        switch(context.getOperation())
+        //        {
+        //            // case add: handled by entity action
+        //            // case view: handled by NavigationLinkColumn
+        //            default:
+        //                break;
+        //        }
     }
 
-    @SuppressWarnings("unused") //used by ApplicationFunction
+    @SuppressWarnings("unused")
+        //used by ApplicationFunction
     void configure(ParsedRequest request)
     {
         _currentUser = _userDAO.getAssertedCurrentUser();
-        _userProfile = _profileService.getOwnerProfileForUser(_currentUser)
+        _userProfile = _profileService.getAdminProfileForUser(_currentUser)
             .orElseThrow(() -> new IllegalStateException("User must have profile."));
 
-        if(!_profileDAO.canOperate(_currentUser, _userProfile, AppUtil.UTC, _mop.viewUser()))
+        if (!_profileDAO.canOperate(_currentUser, _userProfile, AppUtil.UTC, _mop.viewUser()))
             throw new IllegalArgumentException("Invalid Permissions To View Page");
     }
 }

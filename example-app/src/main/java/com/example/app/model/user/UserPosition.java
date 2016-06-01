@@ -49,25 +49,18 @@ import java.util.Optional;
  */
 @Entity
 @Table(name = UserPosition.TABLE_NAME, schema = ProjectConfig.PROJECT_SCHEMA, indexes = {
-    @Index(name="userposition_user_idx", columnList = UserPosition.USER_COLUMN)
+    @Index(name = "userposition_user_idx", columnList = UserPosition.USER_COLUMN)
 })
 @Where(clause = SoftDeleteEntity.WHERE_CLAUSE)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.ENTITY_DATA)
 @Audited
 @SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + UserPosition.TABLE_NAME
-    + " SET " + UserPosition.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + UserPosition.ID_COLUMN + " = ?")
+                 + " SET " + UserPosition.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + UserPosition.ID_COLUMN + " = ?")
 @Access(AccessType.FIELD)
 public class UserPosition extends AbstractAuditableSoftDeleteEntity
 {
-    /** the serial version UID */
-    private static final long serialVersionUID = -6468993041645511504L;
-
     /** the database table name for this entity */
     public static final String TABLE_NAME = "UserPosition";
-
-    /** the ID generator identifier for this entity */
-    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + ".user_position_id_seq";
-
     /** the database id column for this entity */
     public static final String ID_COLUMN = "userPosition_id";
     /** the database column name for the property: user */
@@ -82,7 +75,10 @@ public class UserPosition extends AbstractAuditableSoftDeleteEntity
     public static final String END_DATE_COLUMN_PROP = "endDate";
     /** The database column and property: current */
     public static final String CURRENT_COLUMN_PROP = "current";
-
+    /** the serial version UID */
+    private static final long serialVersionUID = -6468993041645511504L;
+    /** the ID generator identifier for this entity */
+    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + ".user_position_id_seq";
     /** the user that this position belongs to */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = USER_COLUMN, nullable = false)
@@ -114,27 +110,73 @@ public class UserPosition extends AbstractAuditableSoftDeleteEntity
     }
 
     /**
-     *   Get the {@link User} that this belongs to
-     *   @return the User that this belongs to
+     * Get the end date of this position
+     *
+     * @return the end date of this position
      */
     @Nonnull
-    public User getUser()
+    public Optional<Date> getOptionalEndDate()
     {
-        return _user;
+        return Optional.ofNullable(getEndDate());
     }
 
     /**
-     *   Set the {@link User} that this belongs to
-     *   @param user the User that this belongs to
+     * Get the end date of this position
+     *
+     * @return the end date of this position
      */
-    public void setUser(@Nonnull User user)
+    @Nullable
+    public Date getEndDate()
     {
-        _user = user;
+        return _endDate;
     }
 
     /**
-     *   Get the name of this position
-     *   @return the name of this position
+     * Set the end date of this position
+     *
+     * @param endDate the end date of this position
+     */
+    public void setEndDate(@Nullable Date endDate)
+    {
+        _endDate = endDate;
+    }
+
+    /**
+     * Get the start date of this position
+     *
+     * @return the start date of this position
+     */
+    @Nonnull
+    public Optional<Date> getOptionalStartDate()
+    {
+        return Optional.ofNullable(getStartDate());
+    }
+
+    /**
+     * Get the start date of this position
+     *
+     * @return the start date of this position
+     */
+    @Nullable
+    public Date getStartDate()
+    {
+        return _startDate;
+    }
+
+    /**
+     * Set the start date of this position
+     *
+     * @param startDate the start date of this position
+     */
+    public void setStartDate(@Nullable Date startDate)
+    {
+        _startDate = startDate;
+    }
+
+    /**
+     * Get the name of this position
+     *
+     * @return the name of this position
      */
     @Nonnull
     public String getPosition()
@@ -143,8 +185,9 @@ public class UserPosition extends AbstractAuditableSoftDeleteEntity
     }
 
     /**
-     *   Set the name of this position
-     *   @param position the name of this position
+     * Set the name of this position
+     *
+     * @param position the name of this position
      */
     public void setPosition(@Nonnull String position)
     {
@@ -152,70 +195,40 @@ public class UserPosition extends AbstractAuditableSoftDeleteEntity
     }
 
     /**
-     *   Get the start date of this position
-     *   @return the start date of this position
+     * Get the {@link User} that this belongs to
+     *
+     * @return the User that this belongs to
      */
     @Nonnull
-    public Optional<Date> getOptionalStartDate()
+    public User getUser()
     {
-        return Optional.ofNullable(getStartDate());
-    }
-    /**
-     *   Get the start date of this position
-     *   @return the start date of this position
-     */
-    @Nullable
-    public Date getStartDate()
-    {
-        return _startDate;
-    }
-    /**
-     *   Set the start date of this position
-     *   @param startDate the start date of this position
-     */
-    public void setStartDate(@Nullable Date startDate)
-    {
-        _startDate = startDate;
+        return _user;
     }
 
     /**
-     *   Get the end date of this position
-     *   @return the end date of this position
+     * Set the {@link User} that this belongs to
+     *
+     * @param user the User that this belongs to
      */
-    @Nonnull
-    public Optional<Date> getOptionalEndDate()
+    public void setUser(@Nonnull User user)
     {
-        return Optional.ofNullable(getEndDate());
-    }
-    /**
-     *   Get the end date of this position
-     *   @return the end date of this position
-     */
-    @Nullable
-    public Date getEndDate()
-    {
-        return _endDate;
-    }
-    /**
-     *   Set the end date of this position
-     *   @param endDate the end date of this position
-     */
-    public void setEndDate(@Nullable Date endDate)
-    {
-        _endDate = endDate;
+        _user = user;
     }
 
     /**
-     *   Get boolean flag. If true, this is a current position
-     *   @return current flag
+     * Get boolean flag. If true, this is a current position
+     *
+     * @return current flag
      */
     public boolean isCurrent()
     {
         return _current;
     }
+
     /**
-     *   Set boolean flag. If true, this is a current position
-     *   @param current flag
+     * Set boolean flag. If true, this is a current position
+     *
+     * @param current flag
      */
     public void setCurrent(boolean current)
     {

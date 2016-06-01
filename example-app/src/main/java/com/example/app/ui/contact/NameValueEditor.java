@@ -81,7 +81,6 @@ public class NameValueEditor extends CompositeValueEditor<Name>
      *
      * @author Alan Holt (aholt@venturetech.net)
      */
-    @SuppressWarnings("RedundantFieldInitialization")
     public static class NameValueEditorConfig
     {
         private final EnumSet<NameField> _includedFields = EnumSet.of(
@@ -98,81 +97,62 @@ public class NameValueEditor extends CompositeValueEditor<Name>
         private Supplier<ValueEditor<?>> _formattedNameSupplier;
 
         /**
-         *   Get an EnumSet of all included fields for the Editor.
-         *   <br/>
-         *   By default, this contains formOfAddress, first, middle, last, and suffix
-         *   @return an EnumSet of all included fields for the Editor
+         * Get the Supplier for the dataVisibility property.  By default, this is just a text editor.
+         *
+         * @return a Supplier for a ValueEditor
          */
-        @Nonnull
-        public EnumSet<NameField> getIncludedFields()
-        {
-            return _includedFields;
-        }
-        /**
-         *   Set an EnumSet of all included fields for the Editor.
-         *   <br/>
-         *   By default, this contains formOfAddress, first, middle, last, and suffix
-         *   @param includedFields an Array of all included fields for the Editor
-         */
-        public void setIncludedFields(@Nullable NameField... includedFields)
-        {
-            _includedFields.clear();
-            if(includedFields != null)
-                Collections.addAll(_includedFields, includedFields);
-        }
-
-        /**
-         *   Get an EnumSet of all required fields for the Editor.
-         *   <br/>
-         *   By default, this contains first and last
-         *   <br/>
-         *   This is only used if the Supplier for the field is not set
-         *   @return an EnumSet of all required fields for the Editor
-         */
-        @Nonnull
-        public EnumSet<NameField> getRequiredFields()
-        {
-            return _requiredFields;
-        }
-        /**
-         *   Get an EnumSet of all required fields for the Editor.
-         *   <br/>
-         *   By default, this contains first and last
-         *   <br/>
-         *   This is only used if the Supplier for the field is not set
-         *   @param requiredFields an Array of all required fields for the Editor
-         */
-        public void setRequiredFields(@Nullable NameField... requiredFields)
-        {
-            _requiredFields.clear();
-            if(requiredFields != null)
-                Collections.addAll(_requiredFields, requiredFields);
-        }
-
-        /**
-         *   Get the Supplier for the dataVisibility property.  By default, this is just a text editor.
-         *   @return a Supplier for a ValueEditor
-         */
-        @SuppressWarnings("Duplicates")
         @Nonnull
         public Supplier<ValueEditor<?>> getDataVisibilitySupplier()
         {
-            if(_dataVisibilitySupplier != null)
+            if (_dataVisibilitySupplier != null)
             {
                 return _dataVisibilitySupplier;
             }
             return () -> {
                 TextEditor editor = new TextEditor(LABEL_DATA_VISIBILITY(), null);
-                if(getRequiredFields().contains(NameField.dataVisibility))
+                if (getRequiredFields().contains(NameField.dataVisibility))
                 {
                     editor.setRequiredValueValidator();
                 }
                 return editor;
             };
         }
+
         /**
-         *   Set the Supplier for the dataVisibility property.  By default, this is just a text editor.
-         *   @param dataVisibilitySupplier a Supplier for a ValueEditor
+         * Get an EnumSet of all required fields for the Editor.
+         * <br/>
+         * By default, this contains first and last
+         * <br/>
+         * This is only used if the Supplier for the field is not set
+         *
+         * @return an EnumSet of all required fields for the Editor
+         */
+        @Nonnull
+        public EnumSet<NameField> getRequiredFields()
+        {
+            return _requiredFields;
+        }
+
+        /**
+         * Get an EnumSet of all required fields for the Editor.
+         * <br/>
+         * By default, this contains first and last
+         * <br/>
+         * This is only used if the Supplier for the field is not set
+         *
+         * @param requiredFields an Array of all required fields for the Editor
+         */
+        public void setRequiredFields(@Nullable NameField... requiredFields)
+        {
+            _requiredFields.clear();
+            if (requiredFields != null)
+                Collections.addAll(_requiredFields, requiredFields);
+        }
+
+        /**
+         * Set the Supplier for the dataVisibility property.  By default, this is just a text editor.
+         *
+         * @param dataVisibilitySupplier a Supplier for a ValueEditor
          */
         public void setDataVisibilitySupplier(@Nullable Supplier<ValueEditor<?>> dataVisibilitySupplier)
         {
@@ -180,57 +160,31 @@ public class NameValueEditor extends CompositeValueEditor<Name>
         }
 
         /**
-         *   Get the Supplier for the formOfAddress property.  By default, this is just a text editor.
-         *   @return a Supplier for a ValueEditor
-         */
-        @Nonnull
-        public Supplier<ValueEditor<?>> getFormOfAddressSupplier()
-        {
-            if(_formOfAddressSupplier != null)
-            {
-                return _formOfAddressSupplier;
-            }
-            return () -> {
-                TextEditor editor = new TextEditor(LABEL_FORM_OF_ADDRESS(), null);
-                if(getRequiredFields().contains(NameField.formOfAddress))
-                {
-                    editor.setRequiredValueValidator();
-                }
-                return editor;
-            };
-        }
-        /**
-         *   Set the Supplier for the formOfAddress property.  By default, this is just a text editor.
-         *   @param formOfAddressSupplier a Supplier for a ValueEditor
-         */
-        public void setFormOfAddressSupplier(@Nullable Supplier<ValueEditor<?>> formOfAddressSupplier)
-        {
-            _formOfAddressSupplier = formOfAddressSupplier;
-        }
-
-        /**
-         *   Get the Supplier for the first property.  By default, this is just a text editor.
-         *   @return a Supplier for a ValueEditor
+         * Get the Supplier for the first property.  By default, this is just a text editor.
+         *
+         * @return a Supplier for a ValueEditor
          */
         @Nonnull
         public Supplier<ValueEditor<?>> getFirstSupplier()
         {
-            if(_firstSupplier != null)
+            if (_firstSupplier != null)
             {
                 return _firstSupplier;
             }
             return () -> {
                 TextEditor editor = new TextEditor(LABEL_FIRST(), null);
-                if(getRequiredFields().contains(NameField.first))
+                if (getRequiredFields().contains(NameField.first))
                 {
                     editor.setRequiredValueValidator();
                 }
                 return editor;
             };
         }
+
         /**
-         *   Set the Supplier for the first property.  By default, this is just a text editor.
-         *   @param firstSupplier a Supplier for a ValueEditor
+         * Set the Supplier for the first property.  By default, this is just a text editor.
+         *
+         * @param firstSupplier a Supplier for a ValueEditor
          */
         public void setFirstSupplier(@Nullable Supplier<ValueEditor<?>> firstSupplier)
         {
@@ -238,84 +192,120 @@ public class NameValueEditor extends CompositeValueEditor<Name>
         }
 
         /**
-         *   Get the Supplier for the preferredGivenName property.  By default, this is just a text editor.
-         *   @return a Supplier for a ValueEditor
+         * Get the Supplier for the formOfAddress property.  By default, this is just a text editor.
+         *
+         * @return a Supplier for a ValueEditor
          */
         @Nonnull
-        public Supplier<ValueEditor<?>> getPreferredGivenNameSupplier()
+        public Supplier<ValueEditor<?>> getFormOfAddressSupplier()
         {
-            if(_preferredGivenNameSupplier != null)
+            if (_formOfAddressSupplier != null)
             {
-                return _preferredGivenNameSupplier;
+                return _formOfAddressSupplier;
             }
             return () -> {
-                TextEditor editor = new TextEditor(LABEL_PREFERRED_GIVEN_NAME(), null);
-                if(getRequiredFields().contains(NameField.preferredGivenName))
+                TextEditor editor = new TextEditor(LABEL_FORM_OF_ADDRESS(), null);
+                if (getRequiredFields().contains(NameField.formOfAddress))
                 {
                     editor.setRequiredValueValidator();
                 }
                 return editor;
             };
         }
+
         /**
-         *   Set the Supplier for the preferredGivenName property.  By default, this is just a text editor.
-         *   @param preferredGivenNameSupplier a Supplier for a ValueEditor
+         * Set the Supplier for the formOfAddress property.  By default, this is just a text editor.
+         *
+         * @param formOfAddressSupplier a Supplier for a ValueEditor
          */
-        public void setPreferredGivenNameSupplier(@Nullable Supplier<ValueEditor<?>> preferredGivenNameSupplier)
+        public void setFormOfAddressSupplier(@Nullable Supplier<ValueEditor<?>> formOfAddressSupplier)
         {
-            _preferredGivenNameSupplier = preferredGivenNameSupplier;
+            _formOfAddressSupplier = formOfAddressSupplier;
         }
 
         /**
-         *   Get the Supplier for the middle property.  By default, this is just a text editor.
-         *   @return a Supplier for a ValueEditor
+         * Get the Supplier for the formattedName property.  By default, this is just a text editor.
+         *
+         * @return a Supplier for a ValueEditor
          */
         @Nonnull
-        public Supplier<ValueEditor<?>> getMiddleSupplier()
+        public Supplier<ValueEditor<?>> getFormattedNameSupplier()
         {
-            if(_middleSupplier != null)
+            if (_formattedNameSupplier != null)
             {
-                return _middleSupplier;
+                return _formattedNameSupplier;
             }
             return () -> {
-                TextEditor editor = new TextEditor(LABEL_MIDDLE_NAME(), null);
-                if(getRequiredFields().contains(NameField.middle))
+                TextEditor editor = new TextEditor(LABEL_FORMATTED_NAME(), null);
+                if (getRequiredFields().contains(NameField.formattedName))
                 {
                     editor.setRequiredValueValidator();
                 }
                 return editor;
             };
         }
+
         /**
-         *   Set the Supplier for the middle property.  By default, this is just a text editor.
-         *   @param middleSupplier a Supplier for a ValueEditor
+         * Set the Supplier for the formattedName property.  By default, this is just a text editor.
+         *
+         * @param formattedNameSupplier a Supplier for a ValueEditor
          */
-        public void setMiddleSupplier(@Nullable Supplier<ValueEditor<?>> middleSupplier)
+        public void setFormattedNameSupplier(@Nullable Supplier<ValueEditor<?>> formattedNameSupplier)
         {
-            _middleSupplier = middleSupplier;
+            _formattedNameSupplier = formattedNameSupplier;
         }
 
         /**
-         *   Get the Supplier for the last property.  By default, this is just a text editor.
-         *   @return a Supplier for a ValueEditor
+         * Get an EnumSet of all included fields for the Editor.
+         * <br/>
+         * By default, this contains formOfAddress, first, middle, last, and suffix
+         *
+         * @return an EnumSet of all included fields for the Editor
+         */
+        @Nonnull
+        public EnumSet<NameField> getIncludedFields()
+        {
+            return _includedFields;
+        }
+
+        /**
+         * Set an EnumSet of all included fields for the Editor.
+         * <br/>
+         * By default, this contains formOfAddress, first, middle, last, and suffix
+         *
+         * @param includedFields an Array of all included fields for the Editor
+         */
+        public void setIncludedFields(@Nullable NameField... includedFields)
+        {
+            _includedFields.clear();
+            if (includedFields != null)
+                Collections.addAll(_includedFields, includedFields);
+        }
+
+        /**
+         * Get the Supplier for the last property.  By default, this is just a text editor.
+         *
+         * @return a Supplier for a ValueEditor
          */
         @Nonnull
         public Supplier<ValueEditor<?>> getLastSupplier()
         {
-            if(_lastSupplier != null)
+            if (_lastSupplier != null)
             {
                 return _lastSupplier;
             }
             return () -> {
                 TextEditor editor = new TextEditor(LABEL_LAST_NAME(), null);
-                if(getRequiredFields().contains(NameField.last))
+                if (getRequiredFields().contains(NameField.last))
                     editor.setRequiredValueValidator();
                 return editor;
             };
         }
+
         /**
-         *   Set the Supplier for the last property.  By default, this is just a text editor.
-         *   @param lastSupplier a Supplier for a ValueEditor
+         * Set the Supplier for the last property.  By default, this is just a text editor.
+         *
+         * @param lastSupplier a Supplier for a ValueEditor
          */
         public void setLastSupplier(@Nullable Supplier<ValueEditor<?>> lastSupplier)
         {
@@ -323,28 +313,63 @@ public class NameValueEditor extends CompositeValueEditor<Name>
         }
 
         /**
-         *   Get the Supplier for the preferredFamilyName property.  By default, this is just a text editor.
-         *   @return a Supplier for a ValueEditor
+         * Get the Supplier for the middle property.  By default, this is just a text editor.
+         *
+         * @return a Supplier for a ValueEditor
          */
         @Nonnull
-        public Supplier<ValueEditor<?>> getPreferredFamilyNameSupplier()
+        public Supplier<ValueEditor<?>> getMiddleSupplier()
         {
-            if(_preferredFamilyNameSupplier != null)
+            if (_middleSupplier != null)
             {
-                return _preferredFamilyNameSupplier;
+                return _middleSupplier;
             }
             return () -> {
-                TextEditor editor = new TextEditor(LABEL_PREFERRED_FAMILY_NAME(), null);
-                if(getRequiredFields().contains(NameField.preferredFamilyName))
+                TextEditor editor = new TextEditor(LABEL_MIDDLE_NAME(), null);
+                if (getRequiredFields().contains(NameField.middle))
                 {
                     editor.setRequiredValueValidator();
                 }
                 return editor;
             };
         }
+
         /**
-         *   Set the Supplier for the preferredFamilyName property.  By default, this is just a text editor.
-         *   @param preferredFamilyNameSupplier a Supplier for a ValueEditor
+         * Set the Supplier for the middle property.  By default, this is just a text editor.
+         *
+         * @param middleSupplier a Supplier for a ValueEditor
+         */
+        public void setMiddleSupplier(@Nullable Supplier<ValueEditor<?>> middleSupplier)
+        {
+            _middleSupplier = middleSupplier;
+        }
+
+        /**
+         * Get the Supplier for the preferredFamilyName property.  By default, this is just a text editor.
+         *
+         * @return a Supplier for a ValueEditor
+         */
+        @Nonnull
+        public Supplier<ValueEditor<?>> getPreferredFamilyNameSupplier()
+        {
+            if (_preferredFamilyNameSupplier != null)
+            {
+                return _preferredFamilyNameSupplier;
+            }
+            return () -> {
+                TextEditor editor = new TextEditor(LABEL_PREFERRED_FAMILY_NAME(), null);
+                if (getRequiredFields().contains(NameField.preferredFamilyName))
+                {
+                    editor.setRequiredValueValidator();
+                }
+                return editor;
+            };
+        }
+
+        /**
+         * Set the Supplier for the preferredFamilyName property.  By default, this is just a text editor.
+         *
+         * @param preferredFamilyNameSupplier a Supplier for a ValueEditor
          */
         public void setPreferredFamilyNameSupplier(@Nullable Supplier<ValueEditor<?>> preferredFamilyNameSupplier)
         {
@@ -352,106 +377,103 @@ public class NameValueEditor extends CompositeValueEditor<Name>
         }
 
         /**
-         *   Get the Supplier for the suffix property.  By default, this is just a text editor.
-         *   @return a Supplier for a ValueEditor
+         * Get the Supplier for the preferredGivenName property.  By default, this is just a text editor.
+         *
+         * @return a Supplier for a ValueEditor
+         */
+        @Nonnull
+        public Supplier<ValueEditor<?>> getPreferredGivenNameSupplier()
+        {
+            if (_preferredGivenNameSupplier != null)
+            {
+                return _preferredGivenNameSupplier;
+            }
+            return () -> {
+                TextEditor editor = new TextEditor(LABEL_PREFERRED_GIVEN_NAME(), null);
+                if (getRequiredFields().contains(NameField.preferredGivenName))
+                {
+                    editor.setRequiredValueValidator();
+                }
+                return editor;
+            };
+        }
+
+        /**
+         * Set the Supplier for the preferredGivenName property.  By default, this is just a text editor.
+         *
+         * @param preferredGivenNameSupplier a Supplier for a ValueEditor
+         */
+        public void setPreferredGivenNameSupplier(@Nullable Supplier<ValueEditor<?>> preferredGivenNameSupplier)
+        {
+            _preferredGivenNameSupplier = preferredGivenNameSupplier;
+        }
+
+        /**
+         * Get the Supplier for the suffix property.  By default, this is just a text editor.
+         *
+         * @return a Supplier for a ValueEditor
          */
         @Nonnull
         public Supplier<ValueEditor<?>> getSuffixSupplier()
         {
-            if(_suffixSupplier != null)
+            if (_suffixSupplier != null)
             {
                 return _suffixSupplier;
             }
             return () -> {
                 TextEditor editor = new TextEditor(LABEL_SUFFIX(), null);
-                if(getRequiredFields().contains(NameField.suffix))
+                if (getRequiredFields().contains(NameField.suffix))
                 {
                     editor.setRequiredValueValidator();
                 }
                 return editor;
             };
         }
+
         /**
-         *   Set the Supplier for the suffix property.  By default, this is just a text editor.
-         *   @param suffixSupplier a Supplier for a ValueEditor
+         * Set the Supplier for the suffix property.  By default, this is just a text editor.
+         *
+         * @param suffixSupplier a Supplier for a ValueEditor
          */
         public void setSuffixSupplier(@Nullable Supplier<ValueEditor<?>> suffixSupplier)
         {
             _suffixSupplier = suffixSupplier;
-        }
-
-        /**
-         *   Get the Supplier for the formattedName property.  By default, this is just a text editor.
-         *   @return a Supplier for a ValueEditor
-         */
-        @Nonnull
-        public Supplier<ValueEditor<?>> getFormattedNameSupplier()
-        {
-            if(_formattedNameSupplier != null)
-            {
-                return _formattedNameSupplier;
-            }
-            return () -> {
-                TextEditor editor = new TextEditor(LABEL_FORMATTED_NAME(), null);
-                if(getRequiredFields().contains(NameField.formattedName))
-                {
-                    editor.setRequiredValueValidator();
-                }
-                return editor;
-            };
-        }
-
-        /**
-         *   Set the Supplier for the formattedName property.  By default, this is just a text editor.
-         *   @param formattedNameSupplier a Supplier for a ValueEditor
-         */
-        public void setFormattedNameSupplier(@Nullable Supplier<ValueEditor<?>> formattedNameSupplier)
-        {
-            _formattedNameSupplier = formattedNameSupplier;
         }
     }
 
     private NameValueEditorConfig _config = new NameValueEditorConfig();
 
     /**
-     *   Instantiate a new NameValueEditor
+     * Instantiate a new NameValueEditor
      */
     public NameValueEditor()
     {
         this(null);
     }
+
     /**
-     *   Instantiate a new NameValueEditor
-     *   @param config the NameValueEditorConfig.  If null, uses NameValueEditorConfig with all default values.
+     * Instantiate a new NameValueEditor
+     *
+     * @param config the NameValueEditorConfig.  If null, uses NameValueEditorConfig with all default values.
      */
     public NameValueEditor(@Nullable NameValueEditorConfig config)
     {
         super(Name.class);
-        if(config != null)
+        if (config != null)
         {
             _config = config;
         }
     }
 
     /**
-     *   Get the NameValueEditorConfig for this NameValueEditor
-     *   @return the NameValueEditorConfig
+     * Get the NameValueEditorConfig for this NameValueEditor
+     *
+     * @return the NameValueEditorConfig
      */
     @Nonnull
     public NameValueEditorConfig getConfig()
     {
         return _config;
-    }
-    /**
-     *   Set the NameValueEditorConfig for this NameValueEditor
-     *   @param config the NameValueEditorConfig
-     *   @return this
-     */
-    @Nonnull
-    public NameValueEditor withConfig(@Nonnull NameValueEditorConfig config)
-    {
-        _config = config;
-        return this;
     }
 
     @Override
@@ -461,23 +483,37 @@ public class NameValueEditor extends CompositeValueEditor<Name>
 
         addClassName("name-editor");
 
-        if(_config.getIncludedFields().contains(NameField.dataVisibility))
+        if (_config.getIncludedFields().contains(NameField.dataVisibility))
             addEditorForProperty(_config.getDataVisibilitySupplier(), "dataVisibility");
-        if(_config.getIncludedFields().contains(NameField.formOfAddress))
+        if (_config.getIncludedFields().contains(NameField.formOfAddress))
             addEditorForProperty(_config.getFormOfAddressSupplier(), "formOfAddress");
-        if(_config.getIncludedFields().contains(NameField.first))
+        if (_config.getIncludedFields().contains(NameField.first))
             addEditorForProperty(_config.getFirstSupplier(), "first");
-        if(_config.getIncludedFields().contains(NameField.preferredGivenName))
+        if (_config.getIncludedFields().contains(NameField.preferredGivenName))
             addEditorForProperty(_config.getPreferredGivenNameSupplier(), "preferredGivenName");
-        if(_config.getIncludedFields().contains(NameField.middle))
+        if (_config.getIncludedFields().contains(NameField.middle))
             addEditorForProperty(_config.getMiddleSupplier(), "middle");
-        if(_config.getIncludedFields().contains(NameField.last))
+        if (_config.getIncludedFields().contains(NameField.last))
             addEditorForProperty(_config.getLastSupplier(), "last");
-        if(_config.getIncludedFields().contains(NameField.preferredFamilyName))
+        if (_config.getIncludedFields().contains(NameField.preferredFamilyName))
             addEditorForProperty(_config.getPreferredFamilyNameSupplier(), "preferredFamilyName");
-        if(_config.getIncludedFields().contains(NameField.suffix))
+        if (_config.getIncludedFields().contains(NameField.suffix))
             addEditorForProperty(_config.getSuffixSupplier(), "suffix");
-        if(_config.getIncludedFields().contains(NameField.formattedName))
+        if (_config.getIncludedFields().contains(NameField.formattedName))
             addEditorForProperty(_config.getFormattedNameSupplier(), "formattedName");
+    }
+
+    /**
+     * Set the NameValueEditorConfig for this NameValueEditor
+     *
+     * @param config the NameValueEditorConfig
+     *
+     * @return this
+     */
+    @Nonnull
+    public NameValueEditor withConfig(@Nonnull NameValueEditorConfig config)
+    {
+        _config = config;
+        return this;
     }
 }

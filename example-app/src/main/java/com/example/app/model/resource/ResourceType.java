@@ -30,16 +30,20 @@ import net.proteusframework.ui.miwt.component.composite.editor.ValueEditor;
 public interface ResourceType extends NamedObject, IImplementationModel<Resource>, IInstanceAware<Resource>, Serializable
 {
     /**
-     *   Create an instance of the {@link Renderer} for this resource type
-     *   @param resource the resource to create the renderer for
-     *   @return an instance of the renderer for this resource type
-     */
-    Renderer<?> createRenderer(Resource resource);
-
-    /**
-     *   Create an instance of the {@link ValueEditor} for this resource type
-     *   @param resource the resource to create the editor for
-     *   @return an instance of the editor for this resource type
+     * Create an instance of the {@link ValueEditor} for this resource type
+     *
+     * @param resource the resource to create the editor for
+     *
+     * @return an instance of the editor for this resource type
      */
     ValueEditor<? extends Resource> createEditor(@Nullable Resource resource);
+
+    /**
+     * Create an instance of the {@link Renderer} for this resource type
+     *
+     * @param resource the resource to create the renderer for
+     *
+     * @return an instance of the renderer for this resource type
+     */
+    Renderer<?> createRenderer(Resource resource);
 }

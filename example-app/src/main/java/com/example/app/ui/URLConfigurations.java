@@ -20,8 +20,21 @@ import net.proteusframework.ui.management.URLConfigDef;
  */
 public class URLConfigurations
 {
-    private URLConfigurations(){}
-
+    /**
+     * Defined URL Configurations used by ResourceRepositoryItem UIs
+     *
+     * @author Alan Holt (aholt@venturetech.net)
+     */
+    public static class ResourceRepositoryItem
+    {
+        /** URL Config for Editing a ResourceRepositoryItem */
+        public static final String EDIT = "Resource Repository Item Edit URL Config";
+        /** URL Config for Viewing a ResourceRepositoryItem */
+        public static final String VIEW = "Resource Repository Item View URL Config";
+        private ResourceRepositoryItem()
+        {
+        }
+    }
 
     /**
      * Defined URL Configurations used by User UIs
@@ -30,26 +43,17 @@ public class URLConfigurations
      */
     public static class User
     {
-        private User(){}
-
         /** URL Config for Editing a User */
         public static final String EDIT = "User Edit URL Config";
         /** URL Config for Viewing a User */
         public static final String VIEW = "USer View URL Config";
+        private User()
+        {
+        }
     }
 
-    /**
-     * Defined URL Configurations used by ResourceRepositoryItem UIs
-     *
-     * @author Alan Holt (aholt@venturetech.net)
-     */
-    public static class ResourceRepositoryItem
+    private URLConfigurations()
     {
-        private ResourceRepositoryItem(){}
-        /** URL Config for Editing a ResourceRepositoryItem */
-        public static final String EDIT = "Resource Repository Item Edit URL Config";
-        /** URL Config for Viewing a ResourceRepositoryItem */
-        public static final String VIEW = "Resource Repository Item View URL Config";
     }
 
 

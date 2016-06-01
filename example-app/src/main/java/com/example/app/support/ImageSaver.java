@@ -34,7 +34,9 @@ import static com.i2rd.cms.backend.FileMetaData.clearVolatileMetaData;
 
 /**
  * Utility class for defining a method of saving an image on a given Entity.
+ *
  * @param <E> the Entity whose image is to be saved
+ *
  * @author Alan Holt (aholt@venturetech.net)
  * @since 1/5/16 8:59 AM
  */
@@ -43,24 +45,23 @@ public class ImageSaver<E>
 {
     /** Logger. */
     private static final Logger _logger = LogManager.getLogger(ImageSaver.class);
-
-    @Autowired
-    private FileSystemDAO _fileSystemDAO;
-
     private final BiFunction<E, FileEntity, E> _setImage;
     private final Function<E, FileEntity> _getImage;
     private final BiFunction<E, FileItem, DirectoryEntity> _getDirectory;
     private final BiFunction<E, FileItem, String> _getFileName;
     private final Function<E, E> _saveValue;
+    @Autowired
+    private FileSystemDAO _fileSystemDAO;
 
     /**
-     *   Instantiate a new instance of ImageSaver.
-     *   @param setImage function for setting the image on {@link E}
-     *   @param getImage function for getting the image from {@link E}
-     *   @param getDirectory function for getting a Directory for the given {@link E}.  May return null in the case that
-     *   retrieving the directory fails.
-     *   @param getFileName function for getting a file name for the given {@link E}
-     *   @param saveValue function for saving {@link E}.
+     * Instantiate a new instance of ImageSaver.
+     *
+     * @param setImage function for setting the image on {@link E}
+     * @param getImage function for getting the image from {@link E}
+     * @param getDirectory function for getting a Directory for the given {@link E}.  May return null in the case that
+     * retrieving the directory fails.
+     * @param getFileName function for getting a file name for the given {@link E}
+     * @param saveValue function for saving {@link E}.
      */
     public ImageSaver(@Nonnull BiFunction<E, FileEntity, E> setImage, @Nonnull Function<E, FileEntity> getImage,
         @Nonnull BiFunction<E, FileItem, DirectoryEntity> getDirectory, @Nonnull BiFunction<E, FileItem, String> getFileName,
@@ -74,14 +75,16 @@ public class ImageSaver<E>
     }
 
     /**
-     *   Set the image on {@link E} and saves it.  Returns the persisted instance of {@link E}
-     *   @param value the instance of {@link E} to set the image on and save
-     *   @param image the Image to save
-     *   @return the updated and persisted value
+     * Set the image on {@link E} and saves it.  Returns the persisted instance of {@link E}
+     *
+     * @param value the instance of {@link E} to set the image on and save
+     * @param image the Image to save
+     *
+     * @return the updated and persisted value
      */
     public E saveImage(@Nonnull E value, @Nullable FileItem image)
     {
-        if(image == null)
+        if (image == null)
         {
             value = _setImage.apply(value, null);
         }
@@ -89,14 +92,14 @@ public class ImageSaver<E>
         {
             value = _saveValue.apply(value);
             FileEntity file = _getImage.apply(value);
-            if(file == null)
+            if (file == null)
                 file = new FileEntity();
             String fileName = StringFactory.getBasename(image.getName());
             String ct = image.getContentType();
-            if(ct == null || "application/octet-stream".equals(ct)) ct = MimeTypeUtility.getInstance().getContentType(fileName);
+            if (ct == null || "application/octet-stream".equals(ct)) ct = MimeTypeUtility.getInstance().getContentType(fileName);
             file.setContentType(ct);
             final DirectoryEntity directory = _getDirectory.apply(value, image);
-            if(directory != null)
+            if (directory != null)
             {
                 file.setName(_getFileName.apply(value, image));
 

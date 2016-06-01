@@ -59,6 +59,7 @@ import net.proteusframework.ui.miwt.util.CommonActions;
  * You can listen for ActionEvents on {@link  #ACTION_UI_VALUE_UPDATED}  action command to be notified when the user has
  * provided a new picture via this UI.
  * </p>
+ *
  * @author Alan Holt (aholt@venturetech.net)
  */
 @SuppressWarnings("unused")
@@ -67,10 +68,7 @@ import net.proteusframework.ui.miwt.util.CommonActions;
 @Configurable
 public class VTCropPictureEditor extends Container implements ValueEditor<FileItem>
 {
-    /** Logger. */
-    private final static Logger _logger = LogManager.getLogger(VTCropPictureEditor.class);
-
-    /** html classname for image selected */ 
+    /** html classname for image selected */
     public static final String CLASS_IMAGE_SELECTED = "image-selected";
     /** html classname for image not selected */
     public static final String CLASS_NO_IMAGE_SELECTED = "no-image-selected";
@@ -78,10 +76,10 @@ public class VTCropPictureEditor extends Container implements ValueEditor<FileIt
     public static final String CLASS_VIEW_MODE = "mode-view";
     /** html classname for crop mode */
     public static final String CLASS_CROP_MODE = "mode-crop";
-
     /** UI Value Updated */
     public final static String ACTION_UI_VALUE_UPDATED = "ui-value-updated";
-
+    /** Logger. */
+    private final static Logger _logger = LogManager.getLogger(VTCropPictureEditor.class);
     /** File Field. */
     private final FileField _fileField = new FileField();
     /** File Field. */
@@ -89,18 +87,14 @@ public class VTCropPictureEditor extends Container implements ValueEditor<FileIt
 
     /** Actions container */
     private final Container _actionsCon = new Container();
-
-    /** UI Value - UI state isn't held in component. */
-    private FileItem _uiValue;
     /** Additional UI Values.  Only used if the config specified more than one ImageScale */
     private final HashMap<String, FileItem> _additionalUiValues = new HashMap<>();
-
-    /** Modified Flag. */
-    private boolean _modified;
-
     /** Picture Editor config */
     private final VTCropPictureEditorConfig _config;
-
+    /** UI Value - UI state isn't held in component. */
+    private FileItem _uiValue;
+    /** Modified Flag. */
+    private boolean _modified;
     /** Editable mode? */
     private boolean _editable = true;
 
@@ -133,10 +127,10 @@ public class VTCropPictureEditor extends Container implements ValueEditor<FileIt
             if (files != null && files.size() > 0)
             {
                 _uiValue = files.get(0);
-                if(files.size() > 1)
+                if (files.size() > 1)
                 {
                     _additionalUiValues.clear();
-                    for(int i = 1; i < files.size(); i++)
+                    for (int i = 1; i < files.size(); i++)
                     {
                         FileItem file = files.get(i);
                         _additionalUiValues.put(file.getName(), file);
@@ -149,10 +143,186 @@ public class VTCropPictureEditor extends Container implements ValueEditor<FileIt
         });
     }
 
-    @Override
-    public List<NDE> getNDEs()
+    /**
+     * Add an ActionListener to get an event when the user has uploaded a new image to the UI.  This is essentially a
+     * notification that the UIValue has changed.
+     *
+     * @param listener The ActionListener
+     */
+    public void addActionListener(ActionListener listener)
     {
-        return Collections.singletonList(VTCropJSLibrary.VTCropPictureEditor.getNDE());
+        addListener(ActionListener.class, listener);
+    }
+
+    /**
+     * Get all additional UI Values that were cropped by the cropper.
+     * This should be called if you are expecting additional files, otherwise it will return an empty HashMap.
+     *
+     * @return a HashMap of additional UI Values that were cropped/scaled by VTCrop.
+     */
+    public HashMap<String, FileItem> getAdditionalUiValues()
+    {
+        HashMap<String, FileItem> additionalUIValues = new HashMap<>();
+        _additionalUiValues.entrySet().forEach(entry -> additionalUIValues.put(entry.getKey(), _getUIValue(entry.getValue())));
+        return additionalUIValues;
+    }
+
+    @Nullable
+    private FileItem _getUIValue(@Nullable FileItem uiValue)
+    {
+        if (uiValue == null)
+        {
+            return null;
+        }
+
+        Dimension origDim, newDim;
+        try
+        {
+            origDim = ImageFileUtil.getDimension(uiValue);
+        }
+        catch (IOException e)
+        {
+            _logger.error("Skipping scaling because an error occurred.", e);
+            return uiValue;
+        }
+
+        if (origDim == null)
+        {
+            _logger.warn("Skipping scaling because retrieved dimension for ui value was null.");
+            return uiValue;
+        }
+
+        VTCropPictureEditorConfig.ImageScaleOption option = _config.getImageScaleOptionForName(_uiValue.getName());
+        int newDimWidth = option != null && option.scale != null
+            ? Double.valueOf(_config.getCropWidth() * option.scale).intValue()
+            : _config.getCropWidth();
+        int newDimHeight = option != null && option.scale != null
+            ? Double.valueOf(_config.getCropHeight() * option.scale).intValue()
+            : _config.getCropHeight();
+
+        newDim =
+            ImageFileUtil.getScaledDimension(origDim, newDimWidth, newDimHeight);
+
+        if (!newDim.equals(origDim))
+        {
+            _logger.debug("Scale to " + newDim.getWidthMetric() + " x " + newDim.getHeightMetric());
+            FileItem scaledFileItem = _fileItemFactory.createItem(
+                uiValue.getFieldName(), uiValue.getContentType(),
+                uiValue.isFormField(), uiValue.getName());
+            try (InputStream is = uiValue.getInputStream();
+                 OutputStream os = scaledFileItem.getOutputStream())
+            {
+                Thumbnailer tn = Thumbnailer.getInstance(is);
+                BufferedImage scaledImg =
+                    tn.getQualityThumbnail(newDim.getWidthMetric().intValue(), newDim.getHeightMetric().intValue());
+                String extension = StringFactory.getExtension(uiValue.getName());
+                ImageIO.write(scaledImg, extension, os);
+                uiValue.delete();
+                uiValue = scaledFileItem;
+            }
+            catch (Throwable e)
+            {
+                _logger.warn("Skipping scaling due to:", e);
+            }
+        }
+
+        return uiValue;
+    }
+
+    /**
+     * Gets crop button text.
+     *
+     * @return the crop button text
+     */
+    public TextSource getCropButtonText()
+    {
+        return _cropButtonText;
+    }
+
+    /**
+     * Sets crop button text.
+     *
+     * @param cropButtonText the crop button text
+     */
+    public void setCropButtonText(TextSource cropButtonText)
+    {
+        _cropButtonText = cropButtonText;
+    }
+
+    /**
+     * Gets default resource.  This is the default image if no image has been set.
+     *
+     * @return the default resource
+     */
+    public FactoryResource getDefaultResource()
+    {
+        return _defaultResource;
+    }
+
+    /**
+     * Sets default resource. This is the default image if no image has been set.
+     *
+     * @param defaultResource the default resource
+     */
+    public void setDefaultResource(FactoryResource defaultResource)
+    {
+        _defaultResource = defaultResource;
+    }
+
+    @Nullable
+    @Override
+    public FileItem getValue()
+    {
+        return _uiValue;
+    }
+
+    @Override
+    public void setValue(@Nullable FileItem value)
+    {
+        _uiValue = value;
+
+        if (value == null)
+        {
+            _fileField.resetFile();
+            _picture.setImage(getDefaultResource() != null ? new Image(getDefaultResource()) : null);
+        }
+        else
+        {
+            _picture.setImage(new Image(value));
+
+        }
+        _modified = false;
+        setBaseClass(null);
+
+        if (isInited())
+            _viewDefault();
+    }
+
+    @Override
+    public ValueEditor.ModificationState getModificationState()
+    {
+        return (_modified) ? ValueEditor.ModificationState.CHANGED : ValueEditor.ModificationState.UNCHANGED;
+    }
+
+    @Nullable
+    @Override
+    public FileItem getUIValue(Level logErrorLevel)
+    {
+        return _getUIValue(_uiValue);
+    }
+
+    @Override
+    public boolean validateUIValue(@SuppressWarnings("rawtypes") Notifiable notifiable)
+    {
+        // Nothing to validate.
+        return true;
+    }
+
+    @Override
+    public FileItem commitValue() throws MIWTException
+    {
+        setValue(getUIValue(Level.DEBUG));
+        return getValue();
     }
 
     @Override
@@ -170,42 +340,46 @@ public class VTCropPictureEditor extends Container implements ValueEditor<FileIt
         _actionsCon.addClassName("actions bottom");
         add(_actionsCon);
 
-        if(getValue() == null && getDefaultResource() != null)
+        if (getValue() == null && getDefaultResource() != null)
             _picture.setImage(new Image(getDefaultResource()));
 
         _viewDefault();
     }
 
-    /**
-     * Set the base part of the classname based on the data's current state.
-     * @param viewMode boolean flag -- if true, adds the view mode classname to component, otherwise adds the crop mode classname
-     * if null, does nothing to the mode classnames
-     */
-    private void setBaseClass(@Nullable Boolean viewMode)
+    @Override
+    public List<NDE> getNDEs()
     {
-        if(_uiValue == null)
+        return Collections.singletonList(VTCropJSLibrary.VTCropPictureEditor.getNDE());
+    }
+
+    @Override
+    public boolean isEditable()
+    {
+        return _editable;
+    }
+
+    @Override
+    public void setEditable(boolean b)
+    {
+        if (b != _editable)
         {
-            removeClassName(CLASS_IMAGE_SELECTED);
-            addClassName(CLASS_NO_IMAGE_SELECTED);
+            _editable = b;
+            _viewDefault();
         }
         else
         {
-            removeClassName(CLASS_NO_IMAGE_SELECTED);
-            addClassName(CLASS_IMAGE_SELECTED);
+            _editable = b;
         }
-        if(viewMode != null)
-        {
-            if (viewMode)
-            {
-                removeClassName(CLASS_CROP_MODE);
-                addClassName(CLASS_VIEW_MODE);
-            }
-            else
-            {
-                removeClassName(CLASS_VIEW_MODE);
-                addClassName(CLASS_CROP_MODE);
-            }
-        }
+    }
+
+    /**
+     * Remove an action listener.
+     *
+     * @param listener The listener.
+     */
+    public void removeActionListener(ActionListener listener)
+    {
+        removeListener(ActionListener.class, listener);
     }
 
     /**
@@ -270,215 +444,36 @@ public class VTCropPictureEditor extends Container implements ValueEditor<FileIt
         });
     }
 
-    @Nullable
-    @Override
-    public FileItem getValue()
+    /**
+     * Set the base part of the classname based on the data's current state.
+     *
+     * @param viewMode boolean flag -- if true, adds the view mode classname to component, otherwise adds the crop mode classname
+     * if null, does nothing to the mode classnames
+     */
+    private void setBaseClass(@Nullable Boolean viewMode)
     {
-        return _uiValue;
-    }
-
-    @Override
-    public void setValue(@Nullable FileItem value)
-    {
-        _uiValue = value;
-
-        if (value == null)
+        if (_uiValue == null)
         {
-            _fileField.resetFile();
-            _picture.setImage(getDefaultResource() != null ? new Image(getDefaultResource()) : null);
+            removeClassName(CLASS_IMAGE_SELECTED);
+            addClassName(CLASS_NO_IMAGE_SELECTED);
         }
         else
         {
-            _picture.setImage(new Image(value));
-
+            removeClassName(CLASS_NO_IMAGE_SELECTED);
+            addClassName(CLASS_IMAGE_SELECTED);
         }
-        _modified = false;
-        setBaseClass(null);
-
-        if(isInited())
-            _viewDefault();
-    }
-
-    @Override
-    public ValueEditor.ModificationState getModificationState()
-    {
-        return (_modified) ? ValueEditor.ModificationState.CHANGED : ValueEditor.ModificationState.UNCHANGED;
-    }
-
-    @Override
-    public FileItem commitValue() throws MIWTException
-    {
-        setValue(getUIValue(Level.DEBUG));
-        return getValue();
-    }
-
-    @Override
-    public boolean validateUIValue(@SuppressWarnings("rawtypes") Notifiable notifiable)
-    {
-        // Nothing to validate.
-        return true;
-    }
-
-    @Override
-    public boolean isEditable()
-    {
-        return _editable;
-    }
-
-    @Override
-    public void setEditable(boolean b)
-    {
-        if (b != _editable)
+        if (viewMode != null)
         {
-            _editable = b;
-            _viewDefault();
-        }
-        else
-        {
-            _editable = b;
-        }
-    }
-
-    /**
-     * Add an ActionListener to get an event when the user has uploaded a new image to the UI.  This is essentially a
-     * notification that the UIValue has changed.
-     *
-     * @param listener The ActionListener
-     */
-    public void addActionListener(ActionListener listener)
-    {
-        addListener(ActionListener.class, listener);
-    }
-
-    /**
-     * Remove an action listener.
-     *
-     * @param listener The listener.
-     */
-    public void removeActionListener(ActionListener listener)
-    {
-        removeListener(ActionListener.class, listener);
-    }
-
-
-    @Nullable
-    @Override
-    public FileItem getUIValue(Level logErrorLevel)
-    {
-        return _getUIValue(_uiValue);
-    }
-
-    @Nullable
-    private FileItem _getUIValue(@Nullable FileItem uiValue)
-    {
-        if (uiValue == null)
-        {
-            return null;
-        }
-
-        Dimension origDim, newDim;
-        try
-        {
-            origDim = ImageFileUtil.getDimension(uiValue);
-        }
-        catch (IOException e)
-        {
-            _logger.error("Skipping scaling because an error occurred.", e);
-            return uiValue;
-        }
-
-        if(origDim == null)
-        {
-            _logger.warn("Skipping scaling because retrieved dimension for ui value was null.");
-            return uiValue;
-        }
-
-        VTCropPictureEditorConfig.ImageScaleOption option = _config.getImageScaleOptionForName(_uiValue.getName());
-        int newDimWidth = option != null && option.scale != null
-            ? Double.valueOf(_config.getCropWidth() * option.scale).intValue()
-            : _config.getCropWidth();
-        int newDimHeight = option != null && option.scale != null
-            ? Double.valueOf(_config.getCropHeight() * option.scale).intValue()
-            : _config.getCropHeight();
-
-        newDim =
-            ImageFileUtil.getScaledDimension(origDim, newDimWidth, newDimHeight);
-
-        if (!newDim.equals(origDim))
-        {
-            _logger.debug("Scale to " + newDim.getWidthMetric() + " x " + newDim.getHeightMetric());
-            FileItem scaledFileItem = _fileItemFactory.createItem(
-                uiValue.getFieldName(), uiValue.getContentType(),
-                uiValue.isFormField(), uiValue.getName());
-            try(InputStream is = uiValue.getInputStream();
-                OutputStream os = scaledFileItem.getOutputStream())
+            if (viewMode)
             {
-                Thumbnailer tn = Thumbnailer.getInstance(is);
-                BufferedImage scaledImg =
-                    tn.getQualityThumbnail(newDim.getWidthMetric().intValue(), newDim.getHeightMetric().intValue());
-                String extension = StringFactory.getExtension(uiValue.getName());
-                ImageIO.write(scaledImg, extension, os);
-                uiValue.delete();
-                uiValue = scaledFileItem;
+                removeClassName(CLASS_CROP_MODE);
+                addClassName(CLASS_VIEW_MODE);
             }
-            catch (Throwable e)
+            else
             {
-                _logger.warn("Skipping scaling due to:", e);
+                removeClassName(CLASS_VIEW_MODE);
+                addClassName(CLASS_CROP_MODE);
             }
         }
-
-        return uiValue;
-    }
-
-    /**
-     * Gets crop button text.
-     *
-     * @return the crop button text
-     */
-    public TextSource getCropButtonText()
-    {
-        return _cropButtonText;
-    }
-
-    /**
-     * Sets crop button text.
-     *
-     * @param cropButtonText the crop button text
-     */
-    public void setCropButtonText(TextSource cropButtonText)
-    {
-        _cropButtonText = cropButtonText;
-    }
-
-    /**
-     * Gets default resource.  This is the default image if no image has been set.
-     *
-     * @return the default resource
-     */
-    public FactoryResource getDefaultResource()
-    {
-        return _defaultResource;
-    }
-
-    /**
-     * Sets default resource. This is the default image if no image has been set.
-     *
-     * @param defaultResource the default resource
-     */
-    public void setDefaultResource(FactoryResource defaultResource)
-    {
-        _defaultResource = defaultResource;
-    }
-
-    /**
-     *   Get all additional UI Values that were cropped by the cropper.
-     *   This should be called if you are expecting additional files, otherwise it will return an empty HashMap.
-     *   @return a HashMap of additional UI Values that were cropped/scaled by VTCrop.
-     */
-    public HashMap<String, FileItem> getAdditionalUiValues()
-    {
-        HashMap<String, FileItem> additionalUIValues = new HashMap<>();
-        _additionalUiValues.entrySet().forEach(entry -> additionalUIValues.put(entry.getKey(), _getUIValue(entry.getValue())));
-        return additionalUIValues;
     }
 }

@@ -36,24 +36,26 @@ public class NoteDAO extends DAOHelper implements Serializable
     private static final long serialVersionUID = -3749855189704376208L;
 
     /**
-     *   Save the given Note into the database via a SAVE_OR_UPDATE operation
-     *   @param note the note to save
-     */
-    public void saveNote(Note note)
-    {
-        doInTransaction(session -> {
-            session.saveOrUpdate(note);
-        });
-    }
-
-    /**
-     *   Delete the given Note from the database via a DELETE operation
-     *   @param note the note to delete
+     * Delete the given Note from the database via a DELETE operation
+     *
+     * @param note the note to delete
      */
     public void deleteNote(Note note)
     {
         doInTransaction(session -> {
             session.delete(note);
+        });
+    }
+
+    /**
+     * Save the given Note into the database via a SAVE_OR_UPDATE operation
+     *
+     * @param note the note to save
+     */
+    public void saveNote(Note note)
+    {
+        doInTransaction(session -> {
+            session.saveOrUpdate(note);
         });
     }
 

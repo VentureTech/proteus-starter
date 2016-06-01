@@ -40,11 +40,9 @@ import net.proteusframework.internet.http.SiteContext;
 @Configurable
 public class ResourceTypeUserType implements UserType
 {
-    private static final int[] SQL_TYPES = { Types.VARCHAR };
-
     /** User Type Type Def Name */
     public static final String TYPEDEF = "resourceType";
-
+    private static final int[] SQL_TYPES = {Types.VARCHAR};
     @Autowired
     private ResourceTypeService _resourceTypeService;
     @Autowired
@@ -65,18 +63,18 @@ public class ResourceTypeUserType implements UserType
     @Override
     public boolean equals(Object x, Object y) throws HibernateException
     {
-        if(Objects.equals(x, y))
+        if (Objects.equals(x, y))
             return true;
-        if((x == null) || (y == null))
+        if ((x == null) || (y == null))
             return false;
         ResourceType resourceType1 = (ResourceType) x;
         ResourceType resourceType2 = (ResourceType) y;
         final ResourceTypeService.Context context = new ResourceTypeService.Context(_siteContext.getOperationalSite());
         String factory1 = _resourceTypeService.getFactoryIdentifier(context, resourceType1);
-        if(factory1 == null)
+        if (factory1 == null)
             throw new HibernateException("Invalid ResourceType: " + x);
         String factory2 = _resourceTypeService.getFactoryIdentifier(context, resourceType2);
-        if(factory2 == null)
+        if (factory2 == null)
             throw new HibernateException("Invalid ResourceType: " + y);
         return factory1.equals(factory2) && resourceType1.getIdentifier().equals(resourceType2.getIdentifier());
     }
@@ -84,11 +82,11 @@ public class ResourceTypeUserType implements UserType
     @Override
     public int hashCode(Object x) throws HibernateException
     {
-        if(x == null) return 0;
+        if (x == null) return 0;
         ResourceType resourceType = (ResourceType) x;
         String factory = _resourceTypeService.getFactoryIdentifier(
-            new ResourceTypeService.Context(_siteContext.getOperationalSite()),resourceType);
-        if(factory == null)
+            new ResourceTypeService.Context(_siteContext.getOperationalSite()), resourceType);
+        if (factory == null)
             throw new HibernateException("Invalid ResourceType: " + x);
         int res = factory.hashCode();
         res = res * 37 + resourceType.getIdentifier().hashCode();
@@ -113,9 +111,9 @@ public class ResourceTypeUserType implements UserType
     public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session)
         throws HibernateException, SQLException
     {
-        if(value == null)
+        if (value == null)
         {
-//            StringType.INSTANCE.nullSafeSet(st, null, index++, session);
+            //            StringType.INSTANCE.nullSafeSet(st, null, index++, session);
             StringType.INSTANCE.nullSafeSet(st, null, index, session);
         }
         else
@@ -123,11 +121,11 @@ public class ResourceTypeUserType implements UserType
             ResourceType resourceType = (ResourceType) value;
             String factory = _resourceTypeService.getFactoryIdentifier(
                 new ResourceTypeService.Context(_siteContext.getOperationalSite()), resourceType);
-            if(factory == null)
+            if (factory == null)
             {
                 throw new HibernateException("Invalid ResourceType: " + value);
             }
-//            StringType.INSTANCE.nullSafeSet(st, factory, index++, session);
+            //            StringType.INSTANCE.nullSafeSet(st, factory, index++, session);
             StringType.INSTANCE.nullSafeSet(st, resourceType.getIdentifier(), index, session);
         }
     }
@@ -148,23 +146,23 @@ public class ResourceTypeUserType implements UserType
     @Nullable
     public Serializable disassemble(Object value) throws HibernateException
     {
-        if(value == null)
+        if (value == null)
             return null;
         ResourceType resourceType = (ResourceType) value;
         String factory = _resourceTypeService.getFactoryIdentifier(
             new ResourceTypeService.Context(_siteContext.getOperationalSite()), resourceType);
-        if(factory == null)
+        if (factory == null)
         {
             throw new HibernateException("Invalid ResourceType: " + value);
         }
-        return new String[]{ factory, resourceType.getIdentifier() };
+        return new String[]{factory, resourceType.getIdentifier()};
     }
 
     @Nullable
     @Override
     public Object assemble(Serializable cached, Object owner) throws HibernateException
     {
-        if(cached == null)
+        if (cached == null)
             return null;
         String[] key = (String[]) cached;
         return _resourceTypeService.getResourceType(key[0], key[1]);

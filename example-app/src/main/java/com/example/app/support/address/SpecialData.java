@@ -204,12 +204,12 @@
 
 package com.example.app.support.address;
 //CHECKSTYLE:OFF
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -218,7 +218,7 @@ import java.util.Set;
 
 class SpecialData
 {
-    public static final Map<String, List<String>> C_MAP = new HashMap<String, List<String>>();
+    public static final Map<String, List<String>> C_MAP = new HashMap<>();
 
     static
     {
@@ -226,7 +226,7 @@ class SpecialData
             .getResourceAsStream("exception_city.txt"), StandardCharsets.UTF_8)))
         {
             String line = null;
-            Map<String, Set<String>> tmp = new HashMap<String, Set<String>>();
+            Map<String, Set<String>> tmp = new HashMap<>();
             while ((line = r.readLine()) != null)
             {
                 String[] items = line.split("\\s*->\\s*");
@@ -235,7 +235,7 @@ class SpecialData
                 Set<String> set = tmp.get(state);
                 if (set == null)
                 {
-                    set = new HashSet<String>();
+                    set = new HashSet<>();
                     tmp.put(state, set);
                 }
                 Collections.addAll(set, cities);

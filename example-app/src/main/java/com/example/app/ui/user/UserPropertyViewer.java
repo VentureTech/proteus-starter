@@ -43,7 +43,7 @@ import net.proteusframework.ui.miwt.util.CommonActions;
 import static com.example.app.ui.user.UserPropertyViewerLOK.ERROR_MESSAGE_INSUFFICIENT_PERMISSIONS_VIEW_FMT;
 import static com.example.app.ui.user.UserPropertyViewerLOK.LABEL_UPDATE_PASSWORD;
 import static net.proteusframework.core.locale.TextSources.createText;
-import static net.proteusframework.ui.miwt.component.composite.Message.error;
+import static net.proteusframework.core.notification.NotificationImpl.error;
 
 /**
  * {@link PropertyViewer} for {@link User}
@@ -62,6 +62,7 @@ import static net.proteusframework.ui.miwt.component.composite.Message.error;
 @Configurable
 public class UserPropertyViewer extends PropertyViewer
 {
+    private final MessageContainer _messages = new MessageContainer(35_000L);
     @Autowired
     private ProfileDAO _profileDAO;
     @Autowired
@@ -72,13 +73,10 @@ public class UserPropertyViewer extends PropertyViewer
     private ProfileService _profileService;
     @Autowired
     private ProfileTermProvider _terms;
-
-    private final MessageContainer _messages = new MessageContainer(35_000L);
-
     private boolean _canEdit;
 
     /**
-     *   Instantiate a new instance of UserPropertyViewer
+     * Instantiate a new instance of UserPropertyViewer
      */
     public UserPropertyViewer()
     {
@@ -88,9 +86,38 @@ public class UserPropertyViewer extends PropertyViewer
         setHTMLElement(HTMLElement.section);
     }
 
+    @SuppressWarnings("unused")
+        //Used by ApplicationFunction
+    void configure(@Nullable User user)
+    {
+        UserValueViewer viewer;
+        if (user != null)
+        {
+            Profile adminProfile = _profileService.getAdminProfileForUser(user)
+                .orElseThrow(() -> new IllegalStateException("User must have an admin profile."));
+            User currentUser = _userDAO.getAssertedCurrentUser();
+            final TimeZone timeZone = Event.getRequest().getTimeZone();
+            boolean canView = _profileDAO.canOperate(currentUser, adminProfile, timeZone, _mop.viewUser());
+            if (!canView)
+            {
+                _messages.sendNotification(error(createText(ERROR_MESSAGE_INSUFFICIENT_PERMISSIONS_VIEW_FMT(), _terms.user())));
+                viewer = null;
+            }
+            else
+            {
+                viewer = new UserValueViewer();
+                viewer.setUser(user);
+                viewer.setNotifiable(_messages);
 
-
-    @Override
+                _canEdit = _profileDAO.canOperate(currentUser, adminProfile, timeZone, _mop.modifyUser());
+            }
+        }
+        else
+        {
+            viewer = null;
+        }
+        setValueViewer(viewer);
+    }    @Override
     public void init()
     {
         super.init();
@@ -102,9 +129,9 @@ public class UserPropertyViewer extends PropertyViewer
         UserValueViewer valueViewer = getValueViewer();
 
         List<Action> actions = new ArrayList<>();
-        if(_canEdit)
+        if (_canEdit)
             actions.add(editAction);
-        if(valueViewer != null && valueViewer.canUpdatePassword())
+        if (valueViewer != null && valueViewer.canUpdatePassword())
         {
             ReflectiveAction updatePassword = new ReflectiveAction();
             updatePassword.prop(Action.NAME, LABEL_UPDATE_PASSWORD());
@@ -121,39 +148,9 @@ public class UserPropertyViewer extends PropertyViewer
     @Override
     public UserValueViewer getValueViewer()
     {
-        return (UserValueViewer)super.getValueViewer();
+        return (UserValueViewer) super.getValueViewer();
     }
 
 
-    @SuppressWarnings("unused") //Used by ApplicationFunction
-    void configure(@Nullable User user)
-    {
-        UserValueViewer viewer;
-        if(user != null)
-        {
-            Profile userProfile = _profileService.getOwnerProfileForUser(user)
-                .orElseThrow(() -> new IllegalStateException("User must have an owner profile."));
-            User currentUser = _userDAO.getAssertedCurrentUser();
-            final TimeZone timeZone = Event.getRequest().getTimeZone();
-            boolean canView = _profileDAO.canOperate(currentUser, userProfile, timeZone, _mop.viewUser());
-            if(!canView)
-            {
-                _messages.sendNotification(error(createText(ERROR_MESSAGE_INSUFFICIENT_PERMISSIONS_VIEW_FMT(), _terms.user())));
-                viewer = null;
-            }
-            else
-            {
-                viewer = new UserValueViewer();
-                viewer.setUser(user);
-                viewer.setNotifiable(_messages);
 
-                _canEdit = _profileDAO.canOperate(currentUser, userProfile, timeZone, _mop.modifyUser());
-            }
-        }
-        else
-        {
-            viewer = null;
-        }
-        setValueViewer(viewer);
-    }
 }

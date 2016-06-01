@@ -34,7 +34,7 @@ import static com.example.app.model.repository.RepositoryItemStatusLOK.*;
  * Status of a RepositoryItem.
  *
  * @author Russ Tennant (russ@i2rd.com)
- * moved from PlanStatus -> RepositoryStatus
+ *         moved from PlanStatus -> RepositoryStatus
  * @author Alan Holt (aholt@venturetech.net)
  */
 @I18NFile(
@@ -66,8 +66,9 @@ public enum RepositoryItemStatus implements NamedObject
         private final LocaleContext _lc;
 
         /**
-         *   Constructor
-         *   @param lc the Locale Context
+         * Constructor
+         *
+         * @param lc the Locale Context
          */
         public RepositoryItemStatusComparator(LocaleContext lc)
         {
@@ -84,12 +85,38 @@ public enum RepositoryItemStatus implements NamedObject
     private final TextSource _name;
     private final String _htmlClass;
 
+    /**
+     * Get a list for a combo box. This includes a null value in the 0 index
+     *
+     * @param comparator comparator for the combo box option order
+     *
+     * @return a list of RepositoryItemStatus
+     */
+    public static List<RepositoryItemStatus> getListForCombo(@Nullable Comparator<RepositoryItemStatus> comparator)
+    {
+        List<RepositoryItemStatus> statusList = new ArrayList<>(EnumSet.allOf(RepositoryItemStatus.class));
+        if (comparator != null)
+            Collections.sort(statusList, comparator);
+        statusList.add(0, null);
+        return statusList;
+    }
+
+
     RepositoryItemStatus(TextSource name, String htmlClass)
     {
         _name = name;
         _htmlClass = htmlClass;
     }
 
+    /**
+     * Get the HTML class for this RepositoryItemStatus
+     *
+     * @return html class
+     */
+    public String getHtmlClass()
+    {
+        return _htmlClass;
+    }
 
     @Nonnull
     @Override
@@ -103,29 +130,5 @@ public enum RepositoryItemStatus implements NamedObject
     public TextSource getDescription()
     {
         return null;
-    }
-
-    /**
-     *   Get the HTML class for this RepositoryItemStatus
-     *   @return html class
-     */
-    public String getHtmlClass()
-    {
-        return _htmlClass;
-    }
-
-    /**
-     *   Get a list for a combo box. This includes a null value in the 0 index
-     *
-     * @param comparator comparator for the combo box option order
-     * @return a list of RepositoryItemStatus
-     */
-    public static List<RepositoryItemStatus> getListForCombo(@Nullable Comparator<RepositoryItemStatus> comparator)
-    {
-        List<RepositoryItemStatus> statusList = new ArrayList<>(EnumSet.allOf(RepositoryItemStatus.class));
-        if(comparator != null)
-            Collections.sort(statusList, comparator);
-        statusList.add(0, null);
-        return statusList;
     }
 }

@@ -31,10 +31,10 @@ public class RepeatOnlyICal4jScheduleEditor extends ICal4jScheduleEditor
         moveToTop(_repeatEvery.getParent());
         moveToTop(_repeat);
         Iterator<Component> it = components();
-        while(it.hasNext())
+        while (it.hasNext())
         {
             Component next = it.next();
-            if(next.getHTMLElement() == HTMLElement.h1)
+            if (next.getHTMLElement() == HTMLElement.h1)
             {
                 moveToTop(next);
                 break;

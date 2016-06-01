@@ -35,15 +35,15 @@ import net.proteusframework.ui.miwt.util.CommonActions;
 @Configurable
 public class UserPositionPropertyEditor extends PropertyEditor<UserPosition>
 {
+    private final ActionListener _closeActionListener;
     @Autowired
     private UserDAO _userDAO;
 
-    private final ActionListener _closeActionListener;
-
     /**
-     *   Instantiate a new instance of UserPositionPropertyEditor
-     *   @param user the User for which the edited UserPosition will belong
-     *   @param closeActionListener actionListener responsible for closing the UI for this PropertyEditor
+     * Instantiate a new instance of UserPositionPropertyEditor
+     *
+     * @param user the User for which the edited UserPosition will belong
+     * @param closeActionListener actionListener responsible for closing the UI for this PropertyEditor
      */
     public UserPositionPropertyEditor(@Nonnull User user, @Nonnull ActionListener closeActionListener)
     {
@@ -53,15 +53,6 @@ public class UserPositionPropertyEditor extends PropertyEditor<UserPosition>
         setHTMLElement(HTMLElement.section);
     }
 
-    /**
-     *   Set the value on the value editor
-     *   @param value the UserPosition to use as the value
-     */
-    public void setValue(UserPosition value)
-    {
-        getValueEditor().setValue(value);
-    }
-
     @Override
     public void init()
     {
@@ -69,8 +60,8 @@ public class UserPositionPropertyEditor extends PropertyEditor<UserPosition>
 
         ReflectiveAction saveAction = CommonActions.SAVE.defaultAction();
         saveAction.setActionListener(ev -> {
-            if(persist(input -> {
-                if(input != null)
+            if (persist(input -> {
+                if (input != null)
                 {
                     return _userDAO.mergeUserPosition(input) != null;
                 }
@@ -85,5 +76,15 @@ public class UserPositionPropertyEditor extends PropertyEditor<UserPosition>
         cancelAction.setActionListener(_closeActionListener);
 
         setPersistenceActions(saveAction, cancelAction);
+    }
+
+    /**
+     * Set the value on the value editor
+     *
+     * @param value the UserPosition to use as the value
+     */
+    public void setValue(UserPosition value)
+    {
+        getValueEditor().setValue(value);
     }
 }

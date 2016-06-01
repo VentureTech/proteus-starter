@@ -29,8 +29,9 @@ public class UserConfig
     public static final String PICTURE_EDITOR_CONFIG = "lr-user-picture-editor-config";
 
     /**
-     *   Get the {@link VTCropPictureEditorConfig} for the User viewer/editor
-     *   @return a VTCropPictureEditorConfig
+     * Get the {@link VTCropPictureEditorConfig} for the User viewer/editor
+     *
+     * @return a VTCropPictureEditorConfig
      */
     @Bean(name = PICTURE_EDITOR_CONFIG)
     public VTCropPictureEditorConfig getPictureEditorConfig()

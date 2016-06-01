@@ -70,13 +70,47 @@ import static net.proteusframework.ui.search.PropertyConstraint.Operator;
 @Configurable
 class MembershipOperationsEditorUI extends Container
 {
-    @Autowired
-    private ProfileTermProvider _terms;
+    private static class MyOrderBy extends LocalizedObjectKeyQLOrderBy
+    {
+        public MyOrderBy(LocaleContextSource localeContextSource,
+            String lokProperty)
+        {
+            super(localeContextSource, lokProperty);
+        }
 
+        @Override
+        public String getPrefixedOrderBy(QLBuilder builder)
+        {
+            return super.getPrefixedOrderBy(builder);
+        }
+    }
+
+    private class MyCheckbox extends Checkbox
+    {
+        public MyCheckbox()
+        {
+            super(TextSources.EMPTY);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(Table table, Object value, boolean isSelected, boolean hasFocus, int row,
+            int column)
+        {
+            Checkbox cb = (Checkbox) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            MembershipOperation op = (MembershipOperation) value;
+
+            cb.setSelected(getSelectedOperations().contains(op));
+            cb.setEnabled(true);
+
+            return cb;
+        }
+    }
     private final Membership _membership;
     private final History _history;
-    private SearchUIImpl _searchUI;
     private final List<MembershipOperation> _selectedOperations = new ArrayList<>();
+    @Autowired
+    private ProfileTermProvider _terms;
+    private SearchUIImpl _searchUI;
 
     public MembershipOperationsEditorUI(@Nonnull Membership membership, @Nonnull History history)
     {
@@ -87,11 +121,6 @@ class MembershipOperationsEditorUI extends Container
         Hibernate.initialize(membership.getProfile().getProfileType());
         _selectedOperations.addAll(_membership.getOperations());
         _history = history;
-    }
-
-    public List<MembershipOperation> getSelectedOperations()
-    {
-        return _selectedOperations;
     }
 
     @Override
@@ -109,7 +138,7 @@ class MembershipOperationsEditorUI extends Container
         options.addSearchSupplier(searchSupplier);
         options.setHistory(_history);
         options.setRowExtractor(input -> {
-            if(input.getClass().isArray())
+            if (input.getClass().isArray())
                 return Array.get(input, 0);
             else
                 return input;
@@ -121,8 +150,9 @@ class MembershipOperationsEditorUI extends Container
             _membership.getProfile().getName(), _membership.getMembershipType().getName()));
         heading.setHTMLElement(HTMLElement.h3);
 
-        add(of("search-wrapper membership-operation-search", heading, messages,  _searchUI));
+        add(of("search-wrapper membership-operation-search", heading, messages, _searchUI));
     }
+
     private SearchSupplierImpl getSearchSupplier()
     {
         SearchModelImpl searchModel = new SearchModelImpl();
@@ -135,25 +165,12 @@ class MembershipOperationsEditorUI extends Container
             .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY)))
         ;
 
-        Checkbox selectOperation = new Checkbox(TextSources.EMPTY){
-            @Override
-            public Component getTableCellRendererComponent(Table table, Object value, boolean isSelected, boolean hasFocus, int row,
-                int column)
-            {
-                Checkbox cb = (Checkbox)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                MembershipOperation op = (MembershipOperation)value;
-
-                cb.setSelected(getSelectedOperations().contains(op));
-                cb.setEnabled(true);
-
-                return cb;
-            }
-        };
+        Checkbox selectOperation = new MyCheckbox();
         selectOperation.addActionListener(ev -> {
             MembershipOperation operation = _searchUI.getLeadSelection();
-            if(operation != null)
+            if (operation != null)
             {
-                if(getSelectedOperations().contains(operation))
+                if (getSelectedOperations().contains(operation))
                     getSelectedOperations().remove(operation);
                 else
                     getSelectedOperations().add(operation);
@@ -177,20 +194,7 @@ class MembershipOperationsEditorUI extends Container
             qb.appendCriteria("id", Operator.eq, _membership.getProfile().getProfileType().getId());
             final JoinedQLBuilder mtQB = qb.createInnerJoin(ProfileType.MEMBERSHIP_TYPES_PROP);
             final JoinedQLBuilder opQB = mtQB.createInnerJoin(MembershipType.DEFAULT_OPERATIONS_PROP);
-            class MyOrderBy extends LocalizedObjectKeyQLOrderBy
-            {
-                public MyOrderBy(LocaleContextSource localeContextSource,
-                    String lokProperty)
-                {
-                    super(localeContextSource, lokProperty);
-                }
 
-                @Override
-                public String getPrefixedOrderBy(QLBuilder builder)
-                {
-                    return super.getPrefixedOrderBy(builder);
-                }
-            }
             MyOrderBy orderBy = new MyOrderBy(this, String.format("%s.%s", opQB.getAlias(), MembershipOperation.NAME_COLUMN_PROP));
 
             opQB.setProjection("DISTINCT %s, %s", opQB.getAlias(), orderBy.getPrefixedOrderBy(opQB));
@@ -199,5 +203,10 @@ class MembershipOperationsEditorUI extends Container
         });
 
         return searchSupplier;
+    }
+
+    public List<MembershipOperation> getSelectedOperations()
+    {
+        return _selectedOperations;
     }
 }

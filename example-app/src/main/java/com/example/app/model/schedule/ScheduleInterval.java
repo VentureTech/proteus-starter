@@ -90,6 +90,7 @@ public enum ScheduleInterval implements NamedObject
 
     /**
      * Constructor.
+     *
      * @param name the interval name.
      * @param description the description.
      */
@@ -100,6 +101,17 @@ public enum ScheduleInterval implements NamedObject
         _description = description;
         _sentenceForm = sentenceForm;
         _interval = interval;
+    }
+
+    /**
+     * Get the Interval that this ScheduleInterval uses
+     *
+     * @return the Interval
+     */
+    @Nonnull
+    public Period getInterval()
+    {
+        return _interval;
     }
 
     @Nonnull
@@ -117,22 +129,13 @@ public enum ScheduleInterval implements NamedObject
     }
 
     /**
-     *   Get the Sentence Form of this Interval
-     *   @return Sentence Form
+     * Get the Sentence Form of this Interval
+     *
+     * @return Sentence Form
      */
     @Nonnull
     public TextSource getSentenceForm()
     {
         return _sentenceForm;
-    }
-
-    /**
-     *   Get the Interval that this ScheduleInterval uses
-     *   @return the Interval
-     */
-    @Nonnull
-    public Period getInterval()
-    {
-        return _interval;
     }
 }

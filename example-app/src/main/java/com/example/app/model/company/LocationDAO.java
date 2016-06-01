@@ -43,7 +43,116 @@ public final class LocationDAO extends DAOHelper implements Serializable
      */
     private static final long serialVersionUID = -1864046652465972120L;
 
-    @Autowired private transient ProfileTypeProvider _profileTypeProvider;
+    @Autowired
+    private transient ProfileTypeProvider _profileTypeProvider;
+
+    /**
+     * Delete all Locations for a the specified companies.
+     *
+     * @param companies the companies
+     */
+    public void deleteAllLocations(final Collection<? extends Company> companies)
+    {
+        doInTransaction(session -> {
+            final String hql = "update " + Location.class.getSimpleName()
+                               + " set " + SoftDeleteEntity.SOFT_DELETE_COLUMN_PROP + " = true"
+                               + " where " + Location.COMPANY_PROP + " in :companies";
+
+            session.createQuery(hql)
+                .setParameterList("companies", companies)
+                .executeUpdate();
+        });
+    }
+
+    /**
+     * Delete the given Locations from the database
+     *
+     * @param locations the locations to delete
+     */
+    public void deleteLocations(final Collection<? extends Location> locations)
+    {
+        doInTransaction(session -> {
+            final String hql = "update " + Location.class.getSimpleName() + " location"
+                               + " set location." + SoftDeleteEntity.SOFT_DELETE_COLUMN_PROP + " = true"
+                               + " where location in :locations";
+
+            session.createQuery(hql)
+                .setParameterList("locations", locations.stream().map(Location::getId).toArray(Integer[]::new))
+                .executeUpdate();
+        });
+    }
+
+    /**
+     * Get the active locations for a company.
+     *
+     * @param company the company
+     *
+     * @return the locations, sorted by name
+     */
+    @NotNull
+    public List<Location> getActiveLocations(@NotNull Company company)
+    {
+        Query q = getSession().createQuery("from " + Location.class.getSimpleName()
+                                           + " l where l.company = :company and l.status = :active order by getText(l.name)");
+        q.setParameter("company", company);
+        q.setParameter("active", CompanyStatus.ACTIVE);
+
+        @SuppressWarnings("unchecked")
+        final List<Location> location = (List<Location>) q.list();
+        return location;
+    }
+
+    /**
+     * Get the Location whose ID corresponds to the given ID
+     *
+     * @param id the ID to look for
+     *
+     * @return the matching Location, or null of none exists
+     */
+    @Nullable
+    public Location getLocation(@Nullable Long id)
+    {
+        if (id == null || id == 0L) return null;
+        return (Location) getSession().get(Location.class, id);
+    }
+
+    /**
+     * Get all the locations for a company.
+     *
+     * @param company the company
+     *
+     * @return the locations, sorted by name
+     */
+    @NotNull
+    public List<Location> getLocations(@NotNull Company company)
+    {
+        Query q = getSession().createQuery("from " + Location.class.getSimpleName()
+                                           + " l where l.company = :company order by getText(l.name)");
+        q.setParameter("company", company);
+
+        @SuppressWarnings("unchecked")
+        final List<Location> location = (List<Location>) q.list();
+        return location;
+    }
+
+    /**
+     * Check if a company has active locations.
+     *
+     * @param company the company
+     *
+     * @return true if the company has at least one active location
+     */
+    public boolean hasActiveLocations(final Company company)
+    {
+        Query q = getSession().createQuery("select count(*) > 0 from " + Location.class.getSimpleName()
+                                           + " l where l.company = :company and l.status = :active");
+        q.setParameter("company", company);
+        q.setParameter("active", CompanyStatus.ACTIVE);
+
+        @SuppressWarnings("unchecked")
+        final List<Boolean> location = (List<Boolean>) q.list();
+        return location.get(0);
+    }
 
     /**
      * Save the given Location by merging it.
@@ -56,7 +165,7 @@ public final class LocationDAO extends DAOHelper implements Serializable
     {
         return doInTransaction(session -> {
 
-            if(location.getProfileType() == null)
+            if (location.getProfileType() == null)
                 location.setProfileType(_profileTypeProvider.location());
 
             return (Location) session.merge(location);
@@ -72,46 +181,10 @@ public final class LocationDAO extends DAOHelper implements Serializable
     {
         doInTransaction(session -> {
 
-            if(location.getProfileType() == null)
+            if (location.getProfileType() == null)
                 location.setProfileType(_profileTypeProvider.location());
 
             session.saveOrUpdate(location);
-        });
-    }
-
-    /**
-     * Delete the given Locations from the database
-     *
-     * @param locations the locations to delete
-     */
-    public void deleteLocations(final Collection <? extends Location> locations)
-    {
-        doInTransaction(session -> {
-            final String hql = "update " + Location.class.getSimpleName() + " location"
-                + " set location." + SoftDeleteEntity.SOFT_DELETE_COLUMN_PROP + " = true"
-                + " where location in :locations";
-
-            session.createQuery(hql)
-                .setParameterList("locations", locations.stream().map(Location::getId).toArray(Integer[]::new))
-                .executeUpdate();
-        });
-    }
-
-    /**
-     * Delete all Locations for a the specified companies.
-     *
-     * @param companies the companies
-     */
-    public void deleteAllLocations(final Collection<? extends Company> companies)
-    {
-        doInTransaction(session -> {
-            final String hql = "update " + Location.class.getSimpleName()
-                + " set " + SoftDeleteEntity.SOFT_DELETE_COLUMN_PROP + " = true"
-                + " where " + Location.COMPANY_PROP + " in :companies";
-
-            session.createQuery(hql)
-                .setParameterList("companies", companies)
-                .executeUpdate();
         });
     }
 
@@ -125,8 +198,8 @@ public final class LocationDAO extends DAOHelper implements Serializable
     {
         doInTransaction(session -> {
             final String hql = "update " + Location.class.getName() + " location"
-                + " set location." + Location.STATUS_PROP + " = :status"
-                + " where location in :locations";
+                               + " set location." + Location.STATUS_PROP + " = :status"
+                               + " where location in :locations";
 
             final Query query = session.createQuery(hql);
             query.setParameter("status", status);
@@ -135,74 +208,6 @@ public final class LocationDAO extends DAOHelper implements Serializable
             query.executeUpdate();
         });
     }
-
-    /**
-     * Get all the locations for a company.
-     * @param company the company
-     * @return the locations, sorted by name
-     */
-    @NotNull
-    public List<Location> getLocations(@NotNull Company company)
-    {
-        Query q = getSession().createQuery("from " + Location.class.getSimpleName()
-            + " l where l.company = :company order by getText(l.name)");
-        q.setParameter("company", company);
-
-        @SuppressWarnings("unchecked")
-        final List<Location> location = (List<Location>) q.list();
-        return location;
-    }
-
-    /**
-     * Get the active locations for a company.
-     * @param company the company
-     * @return the locations, sorted by name
-     */
-    @NotNull
-    public List<Location> getActiveLocations(@NotNull Company company)
-    {
-        Query q = getSession().createQuery("from " + Location.class.getSimpleName()
-            + " l where l.company = :company and l.status = :active order by getText(l.name)");
-        q.setParameter("company", company);
-        q.setParameter("active", CompanyStatus.ACTIVE);
-
-        @SuppressWarnings("unchecked")
-        final List<Location> location = (List<Location>) q.list();
-        return location;
-    }
-
-    /**
-     * Check if a company has active locations.
-     * @param company the company
-     * @return true if the company has at least one active location
-     */
-    public boolean hasActiveLocations(final Company company)
-    {
-        Query q = getSession().createQuery("select count(*) > 0 from " + Location.class.getSimpleName()
-            + " l where l.company = :company and l.status = :active");
-        q.setParameter("company", company);
-        q.setParameter("active", CompanyStatus.ACTIVE);
-
-        @SuppressWarnings("unchecked")
-        final List<Boolean> location = (List<Boolean>) q.list();
-        return location.get(0);
-    }
-
-    /**
-     * Get the Location whose ID corresponds to the given ID
-     *
-     * @param id the ID to look for
-     *
-     * @return the matching Location, or null of none exists
-     */
-    @Nullable
-    public Location getLocation(@Nullable Long id)
-    {
-        if(id == null || id == 0L) return null;
-        return (Location) getSession().get(Location.class, id);
-    }
-
-
 
     /** @return the single instance of {@code LocationDAO} from the {@link ApplicationContext} */
     private Object readResolve() throws ObjectStreamException

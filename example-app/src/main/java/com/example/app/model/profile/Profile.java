@@ -60,27 +60,21 @@ import net.proteusframework.core.locale.NamedObject;
  */
 @Entity
 @Table(name = Profile.TABLE_NAME, schema = ProjectConfig.PROJECT_SCHEMA, indexes = {
-    @Index(name="profile_disc_idx", columnList = ProjectConfig.DISCRIMINATOR_COLUMN),
-    @Index(name="profile_profletype_idx", columnList = Profile.PROFILE_TYPE_COLUMN)
+    @Index(name = "profile_disc_idx", columnList = ProjectConfig.DISCRIMINATOR_COLUMN),
+    @Index(name = "profile_profletype_idx", columnList = Profile.PROFILE_TYPE_COLUMN)
 })
 @Where(clause = SoftDeleteEntity.WHERE_CLAUSE)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.PROFILE_DATA)
 @BatchSize(size = 10)
 @Audited
 @SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + Profile.TABLE_NAME
-    + " SET " + Profile.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + Profile.ID_COLUMN + " = ?")
+                 + " SET " + Profile.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + Profile.ID_COLUMN + " = ?")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = ProjectConfig.DISCRIMINATOR_COLUMN)
 public abstract class Profile extends AbstractAuditableSoftDeleteEntity implements NamedObject
 {
-    /** The serial version UID */
-    private static final long serialVersionUID = -7189722406282887545L;
-
     /** The database table name for this entity */
     public static final String TABLE_NAME = "Profile";
-
-    /** The ID generator identifier for this entity */
-    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + ".profile_id_seq";
     /** The database id column for this entity */
     public static final String ID_COLUMN = "profile_id";
     /** The database column name and property: parent */
@@ -101,7 +95,10 @@ public abstract class Profile extends AbstractAuditableSoftDeleteEntity implemen
     public static final String COLLECTION_WHERE_CLAUSE =
         ID_COLUMN + " in (select profile." + ID_COLUMN + " from app." + TABLE_NAME
         + " profile where profile." + SOFT_DELETE_COLUMN_PROP + "='false')";
-
+    /** The serial version UID */
+    private static final long serialVersionUID = -7189722406282887545L;
+    /** The ID generator identifier for this entity */
+    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + ".profile_id_seq";
     private Profile _parent;
     private ProfileType _profileType;
     private Set<Membership> _membershipSet = new HashSet<>(0);
@@ -120,53 +117,11 @@ public abstract class Profile extends AbstractAuditableSoftDeleteEntity implemen
     }
 
     /**
-     * Get this profile's parent profile.
-     * @return this profile's parent profile, if there is one, otherwise returns null.
+     * Get the memberships that are associated with this Profile
+     *
+     * @return the memberships that are associated with this Profile
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = PARENT_COLUMN_PROP)
-    @Nullable
-    public Profile getParent()
-    {
-        return _parent;
-    }
-
-    /**
-     * Set this profile's parent profile.
-     * @param parent the intended parent of this profile.  may be null.
-     */
-    public void setParent(@Nullable  Profile parent)
-    {
-        _parent = parent;
-    }
-
-    /**
-    *   Get the profile type of this Profile
-    *   @return the ProfileType of this Profile
-    */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = PROFILE_TYPE_COLUMN)
-    @NotNull
-    @Nonnull
-    public ProfileType getProfileType()
-    {
-        return _profileType;
-    }
-
-    /**
-    *   Set the profile type of this Profile
-    *   @param profileType the ProfileType of this Profile
-    */
-    public void setProfileType(ProfileType profileType)
-    {
-        _profileType = profileType;
-    }
-
-    /**
-    *   Get the memberships that are associated with this Profile
-    *   @return the memberships that are associated with this Profile
-    */
-    @OneToMany(fetch = FetchType.LAZY,  mappedBy = Membership.PROFILE_PROP, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = Membership.PROFILE_PROP, orphanRemoval = true)
     @Cascade(CascadeType.ALL)
     @BatchSize(size = 5)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.PROFILE_DATA)
@@ -176,9 +131,10 @@ public abstract class Profile extends AbstractAuditableSoftDeleteEntity implemen
     }
 
     /**
-    *   Set the memberships that are associated with this Profile
-    *   @param membershipSet the memberships to be associated with this Profile
-    */
+     * Set the memberships that are associated with this Profile
+     *
+     * @param membershipSet the memberships to be associated with this Profile
+     */
     public void setMembershipSet(Set<Membership> membershipSet)
     {
         _membershipSet = membershipSet;
@@ -192,9 +148,11 @@ public abstract class Profile extends AbstractAuditableSoftDeleteEntity implemen
     {
         return _name;
     }
+
     /**
-     *   Set the name of this Profile
-     *   @param name the name
+     * Set the name of this Profile
+     *
+     * @param name the name
      */
     public void setName(@Nonnull LocalizedObjectKey name)
     {
@@ -208,9 +166,11 @@ public abstract class Profile extends AbstractAuditableSoftDeleteEntity implemen
     {
         return _description;
     }
+
     /**
-     *   Set the description of this Profile
-     *   @param description the description
+     * Set the description of this Profile
+     *
+     * @param description the description
      */
     public void setDescription(@Nullable LocalizedObjectKey description)
     {
@@ -218,8 +178,56 @@ public abstract class Profile extends AbstractAuditableSoftDeleteEntity implemen
     }
 
     /**
-     *   Get this CoachingEntity's Repository
-     *   @return the repository
+     * Get this profile's parent profile.
+     *
+     * @return this profile's parent profile, if there is one, otherwise returns null.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = PARENT_COLUMN_PROP)
+    @Nullable
+    public Profile getParent()
+    {
+        return _parent;
+    }
+
+    /**
+     * Set this profile's parent profile.
+     *
+     * @param parent the intended parent of this profile.  may be null.
+     */
+    public void setParent(@Nullable Profile parent)
+    {
+        _parent = parent;
+    }
+
+    /**
+     * Get the profile type of this Profile
+     *
+     * @return the ProfileType of this Profile
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = PROFILE_TYPE_COLUMN)
+    @NotNull
+    @Nonnull
+    public ProfileType getProfileType()
+    {
+        return _profileType;
+    }
+
+    /**
+     * Set the profile type of this Profile
+     *
+     * @param profileType the ProfileType of this Profile
+     */
+    public void setProfileType(ProfileType profileType)
+    {
+        _profileType = profileType;
+    }
+
+    /**
+     * Get this CoachingEntity's Repository
+     *
+     * @return the repository
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = Repository.ID_COLUMN)
@@ -229,9 +237,11 @@ public abstract class Profile extends AbstractAuditableSoftDeleteEntity implemen
     {
         return _repository;
     }
+
     /**
-     *   Set this CoachingEntity's Repository
-     *   @param repository the repository
+     * Set this CoachingEntity's Repository
+     *
+     * @param repository the repository
      */
     public void setRepository(@Nullable Repository repository)
     {

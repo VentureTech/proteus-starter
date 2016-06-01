@@ -70,6 +70,7 @@ import static com.example.app.ui.UIText.SEARCH_MODEL_NAME_FMT;
 import static com.example.app.ui.UIText.SEARCH_SUPPLIER_DESCRIPTION_FMT;
 import static com.example.app.ui.UIText.SEARCH_SUPPLIER_NAME_FMT;
 import static com.example.app.ui.resource.ResourceSelectorLOK.*;
+import static com.example.app.ui.resource.ResourceSelectorLOK.LABEL_CATEGORY;
 import static com.example.app.ui.resource.ResourceText.LABEL_AUTHOR;
 import static com.example.app.ui.resource.ResourceValueEditorLOK.LABEL_NAME;
 import static com.example.app.ui.resource.ResourceValueEditorLOK.LABEL_TYPE;
@@ -100,6 +101,9 @@ import static net.proteusframework.ui.search.SearchUIAction.search;
 @Configurable
 public class ResourceSelector extends Container implements SearchUIOperationHandler
 {
+    private final Repository _repository;
+    private final List<Resource> _selection = new ArrayList<>();
+    private final List<Action> _entityActions = new ArrayList<>();
     @Autowired
     private ResourceCategoryLabelProvider _rtlp;
     @Autowired
@@ -110,89 +114,22 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
     private RepositoryDAO _repositoryDAO;
     @Autowired
     private ProfileTermProvider _terms;
-
-    private final Repository _repository;
-    private final List<Resource> _selection = new ArrayList<>();
-    private final List<Action> _entityActions = new ArrayList<>();
     private Function<SearchUIOperationContext, Void> _onSelect;
 
     /**
-     *   Instantiate a new instance of ResourceSelector
-     *   @param repository the Repository to select Resources from
-     *   @param initialSelection the initial list of Resources to have selected
+     * Instantiate a new instance of ResourceSelector
+     *
+     * @param repository the Repository to select Resources from
+     * @param initialSelection the initial list of Resources to have selected
      */
     public ResourceSelector(@Nonnull Repository repository, @Nullable List<Resource> initialSelection)
     {
         _repository = repository;
-        if(initialSelection != null)
+        if (initialSelection != null)
         {
             _selection.addAll(initialSelection);
         }
         addClassName("resource-selector");
-    }
-
-    private Repository getRepository()
-    {
-        return _er.reattachIfNecessary(_repository);
-    }
-    
-    /**
-     *   Get the list of currently selected Resources
-     *   @return selected Resources
-     */
-    public List<Resource> getSelection()
-    {
-        return _selection;
-    }
-
-    /**
-     *   Set the list of currently selected Resources
-     *   @param selection resources
-     */
-    public void setSelection(List<Resource> selection)
-    {
-        _selection.clear();
-        _selection.addAll(selection);
-    }
-
-    /**
-     *   Get the OnSelect listener.  By default, this just adds to the list returned by {@link #getSelection()}
-     *   @return the OnSelect listener
-     */
-    @SuppressWarnings("ConstantConditions")
-    public Function<SearchUIOperationContext, Void> getOnSelect()
-    {
-        if(_onSelect == null)
-        {
-            return context -> {
-                ResourceRepositoryItem rri = context.getData();
-                if(rri != null)
-                {
-                    _selection.add(rri.getResource());
-                    context.getSearchUI().doAction(search);
-                }
-                return null;
-            };
-        }
-        return _onSelect;
-    }
-    /**
-     *   Set the OnSelect listener.  By default, this just adds to the list returned by {@link #getSelection()}
-     *   @param onSelect the OnSelect listener
-     */
-    public void setOnSelect(Function<SearchUIOperationContext, Void> onSelect)
-    {
-        _onSelect = onSelect;
-    }
-
-    /**
-     *   Set the Entity Actins on the Search UI. This only works if it is called before init.
-     *   @param actions the Actions to set
-     */
-    public void setEntityActions(Action... actions)
-    {
-        _entityActions.clear();
-        Collections.addAll(_entityActions, actions);
     }
 
     @Override
@@ -213,31 +150,6 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
         add(of("search-wrapper resource-selector-search", searchUI));
     }
 
-    @Override
-    public boolean supportsOperation(SearchUIOperation operation)
-    {
-        switch(operation)
-        {
-            case select:
-            default:
-                return false;
-        }
-    }
-
-    @Override
-    public void handle(SearchUIOperationContext context)
-    {
-        switch (context.getOperation())
-        {
-            case select:
-                getOnSelect().apply(context);
-                break;
-            default:
-                break;
-        }
-    }
-
-    @SuppressWarnings("Duplicates")
     private SearchSupplierImpl getSearchSupplier()
     {
         SearchModelImpl searchModel = new SearchModelImpl();
@@ -259,14 +171,14 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
             builder.setProjection(builder.getAlias());
 
             builder.appendCriteria("rriAlias.id in(\n"
-                + "select rirel.repositoryItem.id\n"
-                + "from RepositoryItemRelation rirel\n"
-                + "where rirel.repository.id = :repoId)\n")
+                                   + "select rirel.repositoryItem.id\n"
+                                   + "from RepositoryItemRelation rirel\n"
+                                   + "where rirel.repository.id = :repoId)\n")
                 .putParameter("repoId", getRepository().getId());
 
             List<Integer> selectedResources = getSelection().stream().map(resource -> _repositoryDAO.getRepoItemForResource
                 (resource)).filter(Optional::isPresent).map(rri -> rri.get().getId()).collect(Collectors.toList());
-            if(selectedResources.isEmpty())
+            if (selectedResources.isEmpty())
                 selectedResources.add(0);
             builder.appendCriteria("rriAlias.id not in(:selectedResourceIds)")
                 .putParameter("selectedResourceIds", selectedResources);
@@ -293,16 +205,17 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
         ArrayList<Label> categories = new ArrayList<>();
         categories.add(null);
         categories.addAll(_rclp.getEnabledLabels(Optional.empty()));
-        AbstractPropertyConstraint categoryConstraint = new ComboBoxConstraint(categories, null, CommonButtonText.ANY){
+        AbstractPropertyConstraint categoryConstraint = new ComboBoxConstraint(categories, null, CommonButtonText.ANY)
+        {
             @Override
             public void addCriteria(QLBuilder builder, Component constraintComponent)
             {
-                ComboBox component = (ComboBox)constraintComponent;
-                Label category = (Label)component.getSelectedObject();
-                if(category != null && shouldReturnConstraintForValue(category))
+                ComboBox component = (ComboBox) constraintComponent;
+                Label category = (Label) component.getSelectedObject();
+                if (category != null && shouldReturnConstraintForValue(category))
                 {
                     String categoriesPropPath = builder.getAlias() + '.' + ResourceRepositoryItem.RESOURCE_PROP + '.'
-                        + Resource.TAGS_PROP;
+                                                + Resource.TAGS_PROP;
                     builder.appendCriteria(":category in elements(" + categoriesPropPath + ')')
                         .putParameter("category", category);
                 }
@@ -339,13 +252,13 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
                 ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.NAME_COLUMN_PROP).withColumnName(LABEL_NAME()))
             .withOrderBy(new QLOrderByImpl(
                 "getTextValue(rriAlias." + ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.NAME_COLUMN_PROP + ", '"
-                    + getLocaleContext().getLanguage() + "', '', '')")));
+                + getLocaleContext().getLanguage() + "', '', '')")));
 
         searchModel.getResultColumns().add(new SearchResultColumnImpl()
             .withName("categories")
             .withTableColumn(new FixedValueColumn().withColumnName(COLUMN_CATEGORIES()))
             .withTableCellRenderer(new CustomCellRenderer(EMPTY, input -> {
-                ResourceRepositoryItem rri = (ResourceRepositoryItem)input;
+                ResourceRepositoryItem rri = (ResourceRepositoryItem) input;
                 return ConcatTextSource.create(
                     rri.getResource().getTags().stream().map(TextSources::createTextForAny).collect(Collectors.toList()))
                     .withSeparator(", ");
@@ -361,8 +274,8 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
         searchModel.getResultColumns().add(new SearchResultColumnImpl()
             .withName("owner")
             .withTableColumn(new FixedValueColumn().withColumnName(LABEL_OWNER()))
-            .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
-                ResourceRepositoryItem rri = (ResourceRepositoryItem)input;
+            .withTableCellRenderer(new CustomCellRenderer(EMPTY, input -> {
+                ResourceRepositoryItem rri = (ResourceRepositoryItem) input;
                 return _repositoryDAO.getOwnerOfRepositoryItem(rri).getName();
             })));
 
@@ -372,8 +285,102 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
                 ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.CATEGORY_PROP).withColumnName(LABEL_TYPE()))
             .withOrderBy(new QLOrderByImpl(
                 "getTextValue(rriAlias." + ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.CATEGORY_PROP + ".name, '"
-                    + getLocaleContext().getLanguage() + "', '', '')")));
+                + getLocaleContext().getLanguage() + "', '', '')")));
 
         searchModel.setDefaultSortColumn(nameColumn);
+    }
+
+    private Repository getRepository()
+    {
+        return _er.reattachIfNecessary(_repository);
+    }
+
+    /**
+     * Get the list of currently selected Resources
+     *
+     * @return selected Resources
+     */
+    public List<Resource> getSelection()
+    {
+        return _selection;
+    }
+
+    /**
+     * Set the list of currently selected Resources
+     *
+     * @param selection resources
+     */
+    public void setSelection(List<Resource> selection)
+    {
+        _selection.clear();
+        _selection.addAll(selection);
+    }
+
+    /**
+     * Set the Entity Actins on the Search UI. This only works if it is called before init.
+     *
+     * @param actions the Actions to set
+     */
+    public void setEntityActions(Action... actions)
+    {
+        _entityActions.clear();
+        Collections.addAll(_entityActions, actions);
+    }
+
+    @Override
+    public boolean supportsOperation(SearchUIOperation operation)
+    {
+        switch (operation)
+        {
+            case select:
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public void handle(SearchUIOperationContext context)
+    {
+        switch (context.getOperation())
+        {
+            case select:
+                getOnSelect().apply(context);
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Get the OnSelect listener.  By default, this just adds to the list returned by {@link #getSelection()}
+     *
+     * @return the OnSelect listener
+     */
+    @SuppressWarnings("ConstantConditions")
+    public Function<SearchUIOperationContext, Void> getOnSelect()
+    {
+        if (_onSelect == null)
+        {
+            return context -> {
+                ResourceRepositoryItem rri = context.getData();
+                if (rri != null)
+                {
+                    _selection.add(rri.getResource());
+                    context.getSearchUI().doAction(search);
+                }
+                return null;
+            };
+        }
+        return _onSelect;
+    }
+
+    /**
+     * Set the OnSelect listener.  By default, this just adds to the list returned by {@link #getSelection()}
+     *
+     * @param onSelect the OnSelect listener
+     */
+    public void setOnSelect(Function<SearchUIOperationContext, Void> onSelect)
+    {
+        _onSelect = onSelect;
     }
 }

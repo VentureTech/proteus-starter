@@ -38,8 +38,9 @@ import static com.example.app.ui.resource.URIResourceEditorLOK.LINK_LABEL;
 class URIResourceEditor extends ResourceValueEditor<URIResource>
 {
     /**
-     *   Instantiate a new instance
-     *   @param value the resource for this editor
+     * Instantiate a new instance
+     *
+     * @param value the resource for this editor
      */
     public URIResourceEditor(@Nullable URIResource value)
     {

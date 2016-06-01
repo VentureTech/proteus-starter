@@ -12,7 +12,6 @@
 package com.example.app.ui;
 
 
-
 import com.example.app.model.profile.Profile;
 import com.example.app.model.repository.Repository;
 import com.example.app.model.repository.RepositoryItem;
@@ -29,41 +28,28 @@ import net.proteusframework.ui.management.URLProperty;
  */
 public final class URLProperties
 {
-    private URLProperties()
-    {
-    }
-
-
     /** URL Property to signify a {@link User} */
     public static final String USER = "user";
-
     /** URL Property to signify a {@link RepositoryItem} */
     public static final String REPOSITORY_ITEM = "repo-item";
     /** URL Property to signify a {@link ResourceType} */
     public static final String RESOURCE_TYPE = "resource-type";
-    /** URL Property to signify a {@link Profile} owning a {@link Repository}*/
+    /** URL Property to signify a {@link Profile} owning a {@link Repository} */
     public static final String REPOSITORY_OWNER = "repository-owner";
-    /** URL Property to signify a {@link Repository} */ 
+    /** URL Property to signify a {@link Repository} */
     public static final String REPOSITORY = "repository";
-
     /** URL Property to signify a boolean flag - true or false */
     public static final String COPY = "copy";
     /** URL Property to specify a context for saving an entity */
     public static final String SAVE_CONTEXT = "save-context";
-
     /** URL Property to signify a {@link Profile} */
     public static final String PROFILE = "profile";
-
     /** URL Property to signify a Resource */
     public static final String RESOURCE = "resource";
-
     /** URL Property to signify a list of ResourceRepositoryItems */
     public static final String RESOURCES = "resources";
-
     /** URL Property to signify a selector action that should be fired upon page load */
     public static final String SELECTOR_ACTION = "selector-action";
-
-
     /** Path Info for URL Property user */
     public static final String USER_PATH_INFO = '/' + USER + "-{" + USER + '}';
     /** Path Info for URL Property repo-item */
@@ -86,5 +72,8 @@ public final class URLProperties
     public static final String RESOURCE_PATH_INFO = '/' + RESOURCE + "-{" + RESOURCE + '}';
     /** Path Info for URL Property selector-action */
     public static final String SELECTOR_ACTION_PATH_INFO = '/' + SELECTOR_ACTION + "-{" + SELECTOR_ACTION + '}';
+    private URLProperties()
+    {
+    }
 
 }

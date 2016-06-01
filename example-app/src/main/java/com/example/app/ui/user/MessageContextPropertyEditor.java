@@ -25,7 +25,6 @@ import javax.annotation.Nonnull;
 import javax.mail.MessagingException;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.core.html.HTMLElement;
@@ -35,10 +34,8 @@ import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
 import net.proteusframework.core.mail.MailMessage;
 import net.proteusframework.core.mail.MemoryMailPart;
-import net.proteusframework.core.notification.NotificationType;
 import net.proteusframework.ui.miwt.Action;
 import net.proteusframework.ui.miwt.ReflectiveAction;
-import net.proteusframework.ui.miwt.component.composite.Message;
 import net.proteusframework.ui.miwt.component.composite.editor.PropertyEditor;
 import net.proteusframework.ui.miwt.event.ActionListener;
 import net.proteusframework.ui.miwt.util.CommonActions;
@@ -48,6 +45,7 @@ import net.proteusframework.users.model.PhoneNumber;
 
 import static com.example.app.ui.user.MessageContextPropertyEditorLOK.BUTTON_TEXT_SEND;
 import static com.example.app.ui.user.MessageContextPropertyEditorLOK.ERROR_PONESMS;
+import static net.proteusframework.core.notification.NotificationImpl.error;
 
 /**
  * {@link PropertyEditor} for providing a UI to contact a user or list of users with a specified contact method.
@@ -68,7 +66,8 @@ public class MessageContextPropertyEditor extends PropertyEditor<MessageContext>
 {
     /** Logger. */
     private static final Logger _logger = LogManager.getLogger(MessageContextPropertyEditor.class);
-
+    private final List<User> _users;
+    private final ActionListener _closer;
     @Autowired
     private NotificationService _notificationService;
     @Autowired
@@ -76,14 +75,12 @@ public class MessageContextPropertyEditor extends PropertyEditor<MessageContext>
     @Value("${programmatic_email_sender:noreply@venturetech.net}")
     private String _emailSender;
 
-    private final List<User> _users;
-    private final ActionListener _closer;
-
     /**
-     *   Instantiate a new instance of ContactUserPropertyEditor
-     *   @param contactMethod the contact method to use for contacting users
-     *   @param usersToContact the users to contact
-     *   @param closer the action listener to use for closing this component
+     * Instantiate a new instance of ContactUserPropertyEditor
+     *
+     * @param contactMethod the contact method to use for contacting users
+     * @param usersToContact the users to contact
+     * @param closer the action listener to use for closing this component
      */
     public MessageContextPropertyEditor(
         @Nonnull ContactMethod contactMethod, @Nonnull List<User> usersToContact, @Nonnull ActionListener closer)
@@ -95,11 +92,6 @@ public class MessageContextPropertyEditor extends PropertyEditor<MessageContext>
         _users = usersToContact;
         _closer = closer;
         setHTMLElement(HTMLElement.section);
-    }
-
-    private User getUser(User user)
-    {
-        return _er.reattachIfNecessary(user);
     }
 
     @Override
@@ -124,12 +116,11 @@ public class MessageContextPropertyEditor extends PropertyEditor<MessageContext>
                                     {
                                         sendSms(input, user);
                                     }
-                                    catch (ExecutionException | InterruptedException | RuntimeException e)
+                                    catch (RuntimeException e)
                                     {
                                         _logger.error(e.getMessage(), e);
-                                        getNotifiable().sendNotification(
-                                            new Message(NotificationType.ERROR,
-                                                TextSources.createText(ERROR_PONESMS(), user.getPrincipal().getUsername())));
+                                        getNotifiable().sendNotification(error(
+                                            TextSources.createText(ERROR_PONESMS(), user.getPrincipal().getUsername())));
                                         return false;
                                     }
                                     break;
@@ -156,13 +147,13 @@ public class MessageContextPropertyEditor extends PropertyEditor<MessageContext>
         setPersistenceActions(sendAction, cancelAction);
     }
 
-    private void sendSms(MessageContext contactInfo, User user) throws InterruptedException, ExecutionException, RuntimeException
+    private void sendSms(MessageContext contactInfo, User user) throws RuntimeException
     {
         user = getUser(user);
         Optional<PhoneNumber> numberToSendTo = Optional.ofNullable(user.getSmsPhone());
-        if(!numberToSendTo.isPresent())
+        if (!numberToSendTo.isPresent())
             numberToSendTo = ContactUtil.getPhoneNumber(user.getPrincipal().getContact(), ContactDataCategory.values());
-        if(numberToSendTo.isPresent())
+        if (numberToSendTo.isPresent())
         {
             _notificationService.sendSMS(user, numberToSendTo.get(), contactInfo.getContent());
         }
@@ -177,7 +168,7 @@ public class MessageContextPropertyEditor extends PropertyEditor<MessageContext>
         user = getUser(user);
         Optional<EmailAddress> addressToSendTo = ContactUtil.getEmailAddress(user.getPrincipal().getContact(),
             ContactDataCategory.values());
-        if(addressToSendTo.isPresent())
+        if (addressToSendTo.isPresent())
         {
             try (MailMessage message = new MailMessage())
             {
@@ -196,5 +187,10 @@ public class MessageContextPropertyEditor extends PropertyEditor<MessageContext>
         {
             _logger.warn("User: " + user.getId() + " does not have an email address to send to!  Skipping...");
         }
+    }
+
+    private User getUser(User user)
+    {
+        return _er.reattachIfNecessary(user);
     }
 }

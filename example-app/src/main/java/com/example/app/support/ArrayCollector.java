@@ -24,7 +24,9 @@ import java.util.stream.Collector;
 
 /**
  * {@link Collector} implementation for collecting a stream to an array
+ *
  * @param <I> the stream type
+ *
  * @author Alan Holt (aholt@venturetech.net)
  * @since 4/11/16 10:21 AM
  */
@@ -33,8 +35,9 @@ public class ArrayCollector<I> implements Collector<I, List<I>, I[]>
     private final Class<I> _clazz;
 
     /**
-     *   Instantiates a new instance of ArrayCollector
-     *   @param clazz the Array Type
+     * Instantiates a new instance of ArrayCollector
+     *
+     * @param clazz the Array Type
      */
     public ArrayCollector(Class<I> clazz)
     {
@@ -56,7 +59,10 @@ public class ArrayCollector<I> implements Collector<I, List<I>, I[]>
     @Override
     public BinaryOperator<List<I>> combiner()
     {
-        return (left, right) -> { left.addAll(right); return left; };
+        return (left, right) -> {
+            left.addAll(right);
+            return left;
+        };
     }
 
     @SuppressWarnings("unchecked")
@@ -65,7 +71,7 @@ public class ArrayCollector<I> implements Collector<I, List<I>, I[]>
     {
         return list -> {
             I[] arr = (I[]) Array.newInstance(_clazz, list.size());
-            for(int i = 0; i < list.size(); i++)
+            for (int i = 0; i < list.size(); i++)
             {
                 arr[i] = list.get(i);
             }

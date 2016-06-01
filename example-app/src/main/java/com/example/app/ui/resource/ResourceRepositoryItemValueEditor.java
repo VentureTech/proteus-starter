@@ -68,7 +68,7 @@ public class ResourceRepositoryItemValueEditor extends CompositeValueEditor<Reso
     private ValueEditor<? extends Resource> _resourceValueEditor;
 
     /**
-     *   Instantiate a new instance of ResourceRepositoryItemValueEditor
+     * Instantiate a new instance of ResourceRepositoryItemValueEditor
      */
     public ResourceRepositoryItemValueEditor()
     {
@@ -76,55 +76,30 @@ public class ResourceRepositoryItemValueEditor extends CompositeValueEditor<Reso
     }
 
     /**
-     *   Get the ResourceType for this ResourceRepositoryItemValueEditor
-     *   @return the ResourceType.  This MUST be set before retrieving it.
+     * Get the picture editor for the Resource value editor
+     *
+     * @return the picture editor
      */
-    @Nonnull
-    public ResourceType getResourceType()
+    @Nullable
+    public VTCropPictureEditor getPictureEditor()
     {
-        return Optional.ofNullable(_resourceType).orElseThrow(() -> new IllegalStateException("ResourceType has not been set!"));
-    }
-    /**
-     *   Set the ResourceType for this ResourceRepositoryItemValueEditor
-     *   @param resourceType the ResourceType.  This MUST be set before retrieving it.
-     */
-    public void setResourceType(@Nonnull ResourceType resourceType)
-    {
-        _resourceType = resourceType;
+        if (getResourceValueEditor() instanceof ResourceValueEditor)
 
-        setNewInstanceSupplier(() -> {
-            ResourceRepositoryItem newInstance = new ResourceRepositoryItem();
-            newInstance.setResource(resourceType.createInstance(resourceType));
-            return newInstance;
-        });
-    }
-
-    /**
-     *   Get the Owner Repository for this ResourceRepositoryItemValueEditor
-     *   @return the Owner Repository
-     */
-    @Nonnull
-    public Repository getOwner()
-    {
-        return Optional.ofNullable(_owner).orElseThrow(() -> new IllegalStateException("Owner has not been set!"));
-    }
-    /**
-     *   Set the Owner Repository for this ResourceRepositoryItemValueEditor
-     *   @param owner the Owner Repository
-     */
-    public void setOwner(@Nonnull Repository owner)
-    {
-        _owner = owner;
+        {
+            ResourceValueEditor<?> resourceValueEditor = (ResourceValueEditor) getResourceValueEditor();
+            return resourceValueEditor.getPictureEditor();
+        }
+        return null;
     }
 
     private ValueEditor<? extends Resource> getResourceValueEditor()
     {
-        if(_resourceValueEditor == null)
+        if (_resourceValueEditor == null)
         {
             ValueEditor<? extends Resource> editor = getResourceType().createEditor(null);
-            if(editor instanceof FileEntityResourceEditor)
+            if (editor instanceof FileEntityResourceEditor)
             {
-                FileEntityResourceEditor castEditor = (FileEntityResourceEditor)editor;
+                FileEntityResourceEditor castEditor = (FileEntityResourceEditor) editor;
                 final DirectoryEntity root = FileSystemDirectory.Documents.getDirectory2(
                     Optional.ofNullable(_frontendDAO.getSite(_resourceSiteId)).orElseThrow(() -> new
                         IllegalArgumentException("Resource site id given in properties file was not a valid site ID.")));
@@ -135,15 +110,16 @@ public class ResourceRepositoryItemValueEditor extends CompositeValueEditor<Reso
                 FileChooser<FileEntity> fileChooser = new FileChooser<>(repoRoot);
                 fileChooser.setFilePathRenderer(new FileChooser.FilePathRenderer()
                 {
-                    String ownerIdString = ownerId.toString();
+                    final String ownerIdString = ownerId.toString();
+
                     @Override
                     public String getPath(FileSystemEntity fileSystemEntity, FileSystemEntity relativeTo)
                     {
                         FileSystemEntity ownerFSE = fileSystemEntity;
-                        while(!ownerFSE.getName().equals(ownerIdString) && !_fileSystemDAO.isRoot(ownerFSE))
+                        while (!ownerFSE.getName().equals(ownerIdString) && !_fileSystemDAO.isRoot(ownerFSE))
                             ownerFSE = ownerFSE.getParent();
                         String path = fileSystemEntity.getPath(ownerFSE);
-                        if(!_fileSystemDAO.isRoot(ownerFSE))
+                        if (!_fileSystemDAO.isRoot(ownerFSE))
                         {
                             Repository owner = EntityRetriever.getInstance().reattachIfNecessary(getOwner());
                             path = owner.getName().getText(getLocaleContext()) + "/" + path;
@@ -155,7 +131,7 @@ public class ResourceRepositoryItemValueEditor extends CompositeValueEditor<Reso
                     public String getPathComponent(FileSystemEntity fileSystemEntity)
                     {
                         final String name = fileSystemEntity.getName();
-                        if(name.equals(ownerIdString))
+                        if (name.equals(ownerIdString))
                         {
                             Repository owner = EntityRetriever.getInstance().reattachIfNecessary(getOwner());
                             return owner.getName().getText(getLocaleContext()).toString();
@@ -174,6 +150,78 @@ public class ResourceRepositoryItemValueEditor extends CompositeValueEditor<Reso
         return _resourceValueEditor;
     }
 
+    /**
+     * Get the Owner Repository for this ResourceRepositoryItemValueEditor
+     *
+     * @return the Owner Repository
+     */
+    @Nonnull
+    public Repository getOwner()
+    {
+        return Optional.ofNullable(_owner).orElseThrow(() -> new IllegalStateException("Owner has not been set!"));
+    }
+
+    /**
+     * Set the Owner Repository for this ResourceRepositoryItemValueEditor
+     *
+     * @param owner the Owner Repository
+     */
+    public void setOwner(@Nonnull Repository owner)
+    {
+        _owner = owner;
+    }
+
+    @Nullable
+    @Override
+    public ResourceRepositoryItem getUIValue(Level logErrorLevel)
+    {
+        ResourceRepositoryItem result = super.getUIValue(logErrorLevel);
+        if (result != null)
+        {
+            result.getResource().setResourceType(getResourceType());
+        }
+        return result;
+    }
+
+    @Nullable
+    @Override
+    public ResourceRepositoryItem commitValue() throws MIWTException
+    {
+        ResourceRepositoryItem result = super.commitValue();
+        if (result != null)
+        {
+            result.getResource().setResourceType(getResourceType());
+        }
+        return result;
+    }
+
+    /**
+     * Get the ResourceType for this ResourceRepositoryItemValueEditor
+     *
+     * @return the ResourceType.  This MUST be set before retrieving it.
+     */
+    @Nonnull
+    public ResourceType getResourceType()
+    {
+        return Optional.ofNullable(_resourceType).orElseThrow(() -> new IllegalStateException("ResourceType has not been set!"));
+    }
+
+    /**
+     * Set the ResourceType for this ResourceRepositoryItemValueEditor
+     *
+     * @param resourceType the ResourceType.  This MUST be set before retrieving it.
+     */
+    public void setResourceType(@Nonnull ResourceType resourceType)
+    {
+        _resourceType = resourceType;
+
+        setNewInstanceSupplier(() -> {
+            ResourceRepositoryItem newInstance = new ResourceRepositoryItem();
+            newInstance.setResource(resourceType.createInstance(resourceType));
+            return newInstance;
+        });
+    }
+
     @Override
     public void init()
     {
@@ -186,45 +234,5 @@ public class ResourceRepositoryItemValueEditor extends CompositeValueEditor<Reso
 
         CommonEditorFields.addRepositoryItemSourceEditor(this);
         CommonEditorFields.addRepositoryItemStatusEditor(this);
-    }
-
-    @Nullable
-    @Override
-    public ResourceRepositoryItem commitValue() throws MIWTException
-    {
-        ResourceRepositoryItem result = super.commitValue();
-        if(result != null)
-        {
-            result.getResource().setResourceType(getResourceType());
-        }
-        return result;
-    }
-
-    @Nullable
-    @Override
-    public ResourceRepositoryItem getUIValue(Level logErrorLevel)
-    {
-        ResourceRepositoryItem result = super.getUIValue(logErrorLevel);
-        if(result != null)
-        {
-            result.getResource().setResourceType(getResourceType());
-        }
-        return result;
-    }
-
-    /**
-     *   Get the picture editor for the Resource value editor
-     *   @return the picture editor
-     */
-    @Nullable
-    public VTCropPictureEditor getPictureEditor()
-    {
-        if(getResourceValueEditor() instanceof ResourceValueEditor)
-
-        {
-            ResourceValueEditor<?> resourceValueEditor = (ResourceValueEditor) getResourceValueEditor();
-            return resourceValueEditor.getPictureEditor();
-        }
-        return null;
     }
 }

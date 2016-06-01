@@ -28,46 +28,17 @@ import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
  */
 public class NoteValueEditor extends CompositeValueEditor<Note>
 {
-    private boolean _treatEmptyAsValid = false;
+    private boolean _treatEmptyAsValid;
     private TextSource _label;
 
     /**
-     *   Instantiates a new instance of NoteValueEditor
+     * Instantiates a new instance of NoteValueEditor
      */
     public NoteValueEditor()
     {
         super(Note.class);
 
         addClassName("note-val-editor");
-    }
-
-    /**
-     *   Set boolean flag -- if true, will allow for an empty string to be saved
-     *   @param treatEmptyAsValid boolean flag
-     */
-    public void setTreatEmptyAsValid(boolean treatEmptyAsValid)
-    {
-        _treatEmptyAsValid = treatEmptyAsValid;
-    }
-
-    /**
-     *   Set the label on this editor
-     *   @param label the Label
-     */
-    public void setLabel(TextSource label)
-    {
-        _label = label;
-    }
-
-    /**
-     *   Set the label on this editor
-     *   @param label the Label
-     *   @return this
-     */
-    public NoteValueEditor withLabel(TextSource label)
-    {
-        setLabel(label);
-        return this;
     }
 
     @Override
@@ -81,7 +52,7 @@ public class NoteValueEditor extends CompositeValueEditor<Note>
             valueComponent.setMaxChars(4000);
             valueComponent.setDisplayWidth(75);
             valueComponent.setDisplayHeight(10);
-            if(!_treatEmptyAsValid)
+            if (!_treatEmptyAsValid)
             {
                 editor.setRequiredValueValidator();
             }
@@ -90,5 +61,38 @@ public class NoteValueEditor extends CompositeValueEditor<Note>
         }, Note.CONTENT_COLUMN_PROP);
 
 
+    }
+
+    /**
+     * Set boolean flag -- if true, will allow for an empty string to be saved
+     *
+     * @param treatEmptyAsValid boolean flag
+     */
+    public void setTreatEmptyAsValid(boolean treatEmptyAsValid)
+    {
+        _treatEmptyAsValid = treatEmptyAsValid;
+    }
+
+    /**
+     * Set the label on this editor
+     *
+     * @param label the Label
+     *
+     * @return this
+     */
+    public NoteValueEditor withLabel(TextSource label)
+    {
+        setLabel(label);
+        return this;
+    }
+
+    /**
+     * Set the label on this editor
+     *
+     * @param label the Label
+     */
+    public void setLabel(TextSource label)
+    {
+        _label = label;
     }
 }

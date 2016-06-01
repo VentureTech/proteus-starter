@@ -25,6 +25,7 @@ import net.proteusframework.core.hibernate.model.Entity;
  * Entity {@link MappedSuperclass} {@link Entity} Implementation
  *
  * @param <T> the type of the ID
+ *
  * @author Alan Holt (aholt@venturetech.net)
  */
 @MappedSuperclass
@@ -36,20 +37,12 @@ public abstract class AbstractEntity<T extends Serializable> implements Entity<T
     private T _id;
 
     @Override
-    @Transient
-    @NotNull
-    public T getId()
+    public int hashCode()
     {
-        return _id;
-    }
-
-    /**
-     *   Set the Id.
-     *   @param id the Id
-     */
-    public void setId(T id)
-    {
-        _id = id;
+        if (getId() == null)
+            return System.identityHashCode(this);
+        else
+            return getId().hashCode();
     }
 
     @Override
@@ -81,12 +74,21 @@ public abstract class AbstractEntity<T extends Serializable> implements Entity<T
     }
 
     @Override
-    public int hashCode()
+    @Transient
+    @NotNull
+    public T getId()
     {
-        if (getId() == null)
-            return System.identityHashCode(this);
-        else
-            return getId().hashCode();
+        return _id;
+    }
+
+    /**
+     * Set the Id.
+     *
+     * @param id the Id
+     */
+    public void setId(T id)
+    {
+        _id = id;
     }
 
     @Override

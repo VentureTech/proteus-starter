@@ -62,6 +62,17 @@ public class ICal4jSchedule extends Schedule
     @Nonnull
     private TemporalDirection _temporalDirection = TemporalDirection.FUTURE;
 
+    @Override
+    public Schedule copy()
+    {
+        ICal4jSchedule copy = new ICal4jSchedule();
+        copy.setRecurrenceRule(getRecurrenceRule());
+        copy.setRepeat(isRepeat());
+        copy.setTemporalDirection(getTemporalDirection());
+        copy.setEventProgrammaticIdentifier(getEventProgrammaticIdentifier());
+        return copy;
+    }
+
     /**
      * Get the event programmatic identifier.
      *
@@ -80,6 +91,91 @@ public class ICal4jSchedule extends Schedule
     public void setEventProgrammaticIdentifier(String eventProgrammaticIdentifier)
     {
         _eventProgrammaticIdentifier = eventProgrammaticIdentifier;
+    }
+
+    @Transient
+    @Override
+    public ScheduleType getType()
+    {
+        return ScheduleType.internal;
+    }
+
+    @Override
+    public boolean isRepeat()
+    {
+        return _repeat;
+    }
+
+    /**
+     * Set the repeat flag.
+     *
+     * @param repeat the repeat flag.
+     *
+     * @see #isRepeat()
+     */
+    public void setRepeat(boolean repeat)
+    {
+        _repeat = repeat;
+    }
+
+    @Override
+    public List<Instant> schedule(ScheduleContext scheduleContext)
+    {
+        if (isEmptyString(getRecurrenceRule()))
+            return Collections.emptyList();
+
+
+        LocalDateTime startTime = LocalDateTime.ofInstant(scheduleContext.getStartTime(), UTC)
+            .truncatedTo(ChronoUnit.DAYS);
+        final TemporalAmount duration = scheduleContext.getDuration();
+        LocalDateTime endTimeInclusive = LocalDateTime.from(getTemporalDirection() == TemporalDirection.FUTURE
+            ? startTime.plus(duration)
+            : startTime.minus(duration));
+        if (getTemporalDirection() == TemporalDirection.PAST)
+        {
+            LocalDateTime swap = startTime;
+            startTime = endTimeInclusive;
+            endTimeInclusive = swap;
+        }
+
+        Recur recur;
+        try
+        {
+            recur = new Recur(getRecurrenceRule());
+        }
+        catch (ParseException e)
+        {
+            _logger.error("Bad rule: " + getRecurrenceRule(), e);
+            return Collections.emptyList();
+        }
+
+        List<Instant> instantList = new ArrayList<>();
+
+        final Date until = new Date(endTimeInclusive.toInstant(UTC).toEpochMilli());
+        if (isRepeat())
+            recur.setUntil(until);
+        else
+            recur.setCount(1);
+        final Date start = new Date(startTime.toInstant(UTC).toEpochMilli());
+        final DateList dateList = recur.getDates(start, new Period(new DateTime(start), new DateTime(until)), Value.DATE_TIME);
+        DateFormat parser = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+        parser.setTimeZone(AppUtil.UTC);
+        for (Object dateObject : dateList)
+        {
+            try
+            {
+                final java.util.Date date = parser.parse(dateObject.toString());
+                instantList.add(date.toInstant());
+                if (!isRepeat())
+                    break;
+            }
+            catch (ParseException e)
+            {
+                _logger.error("Unable to parse date: " + dateObject, e);
+            }
+        }
+
+        return instantList;
     }
 
     /**
@@ -125,98 +221,12 @@ public class ICal4jSchedule extends Schedule
     }
 
     @Override
-    public boolean isRepeat()
+    public int hashCode()
     {
-        return _repeat;
-    }
+        if (getId() != null)
+            return super.hashCode();
 
-    /**
-     * Set the repeat flag.
-     *
-     * @param repeat the repeat flag.
-     * @see #isRepeat()
-     */
-    public void setRepeat(boolean repeat)
-    {
-        _repeat = repeat;
-    }
-
-    @Transient
-    @Override
-    public ScheduleType getType()
-    {
-        return ScheduleType.internal;
-    }
-
-    @Override
-    public List<Instant> schedule(ScheduleContext scheduleContext)
-    {
-        if (isEmptyString(getRecurrenceRule()))
-            return Collections.emptyList();
-
-
-        LocalDateTime startTime = LocalDateTime.ofInstant(scheduleContext.getStartTime(), UTC)
-            .truncatedTo(ChronoUnit.DAYS);
-        final TemporalAmount duration = scheduleContext.getDuration();
-        LocalDateTime endTimeInclusive = LocalDateTime.from(getTemporalDirection() == TemporalDirection.FUTURE
-            ? startTime.plus(duration)
-            : startTime.minus(duration));
-        if (getTemporalDirection() == TemporalDirection.PAST)
-        {
-            LocalDateTime swap = startTime;
-            startTime = endTimeInclusive;
-            endTimeInclusive = swap;
-        }
-
-        Recur recur;
-        try
-        {
-            recur = new Recur(getRecurrenceRule());
-        }
-        catch (ParseException e)
-        {
-            _logger.error("Bad rule: " + getRecurrenceRule(), e);
-            return Collections.emptyList();
-        }
-
-        List<Instant> instantList = new ArrayList<>();
-
-        final Date until = new Date(endTimeInclusive.toInstant(UTC).toEpochMilli());
-        if(isRepeat())
-            recur.setUntil(until);
-        else
-            recur.setCount(1);
-        final Date start = new Date(startTime.toInstant(UTC).toEpochMilli());
-        final DateList dateList = recur.getDates(start, new Period(new DateTime(start), new DateTime(until)), Value.DATE_TIME);
-        DateFormat parser = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
-        parser.setTimeZone(AppUtil.UTC);
-        for (Object dateObject : dateList)
-        {
-            try
-            {
-                final java.util.Date date = parser.parse(dateObject.toString());
-                instantList.add(date.toInstant());
-                if(!isRepeat())
-                    break;
-            }
-            catch (ParseException e)
-            {
-                _logger.error("Unable to parse date: " + dateObject, e);
-            }
-        }
-
-        return instantList;
-    }
-
-    @Override
-    public Schedule copy()
-    {
-        ICal4jSchedule copy = new ICal4jSchedule();
-        copy.setRecurrenceRule(getRecurrenceRule());
-        copy.setRepeat(isRepeat());
-        copy.setTemporalDirection(getTemporalDirection());
-        copy.setEventProgrammaticIdentifier(getEventProgrammaticIdentifier());
-        return copy;
+        return Objects.hash(isRepeat(), getEventProgrammaticIdentifier(), getRecurrenceRule(), getTemporalDirection());
     }
 
     @Override
@@ -236,14 +246,5 @@ public class ICal4jSchedule extends Schedule
                && Objects.equals(getEventProgrammaticIdentifier(), that.getEventProgrammaticIdentifier())
                && Objects.equals(getRecurrenceRule(), that.getRecurrenceRule())
                && getTemporalDirection() == that.getTemporalDirection();
-    }
-
-    @Override
-    public int hashCode()
-    {
-        if(getId() != null)
-            return super.hashCode();
-
-        return Objects.hash(isRepeat(), getEventProgrammaticIdentifier(), getRecurrenceRule(), getTemporalDirection());
     }
 }

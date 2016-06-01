@@ -33,11 +33,11 @@ import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
 import net.proteusframework.core.notification.Notifiable;
+import net.proteusframework.core.notification.NotificationImpl;
 import net.proteusframework.core.validation.CommonValidationText;
 import net.proteusframework.ui.miwt.MIWTException;
 import net.proteusframework.ui.miwt.component.Component;
 import net.proteusframework.ui.miwt.component.Field;
-import net.proteusframework.ui.miwt.component.composite.Message;
 import net.proteusframework.ui.miwt.component.composite.editor.ComboBoxValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.CompositeValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
@@ -60,6 +60,7 @@ import static com.example.app.ui.contact.NameValueEditor.NameValueEditorConfig;
 import static com.example.app.ui.contact.PhoneNumberValueEditor.*;
 import static com.example.app.ui.user.PrincipalValueEditorLOK.*;
 import static net.proteusframework.core.locale.TextSources.createText;
+import static net.proteusframework.core.notification.NotificationImpl.error;
 import static net.proteusframework.users.model.ContactDataCategory.BUSINESS;
 import static net.proteusframework.users.model.ContactDataCategory.PERSONAL;
 import static net.proteusframework.users.model.PhoneNumberType.MOBILE;
@@ -82,15 +83,14 @@ import static net.proteusframework.users.model.PhoneNumberType.MOBILE;
 @Configurable
 public class PrincipalValueEditor extends CompositeValueEditor<Principal>
 {
-    @Autowired
-    private PrincipalDAO _principalDAO;
-
-    private boolean _adminMode = true;
     private final List<AuthenticationDomain> _authDomains = new ArrayList<>();
     private final TextEditor _smsEditor = new TextEditor(LABEL_SMS_PHONE_NUMBER(), null);
+    @Autowired
+    private PrincipalDAO _principalDAO;
+    private boolean _adminMode = true;
 
     /**
-     *   Instantiate a new instance of PrincipalValueEditor
+     * Instantiate a new instance of PrincipalValueEditor
      */
     public PrincipalValueEditor()
     {
@@ -98,50 +98,41 @@ public class PrincipalValueEditor extends CompositeValueEditor<Principal>
     }
 
     /**
-     *   Get boolean flag.  If true, this viewer is being displayed in admin mode
-     *   <br>
-     *   defaults to true.
-     *   @return boolean flag
-     */
-    public boolean isAdminMode()
-    {
-        return _adminMode;
-    }
-    /**
-     *   Set boolean flag.  If true, this viewer is being displayed in admin mode
-     *   @param adminMode boolean flag
-     */
-    public void setAdminMode(boolean adminMode)
-    {
-        _adminMode = adminMode;
-    }
-
-    /**
-     *   Get the list of AuthenticationDomains to check for username uniqueness, and to set them on the edited Principal
-     *   @return a list of AuthenticationDomains
-     */
-    @Nonnull
-    public List<AuthenticationDomain> getAuthDomains()
-    {
-        return _authDomains;
-    }
-    /**
-     *   Set the list of AuthenticationDomains to check for username uniqueness, and to set them on the edited Principal
-     *   @param authDomains a list of AuthenticationDomains
-     */
-    public void setAuthDomains(@Nonnull List<AuthenticationDomain> authDomains)
-    {
-        _authDomains.clear();
-        _authDomains.addAll(authDomains);
-    }
-
-    /**
-     *   Get the SMS Phone Number Editor
-     *   @return editor
+     * Get the SMS Phone Number Editor
+     *
+     * @return editor
      */
     public TextEditor getSmsEditor()
     {
         return _smsEditor;
+    }
+
+    @Nullable
+    @Override
+    public Principal getUIValue(Level logErrorLevel)
+    {
+        Principal result = super.getUIValue(logErrorLevel);
+        if (result != null)
+        {
+            result.setAuthenticationDomains(getAuthDomains());
+            if (result.getStatus() == null)
+                result.setStatus(PrincipalStatus.active);
+        }
+        return result;
+    }
+
+    @Nullable
+    @Override
+    public Principal commitValue() throws MIWTException
+    {
+        Principal result = super.commitValue();
+        if (result != null)
+        {
+            result.setAuthenticationDomains(getAuthDomains());
+            if (result.getStatus() == null)
+                result.setStatus(PrincipalStatus.active);
+        }
+        return result;
     }
 
     @Override
@@ -164,47 +155,48 @@ public class PrincipalValueEditor extends CompositeValueEditor<Principal>
                     new EmailValidator(LABEL_EMAIL(), true)
                         .withNotificationSourceSetter((validator, component, notification) -> notification.setSource(editor)),
                     new Validator()
-                {
-
-                    public NotificationSourceSetter<Validator> _notificationSourceSetter;
-
-                    /**
-                     * Set the notification source setter.
-                     * @see NotificationSourceSetter#defaultSourceSetter()
-                     * @param notificationSourceSetter the notification source setter
-                     */
-                    @SuppressFBWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS",
-                        justification = "Called via reflection")
-                    public void setNotificationSourceSetter(
-                        @Nullable NotificationSourceSetter<Validator> notificationSourceSetter)
                     {
-                        _notificationSourceSetter = notificationSourceSetter;
-                    }
 
-                    @Override
-                    public boolean validate(Component component, Notifiable notifiable)
-                    {
-                        Field field = (Field)component;
-                        if(editor.getModificationState() != ModificationState.UNCHANGED)
+                        public NotificationSourceSetter<Validator> _notificationSourceSetter;
+
+                        /**
+                         * Set the notification source setter.
+                         * @see NotificationSourceSetter#defaultSourceSetter()
+                         * @param notificationSourceSetter the notification source setter
+                         */
+                        @SuppressFBWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS",
+                            justification = "Called via reflection")
+                        public void setNotificationSourceSetter(
+                            @Nullable NotificationSourceSetter<Validator> notificationSourceSetter)
                         {
-                            AtomicReference<Principal> result = new AtomicReference<>(null);
-                            getAuthDomains().forEach(authDomain -> {
-                                if(result.get() == null)
-                                {
-                                    result.set(_principalDAO.getPrincipalByLogin(field.getText(), authDomain));
-                                }
-                            });
-                            if(result.get() != null && !Objects.equals(result.get(),getValue()))
-                            {
-                                Message error = Message.error(createText(ERROR_MESSAGE_USERNAME_EXISTS_FMT(), LABEL_EMAIL()));
-                                _notificationSourceSetter.setSource(this, field, error);
-                                notifiable.sendNotification(error);
-                                return false;
-                            }
+                            _notificationSourceSetter = notificationSourceSetter;
                         }
-                        return true;
-                    }
-                }).withNotificationSourceSetterOnChildren((validator, component, notification) -> notification.setSource(editor)));
+
+                        @Override
+                        public boolean validate(Component component, Notifiable notifiable)
+                        {
+                            Field field = (Field) component;
+                            if (editor.getModificationState() != ModificationState.UNCHANGED)
+                            {
+                                AtomicReference<Principal> result = new AtomicReference<>(null);
+                                getAuthDomains().forEach(authDomain -> {
+                                    if (result.get() == null)
+                                    {
+                                        result.set(_principalDAO.getPrincipalByLogin(field.getText(), authDomain));
+                                    }
+                                });
+                                if (result.get() != null && !Objects.equals(result.get(), getValue()))
+                                {
+                                    NotificationImpl error = error(createText(ERROR_MESSAGE_USERNAME_EXISTS_FMT(), LABEL_EMAIL()));
+                                    _notificationSourceSetter.setSource(this, field, error);
+                                    notifiable.sendNotification(error);
+                                    return false;
+                                }
+                            }
+                            return true;
+                        }
+                    }).withNotificationSourceSetterOnChildren(
+                    (validator, component, notification) -> notification.setSource(editor)));
                 return editor;
             });
             PhoneNumberValueEditorConfig phoneConfig = new PhoneNumberValueEditorConfig();
@@ -232,21 +224,20 @@ public class PrincipalValueEditor extends CompositeValueEditor<Principal>
         }, "contact");
 
         addEditorForProperty(() -> {
-            List<PrincipalStatus> statusList = new ArrayList<>();
-            statusList.add(null);
-            Collections.addAll(statusList, PrincipalStatus.values());
-            ComboBoxValueEditor<PrincipalStatus> editor = new ComboBoxValueEditor<>(
-                LABEL_STATUS(), statusList, PrincipalStatus.active);
-            editor.setRequiredValueValidator();
-            editor.setVisible(false);
-            return editor;
-        },
+                List<PrincipalStatus> statusList = new ArrayList<>();
+                statusList.add(null);
+                Collections.addAll(statusList, PrincipalStatus.values());
+                ComboBoxValueEditor<PrincipalStatus> editor = new ComboBoxValueEditor<>(
+                    LABEL_STATUS(), statusList, PrincipalStatus.active);
+                editor.setRequiredValueValidator();
+                editor.setVisible(false);
+                return editor;
+            },
             Principal::getStatus,
             (writeVal, propVal) -> {
-                PrincipalStatus newStatus = propVal;
-                if(newStatus != null)
+                if (propVal != null)
                 {
-                    switch (newStatus)
+                    switch (propVal)
                     {
                         case active:
                         case pending:
@@ -260,35 +251,51 @@ public class PrincipalValueEditor extends CompositeValueEditor<Principal>
                             break;
                     }
                 }
-                writeVal.setStatus(newStatus);
+                writeVal.setStatus(propVal);
             });
     }
 
-    @Nullable
-    @Override
-    public Principal getUIValue(Level logErrorLevel)
+    /**
+     * Get the list of AuthenticationDomains to check for username uniqueness, and to set them on the edited Principal
+     *
+     * @return a list of AuthenticationDomains
+     */
+    @Nonnull
+    public List<AuthenticationDomain> getAuthDomains()
     {
-        Principal result = super.getUIValue(logErrorLevel);
-        if(result != null)
-        {
-            result.setAuthenticationDomains(getAuthDomains());
-            if(result.getStatus() == null)
-                result.setStatus(PrincipalStatus.active);
-        }
-        return result;
+        return _authDomains;
     }
 
-    @Nullable
-    @Override
-    public Principal commitValue() throws MIWTException
+    /**
+     * Set the list of AuthenticationDomains to check for username uniqueness, and to set them on the edited Principal
+     *
+     * @param authDomains a list of AuthenticationDomains
+     */
+    public void setAuthDomains(@Nonnull List<AuthenticationDomain> authDomains)
     {
-        Principal result = super.commitValue();
-        if(result != null)
-        {
-            result.setAuthenticationDomains(getAuthDomains());
-            if(result.getStatus() == null)
-                result.setStatus(PrincipalStatus.active);
-        }
-        return result;
+        _authDomains.clear();
+        _authDomains.addAll(authDomains);
+    }
+
+    /**
+     * Get boolean flag.  If true, this viewer is being displayed in admin mode
+     * <br>
+     * defaults to true.
+     *
+     * @return boolean flag
+     */
+    public boolean isAdminMode()
+    {
+        return _adminMode;
+    }
+
+    /**
+     * Set boolean flag.  If true, this viewer is being displayed in admin mode
+     *
+     * @param adminMode boolean flag
+     */
+    public void setAdminMode(boolean adminMode)
+    {
+        _adminMode = adminMode;
     }
 }

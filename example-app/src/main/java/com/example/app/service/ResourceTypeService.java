@@ -45,8 +45,6 @@ public class ResourceTypeService
     /** The default resource name */
     public static final String SPRING_FACTORY_IDENTIFIER = "ldp.ResourceImplementationModelFactory";
 
-    private final IImplementationModelFactory<ResourceType, Resource> _modelFactory;
-
     /**
      * Context for model queries.
      */
@@ -56,8 +54,8 @@ public class ResourceTypeService
         private final Site _site;
 
         /**
-         *   Instantiates a new Context
-         *   using the operational site
+         * Instantiates a new Context
+         * using the operational site
          */
         public Context()
         {
@@ -65,28 +63,32 @@ public class ResourceTypeService
         }
 
         /**
-         *   Instantiates a new Context
-         *   @param site the site
+         * Instantiates a new Context
+         *
+         * @param site the site
          */
         public Context(@Nonnull final Site site)
         {
             _site = site;
-            this.attributes.put(Attributes.SITE, site);
+            attributes.put(Attributes.SITE, site);
         }
 
         /**
-         *   Gets the site for this Context
-         *   @return the site
+         * Gets the site for this Context
+         *
+         * @return the site
          */
         public Site getSite()
         {
             return _site;
         }
     }
+    private final IImplementationModelFactory<ResourceType, Resource> _modelFactory;
 
     /**
-     *   Create a new instance
-     *   @param implementationModels the implementation models autowired in for this service
+     * Create a new instance
+     *
+     * @param implementationModels the implementation models autowired in for this service
      */
     @Autowired
     public ResourceTypeService(Collection<ResourceType> implementationModels)
@@ -96,23 +98,12 @@ public class ResourceTypeService
     }
 
     /**
-     *   Get the {@link ResourceType} that corresponds to the given identifier
-     *   @param factoryId the factory identifier
-     *   @param identifier the identifier for the ResourceType to retrieve
-     *   @return the ResourceType that corresponds to the given identifier, may be null if no ResourceType with the given
-     *   identifier exists
-     */
-    @Nullable
-    public ResourceType getResourceType(String factoryId, String identifier)
-    {
-        return factoryId.equals(SPRING_FACTORY_IDENTIFIER) ? _modelFactory.getModel(identifier) : null;
-    }
-
-    /**
-     *   Create a new {@link Resource} that corresponds to the given {@link ResourceType} identifier
-     *   @param factoryId the factory identifier
-     *   @param identifier the identifier for the ResourceType to use for creating the new Resource
-     *   @return the new Resource.  May be null if no ResourceType with the given identifier exists.
+     * Create a new {@link Resource} that corresponds to the given {@link ResourceType} identifier
+     *
+     * @param factoryId the factory identifier
+     * @param identifier the identifier for the ResourceType to use for creating the new Resource
+     *
+     * @return the new Resource.  May be null if no ResourceType with the given identifier exists.
      */
     @Nullable
     public Resource createResource(String factoryId, String identifier)
@@ -122,22 +113,40 @@ public class ResourceTypeService
     }
 
     /**
-     *   Get available ResourceTypes
-     *   @return a list of available ResourceTypes
+     * Get the {@link ResourceType} that corresponds to the given identifier
+     *
+     * @param factoryId the factory identifier
+     * @param identifier the identifier for the ResourceType to retrieve
+     *
+     * @return the ResourceType that corresponds to the given identifier, may be null if no ResourceType with the given
+     * identifier exists
      */
-    public List<ResourceType> getResourceTypes()
+    @Nullable
+    public ResourceType getResourceType(String factoryId, String identifier)
     {
-        return new ArrayList<>(_modelFactory.getModels(new ModelFactoryContext()));
+        return factoryId.equals(SPRING_FACTORY_IDENTIFIER) ? _modelFactory.getModel(identifier) : null;
     }
 
     /**
-     *   Get the factory identifier for the specified ResourceType
-     *   @param context the context
-     *   @param resourceType the resource type
-     *   @return the identifier
+     * Get the factory identifier for the specified ResourceType
+     *
+     * @param context the context
+     * @param resourceType the resource type
+     *
+     * @return the identifier
      */
     public String getFactoryIdentifier(Context context, ResourceType resourceType)
     {
         return _modelFactory.getIdentifier();
+    }
+
+    /**
+     * Get available ResourceTypes
+     *
+     * @return a list of available ResourceTypes
+     */
+    public List<ResourceType> getResourceTypes()
+    {
+        return new ArrayList<>(_modelFactory.getModels(new ModelFactoryContext()));
     }
 }

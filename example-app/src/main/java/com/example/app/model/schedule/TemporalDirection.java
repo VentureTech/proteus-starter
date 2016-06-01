@@ -13,6 +13,7 @@ package com.example.app.model.schedule;
 
 /**
  * Defines the direction of scheduling in relation to the ScheduleContext.
+ *
  * @author Russ Tennant (russ@venturetech.net)
  */
 public enum TemporalDirection

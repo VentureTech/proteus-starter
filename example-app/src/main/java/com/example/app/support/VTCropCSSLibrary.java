@@ -37,8 +37,7 @@ import net.proteusframework.internet.http.resource.html.NDE;
 public enum VTCropCSSLibrary implements ClassPathResourceLibrary
 {
     /** VTCrop */
-    VTCrop("vtcrop/VTCrop.css")
-    ;
+    VTCrop("vtcrop/VTCrop.css");
 
     @Component
     static class VTCropCSSLibraryInjector
@@ -49,7 +48,7 @@ public enum VTCropCSSLibrary implements ClassPathResourceLibrary
         @PostConstruct
         public void postConstruct()
         {
-            for(VTCropCSSLibrary css : EnumSet.allOf(VTCropCSSLibrary.class))
+            for (VTCropCSSLibrary css : EnumSet.allOf(VTCropCSSLibrary.class))
             {
                 css.setClassPathResourceLibraryHelper(_classPathResourceLibraryHelper);
             }
@@ -65,8 +64,9 @@ public enum VTCropCSSLibrary implements ClassPathResourceLibrary
     private ClassPathResourceLibraryHelper _classPathResourceLibraryHelper;
 
     /**
-     *   Create a new instance with no dependencies
-     *   @param classPath the resource classpath
+     * Create a new instance with no dependencies
+     *
+     * @param classPath the resource classpath
      */
     VTCropCSSLibrary(String classPath)
     {
@@ -75,9 +75,10 @@ public enum VTCropCSSLibrary implements ClassPathResourceLibrary
     }
 
     /**
-     *   Create a new instance
-     *   @param classPath the resource classpath
-     *   @param dependencies list of dependencies
+     * Create a new instance
+     *
+     * @param classPath the resource classpath
+     * @param dependencies list of dependencies
      */
     VTCropCSSLibrary(String classPath, ClassPathResourceLibrary... dependencies)
     {

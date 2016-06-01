@@ -54,7 +54,7 @@ import static net.proteusframework.core.locale.annotation.I18NFile.Visibility.PU
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.PROFILE_DATA)
 @Audited
 @SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + Profile.TABLE_NAME
-    + " SET " + Profile.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + Profile.ID_COLUMN + " = ?")
+                 + " SET " + Profile.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + Profile.ID_COLUMN + " = ?")
 @DiscriminatorValue("company")
 @I18NFile(
     symbolPrefix = "com.example.app.model.company.Company",
@@ -108,27 +108,8 @@ public class Company extends Profile
     }
 
     /**
-     * Get the status
-     * @return the status
-     */
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    public CompanyStatus getStatus()
-    {
-        return _status;
-    }
-
-    /**
-     * Set the status
-     * @param status the status
-     */
-    public void setStatus(CompanyStatus status)
-    {
-        _status = status;
-    }
-
-    /**
      * Get the address
+     *
      * @return the address
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -141,6 +122,7 @@ public class Company extends Profile
 
     /**
      * Set the address
+     *
      * @param address the address
      */
     public void setAddress(Address address)
@@ -149,28 +131,8 @@ public class Company extends Profile
     }
 
     /**
-     * Get the phone number
-     * @return the phone number
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.PERSIST, CascadeType.MERGE, CascadeType.SAVE_UPDATE})
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    public PhoneNumber getPhoneNumber()
-    {
-        return _phoneNumber;
-    }
-
-    /**
-     * Set the phone number
-     * @param phoneNumber the phone number
-     */
-    public void setPhoneNumber(PhoneNumber phoneNumber)
-    {
-        _phoneNumber = phoneNumber;
-    }
-
-    /**
      * Get primary contact email address
+     *
      * @return the primary email address
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -183,6 +145,7 @@ public class Company extends Profile
 
     /**
      * Set the email address
+     *
      * @param emailAddress the email address
      */
     public void setEmailAddress(EmailAddress emailAddress)
@@ -192,6 +155,7 @@ public class Company extends Profile
 
     /**
      * Get the company logo
+     *
      * @return the logo
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -205,11 +169,57 @@ public class Company extends Profile
 
     /**
      * Set the company logo
+     *
      * @param logo the logo
      */
     public void setLogo(@Nullable FileEntity logo)
     {
         _logo = logo;
+    }
+
+    /**
+     * Get the phone number
+     *
+     * @return the phone number
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.PERSIST, CascadeType.MERGE, CascadeType.SAVE_UPDATE})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    public PhoneNumber getPhoneNumber()
+    {
+        return _phoneNumber;
+    }
+
+    /**
+     * Set the phone number
+     *
+     * @param phoneNumber the phone number
+     */
+    public void setPhoneNumber(PhoneNumber phoneNumber)
+    {
+        _phoneNumber = phoneNumber;
+    }
+
+    /**
+     * Get the status
+     *
+     * @return the status
+     */
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    public CompanyStatus getStatus()
+    {
+        return _status;
+    }
+
+    /**
+     * Set the status
+     *
+     * @param status the status
+     */
+    public void setStatus(CompanyStatus status)
+    {
+        _status = status;
     }
 
 

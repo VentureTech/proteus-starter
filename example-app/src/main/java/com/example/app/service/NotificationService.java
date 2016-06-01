@@ -76,8 +76,8 @@ public class NotificationService implements ApplicationListener<ContextRefreshed
     private DeploymentContext _deploymentContext;
     @Autowired
     private EmailValidationService _emailValidationService;
-//    @Autowired
-//    private ProfileDAO _profileDAO;
+    //    @Autowired
+    //    private ProfileDAO _profileDAO;
     @Autowired
     private MailConfig _mailConfig;
     @Autowired
@@ -90,26 +90,17 @@ public class NotificationService implements ApplicationListener<ContextRefreshed
     private String _systemSender;
 
     /**
-     * Get the system sender.
-     *
-     * @return the system sender email address.
-     */
-    public String getSystemSender()
-    {
-        return _systemSender;
-    }
-
-    /**
      * Create shortened url.
      *
      * @param url the url.
      *
      * @return the shortened URL.
+     *
      * @throws IOException if the URL cannot be shortened.
      */
     public String createShortenedURL(String url) throws IOException
     {
-        Urlshortener shortener =  new Urlshortener.Builder(new ApacheHttpTransport(), new GsonFactory(), null)
+        Urlshortener shortener = new Urlshortener.Builder(new ApacheHttpTransport(), new GsonFactory(), null)
             .setGoogleClientRequestInitializer(new UrlshortenerRequestInitializer(_urlShortenerKey))
             .setApplicationName("Leadership Resources")
             .build();
@@ -119,10 +110,160 @@ public class NotificationService implements ApplicationListener<ContextRefreshed
         return insertOp.execute().getId();
     }
 
+    /**
+     * Get the system sender.
+     *
+     * @return the system sender email address.
+     */
+    public String getSystemSender()
+    {
+        return _systemSender;
+    }
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event)
     {
         _deploymentContext = DeploymentContext.getContext();
+    }
+
+    /**
+     * Send an email.
+     *
+     * @param plan the plan.
+     * @param emailTemplate the email template.
+     * @param context the context.
+     */
+    public void sendEmail(Profile plan, EmailTemplate emailTemplate, EmailTemplateContext context)
+    {
+        sendEmail(plan, emailTemplate, context, null);
+    }
+
+    /**
+     * Send an email.
+     *
+     * @param plan the plan.
+     * @param emailTemplate the email template.
+     * @param context the context.
+     * @param defaultFromNameSupplier the supplier for the name of the default sender.
+     */
+    public void sendEmail(Profile plan, EmailTemplate emailTemplate, EmailTemplateContext context,
+        @Nullable Supplier<String> defaultFromNameSupplier)
+    {
+        // FUTURE : delay, send at the right time of the day for user
+        try
+        {
+            final FileEntityMailDataHandler mdh = _emailTemplateProcessor.process(context, emailTemplate);
+            try (MailMessage mm = new MailMessage(mdh))
+            {
+                if (mm.getToRecipients().isEmpty())
+                {
+                    final EmailTemplateRecipient recipientAttribute = context.getRecipientAttribute();
+                    if (recipientAttribute != null)
+                        mm.addTo(recipientAttribute.getEmailAddress());
+                }
+                if (mm.getFrom().isEmpty())
+                {
+                    UnparsedAddress from = new UnparsedAddress(_systemSender,
+                        defaultFromNameSupplier != null ? defaultFromNameSupplier.get() : null);
+                    mm.addFrom(from);
+                }
+                sendEmail(plan, mm);
+            }
+        }
+        catch (EmailTemplateException | MailDataHandlerException e)
+        {
+            _logger.error("Unable to send message.", e);
+        }
+    }
+
+    /**
+     * Send email.
+     *
+     * @param profile the plan.
+     * @param mm the message.
+     */
+    public void sendEmail(Profile profile, MailMessage mm)
+    {
+        try
+        {
+            if (_deploymentContext != DeploymentContext.release)
+            {
+                final String contextName = _deploymentContext == DeploymentContext.qa
+                    ? _deploymentContext.name()
+                    : StringFactory.capitalize(_deploymentContext.name());
+                mm.setSubject('{' + contextName + "} " + mm.getSubject());
+            }
+            final TrackedEmail trackedEmail = _mailConfig.mailProviderHandler().sendMessage(mm.getMessage());
+            // FIXME : you should associate the tracked email to the interaction responsible for triggering it.
+        }
+        catch (MessagingException e)
+        {
+            _logger.error("Unable to send message.", e);
+        }
+    }
+
+    /**
+     * Send email
+     *
+     * @param emailTemplate the email template
+     * @param context the context
+     */
+    public void sendEmail(EmailTemplate emailTemplate, EmailTemplateContext context)
+    {
+        sendEmail(emailTemplate, context, null);
+    }
+
+    /**
+     * Send email
+     *
+     * @param emailTemplate the email template
+     * @param context the context
+     * @param defaultFromNameSupplier the supplier for the name of the default sender.
+     */
+    public void sendEmail(EmailTemplate emailTemplate, EmailTemplateContext context,
+        @Nullable Supplier<String> defaultFromNameSupplier)
+    {
+        try
+        {
+            final FileEntityMailDataHandler mdh = _emailTemplateProcessor.process(context, emailTemplate);
+            try (MailMessage mm = new MailMessage(mdh))
+            {
+                if (mm.getToRecipients().isEmpty())
+                {
+                    final EmailTemplateRecipient recipientAttribute = context.getRecipientAttribute();
+                    if (recipientAttribute != null)
+                        mm.addTo(recipientAttribute.getEmailAddress());
+                }
+                if (mm.getFrom().isEmpty())
+                {
+                    UnparsedAddress from = new UnparsedAddress(_systemSender,
+                        defaultFromNameSupplier != null ? defaultFromNameSupplier.get() : null);
+                    mm.addFrom(from);
+                }
+                sendEmail(mm);
+            }
+        }
+        catch (EmailTemplateException | MailDataHandlerException e)
+        {
+            _logger.error("Unable to send message.", e);
+        }
+    }
+
+    /**
+     * Send email
+     *
+     * @param mm the message.
+     */
+    public void sendEmail(MailMessage mm)
+    {
+        try
+        {
+            _mailConfig.mailProviderHandler().sendMessage(mm.getMessage());
+        }
+        catch (MessagingException e)
+        {
+            _logger.error("Unable to send message.", e);
+        }
     }
 
     /**
@@ -137,12 +278,12 @@ public class NotificationService implements ApplicationListener<ContextRefreshed
         // FIXME : make sure SMS messages are delayed if necessary based on user timezone, etc.
         final Optional<EmailAddress> emailAddress =
             ContactUtil.getEmailAddress(user.getPrincipal().getContact(), ContactDataCategory.values());
-        if(!emailAddress.isPresent())
+        if (!emailAddress.isPresent())
         {
             _logger.error("Users are required to have an email address. Not sending SMS. User.id = " + user.getId());
             return;
         }
-        if(!_emailValidationService.checkForValidDomain(emailAddress.get().getEmail(), false))
+        if (!_emailValidationService.checkForValidDomain(emailAddress.get().getEmail(), false))
         {
             _logger.info("User's email address is being filtered/sanitized. Not sending SMS. User.id = " + user.getId());
             return;
@@ -165,142 +306,6 @@ public class NotificationService implements ApplicationListener<ContextRefreshed
     }
 
     /**
-     * Send an email.
-     * @param plan the plan.
-     * @param emailTemplate the email template.
-     * @param context the context.
-     */
-    public void sendEmail(Profile plan, EmailTemplate emailTemplate, EmailTemplateContext context)
-    {
-        sendEmail(plan, emailTemplate, context, null);
-    }
-
-    /**
-     * Send an email.
-     * @param plan the plan.
-     * @param emailTemplate the email template.
-     * @param context the context.
-     * @param defaultFromNameSupplier the supplier for the name of the default sender.
-     */
-    public void sendEmail(Profile plan, EmailTemplate emailTemplate, EmailTemplateContext context,
-        @Nullable Supplier<String> defaultFromNameSupplier)
-    {
-        // FUTURE : delay, send at the right time of the day for user
-        try
-        {
-            final FileEntityMailDataHandler mdh = _emailTemplateProcessor.process(context, emailTemplate);
-            try(MailMessage mm = new MailMessage(mdh))
-            {
-                if(mm.getToRecipients().isEmpty())
-                {
-                    final EmailTemplateRecipient recipientAttribute = context.getRecipientAttribute();
-                    if(recipientAttribute != null)
-                        mm.addTo(recipientAttribute.getEmailAddress());
-                }
-                if(mm.getFrom().isEmpty())
-                {
-                    UnparsedAddress from = new UnparsedAddress(_systemSender,
-                        defaultFromNameSupplier != null ? defaultFromNameSupplier.get() : null);
-                    mm.addFrom(from);
-                }
-                sendEmail(plan, mm);
-            }
-        }
-        catch (EmailTemplateException | MailDataHandlerException e)
-        {
-            _logger.error("Unable to send message.", e);
-        }
-    }
-
-    /**
-     *   Send email
-     *   @param emailTemplate the email template
-     *   @param context the context
-     */
-    public void sendEmail(EmailTemplate emailTemplate, EmailTemplateContext context)
-    {
-        sendEmail(emailTemplate, context, null);
-    }
-
-    /**
-     *   Send email
-     * @param emailTemplate the email template
-     * @param context the context
-     * @param defaultFromNameSupplier the supplier for the name of the default sender.
-     */
-    public void sendEmail(EmailTemplate emailTemplate, EmailTemplateContext context,
-        @Nullable Supplier<String> defaultFromNameSupplier)
-    {
-        try
-        {
-            final FileEntityMailDataHandler mdh = _emailTemplateProcessor.process(context, emailTemplate);
-            try(MailMessage mm = new MailMessage(mdh))
-            {
-                if(mm.getToRecipients().isEmpty())
-                {
-                    final EmailTemplateRecipient recipientAttribute = context.getRecipientAttribute();
-                    if(recipientAttribute != null)
-                        mm.addTo(recipientAttribute.getEmailAddress());
-                }
-                if(mm.getFrom().isEmpty())
-                {
-                    UnparsedAddress from = new UnparsedAddress(_systemSender,
-                        defaultFromNameSupplier != null ? defaultFromNameSupplier.get() : null);
-                    mm.addFrom(from);
-                }
-                sendEmail(mm);
-            }
-        }
-        catch(EmailTemplateException | MailDataHandlerException e)
-        {
-            _logger.error("Unable to send message.", e);
-        }
-    }
-
-    /**
-     * Send email.
-     *
-     * @param profile the plan.
-     * @param mm the message.
-     *
-     */
-    public void sendEmail(Profile profile, MailMessage mm)
-    {
-        try
-        {
-            if(_deploymentContext != DeploymentContext.release)
-            {
-                final String contextName = _deploymentContext == DeploymentContext.qa
-                    ? _deploymentContext.name()
-                    : StringFactory.capitalize(_deploymentContext.name());
-                mm.setSubject('{' + contextName + "} " + mm.getSubject());
-            }
-            final TrackedEmail trackedEmail = _mailConfig.mailProviderHandler().sendMessage(mm.getMessage());
-            // FIXME : you should associate the tracked email to the interaction responsible for triggering it.
-        }
-        catch (MessagingException e)
-        {
-            _logger.error("Unable to send message.", e);
-        }
-    }
-
-    /**
-     *   Send email
-     *   @param mm the message.
-     */
-    public void sendEmail(MailMessage mm)
-    {
-        try
-        {
-            _mailConfig.mailProviderHandler().sendMessage(mm.getMessage());
-        }
-        catch(MessagingException e)
-        {
-            _logger.error("Unable to send message.", e);
-        }
-    }
-
-    /**
      * Split content list.
      *
      * @param content the content.
@@ -319,11 +324,11 @@ public class NotificationService implements ApplicationListener<ContextRefreshed
              start = end, end = wb.next())
         {
             String substring = content.substring(start, end);
-            if(partBuffer.length() + substring.length() > SMS_MESSAGE_LIMIT)
+            if (partBuffer.length() + substring.length() > SMS_MESSAGE_LIMIT)
             {
-                if(substring.length() > SMS_MESSAGE_LIMIT)
+                if (substring.length() > SMS_MESSAGE_LIMIT)
                 {
-                    while(substring.length() > SMS_MESSAGE_LIMIT)
+                    while (substring.length() > SMS_MESSAGE_LIMIT)
                     {
                         int idx = SMS_MESSAGE_LIMIT - partBuffer.length();
                         String piece = substring.substring(0, idx);
@@ -346,7 +351,7 @@ public class NotificationService implements ApplicationListener<ContextRefreshed
                 partBuffer.append(substring);
             }
         }
-        if(partBuffer.length() > 0)
+        if (partBuffer.length() > 0)
             parts.add(partBuffer.toString());
         return parts;
     }

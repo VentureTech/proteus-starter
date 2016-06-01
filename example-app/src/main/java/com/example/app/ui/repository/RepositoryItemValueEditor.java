@@ -26,6 +26,7 @@ import net.proteusframework.ui.miwt.component.composite.editor.CompositeValueEdi
 
 /**
  * {@link CompositeValueEditor} implementation for a {@link RepositoryItem} implementation
+ *
  * @param <RI> the subclass of RepositoryItem being edited
  *
  * @author Alan Holt (aholt@venturetech.net)
@@ -38,8 +39,9 @@ public abstract class RepositoryItemValueEditor<RI extends RepositoryItem> exten
     private Repository _owner;
 
     /**
-     *   Instantiates a new instance of RepositoryItemValueEditor
-     *   @param clazz the class of the RepositoryItem for this editor
+     * Instantiates a new instance of RepositoryItemValueEditor
+     *
+     * @param clazz the class of the RepositoryItem for this editor
      */
     public RepositoryItemValueEditor(Class<RI> clazz)
     {
@@ -49,27 +51,20 @@ public abstract class RepositoryItemValueEditor<RI extends RepositoryItem> exten
     }
 
     /**
-     *   Set the EntityRetriever for this RepositoryItemValueEditor
-     *   @param er the EntityRetriever
-     */
-    @Autowired
-    public void setEntityRetriever(EntityRetriever er)
-    {
-        entityRetriever = er;
-    }
-
-    /**
-     *   Get the Owner of this RepositoryItem being edited
-     *   @return the Owner Repository
+     * Get the Owner of this RepositoryItem being edited
+     *
+     * @return the Owner Repository
      */
     @Nonnull
     public Repository getOwner()
     {
         return entityRetriever.reattachIfNecessary(_owner);
     }
+
     /**
-     *   Set the Owner of this RepositoryItem being edited
-     *   @param owner the Owner Repository
+     * Set the Owner of this RepositoryItem being edited
+     *
+     * @param owner the Owner Repository
      */
     public void setOwner(@Nonnull Repository owner)
     {
@@ -90,5 +85,16 @@ public abstract class RepositoryItemValueEditor<RI extends RepositoryItem> exten
     {
         RI result = super.commitValue();
         return Optional.ofNullable(result).orElseThrow(() -> new IllegalStateException("Result RepositoryItem was null."));
+    }
+
+    /**
+     * Set the EntityRetriever for this RepositoryItemValueEditor
+     *
+     * @param er the EntityRetriever
+     */
+    @Autowired
+    public void setEntityRetriever(EntityRetriever er)
+    {
+        entityRetriever = er;
     }
 }

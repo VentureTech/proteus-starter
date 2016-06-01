@@ -107,8 +107,22 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
     }
 
     /**
-     *   Set the Category Label Provider for this ResourceValueEditor
-     *   @param categoryLabelProvider the category label provider
+     * Get the Resource Image Editor
+     *
+     * @return the Resource Image Editor
+     */
+    @SuppressWarnings("unused")
+    @Nonnull
+    public VTCropPictureEditor getPictureEditor()
+    {
+        return Optional.ofNullable(_resourcePictureEditor).orElseThrow(() -> new IllegalStateException(
+            "PictureEditor was null.  Do not call getPictureEditor before initialization."));
+    }
+
+    /**
+     * Set the Category Label Provider for this ResourceValueEditor
+     *
+     * @param categoryLabelProvider the category label provider
      */
     @Autowired
     public void setCategoryLabelProvider(ResourceTagsLabelProvider categoryLabelProvider)
@@ -117,18 +131,20 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
     }
 
     /**
-     *   Set the Type Label Provider for this ResourceValueEditor
-     *   @param typeLabelProvider the type label provider
+     * Set the LRLabsUtil for this ResourceValueEditor
+     *
+     * @param appUtil the App Util
      */
     @Autowired
-    public void setTypeLabelProvider(ResourceCategoryLabelProvider typeLabelProvider)
+    public void setLRLabsUtil(AppUtil appUtil)
     {
-        _typeLabelProvider = typeLabelProvider;
+        _appUtil = appUtil;
     }
 
     /**
-     *   Set the PictureEditorConfig for this ResourceValueEditor
-     *   @param pictureEditorConfig the picture editor config
+     * Set the PictureEditorConfig for this ResourceValueEditor
+     *
+     * @param pictureEditorConfig the picture editor config
      */
     @Autowired
     @Qualifier(ResourceConfig.PICTURE_EDITOR_CONFIG)
@@ -138,16 +154,15 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
     }
 
     /**
-     *   Set the LRLabsUtil for this ResourceValueEditor
-     *   @param appUtil the App Util
+     * Set the Type Label Provider for this ResourceValueEditor
+     *
+     * @param typeLabelProvider the type label provider
      */
     @Autowired
-    public void setLRLabsUtil(AppUtil appUtil)
+    public void setTypeLabelProvider(ResourceCategoryLabelProvider typeLabelProvider)
     {
-        _appUtil = appUtil;
-    }
-
-    @Override
+        _typeLabelProvider = typeLabelProvider;
+    }    @Override
     public void init()
     {
         _resourcePictureEditor = new VTCropPictureEditor(_pictureEditorConfig);
@@ -226,24 +241,14 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
         setEditable(isEditable());
     }
 
-    /**
-     *   Get the Resource Image Editor
-     *   @return the Resource Image Editor
-     */
-    @SuppressWarnings("unused")
-    @Nonnull
-    public VTCropPictureEditor getPictureEditor()
-    {
-        return Optional.ofNullable(_resourcePictureEditor).orElseThrow(() -> new IllegalStateException(
-            "PictureEditor was null.  Do not call getPictureEditor before initialization."));
-    }
+
 
     @Override
     public void setValue(@Nullable R value)
     {
         super.setValue(value);
 
-        if(isInited())
+        if (isInited())
         {
             _resourcePictureEditor.setValue(Optional.ofNullable(value)
                 .map(Resource::getImage)
@@ -257,7 +262,7 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
     {
         super.setEditable(b);
 
-        if(isInited())
+        if (isInited())
         {
             _resourcePictureEditor.setEditable(b);
         }

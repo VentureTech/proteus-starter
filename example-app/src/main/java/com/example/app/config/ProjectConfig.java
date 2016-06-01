@@ -35,14 +35,13 @@ import net.proteusframework.core.locale.xml.StaticKeyDataConfig;
 
 import static com.i2rd.hibernate.util.LocationQualifier.Type.entity_location;
 import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
-import static org.hibernate.metamodel.source.annotations.JPADotNames.DISCRIMINATOR_COLUMN;
 
 /**
  * Project Configuration.
  *
  * @author Russ Tennant (russ@venturetech.net)
  */
-@SuppressWarnings({"SameReturnValue", "InjectedReferences"})
+@SuppressWarnings({"SameReturnValue"})
 @Configuration
 @EnableAsync
 @EnableScheduling
@@ -102,33 +101,9 @@ public class ProjectConfig implements ApplicationListener<ContextRefreshedEvent>
          */
     //    }
 
-
-    /**
-     * Static key config.
-     * @return bean.
-     */
-    @Bean()
-    public StaticKeyDataConfig staticKeyDataConfig()
-    {
-        StaticKeyDataConfig config = new StaticKeyDataConfig();
-        config.addScanPackage("com.example.app");
-        config.setUpdate(true);
-        return config;
-    }
-
-    /**
-     * Scan com.example for HBM XML files.
-     * @return bean.
-     */
-    @Bean()
-    @LocationQualifier(orm_location)
-    public String ormLocationComExample()
-    {
-        return "classpath*:com/example/app/**/*.hbm.xml";
-    }
-
     /**
      * Package to scan for annotated entities.
+     *
      * @return bean.
      */
     @Bean()
@@ -138,9 +113,9 @@ public class ProjectConfig implements ApplicationListener<ContextRefreshedEvent>
         return "com.example.app";
     }
 
-
     /**
      * Example to test if weaving is working.
+     *
      * @param event the event.
      */
     @SuppressFBWarnings("DM_EXIT")
@@ -165,6 +140,32 @@ public class ProjectConfig implements ApplicationListener<ContextRefreshedEvent>
             System.exit(1);
         }
 
+    }
+
+    /**
+     * Scan com.example for HBM XML files.
+     *
+     * @return bean.
+     */
+    @Bean()
+    @LocationQualifier(orm_location)
+    public String ormLocationComExample()
+    {
+        return "classpath*:com/example/app/**/*.hbm.xml";
+    }
+
+    /**
+     * Static key config.
+     *
+     * @return bean.
+     */
+    @Bean()
+    public StaticKeyDataConfig staticKeyDataConfig()
+    {
+        StaticKeyDataConfig config = new StaticKeyDataConfig();
+        config.addScanPackage("com.example.app");
+        config.setUpdate(true);
+        return config;
     }
 
 }

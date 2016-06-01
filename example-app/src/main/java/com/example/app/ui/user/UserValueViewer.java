@@ -55,6 +55,7 @@ import net.proteusframework.core.metric.Dimension;
 import net.proteusframework.core.metric.PixelMetric;
 import net.proteusframework.core.notification.Notifiable;
 import net.proteusframework.core.notification.Notification;
+import net.proteusframework.core.notification.NotificationImpl;
 import net.proteusframework.internet.http.Link;
 import net.proteusframework.ui.miwt.Image;
 import net.proteusframework.ui.miwt.component.Component;
@@ -65,7 +66,6 @@ import net.proteusframework.ui.miwt.component.ImageComponent;
 import net.proteusframework.ui.miwt.component.PushButton;
 import net.proteusframework.ui.miwt.component.Window;
 import net.proteusframework.ui.miwt.component.composite.CustomCellRenderer;
-import net.proteusframework.ui.miwt.component.composite.Message;
 import net.proteusframework.ui.miwt.component.composite.MessageContainer;
 import net.proteusframework.ui.miwt.component.composite.editor.CheckboxValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.ComboBoxValueEditor;
@@ -84,6 +84,8 @@ import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static com.example.app.support.AppUtil.nullFirst;
 import static com.example.app.ui.user.UserValueViewerLOK.*;
+import static net.proteusframework.core.notification.NotificationImpl.error;
+import static net.proteusframework.core.notification.NotificationType.INFO;
 import static net.proteusframework.core.validation.CommonValidationText.ARG0_IS_REQUIRED;
 import static net.proteusframework.ui.miwt.validation.RequiredValueValidator.createRequiredValueValidator;
 
@@ -141,9 +143,9 @@ public class UserValueViewer extends Container
         @Override
         public boolean validate(Component component, Notifiable notifiable)
         {
-            if(!Objects.equals(_newPassword.getUIValue(), _confirmPassword.getUIValue()))
+            if (!Objects.equals(_newPassword.getUIValue(), _confirmPassword.getUIValue()))
             {
-                Message error = Message.error(ERROR_MESSAGE_PASSWORDS_NOT_MATCH());
+                NotificationImpl error = error(ERROR_MESSAGE_PASSWORDS_NOT_MATCH());
                 error.setSource(_confirmPassword);
                 notifiable.sendNotification(error);
                 return false;
@@ -176,9 +178,9 @@ public class UserValueViewer extends Container
     private Notifiable _notifiable;
 
     /**
-     *   Instantiate a new instance of UserValueViewer
-     *   <br>
-     *   NOTE:  Must set User with {@link #setUser(User)} before initialization.
+     * Instantiate a new instance of UserValueViewer
+     * <br>
+     * NOTE:  Must set User with {@link #setUser(User)} before initialization.
      */
     public UserValueViewer()
     {
@@ -186,8 +188,77 @@ public class UserValueViewer extends Container
     }
 
     /**
-     *   Get the User to view
-     *   @return the User to view
+     * Displays a dialog for the current user to update the password for the user being viewed
+     */
+    public void beginUpdatePassword()
+    {
+        final Dialog dlg = new Dialog(getApplication(), LABEL_UPDATE_PASSWORD());
+        dlg.addClassName("update-password-dialog");
+        final MessageContainer dlgMessages = new MessageContainer(35_000L);
+
+        final TextEditor newPassword = new TextEditor(LABEL_NEW_PASSWORD(), null);
+        newPassword.setInputType(Field.InputType.password);
+        newPassword.setRequiredValueValidator();
+        final TextEditor confirmPassword = new TextEditor(LABEL_CONFIRM_PASSWORD(), null);
+        confirmPassword.setInputType(Field.InputType.password);
+        confirmPassword.setValueValidator(new CompositeValidator(
+            createRequiredValueValidator(ARG0_IS_REQUIRED, confirmPassword.getLabel().getText())
+                .withNotificationSourceSetter((validator, component, notification) -> notification.setSource(confirmPassword)),
+            new ConfirmPasswordValidator(newPassword, confirmPassword)));
+
+        final PushButton save = CommonActions.SAVE.push();
+        final PushButton cancel = CommonActions.CANCEL.push();
+        ActionListener cancelAction = new Window.Closer();
+        cancel.addActionListener(cancelAction);
+        save.addActionListener(ev -> {
+            dlgMessages.clearNotifications();
+            boolean valid = newPassword.validateUIValue(dlgMessages);
+            valid = confirmPassword.validateUIValue(dlgMessages) && valid;
+            if (valid)
+            {
+                List<Notification> notifications = new ArrayList<>();
+                try
+                {
+                    boolean success = _principalDAO.setNewPassword(
+                        getUser().getPrincipal(), getUser().getPrincipal().getUsername(), notifications, newPassword.commitValue());
+
+                    if (!success)
+                    {
+                        notifications.forEach(notification -> {
+                            notification.setSource(newPassword);
+                            dlgMessages.sendNotification(notification);
+                        });
+                    }
+                    else
+                    {
+                        getNotifiable().sendNotification(new NotificationImpl(INFO, MESSAGE_PASSWORD_UPDATED()));
+                        cancelAction.actionPerformed(ev);
+                    }
+                }
+                catch (NonUniqueCredentialsException e)
+                {
+                    _logger.error("Unable to update Password", e);
+                    dlgMessages.sendNotification(error(ERROR_MESSAGE_ERROR_OCCURRED_UPDATING_PASSWORD()));
+                }
+            }
+        });
+
+        dlg.add(of(HTMLElement.section, "prop-editor prop-wrapper",
+            dlgMessages,
+            of("prop-body", newPassword, confirmPassword),
+            of("prop-footer",
+                of("prop-footer-actions",
+                    of("persistence-actions actions bottom", save, cancel)
+                )
+            )
+        ));
+
+        getWindowManager().add(dlg);
+        dlg.setVisible(true);
+    }    /**
+     * Get the User to view
+     *
+     * @return the User to view
      */
     @Nonnull
     public User getUser()
@@ -195,38 +266,41 @@ public class UserValueViewer extends Container
         return Optional.ofNullable(_er.reattachIfNecessary(_user)).orElseThrow(() -> new IllegalStateException(
             "User has not been set, so it cannot be retrieved."));
     }
+
     /**
-     *   Set the User to view
-     *   @param user the User to view
+     * Get the Notifiable for this UserValueViewer
+     * If one has not been set, a warning is logged.
+     *
+     * @return the Notifiable
+     */
+    @Nonnull
+    public Notifiable getNotifiable()
+    {
+        if (_notifiable == null)
+        {
+            _logger.warn("Notifiable has not been set yet, any messages sent to this returned value will not show up on the UI.");
+            return new MessageContainer(35_000L);
+        }
+        return _notifiable;
+    }    /**
+     * Set the User to view
+     *
+     * @param user the User to view
      */
     public void setUser(@Nonnull User user)
     {
         _user = user;
 
-        if(isInited())
+        if (isInited())
         {
             setupUI();
         }
     }
 
     /**
-     *   Get the Notifiable for this UserValueViewer
-     *   If one has not been set, a warning is logged.
-     *   @return the Notifiable
-     */
-    @Nonnull
-    public Notifiable getNotifiable()
-    {
-        if(_notifiable == null)
-        {
-            _logger.warn("Notifiable has not been set yet, any messages sent to this returned value will not show up on the UI.");
-            return new MessageContainer(35_000L);
-        }
-        return _notifiable;
-    }
-    /**
-     *   Set the Notifiable for this UserValueViewer
-     *   @param notifiable the Notifiable
+     * Set the Notifiable for this UserValueViewer
+     *
+     * @param notifiable the Notifiable
      */
     public void setNotifiable(@Nonnull Notifiable notifiable)
     {
@@ -234,35 +308,17 @@ public class UserValueViewer extends Container
     }
 
     /**
-     *   Get boolean flag.  If true, this viewer is being displayed in admin mode
-     *   <br>
-     *   defaults to true.
-     *   @return boolean flag
-     */
-    public boolean isAdminMode()
-    {
-        return _adminMode;
-    }
-    /**
-     *   Set boolean flag.  If true, this viewer is being displayed in admin mode
-     *   @param adminMode boolean flag
-     */
-    public void setAdminMode(boolean adminMode)
-    {
-        _adminMode = adminMode;
-    }
-
-    /**
-     *   Get boolean flag.  If true, the current user has the right permissions/roles to update the viewed User's password
-     *   @return boolean flag
+     * Get boolean flag.  If true, the current user has the right permissions/roles to update the viewed User's password
+     *
+     * @return boolean flag
      */
     public boolean canUpdatePassword()
     {
         User currentUser = _userDAO.getAssertedCurrentUser();
         final TimeZone timeZone = getSession().getTimeZone();
-        Profile profile = _profileService.getOwnerProfileForUser(getUser()).orElse(null);
+        Profile profile = _profileService.getAdminProfileForUser(getUser()).orElse(null);
         return _profileDAO.canOperate(currentUser, profile, timeZone, _mop.changeUserPassword())
-            || Objects.equals(currentUser.getId(), getUser().getId());
+               || Objects.equals(currentUser.getId(), getUser().getId());
     }
 
     @Override
@@ -271,23 +327,47 @@ public class UserValueViewer extends Container
         super.init();
 
         setupUI();
+    }    /**
+     * Get boolean flag.  If true, this viewer is being displayed in admin mode
+     * <br>
+     * defaults to true.
+     *
+     * @return boolean flag
+     */
+    public boolean isAdminMode()
+    {
+        return _adminMode;
     }
+
+    /**
+     * Set boolean flag.  If true, this viewer is being displayed in admin mode
+     *
+     * @param adminMode boolean flag
+     */
+    public void setAdminMode(boolean adminMode)
+    {
+        _adminMode = adminMode;
+    }
+
+
+
+
 
     private void setupUI()
     {
         removeAllComponents();
 
         User currentUser = _userDAO.getAssertedCurrentUser();
-        Profile profile = _profileService.getOwnerProfileForUser(getUser()).orElse(null);
+        Profile profile = _profileService.getAdminProfileForUser(getUser()).orElse(null);
 
         final ImageComponent userImage = new ImageComponent();
-        if(getUser().getImage() != null)
+        if (getUser().getImage() != null)
         {
             try
             {
                 final Dimension size = ImageFileUtil.getDimension(getUser().getImage(), true);
                 // We are showing a max height of 200px
-                if(size != null && size.getHeightMetric().intValue() < MAX_HEIGHT_PROFILE_PIC_VIEW)
+                if (size != null && size.getHeightMetric().intValue() < MAX_HEIGHT_PROFILE_PIC_VIEW)
                     userImage.setSize(size);
                 else
                     userImage.setHeight(new PixelMetric(MAX_HEIGHT_PROFILE_PIC_VIEW));
@@ -333,7 +413,7 @@ public class UserValueViewer extends Container
 
         final TextEditor timeZoneField = new TextEditor(LABEL_PREFERRED_TIME_ZONE(), Optional.ofNullable(getUser().getPrincipal()
             .getContact().getPreferredTimeZone())
-//            .map(tz -> tz.getDisplayName(false, TimeZone.LONG, getLocaleContext().getLocale()))
+            //            .map(tz -> tz.getDisplayName(false, TimeZone.LONG, getLocaleContext().getLocale()))
             .map(TimeZone::getID)
             .orElse(""));
         timeZoneField.setEditable(false);
@@ -364,7 +444,7 @@ public class UserValueViewer extends Container
         // AND only to the user who has a particular membership under the coaching entity.
         loginLangingPage.setVisible(
             Objects.equals(currentUser.getId(), getUser().getId())
-                && _profileDAO.getMembershipsForUser(getUser(), null, getSession().getTimeZone()).stream()
+            && _profileDAO.getMembershipsForUser(getUser(), null, getSession().getTimeZone()).stream()
                 .map(Membership::getMembershipType).filter(membershipType1 -> membershipType1 != null)
                 .anyMatch(membershipType ->
                     membershipType.equals(_mtp.companyAdmin())
@@ -394,10 +474,10 @@ public class UserValueViewer extends Container
         add(addressContainer);
         add(emailField);
         add(phoneField);
-        if(getUser().getSmsPhone() != null)
+        if (getUser().getSmsPhone() != null)
             add(smsPhoneField);
         add(timeZoneField);
-        if(isAdminMode())
+        if (isAdminMode())
         {
             add(coachingField);
         }
@@ -405,75 +485,7 @@ public class UserValueViewer extends Container
         add(loginLangingPage);
     }
 
-    /**
-     *   Displays a dialog for the current user to update the password for the user being viewed
-     */
-    public void beginUpdatePassword()
-    {
-        final Dialog dlg = new Dialog(getApplication(), LABEL_UPDATE_PASSWORD());
-        dlg.addClassName("update-password-dialog");
-        final MessageContainer dlgMessages = new MessageContainer(35_000L);
 
-        final TextEditor newPassword = new TextEditor(LABEL_NEW_PASSWORD(), null);
-        newPassword.setInputType(Field.InputType.password);
-        newPassword.setRequiredValueValidator();
-        final TextEditor confirmPassword = new TextEditor(LABEL_CONFIRM_PASSWORD(), null);
-        confirmPassword.setInputType(Field.InputType.password);
-        confirmPassword.setValueValidator(new CompositeValidator(
-                createRequiredValueValidator(ARG0_IS_REQUIRED, confirmPassword.getLabel().getText())
-                    .withNotificationSourceSetter((validator, component, notification) -> notification.setSource(confirmPassword)),
-            new ConfirmPasswordValidator(newPassword, confirmPassword)));
-
-        final PushButton save = CommonActions.SAVE.push();
-        final PushButton cancel = CommonActions.CANCEL.push();
-        ActionListener cancelAction = new Window.Closer();
-        cancel.addActionListener(cancelAction);
-        save.addActionListener(ev -> {
-            dlgMessages.clearNotifications();
-            boolean valid = newPassword.validateUIValue(dlgMessages);
-            valid = confirmPassword.validateUIValue(dlgMessages) && valid;
-            if(valid)
-            {
-                List<Notification> notifications = new ArrayList<>();
-                try
-                {
-                    boolean success = _principalDAO.setNewPassword(
-                        getUser().getPrincipal(), getUser().getPrincipal().getUsername(), notifications, newPassword.commitValue());
-
-                    if(!success)
-                    {
-                        notifications.forEach(notification -> {
-                            notification.setSource(newPassword);
-                            dlgMessages.sendNotification(notification);
-                        });
-                    }
-                    else
-                    {
-                        getNotifiable().sendNotification(Message.info(MESSAGE_PASSWORD_UPDATED()));
-                        cancelAction.actionPerformed(ev);
-                    }
-                }
-                catch (NonUniqueCredentialsException e)
-                {
-                    _logger.error("Unable to update Password", e);
-                    dlgMessages.sendNotification(Message.error(ERROR_MESSAGE_ERROR_OCCURRED_UPDATING_PASSWORD()));
-                }
-            }
-        });
-
-        dlg.add(of(HTMLElement.section, "prop-editor prop-wrapper",
-            dlgMessages,
-            of("prop-body", newPassword, confirmPassword),
-            of("prop-footer",
-                of("prop-footer-actions",
-                    of("persistence-actions actions bottom", save, cancel)
-                )
-            )
-        ));
-
-        getWindowManager().add(dlg);
-        dlg.setVisible(true);
-    }
 
     private static void setFieldVisibility(TextEditor field)
     {

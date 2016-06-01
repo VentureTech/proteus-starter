@@ -25,12 +25,14 @@ public interface SoftDeleteEntity
 
     /**
      * Gets the soft delete value for the "deleted" column.
+     *
      * @return a boolean flag.  If true, the entity has been deleted.
      */
     boolean isDeleted();
 
     /**
      * Sets the soft delete value for the "deleted" column.
+     *
      * @param deleted a boolean flag.  If true, the entity has been deleted.
      */
     void setDeleted(boolean deleted);

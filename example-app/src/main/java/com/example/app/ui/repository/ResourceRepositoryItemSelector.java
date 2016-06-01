@@ -87,62 +87,47 @@ import static net.proteusframework.core.locale.TextSources.EMPTY;
 @Configurable
 public class ResourceRepositoryItemSelector extends RepositoryItemSelector<ResourceRepositoryItem>
 {
+    private final List<ResourceRepositoryItem> _selectedResources = new ArrayList<>();
     @Autowired
     private ResourceCategoryLabelProvider _rtlp;
     @Autowired
     private ResourceTagsLabelProvider _rclp;
-
-    private final List<ResourceRepositoryItem> _selectedResources = new ArrayList<>();
-
-    private Set<Class<? extends Resource>> _includedResourceTypes = new HashSet<>();
-    private Set<Class<? extends Resource>> _excludedResourceTypes = new HashSet<>();
+    private final Set<Class<? extends Resource>> _includedResourceTypes = new HashSet<>();
+    private final Set<Class<? extends Resource>> _excludedResourceTypes = new HashSet<>();
 
     /**
-     *   Instantiates a new instance of ResourceRepositoryItemSelector
-     *   @param selectedResources the selected resources
-     *   @param repos the owning repositories to select from
+     * Instantiates a new instance of ResourceRepositoryItemSelector
+     *
+     * @param selectedResources the selected resources
+     * @param repos the owning repositories to select from
      */
     public ResourceRepositoryItemSelector(@Nullable List<ResourceRepositoryItem> selectedResources, Repository... repos)
     {
         super(repos);
 
-        if(selectedResources != null)
+        if (selectedResources != null)
             _selectedResources.addAll(selectedResources);
     }
 
     /**
-     *   Set the selected resources
-     *   @param selectedResources the selected resources
-     *   @return this
+     * Set some resource types to exclude from being selectable, if empty then none are excluded.
+     *
+     * @param excludeResourceTypes the excluded resource types
+     *
+     * @return this
      */
-    public ResourceRepositoryItemSelector withSelectedResources(@Nullable List<ResourceRepositoryItem> selectedResources)
+    public ResourceRepositoryItemSelector withExcludeResourceTypes(@NotNull Set<Class<? extends Resource>> excludeResourceTypes)
     {
-        _selectedResources.clear();
-        if(selectedResources != null)
-            _selectedResources.addAll(selectedResources);
-        fireRepoItemListModified();
+        _excludedResourceTypes.clear();
+        _excludedResourceTypes.addAll(excludeResourceTypes);
         return this;
-    }
-
-    @Override
-    protected List<Action> getDefaultEntityActions()
-    {
-        return Collections.emptyList();
-    }
-
-    /**
-     *   ResourceRepositoryItemSelector currently only supports LONG mode.
-     *   @return LONG mode
-     */
-    @Override
-    public RepositoryItemSelectorMode getMode()
-    {
-        return RepositoryItemSelectorMode.LONG;
     }
 
     /**
      * Set some resource types to include in being selectable.  If empty, then all our included.
+     *
      * @param includeTypes the included resource types
+     *
      * @return this
      */
     public ResourceRepositoryItemSelector withIncludeResourceTypes(@NotNull Set<Class<? extends Resource>> includeTypes)
@@ -153,15 +138,25 @@ public class ResourceRepositoryItemSelector extends RepositoryItemSelector<Resou
     }
 
     /**
-     * Set some resource types to exclude from being selectable, if empty then none are excluded.
-     * @param excludeResourceTypes the excluded resource types
+     * Set the selected resources
+     *
+     * @param selectedResources the selected resources
+     *
      * @return this
      */
-    public ResourceRepositoryItemSelector withExcludeResourceTypes(@NotNull Set<Class<? extends Resource>> excludeResourceTypes)
+    public ResourceRepositoryItemSelector withSelectedResources(@Nullable List<ResourceRepositoryItem> selectedResources)
     {
-        _excludedResourceTypes.clear();
-        _excludedResourceTypes.addAll(excludeResourceTypes);
+        _selectedResources.clear();
+        if (selectedResources != null)
+            _selectedResources.addAll(selectedResources);
+        fireRepoItemListModified();
         return this;
+    }
+
+    @Override
+    protected TextSource getRepoItemTerm()
+    {
+        return _terms.resource();
     }
 
     @SuppressWarnings("Duplicates")
@@ -181,16 +176,17 @@ public class ResourceRepositoryItemSelector extends RepositoryItemSelector<Resou
         ArrayList<Label> categories = new ArrayList<>();
         categories.add(null);
         categories.addAll(_rclp.getEnabledLabels(Optional.empty()));
-        AbstractPropertyConstraint categoryConstraint = new ComboBoxConstraint(categories, null, CommonButtonText.ANY){
+        AbstractPropertyConstraint categoryConstraint = new ComboBoxConstraint(categories, null, CommonButtonText.ANY)
+        {
             @Override
             public void addCriteria(QLBuilder builder, Component constraintComponent)
             {
-                ComboBox component = (ComboBox)constraintComponent;
-                Label category = (Label)component.getSelectedObject();
-                if(category != null && shouldReturnConstraintForValue(category))
+                ComboBox component = (ComboBox) constraintComponent;
+                Label category = (Label) component.getSelectedObject();
+                if (category != null && shouldReturnConstraintForValue(category))
                 {
                     String categoriesPropPath = builder.getAlias() + '.' + ResourceRepositoryItem.RESOURCE_PROP + '.'
-                        + Resource.TAGS_PROP;
+                                                + Resource.TAGS_PROP;
                     builder.appendCriteria(":category in elements(" + categoriesPropPath + ')')
                         .putParameter("category", category);
                 }
@@ -214,7 +210,17 @@ public class ResourceRepositoryItemSelector extends RepositoryItemSelector<Resou
         searchModel.getConstraints().add(typeConstraint);
     }
 
-    @SuppressWarnings("Duplicates")
+    /**
+     * ResourceRepositoryItemSelector currently only supports LONG mode.
+     *
+     * @return LONG mode
+     */
+    @Override
+    public RepositoryItemSelectorMode getMode()
+    {
+        return RepositoryItemSelectorMode.LONG;
+    }
+
     @Override
     protected void addResultColumns(SearchModelImpl searchModel)
     {
@@ -225,13 +231,13 @@ public class ResourceRepositoryItemSelector extends RepositoryItemSelector<Resou
                 ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.NAME_COLUMN_PROP).withColumnName(LABEL_NAME()))
             .withOrderBy(new QLOrderByImpl(
                 "getTextValue(rriAlias." + ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.NAME_COLUMN_PROP + ", '"
-                    + getLocaleContext().getLanguage() + "', '', '')")));
+                + getLocaleContext().getLanguage() + "', '', '')")));
 
         searchModel.getResultColumns().add(new SearchResultColumnImpl()
             .withName("categories")
             .withTableColumn(new FixedValueColumn().withColumnName(COLUMN_CATEGORIES()))
             .withTableCellRenderer(new CustomCellRenderer(EMPTY, input -> {
-                ResourceRepositoryItem rri = (ResourceRepositoryItem)input;
+                ResourceRepositoryItem rri = (ResourceRepositoryItem) input;
                 return ConcatTextSource.create(
                     rri.getResource().getTags().stream().map(TextSources::createTextForAny).collect(Collectors.toList()))
                     .withSeparator(", ");
@@ -247,8 +253,8 @@ public class ResourceRepositoryItemSelector extends RepositoryItemSelector<Resou
         searchModel.getResultColumns().add(new SearchResultColumnImpl()
             .withName("owner")
             .withTableColumn(new FixedValueColumn().withColumnName(LABEL_OWNER()))
-            .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
-                ResourceRepositoryItem rri = (ResourceRepositoryItem)input;
+            .withTableCellRenderer(new CustomCellRenderer(EMPTY, input -> {
+                ResourceRepositoryItem rri = (ResourceRepositoryItem) input;
                 return _repositoryDAO.getOwnerOfRepositoryItem(rri).getName();
             })));
 
@@ -258,9 +264,15 @@ public class ResourceRepositoryItemSelector extends RepositoryItemSelector<Resou
                 ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.CATEGORY_PROP).withColumnName(LABEL_TYPE()))
             .withOrderBy(new QLOrderByImpl(
                 "getTextValue(rriAlias." + ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.CATEGORY_PROP + ".name, '"
-                    + getLocaleContext().getLanguage() + "', '', '')")));
+                + getLocaleContext().getLanguage() + "', '', '')")));
 
         searchModel.setDefaultSortColumn(nameColumn);
+    }
+
+    @Override
+    protected Function<Object, TextSource> getButtonTextExtractor()
+    {
+        return obj -> CommonButtonText.SELECT;
     }
 
     @Override
@@ -272,9 +284,9 @@ public class ResourceRepositoryItemSelector extends RepositoryItemSelector<Resou
             builder.setProjection(builder.getAlias());
 
             builder.appendCriteria("rriAlias.id in(\n"
-                + "    select rirel.repositoryItem.id\n"
-                + "    from RepositoryItemRelation rirel\n"
-                + "    where rirel.repository.id in (:repoIds))")
+                                   + "    select rirel.repositoryItem.id\n"
+                                   + "    from RepositoryItemRelation rirel\n"
+                                   + "    where rirel.repository.id in (:repoIds))")
                 .putParameter("repoIds", getRepositories().stream().map(Repository::getId)
                     .collect(new EntityIdCollector<>(() -> 0)));
 
@@ -283,20 +295,20 @@ public class ResourceRepositoryItemSelector extends RepositoryItemSelector<Resou
                     .collect(new EntityIdCollector<>(() -> 0)));
 
 
-            if(!_includedResourceTypes.isEmpty())
+            if (!_includedResourceTypes.isEmpty())
             {
                 final HibernateUtil hu = HibernateUtil.getInstance();
                 builder.appendCriteria("rriAlias.resource.class in (:includedTypes)")
                     .putParameter("includedTypes",
-                        _includedResourceTypes.stream().map(v -> hu.getDiscriminator(v)).collect(Collectors.toSet()));
+                        _includedResourceTypes.stream().map(hu::getDiscriminator).collect(Collectors.toSet()));
             }
 
-            if(!_excludedResourceTypes.isEmpty())
+            if (!_excludedResourceTypes.isEmpty())
             {
                 final HibernateUtil hu = HibernateUtil.getInstance();
                 builder.appendCriteria("rriAlias.resource.class not in (:excludedTypes)")
                     .putParameter("excludedTypes",
-                        _excludedResourceTypes.stream().map(v -> hu.getDiscriminator(v)).collect(Collectors.toSet()));
+                        _excludedResourceTypes.stream().map(hu::getDiscriminator).collect(Collectors.toSet()));
             }
 
             return builder;
@@ -304,20 +316,14 @@ public class ResourceRepositoryItemSelector extends RepositoryItemSelector<Resou
     }
 
     @Override
-    protected TextSource getRepoItemTerm()
-    {
-        return _terms.resource();
-    }
-
-    @Override
-    protected Function<Object, TextSource> getButtonTextExtractor()
-    {
-        return obj -> CommonButtonText.SELECT;
-    }
-
-    @Override
     protected boolean validForSelection(@Nullable ResourceRepositoryItem selected)
     {
         return true;
+    }
+
+    @Override
+    protected List<Action> getDefaultEntityActions()
+    {
+        return Collections.emptyList();
     }
 }

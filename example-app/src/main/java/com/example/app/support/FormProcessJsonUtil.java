@@ -40,7 +40,7 @@ import net.proteusframework.processes.form.FormProcess;
 /**
  * Utility class for creating JSON for the responses in a {@link FormProcess}
  *
- * @author  Ken Logan (klogan@venturetech.net)
+ * @author Ken Logan (klogan@venturetech.net)
  */
 public final class FormProcessJsonUtil
 {
@@ -53,6 +53,7 @@ public final class FormProcessJsonUtil
      * @param formProcess the form process
      * @param context Optional context section for the JSON document.
      * @param lc the locale context
+     *
      * @return json
      */
     public static JsonObject toJSON(FormProcess formProcess, JsonObject context, LocaleContext lc)
@@ -70,7 +71,7 @@ public final class FormProcessJsonUtil
 
         final EntityRetriever et = EntityRetriever.getInstance();
         final FormData formData = FormProcessUtil.getInstance().getFormData(formProcess, true);
-        for(ExtraValue evl : formData.getExtraValueList().getExtraValues())
+        for (ExtraValue evl : formData.getExtraValueList().getExtraValues())
         {
             evl = et.narrowProxyIfPossible(evl);
 
@@ -79,19 +80,19 @@ public final class FormProcessJsonUtil
             Extra e = et.narrowProxyIfPossible(evl.getExtra());
 
             answers.add(e.getProgrammaticName(), answer);
-            if(e.getName() != null)
+            if (e.getName() != null)
                 answer.addProperty("name", e.getName().getText(lc).toString());
-            if(e.getShortName() != null)
+            if (e.getShortName() != null)
                 answer.addProperty("shortName", e.getShortName().getText(lc).toString());
             answer.addProperty("type", e.getClass().getSimpleName().replace("Extra", ""));
             answer.addProperty("answer", evl.getAsText(lc).toString());
 
-            if(evl instanceof ChoiceExtraValue)
+            if (evl instanceof ChoiceExtraValue)
             {
                 ChoiceExtraValue cev = (ChoiceExtraValue) evl;
                 ChoiceExtra choiceExtra = (ChoiceExtra) e;
 
-                if(choiceExtra.isAllowMultipleChoice())
+                if (choiceExtra.isAllowMultipleChoice())
                 {
                     JsonArray programmatic = new JsonArray();
                     for (ChoiceExtraChoice choice : cev.getChoices())
@@ -102,7 +103,7 @@ public final class FormProcessJsonUtil
                         if (!StringFactory.isEmptyString(choice.getReportValue()))
                             c.addProperty("reportValue", choice.getReportValue());
                         ChoiceTextValue choiceTextValue = cev.getChoiceTextValue(choice);
-                        if(choiceTextValue != null)
+                        if (choiceTextValue != null)
                             c.addProperty("userText", choiceTextValue.getValue());
                         programmatic.add(c);
                     }
@@ -112,14 +113,14 @@ public final class FormProcessJsonUtil
                 {
                     JsonObject c = new JsonObject();
                     ChoiceExtraChoice choice = cev.getChoices().isEmpty() ? null : cev.getChoices().get(0);
-                    if(choice != null)
+                    if (choice != null)
                     {
                         c.addProperty("name", choice.getName().getText(lc).toString());
                         c.addProperty("programmaticName", choice.getProgrammaticName());
                         if (!StringFactory.isEmptyString(choice.getReportValue()))
                             c.addProperty("reportValue", choice.getReportValue());
                         ChoiceTextValue choiceTextValue = cev.getChoiceTextValue(choice);
-                        if(choiceTextValue != null)
+                        if (choiceTextValue != null)
                             c.addProperty("userText", choiceTextValue.getValue());
                     }
                     answer.add("programmatic", c);
@@ -128,11 +129,11 @@ public final class FormProcessJsonUtil
             else
             {
                 Map<Enum<?>, Object> programmaticValueParts = evl.getProgrammaticValueParts();
-                if(!programmaticValueParts.isEmpty())
+                if (!programmaticValueParts.isEmpty())
                 {
                     JsonArray programmatic = new JsonArray();
 
-                    for(Map.Entry<Enum<?>, Object> entry : programmaticValueParts.entrySet())
+                    for (Map.Entry<Enum<?>, Object> entry : programmaticValueParts.entrySet())
                     {
                         JsonObject c = new JsonObject();
                         programmatic.add(c);
@@ -148,10 +149,10 @@ public final class FormProcessJsonUtil
 
         JsonObject json = new JsonObject();
         json.add("form", form);
-        if(context != null)
+        if (context != null)
             json.add("context", context);
 
-        if(_logger.isTraceEnabled())
+        if (_logger.isTraceEnabled())
         {
             Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls()
                 .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();

@@ -55,9 +55,10 @@ public class CmsLinkTagListener extends TagListener<TagListenerConfiguration>
     private Function<Link, String> _linkConverter;
 
     /**
-     *   Instantiates a new instance
-     *   @param linkHelper the Link Externalizer
-     *   @param site the site
+     * Instantiates a new instance
+     *
+     * @param linkHelper the Link Externalizer
+     * @param site the site
      */
     public CmsLinkTagListener(@Nonnull LinkHelper linkHelper, @Nonnull Site site)
     {
@@ -65,49 +66,27 @@ public class CmsLinkTagListener extends TagListener<TagListenerConfiguration>
         _site = site;
     }
 
-    /**
-     *   Set the query supplier for this tag listener
-     *   @param querySupplier the query supplier
-     *   @return this
-     */
-    public CmsLinkTagListener withQuerySupplier(Supplier<Map<String, String>> querySupplier)
-    {
-        _querySupplier = querySupplier;
-        return this;
-    }
-    /**
-     *   Set the link converter for this tag listener
-     *   @param linkConverter the link converter
-     *   @return this
-     */
-
-    public CmsLinkTagListener withLinkConverter(Function<Link, String> linkConverter)
-    {
-        _linkConverter = linkConverter;
-        return this;
-    }
-
     @Override
     public String[] getSupportedTags()
     {
-        return new String[]{ "a" };
+        return new String[]{"a"};
     }
 
     @Override
     public boolean startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
     {
         Link link = Link.getLink(uri, attributes);
-        if(link != null && LinkUtil.isInternal(link))
+        if (link != null && LinkUtil.isInternal(link))
         {
             try
             {
                 Link externalLink = _linkHelper.getAbsoluteExternalLink(link, _site);
-                if(_querySupplier != null)
+                if (_querySupplier != null)
                 {
                     addQueryToLink(externalLink, _querySupplier.get());
                 }
                 String newURI = externalLink.getURIAsString();
-                if(_linkConverter != null)
+                if (_linkConverter != null)
                 {
                     newURI = _linkConverter.apply(externalLink);
                 }
@@ -117,7 +96,7 @@ public class CmsLinkTagListener extends TagListener<TagListenerConfiguration>
                 getConfiguration().getWriter().append(">");
                 return true;
             }
-            catch(URISyntaxException e)
+            catch (URISyntaxException e)
             {
                 _logger.error("Unable to externalize link.", e);
                 throw new RuntimeException(e);
@@ -135,7 +114,7 @@ public class CmsLinkTagListener extends TagListener<TagListenerConfiguration>
         final String query = uri.getQuery();
         final StringBuilder pQuery = new StringBuilder();
         final Iterator<Map.Entry<String, String>> it = queryMap.entrySet().iterator();
-        while(it.hasNext())
+        while (it.hasNext())
         {
             try
             {
@@ -149,7 +128,7 @@ public class CmsLinkTagListener extends TagListener<TagListenerConfiguration>
             {
                 _logger.error("UTF-8 must be supported.", e);
             }
-            if(it.hasNext())
+            if (it.hasNext())
                 pQuery.append('&');
         }
         final String newQuery = isEmptyString(query)
@@ -177,7 +156,7 @@ public class CmsLinkTagListener extends TagListener<TagListenerConfiguration>
     @Override
     public boolean characters(String characters, boolean closedStartElement) throws SAXException
     {
-        if(!isEmptyString(characters))
+        if (!isEmptyString(characters))
         {
             getConfiguration().getWriter().append(characters);
         }
@@ -189,5 +168,32 @@ public class CmsLinkTagListener extends TagListener<TagListenerConfiguration>
         throws SAXException
     {
         getConfiguration().getWriter().append("</a>");
+    }
+
+    /**
+     * Set the link converter for this tag listener
+     *
+     * @param linkConverter the link converter
+     *
+     * @return this
+     */
+
+    public CmsLinkTagListener withLinkConverter(Function<Link, String> linkConverter)
+    {
+        _linkConverter = linkConverter;
+        return this;
+    }
+
+    /**
+     * Set the query supplier for this tag listener
+     *
+     * @param querySupplier the query supplier
+     *
+     * @return this
+     */
+    public CmsLinkTagListener withQuerySupplier(Supplier<Map<String, String>> querySupplier)
+    {
+        _querySupplier = querySupplier;
+        return this;
     }
 }

@@ -61,24 +61,87 @@ import net.proteusframework.core.hibernate.dao.EntityRetriever;
 @Audited
 public class RepositoryItemRelation extends AbstractAuditableEntity<Integer>
 {
-    private static final long serialVersionUID = 4502761901001997105L;
-
     /** The database table name */
     public static final String TABLE_NAME = "repositoryItemRelation";
     /** The database id column */
     public static final String ID_COLUMN = "repositoryItemRelation_id";
-    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + '.' + ID_COLUMN + "_seq";
-
     /** The property: repositoryItem */
     public static final String REPOSITORY_ITEM_PROP = "repositoryItem";
     /** The property: repository */
     public static final String REPOSITORY_PROP = "repository";
     /** The property: relationType */
     public static final String RELATION_TYPE_PROP = "relationType";
-
+    private static final long serialVersionUID = 4502761901001997105L;
+    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + '.' + ID_COLUMN + "_seq";
     private RepositoryItem _repositoryItem;
     private Repository _repository;
     private RepositoryItemRelationType _relationType;
+
+    /**
+     * Get the RepositoryItem for this RepositoryItemRelation, casting it to the expected RepositoryItem subclass in the process
+     *
+     * @param <RI> the RepositoryItem subclass
+     * @param clazz the RepositoryItem subclass
+     *
+     * @return the RepositoryItem subclass instance
+     */
+    @Nonnull
+    @Transient
+    public <RI extends RepositoryItem> RI getAssertedCastRepositoryItem(Class<RI> clazz)
+    {
+        RI ri = getCastRepositoryItem(clazz);
+        assert ri != null;
+        return ri;
+    }
+
+    /**
+     * Get the RepositoryItem for this RepositoryItemRelation, casting it to the expected RepositoryItem subclass in the process
+     *
+     * @param <RI> the RepositoryItem subclass
+     * @param clazz the RepositoryItem subclass
+     *
+     * @return the RepositoryItem subclass instance
+     */
+    @SuppressWarnings("unchecked")
+    @Nullable
+    @Transient
+    public <RI extends RepositoryItem> RI getCastRepositoryItem(Class<RI> clazz)
+    {
+        RepositoryItem ri = getRepositoryItem();
+        if (ri instanceof HibernateProxy)
+        {
+            EntityRetriever er = EntityRetriever.getInstance();
+            ri = er.narrowProxyIfPossible(ri);
+        }
+        return (clazz.isAssignableFrom(ri.getClass())) ? (RI) ri : null;
+    }
+
+    /**
+     * Get the RepositoryItem for this RepositoryItemRelation
+     *
+     * @return RepositoryItem
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = RepositoryItem.ID_COLUMN)
+    @Cascade({
+        CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.PERSIST,
+        CascadeType.REFRESH, CascadeType.DETACH, CascadeType.LOCK, CascadeType.REPLICATE})
+    @NotNull
+    @Nonnull
+    public RepositoryItem getRepositoryItem()
+    {
+        return _repositoryItem;
+    }
+
+    /**
+     * Get the RepositoryItem for this RepositoryItemRelation
+     *
+     * @param repositoryItem RepositoryItem
+     */
+    public void setRepositoryItem(@Nonnull RepositoryItem repositoryItem)
+    {
+        _repositoryItem = repositoryItem;
+    }
 
     @Id
     @Column(name = ID_COLUMN)
@@ -92,32 +155,32 @@ public class RepositoryItemRelation extends AbstractAuditableEntity<Integer>
     }
 
     /**
-     *   Get the RepositoryItem for this RepositoryItemRelation
-     *   @return RepositoryItem
+     * Get the Relation Type for this RepositoryItemRelation
+     *
+     * @return Relation Type
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = RepositoryItem.ID_COLUMN)
-    @Cascade({
-        CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.PERSIST,
-        CascadeType.REFRESH, CascadeType.DETACH, CascadeType.LOCK, CascadeType.REPLICATE })
-    @NotNull
+    @Column(name = RELATION_TYPE_PROP)
+    @Enumerated(EnumType.STRING)
     @Nonnull
-    public RepositoryItem getRepositoryItem()
+    public RepositoryItemRelationType getRelationType()
     {
-        return _repositoryItem;
-    }
-    /**
-     *   Get the RepositoryItem for this RepositoryItemRelation
-     *   @param repositoryItem RepositoryItem
-     */
-    public void setRepositoryItem(@Nonnull RepositoryItem repositoryItem)
-    {
-        _repositoryItem = repositoryItem;
+        return _relationType;
     }
 
     /**
-     *   Get the Repository for this RepositoryItemRelation
-     *   @return Repository
+     * Set the Relation Type for this RepositoryItemRelation
+     *
+     * @param relationType Relation Type
+     */
+    public void setRelationType(@Nonnull RepositoryItemRelationType relationType)
+    {
+        _relationType = relationType;
+    }
+
+    /**
+     * Get the Repository for this RepositoryItemRelation
+     *
+     * @return Repository
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = Repository.ID_COLUMN)
@@ -127,67 +190,14 @@ public class RepositoryItemRelation extends AbstractAuditableEntity<Integer>
     {
         return _repository;
     }
+
     /**
-     *   Set the Repository for this RepositoryItemRelation
-     *   @param repository Repository
+     * Set the Repository for this RepositoryItemRelation
+     *
+     * @param repository Repository
      */
     public void setRepository(@Nonnull Repository repository)
     {
         _repository = repository;
-    }
-
-    /**
-     *   Get the Relation Type for this RepositoryItemRelation
-     *   @return Relation Type
-     */
-    @Column(name = RELATION_TYPE_PROP)
-    @Enumerated(EnumType.STRING)
-    @Nonnull
-    public RepositoryItemRelationType getRelationType()
-    {
-        return _relationType;
-    }
-    /**
-     *   Set the Relation Type for this RepositoryItemRelation
-     *   @param relationType Relation Type
-     */
-    public void setRelationType(@Nonnull RepositoryItemRelationType relationType)
-    {
-        _relationType = relationType;
-    }
-
-    /**
-     *   Get the RepositoryItem for this RepositoryItemRelation, casting it to the expected RepositoryItem subclass in the process
-     *   @param <RI> the RepositoryItem subclass
-     *   @param clazz the RepositoryItem subclass
-     *   @return the RepositoryItem subclass instance
-     */
-    @SuppressWarnings("unchecked")
-    @Nullable
-    @Transient
-    public <RI extends RepositoryItem> RI getCastRepositoryItem(Class<RI> clazz)
-    {
-        RepositoryItem ri = getRepositoryItem();
-        if(ri instanceof HibernateProxy)
-        {
-            EntityRetriever er = EntityRetriever.getInstance();
-            ri = er.narrowProxyIfPossible(ri);
-        }
-        return (clazz.isAssignableFrom(ri.getClass())) ? (RI)ri : null;
-    }
-
-    /**
-     *   Get the RepositoryItem for this RepositoryItemRelation, casting it to the expected RepositoryItem subclass in the process
-     *   @param <RI> the RepositoryItem subclass
-     *   @param clazz the RepositoryItem subclass
-     *   @return the RepositoryItem subclass instance
-     */
-    @Nonnull
-    @Transient
-    public <RI extends RepositoryItem> RI getAssertedCastRepositoryItem(Class<RI> clazz)
-    {
-        RI ri = getCastRepositoryItem(clazz);
-        assert ri != null;
-        return ri;
     }
 }

@@ -39,48 +39,9 @@ public class UIPreferences
     private final List<Notification> _messages = new ArrayList<>();
 
     /**
-     *   Get a stored Integer within UIPreferences
-     *   @param key the Key to retrieve
-     *   @return the stored value.
-     */
-    public Optional<Integer> getStoredInteger(String key)
-    {
-        return Optional.ofNullable(_intPrefs.get(key));
-    }
-
-    /**
-     *   Set a stored Integer within UIPreferences
-     *   @param key the Key to store
-     *   @param value the value to store
-     */
-    public void setStoredInteger(String key, @Nullable Integer value)
-    {
-        _intPrefs.put(key, value);
-    }
-
-    /**
-     *   Get a stored Object within UIPreferences
-     *   @param key the Key to retrieve
-     *   @return the stored value.
-     */
-    public Optional<Object> getStoredObject(String key)
-    {
-        return Optional.ofNullable(_objPrefs.get(key));
-    }
-
-    /**
-     *   Set a stored Object within UIPreferences
-     *   @param key the Key to store
-     *   @param value the value to store
-     */
-    public void setStoredObject(String key, @Nullable Object value)
-    {
-        _objPrefs.put(key, value);
-    }
-
-    /**
-     *   Add a message to be stored within UIPreferences.  It will be consumed upon calling {@link UIPreferences#consumeMessages()}
-     *   @param message the message to add
+     * Add a message to be stored within UIPreferences.  It will be consumed upon calling {@link UIPreferences#consumeMessages()}
+     *
+     * @param message the message to add
      */
     public void addMessage(Notification message)
     {
@@ -88,13 +49,60 @@ public class UIPreferences
     }
 
     /**
-     *   Clears the messages within UIPreferences, returning them.
-     *   @return messages
+     * Clears the messages within UIPreferences, returning them.
+     *
+     * @return messages
      */
     public List<Notification> consumeMessages()
     {
         List<Notification> messages = new ArrayList<>(_messages);
         _messages.clear();
         return messages;
+    }
+
+    /**
+     * Get a stored Integer within UIPreferences
+     *
+     * @param key the Key to retrieve
+     *
+     * @return the stored value.
+     */
+    public Optional<Integer> getStoredInteger(String key)
+    {
+        return Optional.ofNullable(_intPrefs.get(key));
+    }
+
+    /**
+     * Get a stored Object within UIPreferences
+     *
+     * @param key the Key to retrieve
+     *
+     * @return the stored value.
+     */
+    public Optional<Object> getStoredObject(String key)
+    {
+        return Optional.ofNullable(_objPrefs.get(key));
+    }
+
+    /**
+     * Set a stored Integer within UIPreferences
+     *
+     * @param key the Key to store
+     * @param value the value to store
+     */
+    public void setStoredInteger(String key, @Nullable Integer value)
+    {
+        _intPrefs.put(key, value);
+    }
+
+    /**
+     * Set a stored Object within UIPreferences
+     *
+     * @param key the Key to store
+     * @param value the value to store
+     */
+    public void setStoredObject(String key, @Nullable Object value)
+    {
+        _objPrefs.put(key, value);
     }
 }

@@ -32,13 +32,28 @@ public final class ICal4jRecurDisplayParser
     /** Logger. */
     private static final Logger _logger = LogManager.getLogger(ICal4jRecurDisplayParser.class);
 
-    //Private Constructor
-    private ICal4jRecurDisplayParser(){}
+    private static void addSeparator(int totalCount, int currentCount, StringBuilder sb)
+    {
+        if (currentCount == (totalCount - 1))
+        {
+            sb.append(", and ");
+        }
+        else if (currentCount < totalCount)
+        {
+            sb.append(", ");
+        }
+        else
+        {
+            sb.append(' ');
+        }
+    }
 
     /**
-     *   Parse the given recurrence rule into human-readable text
-     *   @param recurrenceRule the recurrence rule
-     *   @return the human-readable recurrence rule
+     * Parse the given recurrence rule into human-readable text
+     *
+     * @param recurrenceRule the recurrence rule
+     *
+     * @return the human-readable recurrence rule
      */
     public static String parse(String recurrenceRule)
     {
@@ -51,7 +66,7 @@ public final class ICal4jRecurDisplayParser
 
             return sb.toString().trim();
         }
-        catch(ParseException e)
+        catch (ParseException e)
         {
             _logger.error("An error occurred while parsing recurrence rule: ", e);
             return recurrenceRule;
@@ -111,33 +126,9 @@ public final class ICal4jRecurDisplayParser
     }
 
     @SuppressWarnings("unchecked")
-    private static void parseWeekly(Recur recur, StringBuilder sb)
-    {
-        if(!recur.getDayList().isEmpty())
-        {
-            sb.append("on ");
-            final int totalCountDays = recur.getDayList().size();
-            final AtomicReference<Integer> counter = new AtomicReference<>(0);
-            recur.getDayList().forEach(day -> {
-                WeekDay wd = (WeekDay)day;
-                try
-                {
-                    sb.append(parseWeekDay(wd));
-                    counter.set(counter.get() + 1);
-                    addSeparator(totalCountDays, counter.get(), sb);
-                }
-                catch (ParseException e)
-                {
-                    _logger.error(e);
-                }
-            });
-        }
-    }
-
-    @SuppressWarnings("unchecked")
     private static void parseMonthly(Recur recur, StringBuilder sb)
     {
-        if(!recur.getMonthDayList().isEmpty())
+        if (!recur.getMonthDayList().isEmpty())
         {
             sb.append("on the ");
             final int totalCountDays = recur.getMonthDayList().size();
@@ -161,14 +152,14 @@ public final class ICal4jRecurDisplayParser
                     counter.set(counter.get() + 1);
                     addSeparator(totalCountDays, counter.get(), sb);
                 }
-                catch(ParseException e)
+                catch (ParseException e)
                 {
                     _logger.error(e);
                 }
             });
             sb.append(" day of the month ");
         }
-        else if(!recur.getWeekNoList().isEmpty())
+        else if (!recur.getWeekNoList().isEmpty())
         {
             sb.append("on the ");
             final int totalCountWeeks = recur.getWeekNoList().size();
@@ -177,7 +168,7 @@ public final class ICal4jRecurDisplayParser
                 try
                 {
                     Integer weekNo = (Integer) week;
-                    if(weekNo > 0)
+                    if (weekNo > 0)
                     {
                         sb.append(parseNumberToString(weekNo));
                     }
@@ -188,37 +179,19 @@ public final class ICal4jRecurDisplayParser
                     counter.set(counter.get() + 1);
                     addSeparator(totalCountWeeks, counter.get(), sb);
                 }
-                catch(ParseException e)
+                catch (ParseException e)
                 {
                     _logger.error(e);
                 }
             });
             sb.append(" week of the month ");
-            if(!recur.getDayList().isEmpty())
+            if (!recur.getDayList().isEmpty())
                 sb.append("and ");
         }
-        if(!recur.getDayList().isEmpty())
+        if (!recur.getDayList().isEmpty())
         {
             parseWeekly(recur, sb);
             sb.append(" of the month");
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private static void parseYearly(Recur recur, StringBuilder sb)
-    {
-        if(!recur.getMonthList().isEmpty())
-        {
-            sb.append("each ");
-            final int totalCountMonths = recur.getMonthList().size();
-            final AtomicReference<Integer> counter = new AtomicReference<>(0);
-            recur.getMonthList().forEach(month -> {
-                Integer monthNo = (Integer)month;
-                sb.append(new DateFormatSymbols().getMonths()[monthNo - 1]);
-                counter.set(counter.get() + 1);
-                addSeparator(totalCountMonths, counter.get(), sb);
-            });
-            parseMonthly(recur, sb);
         }
     }
 
@@ -228,15 +201,15 @@ public final class ICal4jRecurDisplayParser
         char[] digits = numberString.toCharArray();
         int ones;
         StringBuilder sb = new StringBuilder();
-        if(digits.length == 0) throw new ParseException("Unable to parse number to string: " + numberString, 0);
-        if(digits.length > 1)
+        if (digits.length == 0) throw new ParseException("Unable to parse number to string: " + numberString, 0);
+        if (digits.length > 1)
         {
             int tens = Character.getNumericValue(digits[0]);
             ones = Character.getNumericValue(digits[1]);
-            switch(tens)
+            switch (tens)
             {
                 case 1:
-                    if(ones > 0)
+                    if (ones > 0)
                     {
                         return parseTeenNumberToString(numberString, ones);
                     }
@@ -245,7 +218,7 @@ public final class ICal4jRecurDisplayParser
                         return "10th";
                     }
                 case 2:
-                    if(ones > 0)
+                    if (ones > 0)
                     {
                         sb.append('2');
                         break;
@@ -255,7 +228,7 @@ public final class ICal4jRecurDisplayParser
                         return "20th";
                     }
                 case 3:
-                    if(ones > 0)
+                    if (ones > 0)
                     {
                         sb.append('3');
                         break;
@@ -273,7 +246,7 @@ public final class ICal4jRecurDisplayParser
         {
             ones = Character.getNumericValue(digits[0]);
         }
-        switch(ones)
+        switch (ones)
         {
             case 1:
                 sb.append("1st");
@@ -310,7 +283,7 @@ public final class ICal4jRecurDisplayParser
 
     private static String parseTeenNumberToString(String dayOfMonthString, int ones) throws ParseException
     {
-        switch(ones)
+        switch (ones)
         {
             case 1:
                 return "11th";
@@ -338,7 +311,7 @@ public final class ICal4jRecurDisplayParser
     private static String parseWeekDay(WeekDay day) throws ParseException
     {
         StringBuilder sb = new StringBuilder();
-        if(day.getDay().equals(WeekDay.MO.getDay()))
+        if (day.getDay().equals(WeekDay.MO.getDay()))
         {
             if (day.getOffset() > 0)
             {
@@ -351,7 +324,7 @@ public final class ICal4jRecurDisplayParser
             sb.append("Monday");
             return sb.toString();
         }
-        if(day.getDay().equals(WeekDay.TU.getDay()))
+        if (day.getDay().equals(WeekDay.TU.getDay()))
         {
             if (day.getOffset() > 0)
             {
@@ -364,7 +337,7 @@ public final class ICal4jRecurDisplayParser
             sb.append("Tuesday");
             return sb.toString();
         }
-        if(day.getDay().equals(WeekDay.WE.getDay()))
+        if (day.getDay().equals(WeekDay.WE.getDay()))
         {
             if (day.getOffset() > 0)
             {
@@ -377,7 +350,7 @@ public final class ICal4jRecurDisplayParser
             sb.append("Wednesday");
             return sb.toString();
         }
-        if(day.getDay().equals(WeekDay.TH.getDay()))
+        if (day.getDay().equals(WeekDay.TH.getDay()))
         {
             if (day.getOffset() > 0)
             {
@@ -390,7 +363,7 @@ public final class ICal4jRecurDisplayParser
             sb.append("Thursday");
             return sb.toString();
         }
-        if(day.getDay().equals(WeekDay.FR.getDay()))
+        if (day.getDay().equals(WeekDay.FR.getDay()))
         {
             if (day.getOffset() > 0)
             {
@@ -403,7 +376,7 @@ public final class ICal4jRecurDisplayParser
             sb.append("Friday");
             return sb.toString();
         }
-        if(day.getDay().equals(WeekDay.SA.getDay()))
+        if (day.getDay().equals(WeekDay.SA.getDay()))
         {
             if (day.getOffset() > 0)
             {
@@ -416,7 +389,7 @@ public final class ICal4jRecurDisplayParser
             sb.append("Saturday");
             return sb.toString();
         }
-        if(day.getDay().equals(WeekDay.SU.getDay()))
+        if (day.getDay().equals(WeekDay.SU.getDay()))
         {
             if (day.getOffset() > 0)
             {
@@ -432,19 +405,50 @@ public final class ICal4jRecurDisplayParser
         throw new ParseException("Unable to parse WeekDay: " + day.getDay(), 0);
     }
 
-    private static void addSeparator(int totalCount, int currentCount, StringBuilder sb)
+    @SuppressWarnings("unchecked")
+    private static void parseWeekly(Recur recur, StringBuilder sb)
     {
-        if(currentCount == (totalCount - 1))
+        if (!recur.getDayList().isEmpty())
         {
-            sb.append(", and ");
+            sb.append("on ");
+            final int totalCountDays = recur.getDayList().size();
+            final AtomicReference<Integer> counter = new AtomicReference<>(0);
+            recur.getDayList().forEach(day -> {
+                WeekDay wd = (WeekDay) day;
+                try
+                {
+                    sb.append(parseWeekDay(wd));
+                    counter.set(counter.get() + 1);
+                    addSeparator(totalCountDays, counter.get(), sb);
+                }
+                catch (ParseException e)
+                {
+                    _logger.error(e);
+                }
+            });
         }
-        else if(currentCount < totalCount)
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void parseYearly(Recur recur, StringBuilder sb)
+    {
+        if (!recur.getMonthList().isEmpty())
         {
-            sb.append(", ");
+            sb.append("each ");
+            final int totalCountMonths = recur.getMonthList().size();
+            final AtomicReference<Integer> counter = new AtomicReference<>(0);
+            recur.getMonthList().forEach(month -> {
+                Integer monthNo = (Integer) month;
+                sb.append(new DateFormatSymbols().getMonths()[monthNo - 1]);
+                counter.set(counter.get() + 1);
+                addSeparator(totalCountMonths, counter.get(), sb);
+            });
+            parseMonthly(recur, sb);
         }
-        else
-        {
-            sb.append(' ');
-        }
+    }
+
+    //Private Constructor
+    private ICal4jRecurDisplayParser()
+    {
     }
 }

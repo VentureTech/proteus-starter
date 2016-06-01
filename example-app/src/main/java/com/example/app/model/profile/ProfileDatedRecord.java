@@ -44,14 +44,10 @@ import java.util.Date;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.PROFILE_DATA)
 public class ProfileDatedRecord implements net.proteusframework.core.hibernate.model.Entity<Integer>
 {
-    private static final long serialVersionUID = 4441129836124060203L;
-
     /** The database table name */
     public static final String TABLE_NAME = "ProfileDatedRecord";
     /** The database id column */
     public static final String ID_COLUMN = "profileDatedRecord_id";
-
-    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + '.' + ID_COLUMN + "_seq";
     /** The property: date */
     public static final String DATE_PROP = "date";
     /** The property: profile */
@@ -60,12 +56,59 @@ public class ProfileDatedRecord implements net.proteusframework.core.hibernate.m
     public static final String CATEGORY_PROP = "category";
     /** The property: subCategory */
     public static final String SUBCATEGORY_PROP = "subCategory";
-
+    private static final long serialVersionUID = 4441129836124060203L;
+    private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + '.' + ID_COLUMN + "_seq";
     private Integer _id;
     private Date _date;
     private Profile _profile;
     private String _category;
     private String _subCategory;
+
+    /**
+     * Get the Category for this DatedRecord
+     *
+     * @return category
+     */
+    @Column(name = CATEGORY_PROP)
+    @NotNull
+    @Nonnull
+    public String getCategory()
+    {
+        return _category;
+    }
+
+    /**
+     * Set the Category for this DatedRecord
+     *
+     * @param category the category
+     */
+    public void setCategory(@Nonnull String category)
+    {
+        _category = category;
+    }
+
+    /**
+     * Get the Date for this DatedRecord
+     *
+     * @return date
+     */
+    @Column(name = DATE_PROP)
+    @NotNull
+    @Nonnull
+    public Date getDate()
+    {
+        return _date;
+    }
+
+    /**
+     * Set the Date for this DatedRecord
+     *
+     * @param date date
+     */
+    public void setDate(@Nonnull Date date)
+    {
+        _date = date;
+    }
 
     @Id
     @Column(name = ID_COLUMN)
@@ -78,9 +121,11 @@ public class ProfileDatedRecord implements net.proteusframework.core.hibernate.m
     {
         return _id;
     }
+
     /**
-     *   Set the Id
-     *   @param id the Id
+     * Set the Id
+     *
+     * @param id the Id
      */
     public void setId(Integer id)
     {
@@ -88,28 +133,9 @@ public class ProfileDatedRecord implements net.proteusframework.core.hibernate.m
     }
 
     /**
-     *   Get the Date for this DatedRecord
-     *   @return date
-     */
-    @Column(name = DATE_PROP)
-    @NotNull
-    @Nonnull
-    public Date getDate()
-    {
-        return _date;
-    }
-    /**
-     *   Set the Date for this DatedRecord
-     *   @param date date
-     */
-    public void setDate(@Nonnull Date date)
-    {
-        _date = date;
-    }
-
-    /**
-     *   Get the Profile for this DatedRecord
-     *   @return profile
+     * Get the Profile for this DatedRecord
+     *
+     * @return profile
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id")
@@ -119,9 +145,11 @@ public class ProfileDatedRecord implements net.proteusframework.core.hibernate.m
     {
         return _profile;
     }
+
     /**
-     *   Set the Profile for this DatedRecord
-     *   @param profile the profile
+     * Set the Profile for this DatedRecord
+     *
+     * @param profile the profile
      */
     public void setProfile(@Nonnull Profile profile)
     {
@@ -129,28 +157,9 @@ public class ProfileDatedRecord implements net.proteusframework.core.hibernate.m
     }
 
     /**
-     *   Get the Category for this DatedRecord
-     *   @return category
-     */
-    @Column(name = CATEGORY_PROP)
-    @NotNull
-    @Nonnull
-    public String getCategory()
-    {
-        return _category;
-    }
-    /**
-     *   Set the Category for this DatedRecord
-     *   @param category the category
-     */
-    public void setCategory(@Nonnull String category)
-    {
-        _category = category;
-    }
-
-    /**
-     *   Get the SubCategory for this DatedRecord
-     *   @return sub-category
+     * Get the SubCategory for this DatedRecord
+     *
+     * @return sub-category
      */
     @Column(name = SUBCATEGORY_PROP)
     @Nullable
@@ -158,9 +167,11 @@ public class ProfileDatedRecord implements net.proteusframework.core.hibernate.m
     {
         return _subCategory;
     }
+
     /**
-     *   Set the SubCategory for this DatedRecord
-     *   @param subCategory sub-category
+     * Set the SubCategory for this DatedRecord
+     *
+     * @param subCategory sub-category
      */
     public void setSubCategory(@Nullable String subCategory)
     {

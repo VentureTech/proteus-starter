@@ -62,6 +62,14 @@ public class URIResourceType implements ResourceType
     @Autowired
     private transient EntityRetriever _er;
 
+    @Override
+    public Resource createInstance(IImplementationModel<Resource> model)
+    {
+        URIResource resource = new URIResource();
+        resource.setResourceType(this);
+        return resource;
+    }
+
     @SuppressWarnings("rawtypes")
     @Override
     @Nonnull
@@ -95,14 +103,6 @@ public class URIResourceType implements ResourceType
     public TextSource getDescription()
     {
         return DESCRIPTION();
-    }
-
-    @Override
-    public Resource createInstance(IImplementationModel<Resource> model)
-    {
-        URIResource resource = new URIResource();
-        resource.setResourceType(this);
-        return resource;
     }
 
     private Object readResolve() throws ObjectStreamException

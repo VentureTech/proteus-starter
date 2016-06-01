@@ -46,7 +46,9 @@ import static net.proteusframework.core.locale.TextSources.createText;
 /**
  * Provides a UI for listing Resources owned by a RepositoryItem
  * Implementations of this UI should be {@link Configurable} or a {@link Component}
+ *
  * @param <RI> the RepositoryItem subclass whose Resources we are managing
+ *
  * @author Alan Holt (aholt@venturetech.net)
  * @since 12/30/15 9:13 AM
  */
@@ -60,6 +62,9 @@ import static net.proteusframework.core.locale.TextSources.createText;
 )
 public abstract class RepositoryItemResourceListing<RI extends RepositoryItem> extends Container
 {
+    private final RI _value;
+    private final boolean _canEdit;
+    private final Container _listing = of("resource-listing");
     @Autowired
     private EntityRetriever _er;
     @Autowired
@@ -67,14 +72,11 @@ public abstract class RepositoryItemResourceListing<RI extends RepositoryItem> e
     @Autowired
     private ProfileTermProvider _terms;
 
-    private final RI _value;
-    private final boolean _canEdit;
-    private final Container _listing = of("resource-listing");
-
     /**
-     *   Instantiates a new instance of RepositoryItemResourceListing
-     *   @param value the RepositoryItem to list the resources for
-     *   @param canEdit boolean flag -- if true, allows adding or removing resources to the RepositoryItem
+     * Instantiates a new instance of RepositoryItemResourceListing
+     *
+     * @param value the RepositoryItem to list the resources for
+     * @param canEdit boolean flag -- if true, allows adding or removing resources to the RepositoryItem
      */
     public RepositoryItemResourceListing(@Nonnull RI value, boolean canEdit)
     {
@@ -83,54 +85,6 @@ public abstract class RepositoryItemResourceListing<RI extends RepositoryItem> e
 
         addClassName("resource-mgt search clearfix");
     }
-
-    /**
-     *   Get the RepositoryItem whose Resources we are managing
-     *   @return the RepositoryItem
-     */
-    @Nonnull
-    protected RI getValue()
-    {
-        return ensureValueState(_er.reattachIfNecessary(_value));
-    }
-
-    /**
-     *   Ensures that properties on the given Value are populated as they should be
-     *   @param value the Value
-     *   @return the Value, with any properties populated that should be populated
-     */
-    protected abstract RI ensureValueState(RI value);
-
-    /**
-     *   Get the Resources from the given Value
-     *   @param value the RepositoryItem to retrieve the Resources from
-     *   @return the Resources for the RepositoryItem
-     */
-    protected abstract List<Resource> getResourcesFromValue(RI value);
-
-    /**
-     *   Set the Resources on the given Value
-     *   @param resources the Resources to set on the Value
-     *   @param value the RepositoryItem to set the Resources on
-     *   @return the Value with the Resources set on it.
-     */
-    protected abstract RI setResourcesOnValue(List<Resource> resources, RI value);
-
-    /**
-     *   Add the Resource to the given Value
-     *   @param resource the Resource to add
-     *   @param value the RepositoryItem to add the Resource to
-     *   @return the Value with the Resource added to it.
-     */
-    protected abstract RI addResourceToValue(Resource resource, RI value);
-
-    /**
-     *   Remove the Resource from the given Value
-     *   @param resource the Resource to remove
-     *   @param value the RepositoryItem to remove the Resource from
-     *   @return the Value with the Resource removed from it
-     */
-    protected abstract RI removeResourceFromValue(Resource resource, RI value);
 
     @Override
     public void init()
@@ -143,35 +97,71 @@ public abstract class RepositoryItemResourceListing<RI extends RepositoryItem> e
 
         populateListing();
 
-        if(_canEdit)
+        if (_canEdit)
         {
             add(of("actions entity-actions", selectResources));
         }
         add(_listing);
     }
 
-    @SuppressWarnings("ConstantConditions")
-    private void populateListing()
-    {
-        _listing.removeAllComponents();
-        getResourcesFromValue(getValue()).forEach(r -> {
-            Optional<ResourceRepositoryItem> repoItem = _repositoryDAO.getRepoItemForResource(r);
-            if(repoItem.isPresent())
-            {
-                //FIXME:  Issue with rendering -- this prints out "null" to the browser for the html rendered by the renderer.
-                ResourceRepositoryItemValueViewer viewer = new ResourceRepositoryItemValueViewer(repoItem.get());
-                PushButton remove = CommonActions.REMOVE.push();
-                AppUtil.enableTooltip(remove);
-                remove.addActionListener(ev -> {
-                    RI val = removeResourceFromValue(repoItem.get().getResource(), getValue());
-                    _repositoryDAO.mergeRepositoryItem(val);
-                    populateListing();
-                });
+    /**
+     * Add the Resource to the given Value
+     *
+     * @param resource the Resource to add
+     * @param value the RepositoryItem to add the Resource to
+     *
+     * @return the Value with the Resource added to it.
+     */
+    protected abstract RI addResourceToValue(Resource resource, RI value);
 
-                _listing.add(of("resource", of("actions persistence-actions", remove), viewer));
-            }
-        });
+    /**
+     * Ensures that properties on the given Value are populated as they should be
+     *
+     * @param value the Value
+     *
+     * @return the Value, with any properties populated that should be populated
+     */
+    protected abstract RI ensureValueState(RI value);
+
+    /**
+     * Get the Resources from the given Value
+     *
+     * @param value the RepositoryItem to retrieve the Resources from
+     *
+     * @return the Resources for the RepositoryItem
+     */
+    protected abstract List<Resource> getResourcesFromValue(RI value);
+
+    /**
+     * Get the RepositoryItem whose Resources we are managing
+     *
+     * @return the RepositoryItem
+     */
+    @Nonnull
+    protected RI getValue()
+    {
+        return ensureValueState(_er.reattachIfNecessary(_value));
     }
+
+    /**
+     * Remove the Resource from the given Value
+     *
+     * @param resource the Resource to remove
+     * @param value the RepositoryItem to remove the Resource from
+     *
+     * @return the Value with the Resource removed from it
+     */
+    protected abstract RI removeResourceFromValue(Resource resource, RI value);
+
+    /**
+     * Set the Resources on the given Value
+     *
+     * @param resources the Resources to set on the Value
+     * @param value the RepositoryItem to set the Resources on
+     *
+     * @return the Value with the Resources set on it.
+     */
+    protected abstract RI setResourcesOnValue(List<Resource> resources, RI value);
 
     @SuppressWarnings("ConstantConditions")
     private void beginResourceSelection()
@@ -184,7 +174,7 @@ public abstract class RepositoryItemResourceListing<RI extends RepositoryItem> e
 
         selector.setOnSelect(context -> {
             ResourceRepositoryItem rri = context.getData();
-            if(rri != null)
+            if (rri != null)
             {
                 RI val = addResourceToValue(rri.getResource(), getValue());
                 _repositoryDAO.mergeRepositoryItem(val);
@@ -199,5 +189,26 @@ public abstract class RepositoryItemResourceListing<RI extends RepositoryItem> e
 
         getWindowManager().add(dlg);
         dlg.setVisible(true);
+    }
+
+    private void populateListing()
+    {
+        _listing.removeAllComponents();
+        getResourcesFromValue(getValue()).forEach(r -> {
+            Optional<ResourceRepositoryItem> repoItem = _repositoryDAO.getRepoItemForResource(r);
+            if (repoItem.isPresent())
+            {
+                ResourceRepositoryItemValueViewer viewer = new ResourceRepositoryItemValueViewer(repoItem.get());
+                PushButton remove = CommonActions.REMOVE.push();
+                AppUtil.enableTooltip(remove);
+                remove.addActionListener(ev -> {
+                    RI val = removeResourceFromValue(repoItem.get().getResource(), getValue());
+                    _repositoryDAO.mergeRepositoryItem(val);
+                    populateListing();
+                });
+
+                _listing.add(of("resource", of("actions persistence-actions", remove), viewer));
+            }
+        });
     }
 }

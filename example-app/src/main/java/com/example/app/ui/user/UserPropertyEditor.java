@@ -19,8 +19,8 @@ import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
 import com.example.app.service.ProfileService;
-import com.example.app.support.ContactUtil;
 import com.example.app.support.AppUtil;
+import com.example.app.support.ContactUtil;
 import com.example.app.terminology.ProfileTermProvider;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
@@ -79,7 +79,7 @@ import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static com.example.app.ui.user.UserPropertyEditorLOK.*;
 import static net.proteusframework.core.locale.TextSources.createText;
-import static net.proteusframework.ui.miwt.component.composite.Message.error;
+import static net.proteusframework.core.notification.NotificationImpl.error;
 
 /**
  * {@link PropertyEditor} for {@link User}
@@ -119,7 +119,8 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
 {
     /** Logger. */
     private static final Logger _logger = LogManager.getLogger(UserPropertyEditor.class);
-
+    boolean _newUser;
+    private final List<Notification> _notifications = new ArrayList<>();
     @Autowired
     @Qualifier(HibernateSessionHelper.RESOURCE_NAME)
     private HibernateSessionHelper _sessionHelper;
@@ -141,14 +142,10 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
     private ProfileTermProvider _terms;
     @Autowired
     private UIPreferences _uiPreferences;
-
-    private final List<Notification> _notifications = new ArrayList<>();
-
     private User _saved;
-    boolean _newUser;
 
     /**
-     *   Instantiate a new instance of UserPropertyEditor
+     * Instantiate a new instance of UserPropertyEditor
      */
     public UserPropertyEditor()
     {
@@ -159,8 +156,33 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
         setHTMLElement(HTMLElement.section);
     }
 
-    /**
+    @SuppressWarnings("unused")
+        //Used by ApplicationFunction
+    void configure(ParsedRequest request)
+    {
+        User value = request.getPropertyValue(URLProperties.USER);
+        _newUser = value == null || value.getId() == null || value.getId() < 1;
+        Profile profile = request.getPropertyValue(URLProperties.PROFILE);
+        getValueEditor().setAuthDomains(_userDAO.getAuthenticationDomainsToSaveOnUserPrincipal(value));
+        profile = _profileService.getAdminProfileForUser(value).orElse(profile);
+        assert profile != null : "Coaching Entity was null.  This should not happen.";
+        getValueEditor().setInitialProfile(profile);
+        User currentUser = _userDAO.getAssertedCurrentUser();
+        final TimeZone timeZone = Event.getRequest().getTimeZone();
+        if (!_profileDAO.canOperate(currentUser, profile, timeZone, _mop.viewUser())
+            || !_profileDAO.canOperate(currentUser, profile, timeZone, _mop.modifyUser()))
+        {
+            getValueEditor().setEditable(false);
+            _notifications.add(error(createText(ERROR_INSUFFICIENT_PERMISSIONS_FMT(), _terms.user())));
+        }
+        else
+        {
+            getValueEditor().setValue(value);
+        }
+        setSaved(value);
+    }    /**
      * Set the saved User to be used for constructing URL properties after saving the User
+     *
      * @param saved the persisted User
      */
     public void setSaved(@Nullable User saved)
@@ -184,7 +206,7 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
                 boolean success = false;
                 try
                 {
-                    if(Objects.equals(currentUser.getId(), user.getId()))
+                    if (Objects.equals(currentUser.getId(), user.getId()))
                     {
                         user.setPreferredContactMethod(editor.commitValuePreferredContactMethod());
 
@@ -213,7 +235,7 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
                             result = _principalDAO.setNewPassword(user.getPrincipal(), emailAddress.getEmail(),
                                 notifications, randomPassword);
 
-                            if(result)
+                            if (result)
                             {
                                 user.setPrincipal(_er.reattachIfNecessary(user.getPrincipal()));
 
@@ -240,14 +262,14 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
                             creds.setUsername(emailAddress.getEmail());
                             _principalDAO.savePrincipal(user.getPrincipal());
                         }
-                        if(!_principalDAO.getAllRoles(user.getPrincipal()).contains(_appUtil.getFrontEndAccessRole()))
+                        if (!_principalDAO.getAllRoles(user.getPrincipal()).contains(_appUtil.getFrontEndAccessRole()))
                         {
                             user.getPrincipal().getChildren().add(_appUtil.getFrontEndAccessRole());
                             _principalDAO.savePrincipal(user.getPrincipal());
                         }
                         user = _userDAO.mergeUser(user);
                         Profile userProfile = _er.reattachIfNecessary(editor.commitValueUserProfileOwner());
-                        if(!_profileService.setOwnerProfileForUser(user, userProfile))
+                        if (!_profileService.setAdminProfileForUser(user, userProfile))
                         {
                             List<MembershipType> coachingMemTypes = editor.commitValueCoachingMemType();
                             final User finalUser = user;
@@ -256,31 +278,30 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
                                     ZonedDateTime.now(getSession().getTimeZone().toZoneId()), true)));
                         }
 
-                        if(editor.getPictureEditor().getModificationState().isModified())
+                        if (editor.getPictureEditor().getModificationState().isModified())
                         {
                             _userDAO.saveUserImage(user, editor.getPictureEditor().commitValue());
                         }
 
                         success = result;
-                        if(success)
+                        if (success)
                         {
                             setSaved(user);
                         }
                     }
-                    catch(NonUniqueCredentialsException e)
+                    catch (NonUniqueCredentialsException e)
                     {
                         _logger.error("Unable to persist changes to the Principal.", e);
                         getNotifiable().sendNotification(error(createText(ERROR_MESSAGE_USERNAME_EXISTS_FMT(), _terms.user())));
                     }
+                        _sessionHelper.commitTransaction();
                 }
                 finally
                 {
-                    if(success)
-                        _sessionHelper.commitTransaction();
-                    else
+                    if (!success)
                         _sessionHelper.recoverableRollbackTransaction();
                 }
-                if(success)
+                if (success)
                 {
                     _uiPreferences.addMessage(new NotificationImpl(NotificationType.INFO, INFO_SHOULD_PICK_ONE_ROLE_NEW_USER()));
                 }
@@ -313,40 +334,17 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
     @Override
     public UserValueEditor getValueEditor()
     {
-        return (UserValueEditor)super.getValueEditor();
+        return (UserValueEditor) super.getValueEditor();
     }
 
     @Override
     public void setValueEditor(ValueEditor<User> valueEditor)
     {
-        if(!(valueEditor instanceof UserValueEditor))
+        if (!(valueEditor instanceof UserValueEditor))
             throw new IllegalArgumentException("Given ValueEditor is not a UserValueEditor");
         super.setValueEditor(valueEditor);
     }
 
 
-    @SuppressWarnings("unused") //Used by ApplicationFunction
-    void configure(ParsedRequest request)
-    {
-        User value = request.getPropertyValue(URLProperties.USER);
-        _newUser = value == null || value.getId() == null || value.getId() < 1;
-        Profile profile = request.getPropertyValue(URLProperties.PROFILE);
-        getValueEditor().setAuthDomains(_userDAO.getAuthenticationDomainsToSaveOnUserPrincipal(value));
-        profile = _profileService.getOwnerProfileForUser(value).orElse(profile);
-        assert profile != null : "Coaching Entity was null.  This should not happen.";
-        getValueEditor().setInitialProfile(profile);
-        User currentUser = _userDAO.getAssertedCurrentUser();
-        final TimeZone timeZone = Event.getRequest().getTimeZone();
-        if(!_profileDAO.canOperate(currentUser, profile, timeZone, _mop.viewUser())
-            || !_profileDAO.canOperate(currentUser, profile, timeZone, _mop.modifyUser()))
-        {
-            getValueEditor().setEditable(false);
-            _notifications.add(error(createText(ERROR_INSUFFICIENT_PERMISSIONS_FMT(), _terms.user())));
-        }
-        else
-        {
-            getValueEditor().setValue(value);
-        }
-        setSaved(value);
-    }
+
 }
