@@ -143,8 +143,6 @@ public final class CompanyDAO extends DAOHelper implements Serializable
             LOGO_FILE_NAME_SUFFIX, AppUtil.getExtensionWithDot(image));
     }
 
-
-    /** @return the single instance of {@code CompanyDAO} from the {@link ApplicationContext} */
     private Object readResolve() throws ObjectStreamException
     {
         ApplicationContext context = ApplicationContextUtils.getInstance().getContext();

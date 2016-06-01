@@ -120,9 +120,9 @@ public class NameValueEditor extends CompositeValueEditor<Name>
 
         /**
          * Get an EnumSet of all required fields for the Editor.
-         * <br/>
+         * <br>
          * By default, this contains first and last
-         * <br/>
+         * <br>
          * This is only used if the Supplier for the field is not set
          *
          * @return an EnumSet of all required fields for the Editor
@@ -135,9 +135,9 @@ public class NameValueEditor extends CompositeValueEditor<Name>
 
         /**
          * Get an EnumSet of all required fields for the Editor.
-         * <br/>
+         * <br>
          * By default, this contains first and last
-         * <br/>
+         * <br>
          * This is only used if the Supplier for the field is not set
          *
          * @param requiredFields an Array of all required fields for the Editor
@@ -257,7 +257,7 @@ public class NameValueEditor extends CompositeValueEditor<Name>
 
         /**
          * Get an EnumSet of all included fields for the Editor.
-         * <br/>
+         * <br>
          * By default, this contains formOfAddress, first, middle, last, and suffix
          *
          * @return an EnumSet of all included fields for the Editor
@@ -270,7 +270,7 @@ public class NameValueEditor extends CompositeValueEditor<Name>
 
         /**
          * Set an EnumSet of all included fields for the Editor.
-         * <br/>
+         * <br>
          * By default, this contains formOfAddress, first, middle, last, and suffix
          *
          * @param includedFields an Array of all included fields for the Editor

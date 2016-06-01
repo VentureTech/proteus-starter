@@ -160,9 +160,9 @@ public class ContactValueEditor extends CompositeValueEditor<Contact>
 
         /**
          * Get an EnumSet of all required fields in the Editor
-         * <br/>
+         * <br>
          * By default, no fields are returned by this, but addresses, phoneNumbers, and emailAddresses are not managed by this
-         * <br/>
+         * <br>
          * This is only used if the Supplier for the field has not been set
          *
          * @return an EnumSet of all required fields in the Editor
@@ -175,9 +175,9 @@ public class ContactValueEditor extends CompositeValueEditor<Contact>
 
         /**
          * Set an EnumSet of all required fields in the Editor
-         * <br/>
+         * <br>
          * By default, no fields are returned by this, but addresses, phoneNumbers, and emailAddresses are not managed by this
-         * <br/>
+         * <br>
          * This is only used if the Supplier for the field has not been set
          *
          * @param requiredFields an Array of all required fields in the Editor
@@ -265,7 +265,7 @@ public class ContactValueEditor extends CompositeValueEditor<Contact>
 
         /**
          * Get an EnumSet of all included fields in the Editor
-         * <br/>
+         * <br>
          * By default, no fields are returned by this, but addresses, phoneNumbers, and emailAddresses are not managed by this
          *
          * @return an EnumSet of all included fields in the Editor
@@ -278,7 +278,7 @@ public class ContactValueEditor extends CompositeValueEditor<Contact>
 
         /**
          * Set an EnumSet of all included fields in the Editor
-         * <br/>
+         * <br>
          * By default, no fields are returned by this, but addresses, phoneNumbers, and emailAddresses are not managed by this
          *
          * @param includedFields an Array of all included fields in the Editor

@@ -34,7 +34,6 @@ import static com.example.app.model.repository.RepositoryItemStatusLOK.*;
  * Status of a RepositoryItem.
  *
  * @author Russ Tennant (russ@i2rd.com)
- *         moved from PlanStatus -> RepositoryStatus
  * @author Alan Holt (aholt@venturetech.net)
  */
 @I18NFile(

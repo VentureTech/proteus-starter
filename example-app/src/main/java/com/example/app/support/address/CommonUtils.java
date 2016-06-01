@@ -226,7 +226,7 @@ public class CommonUtils
      * @param value the object to test for a null value.
      * @param replacement the value returned if input {@code value} is null.
      *
-     * @return <code>replacement</code> if input {@code value} is <code>null<code>,
+     * @return {@code replacement} if input {@code value} is {@code null},
      * {@code value} otherwise.
      */
     public static <T> T nvl(T value, T replacement)

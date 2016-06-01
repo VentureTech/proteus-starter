@@ -263,11 +263,11 @@ public class AddressValueEditor extends CompositeValueEditor<Address>
 
         /**
          * Get An EnumSet of all required fields in the Editor.
-         * <br/>
+         * <br>
          * This only affects the first address line in the addressLines field
-         * <br/>
+         * <br>
          * By default, the required fields are: addressLines, city, state, and postalCode
-         * <br/><br/>
+         * <br><br>
          * This is only used if the Supplier for the field is not set explicitly.
          *
          * @return an EnumSet of all required fields in the Editor
@@ -280,9 +280,9 @@ public class AddressValueEditor extends CompositeValueEditor<Address>
 
         /**
          * Set An EnumSet of all required fields in the Editor.
-         * <br/>
+         * <br>
          * This only affects the first address line in the addressLines field
-         * <br/><br/>
+         * <br><br>
          * This is only used if the Supplier for the field is not set explicitly.
          *
          * @param requiredFields an Array of all required fields in the Editor
@@ -413,7 +413,7 @@ public class AddressValueEditor extends CompositeValueEditor<Address>
 
         /**
          * Get an EnumSet of all fields to be included in the Editor
-         * <br/>
+         * <br>
          * By default, the included fields are: addressLines, city, state, and postalCode
          *
          * @return an EnumSet

@@ -209,7 +209,6 @@ public final class LocationDAO extends DAOHelper implements Serializable
         });
     }
 
-    /** @return the single instance of {@code LocationDAO} from the {@link ApplicationContext} */
     private Object readResolve() throws ObjectStreamException
     {
         ApplicationContext context = ApplicationContextUtils.getInstance().getContext();

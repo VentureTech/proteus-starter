@@ -126,9 +126,9 @@ public class EmailAddressValueEditor extends CompositeValueEditor<EmailAddress>
 
         /**
          * Get an EnumSet of all required fields for the EmailAddress Editor.
-         * <br/>
+         * <br>
          * This is only used if the Supplier for the field has not been set.
-         * <br/>
+         * <br>
          * By default, the only required field is {@link EmailAddressField#email}
          *
          * @return EnumSet of required fields
@@ -141,9 +141,9 @@ public class EmailAddressValueEditor extends CompositeValueEditor<EmailAddress>
 
         /**
          * Set an EnumSet of all required fields for the EmailAddress Editor.
-         * <br/>
+         * <br>
          * This is only used if the Supplier for the field has not been set.
-         * <br/>
+         * <br>
          * By default, the only required field is {@link EmailAddressField#email}
          *
          * @param requiredFields Array of required fields
@@ -245,7 +245,7 @@ public class EmailAddressValueEditor extends CompositeValueEditor<EmailAddress>
 
         /**
          * Get an EnumSet of all included fields for the EmailAddress Editor.
-         * <br/>
+         * <br>
          * By default, the only included field is {@link EmailAddressField#email}
          *
          * @return EnumSet of included fields
@@ -258,7 +258,7 @@ public class EmailAddressValueEditor extends CompositeValueEditor<EmailAddress>
 
         /**
          * Set an EnumSet of all included fields for the EmailAddress Editor.
-         * <br/>
+         * <br>
          * By default, the only included field is {@link EmailAddressField#email}
          *
          * @param includedFields Array of included fields

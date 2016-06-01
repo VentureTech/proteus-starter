@@ -173,9 +173,9 @@ public class PhoneNumberValueEditor extends CompositeValueEditor<PhoneNumber>
 
         /**
          * Get an EnumSet of all required fields for the Editor
-         * <br/>
+         * <br>
          * By default is empty
-         * <br/>
+         * <br>
          * This is only used if the Supplier for the field has not been set
          *
          * @return an EnumSet of all required fields for the Editor
@@ -188,9 +188,9 @@ public class PhoneNumberValueEditor extends CompositeValueEditor<PhoneNumber>
 
         /**
          * Set an EnumSet of all required fields for the Editor
-         * <br/>
+         * <br>
          * By default is empty
-         * <br/>
+         * <br>
          * This is only used if the Supplier for the field has not been set
          *
          * @param requiredFields an Array of all required fields for the Editor
@@ -257,7 +257,7 @@ public class PhoneNumberValueEditor extends CompositeValueEditor<PhoneNumber>
 
         /**
          * Get an EnumSet of all included fields for the Editor
-         * <br/>
+         * <br>
          * By default only includes {@link PhoneNumberField#phoneNumber}
          *
          * @return an EnumSet of all included fields for the Editor
@@ -270,7 +270,7 @@ public class PhoneNumberValueEditor extends CompositeValueEditor<PhoneNumber>
 
         /**
          * Set an EnumSet of all included fields for the Editor
-         * <br/>
+         * <br>
          * By default only includes {@link PhoneNumberField#phoneNumber}
          *
          * @param includedFields an Array of all included fields for the Editor
