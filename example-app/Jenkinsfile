@@ -174,5 +174,5 @@ def getAppVersion(String text)
 def getAppName(String text)
 {
     def matcher = text =~ /app_name=(.+)/
-    return matcher ? matcher[0][1] : '0.0'
+    return matcher ? matcher[0][1] : 'App'
 }

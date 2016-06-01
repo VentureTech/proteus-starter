@@ -21,8 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Nullable;
-import javax.mail.internet.ContentType;
-import javax.mail.internet.ParseException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -33,7 +31,6 @@ import net.proteusframework.cms.FileSystemDirectory;
 import net.proteusframework.core.hibernate.dao.DAOHelper;
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.core.lang.CloseableIterator;
-import net.proteusframework.core.net.ContentTypes;
 import net.proteusframework.data.filesystem.DirectoryEntity;
 import net.proteusframework.data.filesystem.FileEntity;
 import net.proteusframework.data.filesystem.FileSystemDAO;
@@ -44,6 +41,7 @@ import net.proteusframework.ui.search.QLBuilder;
 import net.proteusframework.ui.search.QLResolver;
 import net.proteusframework.ui.search.QLResolverOptions;
 
+import static com.example.app.support.AppUtil.getExtensionWithDot;
 import static net.proteusframework.data.filesystem.FileSystemEntityCreateMode.overwrite;
 
 /**
@@ -61,54 +59,6 @@ public class UserProfileDAO extends DAOHelper
     @Autowired
     private FileSystemDAO _fileSystemDAO;
 
-    /**
-     * Get the file extension.
-     *
-     * @param file the file.
-     * @return the extension preceeded by a '.' or an empty string.
-     */
-    private static String _getFileExtensionWithDot(FileEntity file)
-    {
-        String ext = ""; // Cannot use the file name since the file may have been converted.
-        final String contentType = file.getContentType();
-        if (ext.isEmpty() && !ContentTypes.Application.octet_stream.toString().equals(contentType))
-        {
-            try
-            {
-                ext = new ContentType(contentType).getSubType().toLowerCase();
-                switch(ext)
-                {
-                    case "jpeg":
-                        ext = "jpg";
-                        break;
-                    case "tiff":
-                        ext = "tif";
-                        break;
-                    case "svg+xml":
-                        ext = "svg";
-                        break;
-                    case "x-portable-anymap":
-                        ext = "pnm";
-                        break;
-                    case "x-portable-bitmap":
-                        ext = "pbm";
-                        break;
-                    case "x-portable-graymap":
-                        ext = "pgm";
-                        break;
-                    case "x-portable-pixmap":
-                        ext = "ppm";
-                        break;
-                    default:break;
-                }
-            }
-            catch (ParseException e)
-            {
-                _logger.error("Unable to parse content type: " + contentType, e);
-            }
-        }
-        return ext.isEmpty() ? ext : '.' + ext;
-    }
 
     /**
      * Save UserProfile.
@@ -128,7 +78,7 @@ public class UserProfileDAO extends DAOHelper
             FileEntity picture = userProfile.getPicture();
             if (picture != null)
             {
-                pictureName += _getFileExtensionWithDot(picture);
+                pictureName += getExtensionWithDot(picture);
                 TemporaryFileEntity tfe = null;
                 if(picture instanceof TemporaryFileEntity)
                     tfe  = (TemporaryFileEntity) picture;
@@ -167,7 +117,7 @@ public class UserProfileDAO extends DAOHelper
             if (picture != null && id == 0)
             {
                 // New user profile. Update picture name to include the ID
-                pictureName = name + " #" + userProfile.getId() + _getFileExtensionWithDot(picture);
+                pictureName = name + " #" + userProfile.getId() + getExtensionWithDot(picture);
                 picture.setName(pictureName);
                 _fileSystemDAO.store(new StoreRequest(picture));
             }

@@ -41,7 +41,7 @@ import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
  *
  * @author Russ Tennant (russ@venturetech.net)
  */
-@SuppressWarnings({"SameReturnValue", "InjectedReferences"})
+@SuppressWarnings({"SameReturnValue"})
 @Configuration
 @EnableAsync
 @EnableScheduling
@@ -62,6 +62,14 @@ import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
 )
 public class ProjectConfig implements ApplicationListener<ContextRefreshedEvent>
 {
+    /** Project Schema. */
+    public static final String PROJECT_SCHEMA = "app";
+    /** Discriminator Column. */
+    public static final String DISCRIMINATOR_COLUMN = "disc_type";
+    /** The database schema for envers audit tables */
+    public static final String ENVERS_SCHEMA = "audit";
+    /** Data conversion identifier. */
+    public static final String DC_IDENTIFIER = "example_app";
     /** Logger. */
     private static final Logger _logger = LogManager.getLogger(ProjectConfig.class);
     /*
@@ -93,33 +101,9 @@ public class ProjectConfig implements ApplicationListener<ContextRefreshedEvent>
          */
     //    }
 
-
-    /**
-     * Static key config.
-     * @return bean.
-     */
-    @Bean()
-    public StaticKeyDataConfig staticKeyDataConfig()
-    {
-        StaticKeyDataConfig config = new StaticKeyDataConfig();
-        config.addScanPackage("com.example.app");
-        config.setUpdate(true);
-        return config;
-    }
-
-    /**
-     * Scan com.example for HBM XML files.
-     * @return bean.
-     */
-    @Bean()
-    @LocationQualifier(orm_location)
-    public String ormLocationComExample()
-    {
-        return "classpath*:com/example/app/**/*.hbm.xml";
-    }
-
     /**
      * Package to scan for annotated entities.
+     *
      * @return bean.
      */
     @Bean()
@@ -129,9 +113,9 @@ public class ProjectConfig implements ApplicationListener<ContextRefreshedEvent>
         return "com.example.app";
     }
 
-
     /**
      * Example to test if weaving is working.
+     *
      * @param event the event.
      */
     @SuppressFBWarnings("DM_EXIT")
@@ -156,6 +140,32 @@ public class ProjectConfig implements ApplicationListener<ContextRefreshedEvent>
             System.exit(1);
         }
 
+    }
+
+    /**
+     * Scan com.example for HBM XML files.
+     *
+     * @return bean.
+     */
+    @Bean()
+    @LocationQualifier(orm_location)
+    public String ormLocationComExample()
+    {
+        return "classpath*:com/example/app/**/*.hbm.xml";
+    }
+
+    /**
+     * Static key config.
+     *
+     * @return bean.
+     */
+    @Bean()
+    public StaticKeyDataConfig staticKeyDataConfig()
+    {
+        StaticKeyDataConfig config = new StaticKeyDataConfig();
+        config.addScanPackage("com.example.app");
+        config.setUpdate(true);
+        return config;
     }
 
 }

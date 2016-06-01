@@ -1,0 +1,190 @@
+.picture-editor {
+    text-align: center;
+    max-width: 500px;
+}
+
+.picture-editor.mode-view {
+    max-width: 500px;
+}
+
+.picture-editor.mode-view.image-selected {
+    overflow: hidden;
+}
+
+.picture-editor.mode-crop {
+    background-color: white;
+    position: relative;
+    z-index: 100;
+    padding: 10px;
+    border: 2px solid #ccc;
+    box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.6);
+    text-align: center;
+    box-sizing: content-box;
+    margin: 10px 0;
+}
+
+.picture-editor.mode-crop .drop-zone {
+    position: relative;
+    z-index: 200;
+    margin: 0 auto 20px;
+    border: 1px solid #333;
+    overflow: hidden;
+}
+
+.picture-editor .drop-zone {
+    margin-bottom: 5px;
+}
+
+.picture-editor .option.hidden {
+    display: none;
+}
+
+.picture-editor .option .message {
+    display: none;
+}
+
+.picture-editor .message {
+    border: 1px solid #1a608a;
+    background-color: #cdebfd;
+    color: #1a608a;
+    margin-bottom: 10px;
+    text-align: left;
+    padding: 5px;
+    line-height: 1.4;
+}
+
+.picture-editor .message.hidden {
+    display: none;
+}
+
+.picture-editor input[type="file"] {
+    width: 200px;
+    border: 0;
+    padding: 0;
+    display: block;
+    margin: 20px auto;
+}
+
+.picture-editor .actions {
+    position: relative;
+}
+
+.picture-editor .actions button.cancel {
+    margin-left: 5px;
+    margin-right: 0;
+}
+
+.property.image .picture-editor.mode-crop {
+    position: absolute;
+}
+
+.resize-container {
+    position: relative;
+    display: inline-block;
+    cursor: move;
+    margin: 0 auto;
+}
+
+.resize-container img {
+    display: block
+}
+
+.resize-container:hover img,
+.resize-container:active img {
+    outline: 2px dashed rgba(222,60,80,.9);
+}
+
+.resize-handle-ne,
+.resize-handle-se,
+.resize-handle-nw,
+.resize-handle-sw {
+    position: absolute;
+    display: block;
+    width: 10px;
+    height: 10px;
+    background: rgba(222,60,80,.9);
+    z-index: 999;
+}
+
+.resize-handle-nw {
+    top: -5px;
+    left: -5px;
+    cursor: nw-resize;
+}
+
+.resize-handle-sw {
+    bottom: -5px;
+    left: -5px;
+    cursor: sw-resize;
+}
+
+.resize-handle-ne {
+    top: -5px;
+    right: -5px;
+    cursor: ne-resize;
+}
+
+.resize-handle-se {
+    bottom: -5px;
+    right: -5px;
+    cursor: se-resize;
+}
+
+.overlay {
+	position: absolute;
+	z-index: 999;
+    border: solid 2px rgba(222,60,80,.9);
+	box-sizing: content-box;
+	pointer-events: none;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    -ms-transform: translateX(-50%) translateY(-50%);
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -o-transform: translateX(-50%) translateY(-50%);
+}
+
+.overlay:after,
+.overlay:before {
+	content: '';
+	position: absolute;
+	display: block;
+	height: 40px;
+    border-left: dashed 2px rgba(222,60,80,.9);
+	border-right: dashed 2px rgba(222,60,80,.9);
+}
+
+.overlay:before {
+	top: 0;
+	margin-left: -2px;
+	margin-top: -40px;
+}
+
+.overlay:after {
+	bottom: 0;
+	margin-left: -2px;
+	margin-bottom: -40px;
+}
+
+.overlay-inner:after,
+.overlay-inner:before {
+	content: '';
+	position: absolute;
+	display: block;
+	width: 40px;
+    border-top: dashed 2px rgba(222,60,80,.9);
+	border-bottom: dashed 2px rgba(222,60,80,.9);
+}
+
+.overlay-inner:before {
+	left: 0;
+	margin-left: -40px;
+	margin-top: -2px;
+}
+
+.overlay-inner:after{
+	right: 0;
+	margin-right: -40px;
+	margin-top: -2px;
+}
