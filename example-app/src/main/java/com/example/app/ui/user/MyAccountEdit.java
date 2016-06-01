@@ -47,6 +47,9 @@ import net.proteusframework.users.model.PasswordCredentials;
 import net.proteusframework.users.model.dao.NonUniqueCredentialsException;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
+import static com.example.app.ui.user.MyAccountEditLOK.COMPONENT_NAME;
+import static com.example.app.ui.user.MyAccountEditLOK.ERROR_MESSAGE_USERNAME_EXISTS_FMT;
+import static net.proteusframework.core.locale.TextSources.createText;
 import static net.proteusframework.ui.miwt.component.composite.Message.error;
 
 /**
@@ -194,7 +197,7 @@ public class MyAccountEdit extends MIWTPageElementModelPropertyEditor<User>
     void configure(ParsedRequest request)
     {
         User currentUser = _userDAO.getAssertedCurrentUser();
-        getValueEditor().setInitialCoaching(_profileService.getOwnerProfileForUser(currentUser).orElseThrow(
+        getValueEditor().setInitialProfile(_profileService.getOwnerProfileForUser(currentUser).orElseThrow(
             () -> new IllegalArgumentException("Coaching Entity on User for My Account was null.  This should not happen.")));
         getValueEditor().setAuthDomains(_userDAO.getAuthenticationDomainsToSaveOnUserPrincipal(currentUser));
         getValueEditor().setAdminMode(false);

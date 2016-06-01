@@ -11,9 +11,9 @@
 
 package com.example.app.ui.user;
 
-import com.lrlabs.model.user.UserDAO;
-import com.lrsuccess.ldp.ui.Application;
-import com.lrsuccess.ldp.ui.ApplicationFunctions;
+import com.example.app.model.user.UserDAO;
+import com.example.app.ui.Application;
+import com.example.app.ui.ApplicationFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Nullable;
@@ -36,8 +36,8 @@ import net.proteusframework.ui.miwt.component.composite.MessageContainer;
 import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.ui.miwt.util.RendererEditorState;
 
-import static com.lrsuccess.ldp.ui.user.MyAccountViewLOK.COMPONENT_NAME;
-import static com.lrsuccess.ldp.ui.user.MyAccountViewLOK.LABEL_UPDATE_PASSWORD;
+import static com.example.app.ui.user.MyAccountViewLOK.COMPONENT_NAME;
+import static com.example.app.ui.user.MyAccountViewLOK.LABEL_UPDATE_PASSWORD;
 
 /**
  * Component for the My Account view page

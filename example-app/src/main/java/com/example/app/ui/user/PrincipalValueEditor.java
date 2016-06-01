@@ -13,10 +13,8 @@ package com.example.app.ui.user;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-import com.lrlabs.ui.contact.AddressValueEditor.AddressValueEditorConfig;
-import com.lrlabs.ui.contact.ContactValueEditor;
-import com.lrlabs.ui.contact.ContactValueEditor.ContactField;
-import com.lrlabs.ui.contact.PhoneNumberValueEditor;
+import com.example.app.ui.contact.ContactValueEditor;
+import com.example.app.ui.contact.ContactValueEditor.ContactValueEditorConfig;
 import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -53,13 +51,15 @@ import net.proteusframework.users.model.Principal;
 import net.proteusframework.users.model.PrincipalStatus;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
-import static com.lrlabs.ui.contact.ContactValueEditor.ContactValueEditorConfig;
-import static com.lrlabs.ui.contact.EmailAddressValueEditor.EmailAddressValueEditorConfig;
-import static com.lrlabs.ui.contact.NameValueEditor.NameField;
-import static com.lrlabs.ui.contact.NameValueEditor.NameValueEditorConfig;
-import static com.lrlabs.ui.contact.PhoneNumberValueEditor.PhoneNumberField;
-import static com.lrlabs.ui.contact.PhoneNumberValueEditor.PhoneNumberValueEditorConfig;
-import static com.lrsuccess.ldp.ui.user.PrincipalValueEditorLOK.*;
+import static com.example.app.ui.contact.AddressValueEditor.AddressValueEditorConfig;
+import static com.example.app.ui.contact.ContactValueEditor.ContactField;
+import static com.example.app.ui.contact.EmailAddressValueEditor.EmailAddressValueEditorConfig;
+import static com.example.app.ui.contact.NameValueEditor.NameField.first;
+import static com.example.app.ui.contact.NameValueEditor.NameField.last;
+import static com.example.app.ui.contact.NameValueEditor.NameValueEditorConfig;
+import static com.example.app.ui.contact.PhoneNumberValueEditor.*;
+import static com.example.app.ui.user.PrincipalValueEditorLOK.*;
+import static net.proteusframework.core.locale.TextSources.createText;
 import static net.proteusframework.users.model.ContactDataCategory.BUSINESS;
 import static net.proteusframework.users.model.ContactDataCategory.PERSONAL;
 import static net.proteusframework.users.model.PhoneNumberType.MOBILE;
@@ -152,8 +152,8 @@ public class PrincipalValueEditor extends CompositeValueEditor<Principal>
         addEditorForProperty(() -> {
             ContactValueEditorConfig config = new ContactValueEditorConfig();
             NameValueEditorConfig nameConfig = new NameValueEditorConfig();
-            nameConfig.setIncludedFields(NameField.first, NameField.last);
-            nameConfig.setRequiredFields(NameField.first, NameField.last);
+            nameConfig.setIncludedFields(first, last);
+            nameConfig.setRequiredFields(first, last);
             EmailAddressValueEditorConfig emailConfig = new EmailAddressValueEditorConfig();
             emailConfig.setEmailSupplier(() -> {
                 TextEditor editor = new TextEditor(LABEL_EMAIL(), null);
@@ -212,7 +212,7 @@ public class PrincipalValueEditor extends CompositeValueEditor<Principal>
             phoneConfig.setRequiredFields(PhoneNumberField.phoneNumber);
             PhoneNumberValueEditorConfig smsConfig = new PhoneNumberValueEditorConfig();
             smsConfig.setSingleFieldSupplier(() -> {
-                _smsEditor.setValueValidator(new PhoneNumberValueEditor.PhoneNumberValidator());
+                _smsEditor.setValueValidator(new PhoneNumberValidator());
                 return _smsEditor;
             });
             smsConfig.setDefaultPhoneNumberType(MOBILE);

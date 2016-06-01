@@ -13,6 +13,7 @@ package com.example.app.ui.user;
 
 
 import com.example.app.config.UserConfig;
+import com.example.app.model.profile.Membership;
 import com.example.app.model.profile.MembershipType;
 import com.example.app.model.profile.MembershipTypeProvider;
 import com.example.app.model.profile.Profile;
@@ -22,6 +23,7 @@ import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.ProfileService;
 import com.example.app.support.AppUtil;
+import com.example.app.support.ContactUtil;
 import com.example.app.terminology.ProfileTermProvider;
 import com.example.app.ui.vtcrop.VTCropPictureEditor;
 import com.example.app.ui.vtcrop.VTCropPictureEditorConfig;
@@ -46,7 +48,6 @@ import com.i2rd.miwt.util.CSSUtil;
 
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.core.locale.LocalizedObjectKey;
-import net.proteusframework.core.locale.TextSources;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
@@ -74,19 +75,18 @@ import net.proteusframework.users.model.PhoneNumber;
 import net.proteusframework.users.model.Principal;
 
 import static com.example.app.support.AppUtil.nullFirst;
-import static com.example.app.ui.user.UserValueEditorLOK.LABEL_COACHING_ROLE_FMT;
 import static com.example.app.ui.user.UserValueViewerLOK.*;
+import static net.proteusframework.core.locale.TextSources.createText;
 
 /**
  * {@link CompositeValueEditor} for {@link User}
  *
  * @author Alan Holt (aholt@venturetech.net)
- * @since 12/7/15 10:04 AM
  */
 @I18NFile(
     symbolPrefix = "com.lrsuccess.ldp.ui.user.UserValueEditor",
     i18n = {
-        @I18N(symbol = "Label Coaching Role FMT", l10n = @L10N("{0} Role")),
+        @I18N(symbol = "Label Profile Role FMT", l10n = @L10N("{0} Role")),
     }
 )
 @Configurable
@@ -113,9 +113,9 @@ public class UserValueEditor extends CompositeValueEditor<User>
     private boolean _adminMode = true;
     private final List<AuthenticationDomain> _authDomains = new ArrayList<>();
     private VTCropPictureEditor _userPictureEditor;
-    private Profile _initialCoaching;
-    private ComboBoxValueEditor<Profile> _coachingEntitySelector;
-    private ListComponentValueEditor<MembershipType> _coachingEntityMembershipTypeSelector;
+    private Profile _initialProfile;
+    private ComboBoxValueEditor<Profile> profileEntitySelector;
+    private ListComponentValueEditor<MembershipType> _profileEntityMembershipTypeSelector;
     private CheckboxValueEditor<LocalizedObjectKey> _contactMethodSelector;
     private PrincipalValueEditor _principalValueEditor;
     private ComboBoxValueEditor<Link> _loginLandingPage;
@@ -130,44 +130,44 @@ public class UserValueEditor extends CompositeValueEditor<User>
     }
 
     /**
-     *   Get the initial Coaching Entity.  This will either be the currently assigned Coaching Entity, if the already exists in
-     *   the database, or it will be the value set by {@link #setInitialCoaching(Profile)}.  If neither of those values
+     *   Get the initial Profile.  This will either be the currently assigned Profile, if the already exists in
+     *   the database, or it will be the value set by {@link #setInitialProfile(Profile)}.  If neither of those values
      *   are present an {@link IllegalStateException} is thrown.
-     *   @return the initial Coaching Entity
+     *   @return the initial Profile
      */
     @Nonnull
-    public Profile getInitialCoaching()
+    public Profile getInitialProfile()
     {
         return _profileService.getOwnerProfileForUser(getValue())
-            .orElse(Optional.ofNullable(_er.reattachIfNecessary(_initialCoaching))
-            .orElseThrow(() -> new IllegalStateException("Coaching Entity was null.  You have to set it before using it!")));
+            .orElse(Optional.ofNullable(_er.reattachIfNecessary(_initialProfile))
+            .orElseThrow(() -> new IllegalStateException("Profile was null.  You have to set it before using it!")));
     }
     /**
-     *   Set the initial Coaching Entity.
-     *   @param initialCoaching the initial Coaching Entity
+     *   Set the initial Profile.
+     *   @param initialProfile the initial Profile
      */
-    public void setInitialCoaching(@Nonnull Profile initialCoaching)
+    public void setInitialProfile(@Nonnull Profile initialProfile)
     {
-        _initialCoaching = initialCoaching;
+        _initialProfile = initialProfile;
     }
     /**
-     *   Get the Commit Value of the Coaching Entity Selector,
-     *   or the Initial Coaching Entity in the case that there is not a selection
-     *   @return the Commit Value or the Initial Coaching Entity.
+     *   Get the Commit Value of the Profile Selector,
+     *   or the Initial Profile in the case that there is not a selection
+     *   @return the Commit Value or the Initial Profile.
      */
     @Nonnull
-    public Profile commitValueCoaching()
+    public Profile commitValueUserProfileOwner()
     {
-        return Optional.ofNullable(_coachingEntitySelector.commitValue()).orElse(getInitialCoaching());
+        return Optional.ofNullable(profileEntitySelector.commitValue()).orElse(getInitialProfile());
     }
     /**
-     *   Get an Optional possibly containing the Commit Value of the Coaching Entity Role Selector, if one was selected.
-     *   @return an Optional containing the Commit Value of the Coaching Entity Role Selector
+     *   Get an Optional possibly containing the Commit Value of the Profile Role Selector, if one was selected.
+     *   @return an Optional containing the Commit Value of the Profile Role Selector
      */
     @Nonnull
     public List<MembershipType> commitValueCoachingMemType()
     {
-        return Optional.ofNullable(_coachingEntityMembershipTypeSelector.commitValue()).orElse(Collections.emptyList());
+        return Optional.ofNullable(_profileEntityMembershipTypeSelector.commitValue()).orElse(Collections.emptyList());
     }
 
     /**
@@ -248,23 +248,23 @@ public class UserValueEditor extends CompositeValueEditor<User>
                 .orElse(null));
 
         TimeZone timeZone = getSession().getTimeZone();
-        _coachingEntitySelector = new ComboBoxValueEditor<>(
+        profileEntitySelector = new ComboBoxValueEditor<>(
             _terms.userProfile(),
-            _profileDAO.getProfilesThatUserHasMembershipFor(currentUser, Hibernate.getClass(getInitialCoaching()), timeZone),
-            getInitialCoaching());
-        _coachingEntitySelector.setRequiredValueValidator();
+            _profileDAO.getProfilesThatUserHasMembershipFor(currentUser, Hibernate.getClass(getInitialProfile()), timeZone),
+            getInitialProfile());
+        profileEntitySelector.setRequiredValueValidator();
 
         List<MembershipType> initialMemTypes = new ArrayList<>();
-        initialMemTypes.addAll(_profileDAO.getMembershipTypesForProfile(getInitialCoaching()));
-        _coachingEntityMembershipTypeSelector = new ListComponentValueEditor<>(
-            createText(LABEL_COACHING_ROLE_FMT(), _terms.userProfile()),
+        initialMemTypes.addAll(_profileDAO.getMembershipTypesForProfile(getInitialProfile()));
+        _profileEntityMembershipTypeSelector = new ListComponentValueEditor<>(
+            createText(UserValueEditorLOK.LABEL_PROFILE_ROLE_FMT(), _terms.userProfile()),
             initialMemTypes,
             null);
-        ((ListComponent)_coachingEntityMembershipTypeSelector.getValueComponent())
+        ((ListComponent) _profileEntityMembershipTypeSelector.getValueComponent())
             .getSelectionModel().setSelectionMode(ListSelectionMode.MULTIPLE_INTERVAL);
-        _coachingEntityMembershipTypeSelector.getValueComponent().setAttribute("data-placeholder", "None");
-        _coachingEntityMembershipTypeSelector.setEditable(true);
-        _coachingEntityMembershipTypeSelector.setVisible(isAdminMode() && (getValue() == null || _userDAO.isTransient(getValue())));
+        _profileEntityMembershipTypeSelector.getValueComponent().setAttribute("data-placeholder", "None");
+        _profileEntityMembershipTypeSelector.setEditable(true);
+        _profileEntityMembershipTypeSelector.setVisible(isAdminMode() && (getValue() == null || _userDAO.isTransient(getValue())));
 
         _contactMethodSelector = new CheckboxValueEditor<>(
             LABEL_CONTACT_PREFERENCES(), Collections.singleton(LABEL_SEND_NOTIFICATION_TO_PHONESMS()), null);
@@ -294,22 +294,18 @@ public class UserValueEditor extends CompositeValueEditor<User>
             _links,
             null);
         //This field is available when the current user is the user being edited
-        // AND only to the user who has a particular membership under the coaching entity.
+        // AND only to the user who has a particular membership under the Profile.
         _loginLandingPage.setVisible(
             Objects.equals(currentUser.getId(), Optional.ofNullable(getValue()).map(User::getId).orElse(0))
                 && _profileDAO.getMembershipsForUser(getValue(), null, timeZone).stream()
                 .map(Membership::getMembershipType).filter(membershipType1 -> membershipType1 != null)
                 .anyMatch(membershipType ->
-                    membershipType.equals(_mtp.coachingAdmin())
-                        || membershipType.equals(_mtp.coachingBusinessDevelopment())
-                        || membershipType.equals(_mtp.coachingClientSupport())
-                        || membershipType.equals(_mtp.coachingOnboardingCoordinator())
-                        || membershipType.equals(_mtp.coachingAssistant())
-                )
+                    membershipType.equals(_mtp.companyAdmin()))
+
         );
         _loginLandingPage.setCellRenderer(new CustomCellRenderer(CommonButtonText.PLEASE_SELECT, input -> {
             Link link = (Link) input;
-            return TextSources.createText(link.getAdditionalAttributes().get("label"));
+            return createText(link.getAdditionalAttributes().get("label"));
         }));
 
         super.init();
@@ -358,29 +354,29 @@ public class UserValueEditor extends CompositeValueEditor<User>
                 }
             });
 
-        _coachingEntitySelector.getValueComponent().addActionListener(ev -> {
-            CoachingEntity coaching;
-            if((coaching =_coachingEntitySelector.getUIValue()) != null)
+        profileEntitySelector.getValueComponent().addActionListener(ev -> {
+            Profile profile;
+            if((profile = profileEntitySelector.getUIValue()) != null)
             {
                 List<MembershipType> memTypes = new ArrayList<>();
-                memTypes.addAll(_profileDAO.getMembershipTypesForProfile(coaching));
+                memTypes.addAll(_profileDAO.getMembershipTypesForProfile(profile));
                 //Set the options
-                _coachingEntityMembershipTypeSelector.setOptions(memTypes);
+                _profileEntityMembershipTypeSelector.setOptions(memTypes);
                 //Set editable flag
-                _coachingEntityMembershipTypeSelector.setEditable(true);
+                _profileEntityMembershipTypeSelector.setEditable(true);
             }
             else
             {
-                _coachingEntityMembershipTypeSelector.setValue(null);
-                _coachingEntityMembershipTypeSelector.setOptions(Collections.singletonList(null));
-                _coachingEntityMembershipTypeSelector.setEditable(false);
+                _profileEntityMembershipTypeSelector.setValue(null);
+                _profileEntityMembershipTypeSelector.setOptions(Collections.singletonList(null));
+                _profileEntityMembershipTypeSelector.setEditable(false);
             }
         });
 
-        _coachingEntitySelector.setVisible(isAdminMode() && _coachingEntitySelector.getValueComponent().getModel().getSize() > 1);
+        profileEntitySelector.setVisible(isAdminMode() && profileEntitySelector.getValueComponent().getModel().getSize() > 1);
 
-        add(_coachingEntitySelector);
-        add(_coachingEntityMembershipTypeSelector);
+        add(profileEntitySelector);
+        add(_profileEntityMembershipTypeSelector);
         add(_contactMethodSelector);
         add(_loginLandingPage);
 
@@ -433,7 +429,7 @@ public class UserValueEditor extends CompositeValueEditor<User>
                     .map(User::getImage)
                     .map(FileEntityFileItem::new)
                     .orElse(null));
-            _coachingEntitySelector.setValue(getInitialCoaching());
+            profileEntitySelector.setValue(getInitialProfile());
 
             if (value != null && value.getPreferredContactMethod() == ContactMethod.PhoneSms)
                 _contactMethodSelector.setValue(Collections.singleton(LABEL_SEND_NOTIFICATION_TO_PHONESMS()));
@@ -451,18 +447,13 @@ public class UserValueEditor extends CompositeValueEditor<User>
             _contactMethodSelector.setVisible(
                 Objects.equals(currentUser.getId(), Optional.ofNullable(getValue()).map(User::getId).orElse(0)));
             //This field is available when the current user is the user being edited
-            // AND only to the user who has a particular membership under the coaching entity.
+            // AND only to the user who has a particular membership under the Profile.
             _loginLandingPage.setVisible(
                 Objects.equals(currentUser.getId(), Optional.ofNullable(getValue()).map(User::getId).orElse(0))
                     && _profileDAO.getMembershipsForUser(getValue(), null, getSession().getTimeZone()).stream()
                     .map(Membership::getMembershipType)
                     .anyMatch(membershipType ->
-                        membershipType.equals(_mtp.coachingAdmin())
-                            || membershipType.equals(_mtp.coachingBusinessDevelopment())
-                            || membershipType.equals(_mtp.coachingClientSupport())
-                            || membershipType.equals(_mtp.coachingOnboardingCoordinator())
-                            || membershipType.equals(_mtp.coachingAssistant())
-                    )
+                        membershipType.equals(_mtp.companyAdmin()))
             );
         }
     }
@@ -475,8 +466,8 @@ public class UserValueEditor extends CompositeValueEditor<User>
         if(isInited())
         {
             _userPictureEditor.setEditable(b);
-            _coachingEntitySelector.setEditable(b);
-            _coachingEntityMembershipTypeSelector.setEditable(_coachingEntitySelector.getUIValue() != null && b);
+            profileEntitySelector.setEditable(b);
+            _profileEntityMembershipTypeSelector.setEditable(profileEntitySelector.getUIValue() != null && b);
             _contactMethodSelector.setEditable(b);
             _loginLandingPage.setEditable(b);
         }
@@ -487,8 +478,8 @@ public class UserValueEditor extends CompositeValueEditor<User>
     {
         boolean valid = super.validateUIValue(notifiable);
         valid = _userPictureEditor.validateUIValue(notifiable) && valid;
-        valid = _coachingEntitySelector.validateUIValue(notifiable) && valid;
-        valid = _coachingEntityMembershipTypeSelector.validateUIValue(notifiable) && valid;
+        valid = profileEntitySelector.validateUIValue(notifiable) && valid;
+        valid = _profileEntityMembershipTypeSelector.validateUIValue(notifiable) && valid;
         valid = _loginLandingPage.validateUIValue(notifiable) && valid;
         return _contactMethodSelector.validateUIValue(notifiable) && valid;
     }

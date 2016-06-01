@@ -11,19 +11,20 @@
 
 package com.example.app.ui.user;
 
-import com.lrlabs.model.profile.ProfileDAO;
-import com.lrlabs.model.user.User;
-import com.lrlabs.model.user.UserDAO;
-import com.lrlabs.ui.UIText;
-import com.lrlabs.util.LRLabsUtil;
-import com.lrsuccess.ldp.model.profile.CoachingEntity;
-import com.lrsuccess.ldp.model.profile.CoachingEntityDAO;
-import com.lrsuccess.ldp.model.profile.MembershipOperationConfiguration;
-import com.lrsuccess.ldp.ui.Application;
-import com.lrsuccess.ldp.ui.ApplicationFunctions;
-import com.lrsuccess.ldp.ui.UIPreferences;
-import com.lrsuccess.ldp.ui.URLConfigurations;
-import com.lrsuccess.ldp.ui.URLProperties;
+
+import com.example.app.model.profile.Profile;
+import com.example.app.model.profile.ProfileDAO;
+import com.example.app.model.user.User;
+import com.example.app.model.user.UserDAO;
+import com.example.app.service.MembershipOperationProvider;
+import com.example.app.service.ProfileService;
+import com.example.app.support.AppUtil;
+import com.example.app.ui.Application;
+import com.example.app.ui.ApplicationFunctions;
+import com.example.app.ui.UIPreferences;
+import com.example.app.ui.UIText;
+import com.example.app.ui.URLConfigurations;
+import com.example.app.ui.URLProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -51,7 +52,7 @@ import net.proteusframework.ui.miwt.component.event.ComponentAdapter;
 import net.proteusframework.ui.miwt.component.event.ComponentEvent;
 import net.proteusframework.ui.miwt.util.CommonActions;
 
-import static com.lrsuccess.ldp.ui.user.UserViewerComponentLOK.*;
+import static com.example.app.ui.user.UserViewerComponentLOK.*;
 
 /**
  * Viewer component for {@link User}
@@ -86,18 +87,18 @@ import static com.lrsuccess.ldp.ui.user.UserViewerComponentLOK.*;
 public class UserViewerComponent extends MIWTPageElementModelContainer
 {
     @Autowired
-    private CoachingEntityDAO _coachingEntityDAO;
+    private ProfileService _profileService;
     @Autowired
     private ProfileDAO _profileDAO;
     @Autowired
-    private MembershipOperationConfiguration _mop;
+    private MembershipOperationProvider _mop;
     @Autowired
     private UserDAO _userDAO;
     @Autowired
     private UIPreferences _uiPreferences;
 
     private User _user;
-    private CoachingEntity _coaching;
+    private Profile _userProfile;
     private final MessageContainer _messages = new MessageContainer(35_000L);
 
     /**
@@ -142,14 +143,14 @@ public class UserViewerComponent extends MIWTPageElementModelContainer
 
         final UserPositionManagement positionManagement = new UserPositionManagement(_user);
 
-        final UserMembershipManagement roleMgt = new UserMembershipManagement(_user, _coaching);
+        final UserMembershipManagement roleMgt = new UserMembershipManagement(_user, _userProfile);
 
         final TabbedContainerImpl tabs = new TabbedContainerImpl();
         tabs.addTab(profileTID, valueViewer);
         tabs.addTab(positionsTID, positionManagement);
         tabs.addTab(roleAssignTID, roleMgt);
 
-        final Label manageUserLabel = new Label(TextSources.createText(UI_HEADING_FORMAT(), LRLabsUtil.renderUser(_user)));
+        final Label manageUserLabel = new Label(TextSources.createText(UI_HEADING_FORMAT(), AppUtil.renderUser(_user)));
         manageUserLabel.setHTMLElement(HTMLElement.h3);
         add(manageUserLabel);
 
@@ -164,10 +165,11 @@ public class UserViewerComponent extends MIWTPageElementModelContainer
         _user = request.getPropertyValue(URLProperties.USER);
         if(_user == null)
             throw new IllegalArgumentException("Unable to determine User.");
-        _coaching = _coachingEntityDAO.getAssertedCoachingEntityForUser(_user);
+        _userProfile = _profileService.getOwnerProfileForUser(_user)
+            .orElseThrow(() -> new IllegalStateException("User must have an owner profile."));
         User currentUser = _userDAO.getAssertedCurrentUser();
 
-        if(!_profileDAO.canOperate(currentUser, _coaching, LRLabsUtil.UTC, _mop.viewUser()))
+        if(!_profileDAO.canOperate(currentUser, _userProfile, AppUtil.UTC, _mop.viewUser()))
             throw new IllegalArgumentException("Invalid Permissions To View Page");
     }
 }

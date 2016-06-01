@@ -11,10 +11,10 @@
 
 package com.example.app.ui.user;
 
+import com.example.app.model.user.User;
+import com.example.app.model.user.UserPosition;
+import com.example.app.support.AppUtil;
 import com.google.common.base.Preconditions;
-import com.lrlabs.model.user.User;
-import com.lrlabs.model.user.UserPosition;
-import com.lrlabs.util.LRLabsUtil;
 import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -34,7 +34,7 @@ import net.proteusframework.ui.miwt.component.composite.editor.CompositeValueEdi
 import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
 import net.proteusframework.ui.miwt.data.RelativeOffsetRange;
 
-import static com.lrsuccess.ldp.ui.user.UserPositionValueEditorLOK.*;
+import static com.example.app.ui.user.UserPositionValueEditorLOK.*;
 
 /**
  * {@link CompositeValueEditor} for {@link UserPosition}
@@ -91,14 +91,14 @@ public class UserPositionValueEditor extends CompositeValueEditor<UserPosition>
 
         addEditorForProperty(() -> {
             final CalendarValueEditor editor = new CalendarValueEditor(LABEL_START_DATE(), null, new RelativeOffsetRange(70));
-            editor.getValueComponent().setFixedTimeZone(LRLabsUtil.UTC);
+            editor.getValueComponent().setFixedTimeZone(AppUtil.UTC);
             editor.getValueComponent().setIncludeTime(false);
             return editor;
         }, UserPosition.START_DATE_COLUMN_PROP);
 
         addEditorForProperty(() -> {
             final CalendarValueEditor editor = new CalendarValueEditor(LABEL_END_DATE(), null, new RelativeOffsetRange(70));
-            editor.getValueComponent().setFixedTimeZone(LRLabsUtil.UTC);
+            editor.getValueComponent().setFixedTimeZone(AppUtil.UTC);
             editor.getValueComponent().setIncludeTime(false);
             return editor;
         }, UserPosition.END_DATE_COLUMN_PROP);

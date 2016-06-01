@@ -39,6 +39,8 @@ import static com.example.app.terminology.DefaultProfileTermProviderLOK.*;
     i18n = {
         @I18N(symbol = "attendee", l10n = @L10N("Attendee")),
         @I18N(symbol = "attendees", l10n = @L10N("Attendees")),
+        @I18N(symbol = "company", l10n = @L10N("Company")),
+        @I18N(symbol = "location", l10n = @L10N("Location")),
         @I18N(symbol = "membership", l10n = @L10N("Role")),
         @I18N(symbol = "membership-type", l10n = @L10N("Role Type")),
         @I18N(symbol = "profile", l10n = @L10N("Profile")),
@@ -51,12 +53,12 @@ import static com.example.app.terminology.DefaultProfileTermProviderLOK.*;
         @I18N(symbol = "user", l10n = @L10N("User")),
         @I18N(symbol = "users", l10n = @L10N("Users")),
         @I18N(symbol = "user all lower", l10n = @L10N("user")),
+        @I18N(symbol = "user profile", l10n = @L10N("User Profile")),
     }
 )
 public class DefaultProfileTermProvider implements ProfileTermProvider
 {
     private static final long serialVersionUID = 54911207722013603L;
-
 
     @Override
     public TextSource attendee()
@@ -68,6 +70,18 @@ public class DefaultProfileTermProvider implements ProfileTermProvider
     public TextSource attendees()
     {
         return ATTENDEES();
+    }
+
+    @Override
+    public TextSource company()
+    {
+        return COMPANY();
+    }
+
+    @Override
+    public TextSource location()
+    {
+        return LOCATION();
     }
 
     @Override
@@ -134,6 +148,12 @@ public class DefaultProfileTermProvider implements ProfileTermProvider
     public TextSource userAllLower()
     {
         return USER_ALL_LOWER();
+    }
+
+    @Override
+    public TextSource userProfile()
+    {
+        return USER_PROFILE();
     }
 
     @Override

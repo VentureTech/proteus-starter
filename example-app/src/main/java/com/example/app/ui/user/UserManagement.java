@@ -11,26 +11,23 @@
 
 package com.example.app.ui.user;
 
+import com.example.app.model.profile.Membership;
+import com.example.app.model.profile.MembershipType;
+import com.example.app.model.profile.Profile;
+import com.example.app.model.profile.ProfileDAO;
+import com.example.app.model.user.ContactMethod;
+import com.example.app.model.user.User;
+import com.example.app.model.user.UserDAO;
+import com.example.app.model.user.UserPosition;
+import com.example.app.service.MembershipOperationProvider;
+import com.example.app.service.ProfileService;
+import com.example.app.support.AppUtil;
+import com.example.app.support.ContactUtil;
+import com.example.app.terminology.ProfileTermProvider;
+import com.example.app.ui.Application;
+import com.example.app.ui.ApplicationFunctions;
+import com.example.app.ui.URLProperties;
 import com.google.common.base.Supplier;
-import com.lrlabs.model.profile.Membership;
-import com.lrlabs.model.profile.MembershipType;
-import com.lrlabs.model.profile.ProfileDAO;
-import com.lrlabs.model.user.ContactMethod;
-import com.lrlabs.model.user.User;
-import com.lrlabs.model.user.UserDAO;
-import com.lrlabs.model.user.UserPosition;
-import com.lrlabs.terminology.ProfileTermProvider;
-import com.lrlabs.util.ContactUtil;
-import com.lrlabs.util.LRLabsUtil;
-import com.lrsuccess.ldp.model.coached.CoachedEntity;
-import com.lrsuccess.ldp.model.coached.CoachedEntityDAO;
-import com.lrsuccess.ldp.model.profile.CoachingEntity;
-import com.lrsuccess.ldp.model.profile.CoachingEntityDAO;
-import com.lrsuccess.ldp.model.profile.MembershipOperationConfiguration;
-import com.lrsuccess.ldp.model.profile.PlanDAO;
-import com.lrsuccess.ldp.ui.Application;
-import com.lrsuccess.ldp.ui.ApplicationFunctions;
-import com.lrsuccess.ldp.ui.URLProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -94,7 +91,8 @@ import net.proteusframework.users.model.ContactDataCategory;
 import net.proteusframework.users.model.PhoneNumber;
 import net.proteusframework.users.model.PrincipalStatus;
 
-import static com.lrsuccess.ldp.ui.user.UserManagementLOK.*;
+import static com.example.app.ui.user.UserManagementLOK.*;
+import static net.proteusframework.core.locale.TextSources.createText;
 
 /**
  * UI for managing {@link User}s
@@ -137,22 +135,18 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
     @Autowired
     private EntityRetriever _er;
     @Autowired
-    private CoachingEntityDAO _coachingEntityDAO;
+    private ProfileService _profileService;
     @Autowired
     private ProfileDAO _profileDAO;
     @Autowired
-    private CoachedEntityDAO _coachedEntityDAO;
-    @Autowired
-    private PlanDAO _planDAO;
-    @Autowired
-    private MembershipOperationConfiguration _mop;
+    private MembershipOperationProvider _mop;
     @Autowired
     private ProfileTermProvider _terms;
 
     private SearchUIImpl _searchUI;
     private NavigationAction _addAction;
     private User _currentUser;
-    private CoachingEntity _coachingEntity;
+    private Profile _userProfile;
 
     /**
      *   Instantiates a new instance of UserManagement
@@ -187,7 +181,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
         _addAction.setPropertyValueResolver(parameter -> {
             HashMap<String,Object> map = new HashMap<>();
             map.put(URLProperties.USER, URLConfigPropertyConverter.ENTITY_NEW);
-            map.put(URLProperties.COACHING_ENTITY, _coachingEntity);
+            map.put(URLProperties.PROFILE, _userProfile);
             return map;
         });
 
@@ -262,7 +256,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
         actionColumn.setIncludeDelete(false);
         final TimeZone tz = getSession().getTimeZone();
         actionColumn.setIncludeView(_profileDAO.canOperate(_currentUser,
-            _coachingEntity, tz, _mop.viewUser()));
+            _userProfile, tz, _mop.viewUser()));
         actionColumn.configure()
             .usingDataColumnTableRow(URLProperties.USER)
             .withSourceComponent(this);
@@ -304,30 +298,12 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
             })));
 
         searchModel.getResultColumns().add(new SearchResultColumnImpl()
-            .withName("coached-entity")
-            .withTableColumn(new FixedValueColumn().withColumnName(_terms.coachedEntity()))
-            .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
-                User user = (User)input;
-                List<CoachedEntity> coacheds = _coachedEntityDAO.getCoachedEntitiesForUserAndCoachingEntity
-                    (_coachingEntity, user);
-                if(coacheds.isEmpty())
-                    return TextSources.EMPTY;
-                else
-                {
-                    List<TextSource> coachedTSs = coacheds.stream()
-                        .map(TextSources::createTextForAny)
-                        .collect(Collectors.toList());
-                    return ConcatTextSource.create(coachedTSs).withSeparator(", ");
-                }
-            })));
-
-        searchModel.getResultColumns().add(new SearchResultColumnImpl()
             .withName("role")
             .withTableColumn(new FixedValueColumn().withColumnName(CONSTRAINT_ROLE()))
             .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
                 User user = (User)input;
                 List<MembershipType> roles = _profileDAO.getMemberships(
-                    _coachingEntity, user, getSession().getTimeZone())
+                    _userProfile, user, getSession().getTimeZone())
                     .stream()
                     .filter(mem -> mem.getMembershipType() != null)
                     .map(Membership::getMembershipType)
@@ -337,24 +313,6 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
                 else
                 {
                     List<TextSource> memTypeTSs = roles.stream()
-                        .map(TextSources::createTextForAny)
-                        .collect(Collectors.toList());
-                    return ConcatTextSource.create(memTypeTSs).withSeparator(", ");
-                }
-            })));
-
-        searchModel.getResultColumns().add(new SearchResultColumnImpl()
-            .withName("plan-role")
-            .withTableColumn(new FixedValueColumn().withColumnName(createText(COLUMN_PLAN_ROLE_FMT(), _terms.plan())))
-            .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
-                User user = (User)input;
-                CoachingEntity coaching = _coachingEntity;
-                List<MembershipType> memTypes = _planDAO.getPlanMembershipTypesForUserAndCoaching(user, coaching);
-                if(memTypes.isEmpty())
-                    return TextSources.EMPTY;
-                else
-                {
-                    List<TextSource> memTypeTSs = memTypes.stream()
                         .map(TextSources::createTextForAny)
                         .collect(Collectors.toList());
                     return ConcatTextSource.create(memTypeTSs).withSeparator(", ");
@@ -385,51 +343,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
 
     private void addConstraints(SearchModelImpl searchModel)
     {
-        searchModel.getConstraints().add(
-            new ComboBoxConstraint(){
 
-                private ComboBox _constraintComponent;
-
-                @Override
-                public net.proteusframework.ui.miwt.component.Component getConstraintComponent()
-                {
-                    if(_constraintComponent == null || _constraintComponent.isClosed())
-                    {
-                        List<CoachedEntity> coachedEntities = new ArrayList<>();
-                        coachedEntities.add(null);
-                        final List<CoachedEntity> coachedEntitiesForCoachingEntity =
-                            _coachedEntityDAO.getCoachedEntitiesForCoachingEntity(_coachingEntityDAO
-                                .getAssertedCoachingEntityForUser(_currentUser));
-                        coachedEntitiesForCoachingEntity.sort(new NamedObjectComparator(getLocaleContext()));
-                        coachedEntities.addAll(coachedEntitiesForCoachingEntity);
-
-                        _constraintComponent = new ComboBox(new SimpleListModel<>(coachedEntities));
-                        _constraintComponent.setCellRenderer(new CustomCellRenderer(CommonButtonText.ANY));
-                    }
-                    return _constraintComponent;
-                }
-
-                @Override
-                public void addCriteria(QLBuilder builder, net.proteusframework.ui.miwt.component.Component constraintComponent)
-                {
-                    ComboBox combo = (ComboBox)constraintComponent;
-                    CoachedEntity coached = (CoachedEntity)combo.getSelectedObject();
-                    if(coached != null && shouldReturnConstraintForValue(coached))
-                    {
-                        QLBuilder membershipBuilder = _profileDAO.getMembershipQLBuilder();
-                        membershipBuilder.setProjection(
-                            "distinct " + membershipBuilder.getAlias() + '.' + Membership.USER_PROP + ".id");
-                        membershipBuilder.appendCriteria(Membership.PROFILE_PROP, getOperator(), coached);
-                        List<Integer> userIDs = membershipBuilder.getQueryResolver().list();
-                        if(userIDs.isEmpty())
-                            userIDs.add(0);
-                        builder.appendCriteria(builder.getAlias() + ".id in (:usersOnCoached)")
-                            .putParameter("usersOnCoached", userIDs);
-                    }
-                }
-            }
-            .withLabel(_terms.coachedEntity())
-            .withOperator(Operator.eq));
 
         searchModel.getConstraints().add(
             new ComboBoxConstraint(){
@@ -443,8 +357,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
                     {
                         List<MembershipType> memTypes = new ArrayList<>();
                         memTypes.add(null);
-                        memTypes.addAll(_profileDAO.getMembershipTypesForProfile(_coachingEntityDAO
-                            .getAssertedCoachingEntityForUser(_currentUser)));
+                        memTypes.addAll(_profileDAO.getMembershipTypesForProfile(_userProfile));
 
                         _constraintComponent = new ComboBox(new SimpleListModel<>(memTypes));
                         _constraintComponent.setCellRenderer(new CustomCellRenderer(CommonButtonText.ANY));
@@ -464,7 +377,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
                             + Membership.USER_PROP + ".id");
                         membershipBuilder.appendCriteria(Membership.MEMBERSHIP_TYPE_PROP, getOperator(), memType);
                         membershipBuilder.appendCriteria(Membership.PROFILE_PROP, Operator.eq,
-                            _coachingEntity);
+                            _userProfile);
                         List<Integer> userIDs = membershipBuilder.getQueryResolver().list();
                         if(userIDs.isEmpty())
                             userIDs.add(0);
@@ -579,10 +492,11 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
     private Supplier<QLBuilder> getBuilderSupplier()
     {
         return () -> {
-            final Integer ceId = _coachingEntity.getId();
+            final Integer ceId = _userProfile.getId();
 
-            QLBuilder builder = _coachingEntityDAO.getCoachingEntityQLBuilder();
+            QLBuilder builder = _profileService.getQLBuilder();
             builder.appendCriteria("id", Operator.eq, ceId);
+            // FIXME : is this how we want to map profile <-> user
             final JoinedQLBuilder userQB = builder.createJoin(JoinType.INNER, "users", UserDAO.ALIAS);
             builder.setProjection(userQB.getAlias());
             return userQB;
@@ -594,16 +508,17 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
         assert (_searchUI.getSearchSupplier()) != null : "Search Supplier was null.  This should not happen.";
         ((SearchSupplierImpl)_searchUI.getSearchSupplier()).setBuilderSupplier(getBuilderSupplier());
         final TimeZone tz = getSession().getTimeZone();
-        _addAction.setEnabled(_profileDAO.canOperate(_currentUser, _coachingEntity, tz, _mop.modifyUser()));
+        _addAction.setEnabled(_profileDAO.canOperate(_currentUser, _userProfile, tz, _mop.modifyUser()));
     }
 
     @SuppressWarnings("unused") //used by ApplicationFunction
     void configure(ParsedRequest request)
     {
         _currentUser = _userDAO.getAssertedCurrentUser();
-        _coachingEntity = _coachingEntityDAO.getAssertedCoachingEntityForUser(_currentUser);
+        _userProfile = _profileService.getOwnerProfileForUser(_currentUser)
+            .orElseThrow(() -> new IllegalStateException("User must have profile."));
 
-        if(!_profileDAO.canOperate(_currentUser, _coachingEntity, LRLabsUtil.UTC, _mop.viewUser()))
+        if(!_profileDAO.canOperate(_currentUser, _userProfile, AppUtil.UTC, _mop.viewUser()))
             throw new IllegalArgumentException("Invalid Permissions To View Page");
     }
 }

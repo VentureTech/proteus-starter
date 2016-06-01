@@ -11,12 +11,13 @@
 
 package com.example.app.ui.user;
 
+import com.example.app.model.user.User;
+import com.example.app.model.user.UserDAO;
+import com.example.app.model.user.UserPosition;
+import com.example.app.support.AppUtil;
+import com.example.app.terminology.ProfileTermProvider;
 import com.google.common.base.Preconditions;
-import com.lrlabs.model.user.User;
-import com.lrlabs.model.user.UserDAO;
-import com.lrlabs.model.user.UserPosition;
-import com.lrlabs.terminology.ProfileTermProvider;
-import com.lrlabs.util.LRLabsUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -50,14 +51,14 @@ import net.proteusframework.ui.search.SearchUIOperation;
 import net.proteusframework.ui.search.SearchUIOperationContext;
 import net.proteusframework.ui.search.SearchUIOperationHandler;
 
-import static com.lrlabs.util.LRLabsUtil.UTC;
-import static com.lrsuccess.ldp.ui.user.UserPositionManagementLOK.*;
+import static com.example.app.support.AppUtil.UTC;
+import static com.example.app.ui.user.UserPositionManagementLOK.*;
+import static net.proteusframework.core.locale.TextSources.createText;
 
 /**
  * Provides a UI for managing {@link UserPosition}s
  *
  * @author Alan Holt (aholt@venturetech.net)
- * @since 12/10/15 1:43 PM
  */
 @I18NFile(
     symbolPrefix = "com.lrsuccess.ldp.ui.user.UserPositionManagement",
@@ -222,7 +223,7 @@ public class UserPositionManagement extends HistoryContainer implements SearchUI
             .withTableColumn(new PropertyColumn(UserPosition.class, UserPosition.POSITION_COLUMN_PROP)
                 .withColumnName(COLUMN_TITLE())));
 
-        DateFormatLabel dateRenderer = new DateFormatLabel(LRLabsUtil.getDateFormat(getLocaleContext().getLocale()));
+        DateFormatLabel dateRenderer = new DateFormatLabel(AppUtil.getDateFormat(getLocaleContext().getLocale()));
         dateRenderer.setFixedTimeZone(UTC);
 
         searchModel.getResultColumns().add(new SearchResultColumnImpl()

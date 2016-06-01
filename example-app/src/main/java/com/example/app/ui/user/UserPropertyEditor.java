@@ -12,6 +12,7 @@
 package com.example.app.ui.user;
 
 
+import com.example.app.model.profile.MembershipType;
 import com.example.app.model.profile.Profile;
 import com.example.app.model.profile.ProfileDAO;
 import com.example.app.model.user.User;
@@ -77,6 +78,7 @@ import net.proteusframework.users.model.dao.NonUniqueCredentialsException;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static com.example.app.ui.user.UserPropertyEditorLOK.*;
+import static net.proteusframework.core.locale.TextSources.createText;
 import static net.proteusframework.ui.miwt.component.composite.Message.error;
 
 /**
@@ -244,16 +246,13 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
                             _principalDAO.savePrincipal(user.getPrincipal());
                         }
                         user = _userDAO.mergeUser(user);
-                        CoachingEntity coaching = _er.reattachIfNecessary(editor.commitValueCoaching());
-                        if(!coaching.getUsers().contains(user))
+                        Profile userProfile = _er.reattachIfNecessary(editor.commitValueUserProfileOwner());
+                        if(!_profileService.setOwnerProfileForUser(user, userProfile))
                         {
-                            coaching.getUsers().add(user);
-                            _profileDAO.saveProfile(coaching);
-
                             List<MembershipType> coachingMemTypes = editor.commitValueCoachingMemType();
                             final User finalUser = user;
                             coachingMemTypes.forEach(coachingMemType ->
-                                _profileDAO.saveMembership(_profileDAO.createMembership(coaching, finalUser, coachingMemType,
+                                _profileDAO.saveMembership(_profileDAO.createMembership(userProfile, finalUser, coachingMemType,
                                     ZonedDateTime.now(getSession().getTimeZone().toZoneId()), true)));
                         }
 
@@ -331,15 +330,15 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
     {
         User value = request.getPropertyValue(URLProperties.USER);
         _newUser = value == null || value.getId() == null || value.getId() < 1;
-        CoachingEntity coaching = request.getPropertyValue(URLProperties.COACHING_ENTITY);
+        Profile profile = request.getPropertyValue(URLProperties.PROFILE);
         getValueEditor().setAuthDomains(_userDAO.getAuthenticationDomainsToSaveOnUserPrincipal(value));
-        coaching = _coachingEntityDAO.getCoachingEntityForUser(value).orElse(coaching);
-        assert coaching != null : "Coaching Entity was null.  This should not happen.";
-        getValueEditor().setInitialCoaching(coaching);
+        profile = _profileService.getOwnerProfileForUser(value).orElse(profile);
+        assert profile != null : "Coaching Entity was null.  This should not happen.";
+        getValueEditor().setInitialProfile(profile);
         User currentUser = _userDAO.getAssertedCurrentUser();
         final TimeZone timeZone = Event.getRequest().getTimeZone();
-        if(!_profileDAO.canOperate(currentUser, coaching, timeZone, _mop.viewUser())
-            || !_profileDAO.canOperate(currentUser, coaching, timeZone, _mop.modifyUser()))
+        if(!_profileDAO.canOperate(currentUser, profile, timeZone, _mop.viewUser())
+            || !_profileDAO.canOperate(currentUser, profile, timeZone, _mop.modifyUser()))
         {
             getValueEditor().setEditable(false);
             _notifications.add(error(createText(ERROR_INSUFFICIENT_PERMISSIONS_FMT(), _terms.user())));

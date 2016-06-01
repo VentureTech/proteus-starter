@@ -18,6 +18,8 @@ import com.example.app.model.user.User;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
+import net.proteusframework.ui.search.QLBuilder;
+
 /**
  * Service for Profile related activities.
  *
@@ -35,14 +37,21 @@ public interface ProfileService
      * @param user the user.
      * @return the profile.
      */
-    Optional<Profile> getOwnerProfileForUser(User user);
+    Optional<Profile> getOwnerProfileForUser(@Nullable User user);
+
+    /**
+     * Get the QLBuilder for the profile that owns users.
+     * @return the builder.
+     */
+    QLBuilder getQLBuilder();
 
     /**
      * Set the owner profile for a user.
      * @param user the user.
      * @param profile the profile.
+     * @return true if this is a new assignment; otherwise false.
      */
-    void setOwnerProfileForUser(User user, Profile profile);
+    boolean setOwnerProfileForUser(User user, Profile profile);
 
     /**
      * Get a profile by programmatic identifier.

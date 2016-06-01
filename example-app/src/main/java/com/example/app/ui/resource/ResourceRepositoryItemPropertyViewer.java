@@ -144,7 +144,7 @@ public class ResourceRepositoryItemPropertyViewer extends MIWTPageElementModelPr
             Repository repo = _repositoryDAO.getOwnerOfRepositoryItem(value);
             if(_repositoryDAO.canOperate(currentUser, repo, timeZone, _mop.viewRepositoryResources()))
             {
-                _canEdit = _repositoryDAO.canOperate(currentUser, repo, timeZone, _mop.modifyRepositoryTaskConfigs());
+                _canEdit = _repositoryDAO.canOperate(currentUser, repo, timeZone, _mop.modifyRepositoryResources());
                 setValueViewer(new ResourceRepositoryItemValueViewer(value));
                 return;
             }

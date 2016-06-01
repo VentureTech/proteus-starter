@@ -11,14 +11,15 @@
 
 package com.example.app.ui.user;
 
-import com.lrlabs.model.profile.ProfileDAO;
-import com.lrlabs.model.user.User;
-import com.lrlabs.model.user.UserDAO;
-import com.lrlabs.terminology.ProfileTermProvider;
-import com.lrsuccess.ldp.model.profile.CoachingEntity;
-import com.lrsuccess.ldp.model.profile.CoachingEntityDAO;
-import com.lrsuccess.ldp.model.profile.MembershipOperationConfiguration;
-import com.lrsuccess.ldp.ui.ApplicationFunctions;
+
+import com.example.app.model.profile.Profile;
+import com.example.app.model.profile.ProfileDAO;
+import com.example.app.model.user.User;
+import com.example.app.model.user.UserDAO;
+import com.example.app.service.MembershipOperationProvider;
+import com.example.app.service.ProfileService;
+import com.example.app.terminology.ProfileTermProvider;
+import com.example.app.ui.ApplicationFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -39,8 +40,9 @@ import net.proteusframework.ui.miwt.component.composite.editor.PropertyViewer;
 import net.proteusframework.ui.miwt.event.Event;
 import net.proteusframework.ui.miwt.util.CommonActions;
 
-import static com.lrsuccess.ldp.ui.user.UserPropertyViewerLOK.ERROR_MESSAGE_INSUFFICIENT_PERMISSIONS_VIEW_FMT;
-import static com.lrsuccess.ldp.ui.user.UserPropertyViewerLOK.LABEL_UPDATE_PASSWORD;
+import static com.example.app.ui.user.UserPropertyViewerLOK.ERROR_MESSAGE_INSUFFICIENT_PERMISSIONS_VIEW_FMT;
+import static com.example.app.ui.user.UserPropertyViewerLOK.LABEL_UPDATE_PASSWORD;
+import static net.proteusframework.core.locale.TextSources.createText;
 import static net.proteusframework.ui.miwt.component.composite.Message.error;
 
 /**
@@ -63,11 +65,11 @@ public class UserPropertyViewer extends PropertyViewer
     @Autowired
     private ProfileDAO _profileDAO;
     @Autowired
-    private MembershipOperationConfiguration _mop;
+    private MembershipOperationProvider _mop;
     @Autowired
     private UserDAO _userDAO;
     @Autowired
-    private CoachingEntityDAO _coachingEntityDAO;
+    private ProfileService _profileService;
     @Autowired
     private ProfileTermProvider _terms;
 
@@ -129,10 +131,11 @@ public class UserPropertyViewer extends PropertyViewer
         UserValueViewer viewer;
         if(user != null)
         {
-            CoachingEntity coaching = _coachingEntityDAO.getAssertedCoachingEntityForUser(user);
+            Profile userProfile = _profileService.getOwnerProfileForUser(user)
+                .orElseThrow(() -> new IllegalStateException("User must have an owner profile."));
             User currentUser = _userDAO.getAssertedCurrentUser();
             final TimeZone timeZone = Event.getRequest().getTimeZone();
-            boolean canView = _profileDAO.canOperate(currentUser, coaching, timeZone, _mop.viewUser());
+            boolean canView = _profileDAO.canOperate(currentUser, userProfile, timeZone, _mop.viewUser());
             if(!canView)
             {
                 _messages.sendNotification(error(createText(ERROR_MESSAGE_INSUFFICIENT_PERMISSIONS_VIEW_FMT(), _terms.user())));
@@ -144,7 +147,7 @@ public class UserPropertyViewer extends PropertyViewer
                 viewer.setUser(user);
                 viewer.setNotifiable(_messages);
 
-                _canEdit = _profileDAO.canOperate(currentUser, coaching, timeZone, _mop.modifyUser());
+                _canEdit = _profileDAO.canOperate(currentUser, userProfile, timeZone, _mop.modifyUser());
             }
         }
         else

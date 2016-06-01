@@ -30,12 +30,25 @@ public interface MembershipOperationProvider
     MembershipOperation changeUserPassword();
 
     /**
+     * Get the "Delete User Roles" MembershipOperation, or create it, if it has not been created yet.
+     *
+     * @return a MembershipOperation
+     */
+    MembershipOperation deleteUserRoles();
+
+    /**
      * Get a list of all MembershipOperations that are defined within this provider.
      *
      * @return membership operations
      */
     List<MembershipOperation> getOperations();
 
+    /**
+     * Get the modify compnay operation.
+     *
+     * @return the operation.
+     */
+    MembershipOperation modifyCompany();
 
     /**
      * Get the "Modify Repository Resources" MembershipOperation, or create it, if it has not been created yet.
@@ -52,24 +65,18 @@ public interface MembershipOperationProvider
     MembershipOperation modifyUser();
 
     /**
+     * Get the "Modify User Roles Operations" MembershipOperation, or create it, if it has not been created yet.
+     *
+     * @return a MemberShipOperation
+     */
+    MembershipOperation modifyUserRoleOperations();
+
+    /**
      * Get the "Modify User Roles" MembershipOperation, or create it, if it has not been created yet.
      *
      * @return a MembershipOperation
      */
     MembershipOperation modifyUserRoles();
-
-    /**
-     * Get the "Delete User Roles" MembershipOperation, or create it, if it has not been created yet.
-     *
-     * @return a MembershipOperation
-     */
-    MembershipOperation deleteUserRoles();
-
-    /**
-     * Get the "Modify User Roles Operations" MembershipOperation, or create it, if it has not been created yet.
-     * @return a MemberShipOperation
-     */
-    MembershipOperation modifyUserRoleOperations();
 
     /**
      * Get the "View Repository Resources" MembershipOperation, or create it, if it has not been created yet.

@@ -11,20 +11,19 @@
 
 package com.example.app.ui.user;
 
+import com.example.app.config.ProjectCacheRegions;
+import com.example.app.model.profile.Membership;
+import com.example.app.model.profile.MembershipType;
+import com.example.app.model.profile.MembershipTypeProvider;
+import com.example.app.model.profile.Profile;
+import com.example.app.model.profile.ProfileDAO;
+import com.example.app.model.profile.ProfileType;
+import com.example.app.model.user.User;
+import com.example.app.model.user.UserDAO;
+import com.example.app.service.MembershipOperationProvider;
+import com.example.app.service.ProfileService;
+import com.example.app.terminology.ProfileTermProvider;
 import com.google.common.base.Preconditions;
-import com.lrlabs.model.profile.Membership;
-import com.lrlabs.model.profile.MembershipType;
-import com.lrlabs.model.profile.Profile;
-import com.lrlabs.model.profile.ProfileDAO;
-import com.lrlabs.model.profile.ProfileType;
-import com.lrlabs.model.user.User;
-import com.lrlabs.model.user.UserDAO;
-import com.lrlabs.terminology.ProfileTermProvider;
-import com.lrsuccess.ldp.config.ProjectCacheRegions;
-import com.lrsuccess.ldp.model.profile.CoachingEntity;
-import com.lrsuccess.ldp.model.profile.CoachingEntityDAO;
-import com.lrsuccess.ldp.model.profile.MembershipOperationConfiguration;
-import com.lrsuccess.ldp.model.profile.MembershipTypeProvider;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -99,11 +98,11 @@ import net.proteusframework.ui.search.QLResolverOptions;
 import net.proteusframework.users.model.Principal;
 import net.proteusframework.users.model.PrincipalStatus;
 
-import static com.lrlabs.ui.UIText.*;
-import static com.lrlabs.util.LRLabsUtil.*;
-import static com.lrsuccess.ldp.ui.user.ProfileMembershipManagementLOK.*;
-import static com.lrsuccess.ldp.ui.user.UserMembershipManagementLOK.BUTTON_TEXT_MODIFY;
-import static com.lrsuccess.ldp.ui.user.UserMembershipManagementLOK.DELETE_CONFIRM_TEXT_FMT;
+import static com.example.app.ui.UIText.*;
+import static com.example.app.support.AppUtil.*;
+import static com.example.app.ui.user.ProfileMembershipManagementLOK.*;
+import static com.example.app.ui.user.UserMembershipManagementLOK.BUTTON_TEXT_MODIFY;
+import static com.example.app.ui.user.UserMembershipManagementLOK.DELETE_CONFIRM_TEXT_FMT;
 import static net.proteusframework.core.locale.TextSources.createText;
 
 /**
@@ -134,9 +133,9 @@ public class ProfileMembershipManagement extends HistoryContainer
     @Autowired
     private UserDAO _userDAO;
     @Autowired
-    private CoachingEntityDAO _coachingEntityDAO;
+    private ProfileService _profileService;
     @Autowired
-    private MembershipOperationConfiguration _mop;
+    private MembershipOperationProvider _mop;
     @Autowired
     private ProfileTermProvider _terms;
     @Autowired
@@ -265,16 +264,15 @@ public class ProfileMembershipManagement extends HistoryContainer
             }
         ));
 
-        _mop.initializeOperations(); // FIXME : this should not be necessary
         User currentUser = _userDAO.getAssertedCurrentUser();
         Hibernate.initialize(currentUser);
         Hibernate.initialize(currentUser.getPrincipal());
         Hibernate.initialize(currentUser.getPrincipal().getContact());
-        final CoachingEntity coachingEntity = _coachingEntityDAO.getCoachingEntityForUser(currentUser).orElseThrow(() ->
-            new IllegalArgumentException("A user must have a coaching entity."));
+        final Profile userProfile = _profileService.getOwnerProfileForUser(currentUser)
+            .orElseThrow(() -> new IllegalArgumentException("A user must have a coaching entity."));
         final TimeZone timeZone = getSession().getTimeZone();
-        boolean isAdminish = _profileDAO.canOperate(currentUser, coachingEntity, timeZone, _mop.modifyCoachedEntity());
-        if(!_profileDAO.canOperate(currentUser, coachingEntity, timeZone, _mop.modifyUserRoles()))
+        boolean isAdminish = _profileDAO.canOperate(currentUser, userProfile, timeZone, _mop.modifyCompany());
+        if(!_profileDAO.canOperate(currentUser, userProfile, timeZone, _mop.modifyUserRoles()))
         {
             Label label = new Label(createText(INSUFFICIENT_PERMISSIONS(), _terms.membership()))
                 .withHTMLElement(HTMLElement.h3);
@@ -646,38 +644,7 @@ public class ProfileMembershipManagement extends HistoryContainer
     public boolean validateSupporters(Notifiable notifiable)
     {
         boolean valid = true;
-        if (isOverlapped(getMemberships(_membershipTypeProvider.eldpExecutiveGuide())))
-        {
-            NotificationImpl notification = new NotificationImpl(NotificationType.ERROR,
-                createText(ONLY_ONE_ALLOWED_FMT(), _membershipTypeProvider.eldpExecutiveGuide().getName()));
-            notification.setSource(this);
-            notifiable.sendNotification(notification);
-            valid = false;
-        }
-        if (isOverlapped(getMemberships(_membershipTypeProvider.eldpCoach())))
-        {
-            NotificationImpl notification = new NotificationImpl(NotificationType.ERROR,
-                createText(ONLY_ONE_ALLOWED_FMT(), _membershipTypeProvider.eldpCoach().getName()));
-            notification.setSource(this);
-            notifiable.sendNotification(notification);
-            valid = false;
-        }
-        if (isOverlapped(getMemberships(_membershipTypeProvider.eldpAssistant())))
-        {
-            NotificationImpl notification = new NotificationImpl(NotificationType.ERROR,
-                createText(ONLY_ONE_ALLOWED_FMT(), _membershipTypeProvider.eldpAssistant().getName()));
-            notification.setSource(this);
-            notifiable.sendNotification(notification);
-            valid = false;
-        }
-        if(isOverlapped(getMemberships(_membershipTypeProvider.eldpBusinessDevelopment())))
-        {
-            NotificationImpl notification = new NotificationImpl(NotificationType.ERROR,
-                createText(ONLY_ONE_ALLOWED_FMT(), _membershipTypeProvider.eldpBusinessDevelopment().getName()));
-            notification.setSource(this);
-            notifiable.sendNotification(notification);
-            valid = false;
-        }
+        // FUTURE : check for singleton membership types
         return valid;
     }
 

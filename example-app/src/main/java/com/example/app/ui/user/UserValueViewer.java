@@ -11,18 +11,19 @@
 
 package com.example.app.ui.user;
 
-import com.lrlabs.model.profile.Membership;
-import com.lrlabs.model.profile.ProfileDAO;
-import com.lrlabs.model.user.ContactMethod;
-import com.lrlabs.model.user.User;
-import com.lrlabs.model.user.UserDAO;
-import com.lrlabs.terminology.ProfileTermProvider;
-import com.lrlabs.util.ContactUtil;
-import com.lrlabs.util.LRLabsUtil;
-import com.lrsuccess.ldp.model.profile.CoachingEntity;
-import com.lrsuccess.ldp.model.profile.CoachingEntityDAO;
-import com.lrsuccess.ldp.model.profile.MembershipOperationConfiguration;
-import com.lrsuccess.ldp.model.profile.MembershipTypeProvider;
+
+import com.example.app.model.profile.Membership;
+import com.example.app.model.profile.MembershipTypeProvider;
+import com.example.app.model.profile.Profile;
+import com.example.app.model.profile.ProfileDAO;
+import com.example.app.model.user.ContactMethod;
+import com.example.app.model.user.User;
+import com.example.app.model.user.UserDAO;
+import com.example.app.service.MembershipOperationProvider;
+import com.example.app.service.ProfileService;
+import com.example.app.support.AppUtil;
+import com.example.app.support.ContactUtil;
+import com.example.app.terminology.ProfileTermProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,8 +82,8 @@ import net.proteusframework.users.model.PhoneNumber;
 import net.proteusframework.users.model.dao.NonUniqueCredentialsException;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
-import static com.lrlabs.util.LRLabsUtil.nullFirst;
-import static com.lrsuccess.ldp.ui.user.UserValueViewerLOK.*;
+import static com.example.app.support.AppUtil.nullFirst;
+import static com.example.app.ui.user.UserValueViewerLOK.*;
 import static net.proteusframework.core.validation.CommonValidationText.ARG0_IS_REQUIRED;
 import static net.proteusframework.ui.miwt.validation.RequiredValueValidator.createRequiredValueValidator;
 
@@ -152,17 +153,17 @@ public class UserValueViewer extends Container
     }
 
     @Autowired
-    private LRLabsUtil _appUtil;
+    private AppUtil _appUtil;
     @Autowired
     private EntityRetriever _er;
     @Autowired
     private UserDAO _userDAO;
     @Autowired
-    private CoachingEntityDAO _coachingEntityDAO;
-    @Autowired
     private ProfileDAO _profileDAO;
     @Autowired
-    private MembershipOperationConfiguration _mop;
+    private MembershipOperationProvider _mop;
+    @Autowired
+    private ProfileService _profileService;
     @Autowired
     private PrincipalDAO _principalDAO;
     @Autowired
@@ -259,8 +260,8 @@ public class UserValueViewer extends Container
     {
         User currentUser = _userDAO.getAssertedCurrentUser();
         final TimeZone timeZone = getSession().getTimeZone();
-        CoachingEntity coaching = _coachingEntityDAO.getCoachingEntityForUser(getUser()).orElse(null);
-        return _profileDAO.canOperate(currentUser, coaching, timeZone, _mop.changeUserPassword())
+        Profile profile = _profileService.getOwnerProfileForUser(getUser()).orElse(null);
+        return _profileDAO.canOperate(currentUser, profile, timeZone, _mop.changeUserPassword())
             || Objects.equals(currentUser.getId(), getUser().getId());
     }
 
@@ -277,7 +278,7 @@ public class UserValueViewer extends Container
         removeAllComponents();
 
         User currentUser = _userDAO.getAssertedCurrentUser();
-        CoachingEntity coaching = _coachingEntityDAO.getCoachingEntityForUser(getUser()).orElse(null);
+        Profile profile = _profileService.getOwnerProfileForUser(getUser()).orElse(null);
 
         final ImageComponent userImage = new ImageComponent();
         if(getUser().getImage() != null)
@@ -339,8 +340,8 @@ public class UserValueViewer extends Container
         setFieldVisibility(timeZoneField);
         timeZoneField.addClassName("time-zone");
 
-        final ComboBoxValueEditor<CoachingEntity> coachingField = new ComboBoxValueEditor<>(
-            _terms.coachingEntity(), Collections.singletonList(coaching), coaching);
+        final ComboBoxValueEditor<Profile> coachingField = new ComboBoxValueEditor<>(
+            _terms.userProfile(), Collections.singletonList(profile), profile);
         coachingField.setEditable(false);
         coachingField.addClassName("coaching");
 
@@ -366,11 +367,7 @@ public class UserValueViewer extends Container
                 && _profileDAO.getMembershipsForUser(getUser(), null, getSession().getTimeZone()).stream()
                 .map(Membership::getMembershipType).filter(membershipType1 -> membershipType1 != null)
                 .anyMatch(membershipType ->
-                    membershipType.equals(_mtp.coachingAdmin())
-                        || membershipType.equals(_mtp.coachingBusinessDevelopment())
-                        || membershipType.equals(_mtp.coachingClientSupport())
-                        || membershipType.equals(_mtp.coachingOnboardingCoordinator())
-                        || membershipType.equals(_mtp.coachingAssistant())
+                    membershipType.equals(_mtp.companyAdmin())
                 )
         );
         loginLangingPage.setCellRenderer(new CustomCellRenderer(CommonButtonText.PLEASE_SELECT, input -> {

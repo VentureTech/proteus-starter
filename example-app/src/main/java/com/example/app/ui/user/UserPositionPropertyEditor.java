@@ -11,9 +11,10 @@
 
 package com.example.app.ui.user;
 
-import com.lrlabs.model.user.User;
-import com.lrlabs.model.user.UserDAO;
-import com.lrlabs.model.user.UserPosition;
+
+import com.example.app.model.user.User;
+import com.example.app.model.user.UserDAO;
+import com.example.app.model.user.UserPosition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
