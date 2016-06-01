@@ -47,7 +47,7 @@ javadoc {
     options.windowTitle = "${pName} v${docVersion}"
     options.footer = """<p id="copyright" align="center";>&copy; ${year} ${pName}</p>"""
     options.links = [
-        'http://jsr-305.googlecode.com/svn/trunk/javadoc/', 'http://docs.oracle.com/javaee/7/api/',
+        'http://docs.oracle.com/javaee/7/api/',
         'http://docs.oracle.com/javase/8/docs/api/',
         'http://docs.jboss.org/hibernate/orm/4.3/javadocs/', 'http://docs.jboss.org/hibernate/validator/5.0/api/',
         'http://docs.jboss.org/hibernate/annotations/3.5/api/', 'http://docs.jboss.org/hibernate/core/4.3/javadocs/',
