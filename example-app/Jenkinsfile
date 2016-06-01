@@ -146,7 +146,7 @@ node {
               consoleParsers: [[parserName: 'JavaDoc Tool']], defaultEncoding: '', excludePattern: '', healthy: '',
               includePattern: '', messagesPattern: '', unHealthy: ''])
 
-        step([$class: 'JavadocArchiver', javadocDir: 'build/gradle/docs/javadoc/', keepAll: false])
+        step([$class: 'JavadocArchiver', javadocDir: 'build/gradle/docs/javadoc', keepAll: false])
 
         step([$class: 'AnalysisPublisher', canComputeNew: false, defaultEncoding: '',
               healthy: '', pmdActivated: false, unHealthy: ''])
