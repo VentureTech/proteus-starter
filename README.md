@@ -24,7 +24,7 @@ The example app (*/proteus-examples/example-app*) is a gradle project with depen
 * Rename the project to match your needs - both project name and directory name unless the directory will become the root of the git repo.
 * Update gradle.properties (especially app_group and app_vesion). You'll want to copy the read access properties for the artifact repo to your /home/$USER/.gradle/gradle.properties* file.
 * Decide on a good package name for your project and update the files so that they don't use com.example.
-* Modify com.example.app.config.ExampleAppProjectConfig to suit your project.  Don't leave it named "ExampleAppProjectConfig".
+* Modify com.example.app.config.ProjectConfig to suit your project. 
 * Add -Dspring.config=com.example.app.config.ProjectConfig to all of your launch configurations (update for actual class name)
 * Import the standard settings (File->Import Settings) from */proteus-examples/example-app/config/idea/settings.jar*. Make sure the __i2rd__ Code Style scheme is selected in the IDEA settings dialog.
 * Create a git repo where you host your code such as github and push the project up.
