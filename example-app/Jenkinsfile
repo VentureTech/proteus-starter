@@ -10,7 +10,7 @@ catch(error)
     repoPassword = env.repo_venturetech_password
 }
 //noinspection LongLine
-def gradleOptions = $/-Prepo_venturetech_username=$repo_venturetech_username -Prepo_venturetech_password=$repo_venturetech_password -Pcompile_libraries=true --no-daemon/$
+def gradleOptions = $/-Prepo_venturetech_username=$repoUser -Prepo_venturetech_password=$repoPassword -Pcompile_libraries=true --no-daemon/$
 try
 {
     properties[
