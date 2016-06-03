@@ -14,16 +14,13 @@ package com.example.app.model.profile;
 
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
-import com.example.app.model.AbstractAuditableSoftDeleteEntity;
-import com.example.app.model.SoftDeleteEntity;
+import com.example.app.model.AbstractAuditableEntity;
 import com.example.app.model.repository.Repository;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.annotation.Nonnull;
@@ -50,6 +47,8 @@ import java.util.Set;
 import net.proteusframework.core.locale.LocalizedObjectKey;
 import net.proteusframework.core.locale.NamedObject;
 
+import static com.example.app.model.SoftDeleteEntity.SOFT_DELETE_COLUMN_PROP;
+
 /**
  * Profile superclass.  It is fully auditable and implements a soft delete functionality.
  *
@@ -63,15 +62,12 @@ import net.proteusframework.core.locale.NamedObject;
     @Index(name = "profile_disc_idx", columnList = ProjectConfig.DISCRIMINATOR_COLUMN),
     @Index(name = "profile_profletype_idx", columnList = Profile.PROFILE_TYPE_COLUMN)
 })
-@Where(clause = SoftDeleteEntity.WHERE_CLAUSE)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.PROFILE_DATA)
 @BatchSize(size = 10)
 @Audited
-@SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + Profile.TABLE_NAME
-                 + " SET " + Profile.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + Profile.ID_COLUMN + " = ?")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = ProjectConfig.DISCRIMINATOR_COLUMN)
-public abstract class Profile extends AbstractAuditableSoftDeleteEntity implements NamedObject
+public abstract class Profile extends AbstractAuditableEntity<Integer> implements NamedObject
 {
     /** The database table name for this entity */
     public static final String TABLE_NAME = "Profile";

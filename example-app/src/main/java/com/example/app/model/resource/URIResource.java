@@ -12,13 +12,9 @@
 package com.example.app.model.resource;
 
 import com.example.app.config.ProjectCacheRegions;
-import com.example.app.config.ProjectConfig;
-import com.example.app.model.SoftDeleteEntity;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.annotation.Nullable;
@@ -34,12 +30,9 @@ import java.net.URI;
  * @since 11/18/15 3:12 PM
  */
 @Entity
-@Where(clause = SoftDeleteEntity.WHERE_CLAUSE)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.ENTITY_DATA)
 @BatchSize(size = 10)
 @Audited
-@SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + Resource.TABLE_NAME
-                 + " SET " + URIResource.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + URIResource.ID_COLUMN + " = ?")
 @DiscriminatorValue("uri")
 public class URIResource extends Resource
 {

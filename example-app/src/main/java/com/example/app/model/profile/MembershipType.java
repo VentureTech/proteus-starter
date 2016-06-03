@@ -13,14 +13,11 @@ package com.example.app.model.profile;
 
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
-import com.example.app.model.AbstractAuditableSoftDeleteEntity;
-import com.example.app.model.SoftDeleteEntity;
+import com.example.app.model.AbstractAuditableEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -63,12 +60,9 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
             ProfileType.ID_COLUMN, MembershipType.PROGRAMMATIC_ID_COLUMN_PROP
         })
     })
-@Where(clause = SoftDeleteEntity.WHERE_CLAUSE)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.MEMBER_DATA)
 @Audited
-@SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + MembershipType.TABLE_NAME
-                 + " SET " + MembershipType.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + MembershipType.ID_COLUMN + " = ?")
-public class MembershipType extends AbstractAuditableSoftDeleteEntity implements NamedObject
+public class MembershipType extends AbstractAuditableEntity<Integer> implements NamedObject
 {
     /** The database table name for this entity */
     public static final String TABLE_NAME = "MembershipType";

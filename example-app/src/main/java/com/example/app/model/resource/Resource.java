@@ -13,13 +13,11 @@ package com.example.app.model.resource;
 
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
-import com.example.app.model.AbstractAuditableSoftDeleteEntity;
+import com.example.app.model.AbstractAuditableEntity;
 import com.example.app.model.SoftDeleteEntity;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.annotation.Nonnull;
@@ -64,24 +62,18 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
  */
 @Entity
 @Table(name = Resource.TABLE_NAME, schema = ProjectConfig.PROJECT_SCHEMA)
-@Where(clause = SoftDeleteEntity.WHERE_CLAUSE)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.ENTITY_DATA)
 @BatchSize(size = 10)
 @Audited
-@SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + Resource.TABLE_NAME
-                 + " SET " + Resource.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + Resource.ID_COLUMN + " = ?")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = ProjectConfig.DISCRIMINATOR_COLUMN)
-public abstract class Resource extends AbstractAuditableSoftDeleteEntity implements NamedObject, Cloneable
+public abstract class Resource extends AbstractAuditableEntity<Integer> implements NamedObject, Cloneable
 {
     /** The database table name */
     public static final String TABLE_NAME = "resource";
     /** The database id column */
     public static final String ID_COLUMN = "resource_id";
-    /** Where clause for a collection containing Resources */
-    public static final String COLLECTION_WHERE_CLAUSE = ID_COLUMN + " in (select resource." + ID_COLUMN + " from app."
-                                                         + TABLE_NAME + " resource where resource." + SOFT_DELETE_COLUMN_PROP
-                                                         + "='false')";
+
     /** The database column and property: author */
     public static final String AUTHOR_COLUMN_PROP = "author";
     /** The database column and property: visibility */

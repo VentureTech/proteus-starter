@@ -13,12 +13,9 @@ package com.example.app.model.repository;
 
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
-import com.example.app.model.AbstractAuditableSoftDeleteEntity;
-import com.example.app.model.SoftDeleteEntity;
+import com.example.app.model.AbstractAuditableEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.annotation.Nonnull;
@@ -43,12 +40,9 @@ import net.proteusframework.core.locale.NamedObject;
  */
 @Entity
 @Table(name = Repository.TABLE_NAME, schema = ProjectConfig.PROJECT_SCHEMA)
-@Where(clause = SoftDeleteEntity.WHERE_CLAUSE)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.ENTITY_DATA)
 @Audited
-@SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + Repository.TABLE_NAME
-                 + " SET " + Repository.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + Repository.ID_COLUMN + " = ?")
-public class Repository extends AbstractAuditableSoftDeleteEntity implements NamedObject
+public class Repository extends AbstractAuditableEntity<Integer> implements NamedObject
 {
     /** The database table name */
     public static final String TABLE_NAME = "repository";

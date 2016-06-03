@@ -13,14 +13,13 @@ package com.example.app.model.user;
 
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
-import com.example.app.model.AbstractAuditableSoftDeleteEntity;
+import com.example.app.model.AbstractAuditableEntity;
 import com.example.app.model.SoftDeleteEntity;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -66,13 +65,10 @@ import static com.i2rd.users.miwt.PrincipalRenderer.DEFAULT_FORMAT_WITHOUT_USER;
 @Table(name = User.TABLE_NAME, schema = ProjectConfig.PROJECT_SCHEMA, indexes = {
 
 })
-@Where(clause = SoftDeleteEntity.WHERE_CLAUSE)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.ENTITY_DATA)
 @BatchSize(size = 10)
 @Audited
-@SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + User.TABLE_NAME
-                 + " SET " + User.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + User.ID_COLUMN + " = ?")
-public class User extends AbstractAuditableSoftDeleteEntity implements NamedObject
+public class User extends AbstractAuditableEntity<Integer> implements NamedObject
 {
     /** the database table name for this entity */
     public static final String TABLE_NAME = "User";

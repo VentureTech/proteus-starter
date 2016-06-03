@@ -13,14 +13,11 @@ package com.example.app.model.profile;
 
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
-import com.example.app.model.AbstractAuditableSoftDeleteEntity;
-import com.example.app.model.SoftDeleteEntity;
+import com.example.app.model.AbstractAuditableEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -58,15 +55,12 @@ import static javax.persistence.FetchType.LAZY;
  */
 @Entity
 @Table(name = ProfileType.TABLE_NAME, schema = ProjectConfig.PROJECT_SCHEMA)
-@Where(clause = SoftDeleteEntity.WHERE_CLAUSE)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.PROFILE_DATA)
 @Audited
-@SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + ProfileType.TABLE_NAME
-                 + " SET " + ProfileType.SOFT_DELETE_COLUMN_PROP + " = true WHERE " + ProfileType.ID_COLUMN + " = ?")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = ProjectConfig.DISCRIMINATOR_COLUMN)
 @DiscriminatorValue("default")
-public class ProfileType extends AbstractAuditableSoftDeleteEntity implements NamedObject
+public class ProfileType extends AbstractAuditableEntity<Integer> implements NamedObject
 {
     /** The database table name for this entity */
     public static final String TABLE_NAME = "ProfileType";

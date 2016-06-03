@@ -18,8 +18,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -50,11 +48,8 @@ import static net.proteusframework.core.locale.annotation.I18NFile.Visibility.PU
  */
 @Entity
 @Table(name = Company.TABLE_NAME, schema = ProjectConfig.PROJECT_SCHEMA)
-@Where(clause = Company.WHERE_CLAUSE)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.PROFILE_DATA)
 @Audited
-@SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + Profile.TABLE_NAME
-                 + " SET " + Profile.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + Profile.ID_COLUMN + " = ?")
 @DiscriminatorValue("company")
 @I18NFile(
     symbolPrefix = "com.example.app.model.company.Company",

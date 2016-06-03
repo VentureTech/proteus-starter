@@ -13,12 +13,9 @@ package com.example.app.model.user;
 
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
-import com.example.app.model.AbstractAuditableSoftDeleteEntity;
-import com.example.app.model.SoftDeleteEntity;
+import com.example.app.model.AbstractAuditableEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.annotation.Nonnull;
@@ -51,13 +48,10 @@ import java.util.Optional;
 @Table(name = UserPosition.TABLE_NAME, schema = ProjectConfig.PROJECT_SCHEMA, indexes = {
     @Index(name = "userposition_user_idx", columnList = UserPosition.USER_COLUMN)
 })
-@Where(clause = SoftDeleteEntity.WHERE_CLAUSE)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.ENTITY_DATA)
 @Audited
-@SQLDelete(sql = "UPDATE " + ProjectConfig.PROJECT_SCHEMA + '.' + UserPosition.TABLE_NAME
-                 + " SET " + UserPosition.SOFT_DELETE_COLUMN_PROP + " = 'true' WHERE " + UserPosition.ID_COLUMN + " = ?")
 @Access(AccessType.FIELD)
-public class UserPosition extends AbstractAuditableSoftDeleteEntity
+public class UserPosition extends AbstractAuditableEntity<Integer>
 {
     /** the database table name for this entity */
     public static final String TABLE_NAME = "UserPosition";
