@@ -1,4 +1,14 @@
-
+def repoUser, repoPassword;
+try{
+    repoUser = repo_venturetech_username
+    repoPassword = repo_venturetech_password
+}
+catch(error)
+{
+    // try environment
+    repoUser = env.repo_venturetech_username
+    repoPassword = env.repo_venturetech_password
+}
 //noinspection LongLine
 def gradleOptions = $/-Prepo_venturetech_username=$repo_venturetech_username -Prepo_venturetech_password=$repo_venturetech_password -Pcompile_libraries=true --no-daemon/$
 try
