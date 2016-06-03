@@ -14,14 +14,13 @@ package com.example.app.model;
 /**
  * Interface for defining methods required by Entities that implement a Soft Delete functionality.
  *
- * <p>
- *     Things to consider if Hibernate {@link #WHERE_CLAUSE managed} as opposed DAO managed:<br>
- *         <ul>
- *             <li>Collection properties can be troublesome.</li>
- *             <li>Lists with indexes especially troublesome.</li>
- *             <li>Make sure SQLQuery sets {@code delete = FALSE}; otherwise, you will get holes / null values in the results.</li>
- *         </ul>
- * </p>
+ * <br>
+ * Things to consider if Hibernate {@link #WHERE_CLAUSE managed} as opposed DAO managed:<br>
+ * <ul>
+ * <li>Collection properties can be troublesome.</li>
+ * <li>Lists with indexes especially troublesome.</li>
+ * <li>Make sure SQLQuery sets {@code delete = FALSE}; otherwise, you will get holes / null values in the results.</li>
+ * </ul>
  *
  * @author Alan Holt (aholt@venturetech.net)
  */
