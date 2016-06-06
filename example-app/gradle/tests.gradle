@@ -10,8 +10,6 @@ test {
 
     ignoreFailures = true
 
-    maxParallelForks = 2
-
     minHeapSize = "128m"
     maxHeapSize = "512m"
 
