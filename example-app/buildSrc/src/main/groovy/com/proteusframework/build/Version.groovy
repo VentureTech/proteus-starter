@@ -84,6 +84,18 @@ class Version
         thisVersion
     }
 
+    private def getCommit(String text)
+    {
+        def matcher = text =~ /_commit = "([^"]+)/
+        return matcher ? matcher[0][1] : 'unknown commit'
+    }
+
+    private def getVersion(String text)
+    {
+        def matcher = text =~ /_version = "([^"]+)/
+        return matcher ? matcher[0][1] : 'unknown version'
+    }
+
     /**
      * Generate a version class for the project.
      */
@@ -102,6 +114,13 @@ ProjectInformation.java
 .gitignore"""
         }
         def generatedClass = new File(packageDir, 'ProjectInformation.java')
+        if(generatedClass.exists()
+            && getCommit(generatedClass.text) == project?.gitinfo?.commit?:''
+            && getVersion(generatedClass.text) == versionNumber
+        )
+        {
+            return;
+        }
         generatedClass.text = """
 /*
  * Copyright (c) Interactive Information R & D (I2RD) LLC.
