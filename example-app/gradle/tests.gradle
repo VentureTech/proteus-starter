@@ -8,6 +8,9 @@ test {
         excludeGroups 'manual'
     }
 
+    if(!project.hasProperty("testGroups"))
+        maxParallelForks = 4
+
     ignoreFailures = true
 
     minHeapSize = "128m"
