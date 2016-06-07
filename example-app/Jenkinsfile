@@ -64,7 +64,7 @@ node {
               consoleParsers: [[parserName: 'Java Compiler (javac)']], defaultEncoding: '',
               excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''])
         step([$class: 'TasksPublisher', canComputeNew: true, defaultEncoding: '', excludePattern: '', healthy: '', high: 'FIXME',
-              low: 'FUTURE', normal: 'TODO', pattern: '', unHealthy: ''])
+              low: 'FUTURE', normal: 'TODO', pattern: 'src/**/*.java', unHealthy: ''])
 
     }
     stash 'buildFiles'
@@ -101,7 +101,7 @@ parallel(["Unit Tests": {
                 }
             }
             step([$class: 'JUnitResultArchiver', allowEmptyResults: true, healthScaleFactor: 4.0,
-                  keepLongStdio: true, testResults: '**/build/gradle/test-results//TEST*.xml'])
+                  keepLongStdio: true, testResults: '**/build/gradle/test-results/TEST*.xml'])
 
         }
     }
