@@ -80,7 +80,8 @@ class RequestStats extends AbstractScriptGenerator {
     cw.setIdAttribute(cssID)
     cw.open()
     def formUrl = response.createURL()
-    formUrl.outputOpeningFormTag()
+    def tagHelper = formUrl.getTagHelper(pw)
+    tagHelper.outputOpeningFormTag()
     pw.append('<div class="search">')
     pw.append('<div class="search_bar">')
     pw.append('<span class="constraints">')
@@ -155,7 +156,7 @@ class RequestStats extends AbstractScriptGenerator {
 </table>
 """  
     pw.append('</div>') // .search
-    formUrl.outputClosingFormTag()
+    tagHelper.outputClosingFormTag()
     cw.close()
   }
   
