@@ -318,6 +318,51 @@ derby.log
                 process.consumeProcessOutput(System.out, System.err)
                 process.waitFor()
             }
+
+
+            // Copy webdev project
+            File webdevBaseDir = new File(model.destinationDirectory, "${model.appName}-webdev");
+            project.copy({
+                into webdevBaseDir
+                from(new File(project.projectDir.parentFile, 'webdev')) {
+                    include '**/*'
+                }
+            })
+            webdevBaseDir.traverse(
+                [preDir    : {if (skipDirs.contains(it.name)) return SKIP_SUBTREE}], {f ->
+                if(f.isFile()) {
+                    def content = f.getText('UTF-8')
+                    def updatedContent = content.replaceAll('webdev', "${model.appName}-webdev")
+                        .replaceAll(Pattern.quote('<mapping directory="$PROJECT_DIR$/.." vcs="Git" />'),
+                            '<mapping directory="\\$PROJECT_DIR\\$" vcs="Git" />')
+                    if (updatedContent != content)
+                    {
+                        println('Updating ' + f)
+                        f.setText(updatedContent, 'UTF-8')
+                    }
+                    if(f.name == 'webdev.iml'){
+                        f.renameTo(new File(f.getParentFile(), "${model.appName}-webdev.iml"))
+                    }
+                }
+
+                CONTINUE
+                })
+            if(new File('/usr/bin/git').canExecute()){
+                command = ['/usr/bin/git', 'init']
+                process = command.execute(envp, webdevBaseDir)
+                process.consumeProcessOutput(System.out, System.err)
+                process.waitFor()
+
+                command = ['/usr/bin/git', 'add', '-A']
+                process = command.execute(envp, webdevBaseDir)
+                process.consumeProcessOutput(System.out, System.err)
+                process.waitFor()
+
+                command = ['/usr/bin/git', 'commit', '-m', "Created project, ${model.appName}-webdev, from webdev", '.']
+                process = command.execute(envp, webdevBaseDir)
+                process.consumeProcessOutput(System.out, System.err)
+                process.waitFor()
+            }
         }
         catch(e)
         {
