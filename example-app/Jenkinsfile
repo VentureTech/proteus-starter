@@ -48,7 +48,7 @@ node {
 
     dir('example-app') {
         def gradleProps = readFile('gradle.properties')
-        def isSnapshot = env.BRANCH_NAME?.equals('master') || env.BRANCH_NAME?.startsWith('release/')
+        def isSnapshot = !(env.BRANCH_NAME?.equals('master') || env.BRANCH_NAME?.startsWith('release/'))
         def appVersion = getAppVersion(gradleProps).replace('-SNAPSHOT', '')
         def appName = getAppName(gradleProps)
         echo "Building $appName $appVersion"
@@ -72,16 +72,16 @@ node {
         step([$class: 'TasksPublisher', canComputeNew: true, defaultEncoding: '', excludePattern: '', healthy: '', high: 'FIXME',
               low: 'FUTURE', normal: 'TODO', pattern: 'src/**/*.java', unHealthy: ''])
 
-        stash excludes: 'compiletime-aspects/**', name: 'example-app buildFiles'
     }
+    stash excludes: '**/compiletime-aspects/**,**/build/gradle/libs/*.war', name: 'example-app buildFiles'
 }
 stage 'Tests In Parallel'
 parallel(["Unit Tests": {
     node {
 //        stage 'Unit Tests'
         def jdkHome = tool 'JDK 8'
+        unstash 'example-app buildFiles'
         dir('example-app') {
-            unstash 'example-app buildFiles'
             withEnv(["JAVA_HOME=$jdkHome"]) {
                 // Run the build
                 wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
@@ -98,8 +98,8 @@ parallel(["Unit Tests": {
     node {
 //        stage 'Integration Tests'
         def jdkHome = tool 'JDK 8'
+        unstash 'example-app buildFiles'
         dir('example-app') {
-            unstash 'example-app buildFiles'
             withEnv(["JAVA_HOME=$jdkHome"]) {
                 // Run the build
                 wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
@@ -116,8 +116,8 @@ parallel(["Unit Tests": {
 node {
     stage 'Coding Convention Review'
     def jdkHome = tool 'JDK 8'
+    unstash 'example-app buildFiles'
     dir('example-app') {
-        unstash 'example-app buildFiles'
         withEnv(["JAVA_HOME=$jdkHome"]) {
             // Run the build
             wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
@@ -134,8 +134,8 @@ node {
 node {
     stage 'Code Quality'
     def jdkHome = tool 'JDK 8'
+    unstash 'example-app buildFiles'
     dir('example-app') {
-        unstash 'example-app buildFiles'
         withEnv(["JAVA_HOME=$jdkHome"]) {
             // Run the build
             wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
@@ -154,8 +154,8 @@ node {
 node {
     stage 'JavaDoc'
     def jdkHome = tool 'JDK 8'
+    unstash 'example-app buildFiles'
     dir('example-app') {
-        unstash 'example-app buildFiles'
         withEnv(["JAVA_HOME=$jdkHome"]) {
             // Run the build
             wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
