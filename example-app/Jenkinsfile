@@ -48,7 +48,7 @@ node {
 
     dir('example-app') {
         def gradleProps = readFile('gradle.properties')
-        def isSnapshot = env.BRANCH_NAME?.equals('master') || env?.BRANCH_NAME.startsWith('release/')
+        def isSnapshot = env.BRANCH_NAME?.equals('master') || env.BRANCH_NAME?.startsWith('release/')
         def appVersion = getAppVersion(gradleProps).replace('-SNAPSHOT', '')
         def appName = getAppName(gradleProps)
         echo "Building $appName $appVersion"
