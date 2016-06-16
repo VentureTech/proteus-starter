@@ -66,16 +66,16 @@ node {
         step([$class: 'TasksPublisher', canComputeNew: true, defaultEncoding: '', excludePattern: '', healthy: '', high: 'FIXME',
               low: 'FUTURE', normal: 'TODO', pattern: 'src/**/*.java', unHealthy: ''])
 
+        stash excludes: 'compiletime-aspects/**', name: 'example-app buildFiles'
     }
-    stash 'buildFiles'
 }
 stage 'Tests In Parallel'
 parallel(["Unit Tests": {
     node {
 //        stage 'Unit Tests'
         def jdkHome = tool 'JDK 8'
-        unstash 'buildFiles'
         dir('example-app') {
+            unstash 'buildFiles'
             withEnv(["JAVA_HOME=$jdkHome"]) {
                 // Run the build
                 wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
@@ -92,8 +92,8 @@ parallel(["Unit Tests": {
     node {
 //        stage 'Integration Tests'
         def jdkHome = tool 'JDK 8'
-        unstash 'buildFiles'
         dir('example-app') {
+            unstash 'buildFiles'
             withEnv(["JAVA_HOME=$jdkHome"]) {
                 // Run the build
                 wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
@@ -110,8 +110,8 @@ parallel(["Unit Tests": {
 node {
     stage 'Coding Convention Review'
     def jdkHome = tool 'JDK 8'
-    unstash 'buildFiles'
     dir('example-app') {
+        unstash 'buildFiles'
         withEnv(["JAVA_HOME=$jdkHome"]) {
             // Run the build
             wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
@@ -128,8 +128,8 @@ node {
 node {
     stage 'Code Quality'
     def jdkHome = tool 'JDK 8'
-    unstash 'buildFiles'
     dir('example-app') {
+        unstash 'buildFiles'
         withEnv(["JAVA_HOME=$jdkHome"]) {
             // Run the build
             wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
@@ -148,8 +148,8 @@ node {
 node {
     stage 'JavaDoc'
     def jdkHome = tool 'JDK 8'
-    unstash 'buildFiles'
     dir('example-app') {
+        unstash 'buildFiles'
         withEnv(["JAVA_HOME=$jdkHome"]) {
             // Run the build
             wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
