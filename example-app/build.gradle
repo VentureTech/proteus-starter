@@ -53,7 +53,7 @@ task createProject(type: com.proteusframework.build.CreateProjectTask)
 
 task wrapper(type: Wrapper) {
     group 'Build Setup'
-    gradleVersion = '2.13'
+    gradleVersion = '2.14'
 }
 
 
