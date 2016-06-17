@@ -1,4 +1,5 @@
-def repoUser, repoPassword, gradleOptions;
+def repoUser, repoPassword, gradleOptions, version, isSnapshot;
+def atUser=''
 
 try
 {
@@ -17,7 +18,17 @@ catch(error) {
 }
 
 node {
-
+    try
+    {
+        if (env.CHANGE_AUTHOR_EMAIL)
+        {
+            atUser = '@' + env.CHANGE_AUTHOR_EMAIL.substring(0, env.CHANGE_AUTHOR_EMAIL.indexOf('@')) + ': '
+        }
+    }
+    catch(error)
+    {
+        echo "Unable to get atUser: $error"
+    }
     try
     {
         repoUser = repo_venturetech_username
@@ -48,20 +59,18 @@ node {
 
     dir('example-app') {
         def gradleProps = readFile('gradle.properties')
-        def isSnapshot = !(env.BRANCH_NAME?.equals('master') || env.BRANCH_NAME?.startsWith('release/'))
+        isSnapshot = !(env.BRANCH_NAME?.equals('master') || env.BRANCH_NAME?.startsWith('release/'))
         def appVersion = getAppVersion(gradleProps).replace('-SNAPSHOT', '')
         def appName = getAppName(gradleProps)
         echo "Building $appName $appVersion"
-        def version = "${appVersion}.${currentBuild.number}${isSnapshot ? '-SNAPSHOT' : ''}"
-        //noinspection GrReassignedInClosureLocalVar
-        gradleOptions+=" -Papp_version=$version"
+        version = "${appVersion}.${currentBuild.number}${isSnapshot ? '-SNAPSHOT' : ''}"
         currentBuild.displayName = "v${version}"
         stage "Build"
         gradleProps = null;
         withEnv(["JAVA_HOME=$jdkHome"]){
             // Run the build
             wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
-                sh "./gradlew clean assemble $gradleOptions"
+                sh "./gradlew clean assemble $gradleOptions -Papp_version=${version}"
             }
         }
         step([$class: 'ArtifactArchiver', artifacts: '**/build/gradle/libs/*', excludes: null,
@@ -85,7 +94,7 @@ parallel(["Unit Tests": {
             withEnv(["JAVA_HOME=$jdkHome"]) {
                 // Run the build
                 wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
-                    sh "./gradlew test $gradleOptions"
+                    sh "./gradlew test $gradleOptions -Papp_version=${version}"
                 }
             }
             step([$class: 'JUnitResultArchiver', allowEmptyResults: true, healthScaleFactor: 2.0,
@@ -103,7 +112,7 @@ parallel(["Unit Tests": {
             withEnv(["JAVA_HOME=$jdkHome"]) {
                 // Run the build
                 wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
-                    sh "./gradlew test -PtestGroups=integration $gradleOptions"
+                    sh "./gradlew test -PtestGroups=integration $gradleOptions -Papp_version=${version}"
                 }
             }
             step([$class: 'JUnitResultArchiver', allowEmptyResults: true, healthScaleFactor: 4.0,
@@ -139,7 +148,7 @@ node {
         withEnv(["JAVA_HOME=$jdkHome"]) {
             // Run the build
             wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
-                sh "./gradlew findbugsMain $gradleOptions"
+                sh "./gradlew findbugsMain $gradleOptions -Papp_version=${version}"
             }
         }
         step([$class: 'FindBugsPublisher', canComputeNew: true, defaultEncoding: 'UTF-8', excludePattern: '', failedTotalAll: '8',
@@ -159,7 +168,7 @@ node {
         withEnv(["JAVA_HOME=$jdkHome"]) {
             // Run the build
             wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
-                sh "./gradlew javadoc $gradleOptions"
+                sh "./gradlew javadoc $gradleOptions -Papp_version=${version}"
             }
         }
         step([$class: 'WarningsPublisher', canComputeNew: true, canResolveRelativePaths: false,
@@ -191,7 +200,7 @@ node {
                             //noinspection LongLine
                             echo "Publishing artifacts"
                             def additionalArgs = "artifactoryPublish -Ppublish_venturetech_username=$publish_venturetech_username -Ppublish_venturetech_password=$publish_venturetech_password"
-                            sh "./gradlew $gradleOptions $additionalArgs"
+                            sh "./gradlew $gradleOptions $additionalArgs -Papp_version=${version}${isSnapshot?'-SNAPSHOT':''}"
                         }
                     }
                 }
@@ -211,7 +220,7 @@ node {
                                 //noinspection LongLine
                                 echo "Deploying artifacts"
                                 def additionalArgs = "autoDeploy -Paws_id=${creds.username} -Pasw_secret=${creds.password}"
-                                sh "./gradlew $gradleOptions $additionalArgs"
+                                sh "./gradlew $gradleOptions $additionalArgs -Papp_version=${version}"
                             }
                         }
                     }
