@@ -2,14 +2,14 @@ def repoUser, repoPassword, gradleOptions;
 
 try
 {
-    properties[
+    properties([
         [$class: 'BuildDiscarderProperty', strategy:
             [$class: 'LogRotator', artifactDaysToKeepStr: '45', artifactNumToKeepStr: '5', daysToKeepStr: '90',
              numToKeepStr: '20']],
         [$class: 'ScannerJobProperty', doNotScan: false],
         [$class: 'GithubProjectProperty', displayName: 'Example Application',
             projectUrlStr: 'https://github.com/VentureTech/proteus-examples/'],
-    ]
+    ])
 
 }
 catch(error) {
