@@ -189,7 +189,7 @@ node {
             stage 'Publish'
             timeout(time: 4, unit: 'HOURS') {
                 //noinspection LongLine
-                slackSend color: 'good', message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be published to the artifactory repo.\n${env.JOB_URL}"
+                slackSend color: 'good', message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be published to the artifactory repo.\n(<${env.JOB_URL}|Open>)"
                 //noinspection LongLine
                 def params = input id: 'Publish', message: 'Publish Artifacts To Repo Server', ok: 'Publish Artifacts', parameters: [[$class: 'StringParameterDefinition', defaultValue: 'rtennant', description: 'Username to publish artifacts', name: 'publish_venturetech_username'], [$class: 'StringParameterDefinition', defaultValue: '', description: 'Password publish artifacts', name: 'publish_venturetech_password']]
                 dir('example-app') {
@@ -198,9 +198,8 @@ node {
                         wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
                             //noinspection LongLine
                             echo "Publishing artifacts"
-                            def additionalArgs = $/artifactoryPublish
-                                -Ppublish_venturetech_username=${params.publish_venturetech_username}
-                                -Ppublish_venturetech_password=${params.publish_venturetech_password}/$
+                            //noinspection LongLine
+                            def additionalArgs = $/artifactoryPublish -Ppublish_venturetech_username=${params.publish_venturetech_username} -Ppublish_venturetech_password=${params.publish_venturetech_password}/$
                             sh "./gradlew $gradleOptions $additionalArgs -Papp_version=${version}${isSnapshot?'-SNAPSHOT':''}"
                         }
                     }
@@ -210,7 +209,7 @@ node {
             {
                 timeout(time: 4, unit: 'HOURS') {
                     //noinspection LongLine
-                    slackSend color: 'good', message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be deployed to QA for testing.\n${env.JOB_URL}"
+                    slackSend color: 'good', message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be deployed to QA for testing.\n(<${env.JOB_URL}|Open>)"
                     //noinspection LongLine
                     input id: 'Deploy', message: 'Deploy build to QA Server?', ok: 'Deploy'
                     def creds = getSQSCredentials()
@@ -237,7 +236,7 @@ node {
 
 if(currentBuild.result == 'FAILURE') {
     //noinspection LongLine
-    slackSend color: 'danger', message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} failed.\n${env.JOB_URL}"
+    slackSend color: 'danger', message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} failed.\n(<${env.JOB_URL}|Open>)"
     mail to: "${env.CHANGE_AUTHOR_EMAIL}",
         subject: "Job '${env.JOB_NAME}' (${currentBuild.displayName}) failed",
         body: "Please go to ${env.BUILD_URL} and review the failure."
