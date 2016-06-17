@@ -83,6 +83,23 @@ node {
 
     }
     stash excludes: '**/compiletime-aspects/**,**/build/gradle/libs/*.war', name: 'example-app buildFiles'
+
+
+
+    stage 'Testing Something'
+    def creds = new net.proteusframework.CredentialHelper().getSQSCredentials()
+    dir('example-app') {
+        withEnv(["JAVA_HOME=$jdkHome"]) {
+            // Run the build
+            wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
+                //noinspection LongLine
+                echo "Deploying artifacts"
+                def additionalArgs = "autoDeploy -Paws_id=${creds.username} -Pasw_secret=${creds.password}"
+                sh "./gradlew $gradleOptions $additionalArgs -Papp_version=${version}"
+            }
+        }
+    }
+
 }
 stage 'Tests In Parallel'
 parallel(["Unit Tests": {
