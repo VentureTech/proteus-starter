@@ -200,7 +200,7 @@ node {
                             echo "Publishing artifacts"
                             //noinspection LongLine
                             def additionalArgs = $/artifactoryPublish -Ppublish_venturetech_username=${params.publish_venturetech_username} -Ppublish_venturetech_password=${params.publish_venturetech_password}/$
-                            sh "./gradlew $gradleOptions $additionalArgs -Papp_version=${version}${isSnapshot?'-SNAPSHOT':''}"
+                            sh "./gradlew $gradleOptions $additionalArgs -Papp_version=${version}"
                         }
                     }
                 }
