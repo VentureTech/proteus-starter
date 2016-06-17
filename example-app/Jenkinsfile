@@ -174,14 +174,65 @@ node {
         step([$class: 'GitHubCommitStatusSetter', errorHandlers: [[$class: 'ShallowAnyErrorHandler']]])
     }
 
+    if(currentBuild.result == 'SUCCESS') {
+        try
+        {
+            stage 'Publish'
+            timeout(time: 4, unit: 'HOURS') {
+                //noinspection LongLine
+                slackSend color: 'good', message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be published to the artifactory repo.\n${currentBuild.absoluteUrl}/input/Publish/proceedEmpty"
+                //noinspection LongLine
+                def params = input id: 'Publish', message: 'Publish Artifacts To Repo Server', ok: 'Publish Artifacts', parameters: [[$class: 'StringParameterDefinition', defaultValue: 'rtennant', description: 'Username to publish artifacts', name: 'publish_venturetech_username'], [$class: 'StringParameterDefinition', defaultValue: '', description: 'Password publish artifacts', name: 'publish_venturetech_password']]
+                println params
+                dir('example-app') {
+                    withEnv(["JAVA_HOME=$jdkHome","GRADLE_OPTS=-Xmx2024m -Xms512m"]) {
+                        // Run the build
+                        wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
+                            //noinspection LongLine
+                            echo "Publishing artifacts"
+                            def additionalArgs = "artifactoryPublish -Ppublish_venturetech_username=$publish_venturetech_username -Ppublish_venturetech_password=$publish_venturetech_password"
+                            sh "./gradlew $gradleOptions $additionalArgs"
+                        }
+                    }
+                }
+            }
+            if(isSnapshot)
+            {
+                timeout(time: 4, unit: 'HOURS') {
+                    //noinspection LongLine
+                    slackSend color: 'good', message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be deployed to QA for testing.\n${currentBuild.absoluteUrl}/input/Deploy/proceedEmpty"
+                    //noinspection LongLine
+                    input id: 'Deploy', message: 'Deploy build to QA Server?', ok: 'Deploy'
+                    def creds = getSQSCredentials()
+                    dir('example-app') {
+                        withEnv(["JAVA_HOME=$jdkHome"]) {
+                            // Run the build
+                            wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
+                                //noinspection LongLine
+                                echo "Deploying artifacts"
+                                def additionalArgs = "autoDeploy -Paws_id=${creds.username} -Pasw_secret=${creds.password}"
+                                sh "./gradlew $gradleOptions $additionalArgs"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch(error){
+            echo "$error"
+            //Skipping publish task
+        }
+    }
 }
 
 if(currentBuild.result == 'FAILURE') {
+    //noinspection LongLine
+    slackSend color: 'danger', message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} failed.\n${currentBuild.absoluteUrl}"
     mail to: "${env.CHANGE_AUTHOR_EMAIL}",
-        subject: "Job '${env.JOB_NAME}' (${env.BUILD_NUMBER}) failed",
+        subject: "Job '${env.JOB_NAME}' (${currentBuild.displayName}) failed",
         body: "Please go to ${env.BUILD_URL} and review the failure."
 } else if(currentBuild.result == 'SUCCESS' && currentBuild?.previousBuild?.result != 'SUCCESS') {
-    slackSend color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} is back to normal."
+    slackSend color: 'good', message: "@${env.CHANGE_AUTHOR}: ${env.JOB_NAME} ${currentBuild.displayName} is back to normal."
 }
 
 
@@ -197,4 +248,19 @@ def getAppName(String text)
 {
     def matcher = text =~ /app_name=(.+)/
     return matcher ? matcher[0][1] : 'App'
+}
+
+@NonCPS
+def getSQSCredentials()
+{
+    def credentials_store = jenkins.model.Jenkins.instance.getExtensionList(
+        'com.cloudbees.plugins.credentials.SystemCredentialsProvider'
+    )
+    credentials_store[0].credentials.each { it ->
+        if (it instanceof com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl) {
+            if(it.id == 'proteus-sys-jenkins-integration')
+                return ['username': it.username, 'password': it.password]
+        }
+    }
+    return null
 }
