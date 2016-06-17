@@ -20,6 +20,7 @@ catch(error) {
 node {
     try
     {
+        echo("${env.CHANGE_AUTHOR_EMAIL}")
         if (env.CHANGE_AUTHOR_EMAIL && env.CHANGE_AUTHOR_EMAIL.indexOf('@') != -1)
         {
             atUser = '@' + env.CHANGE_AUTHOR_EMAIL.substring(0, env.CHANGE_AUTHOR_EMAIL.indexOf('@')) + ': '
