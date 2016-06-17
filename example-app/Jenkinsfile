@@ -212,7 +212,7 @@ node {
                     slackSend color: 'good', message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be deployed to QA for testing.\n(<${env.JOB_URL}|Open>)"
                     //noinspection LongLine
                     input id: 'Deploy', message: 'Deploy build to QA Server?', ok: 'Deploy'
-                    def creds = getSQSCredentials()
+                    def creds = new net.proteusframework.CredentialsHelper().getSQSCredentials()
                     dir('example-app') {
                         withEnv(["JAVA_HOME=$jdkHome"]) {
                             // Run the build
@@ -259,17 +259,3 @@ def getAppName(String text)
     return matcher ? matcher[0][1] : 'App'
 }
 
-@NonCPS
-def getSQSCredentials()
-{
-    def credentials_store = jenkins.model.Jenkins.instance.getExtensionList(
-        'com.cloudbees.plugins.credentials.SystemCredentialsProvider'
-    )
-    credentials_store[0].credentials.each { it ->
-        if (it instanceof com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl) {
-            if(it.id == 'proteus-sys-jenkins-integration')
-                return ['username': it.username, 'password': it.password]
-        }
-    }
-    return null
-}
