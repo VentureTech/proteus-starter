@@ -20,7 +20,7 @@ catch(error) {
 node {
     try
     {
-        if (env.CHANGE_AUTHOR_EMAIL)
+        if (env.CHANGE_AUTHOR_EMAIL && env.CHANGE_AUTHOR_EMAIL.indexOf('@') != -1)
         {
             atUser = '@' + env.CHANGE_AUTHOR_EMAIL.substring(0, env.CHANGE_AUTHOR_EMAIL.indexOf('@')) + ': '
         }
@@ -49,7 +49,6 @@ node {
 
 
     def jdkHome = tool 'JDK 8'
-    stage 'Checkout'
 
     // Get some code from a GitHub repository
     git url: 'https://github.com/VentureTech/proteus-examples.git'
