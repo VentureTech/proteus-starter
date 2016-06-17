@@ -1,15 +1,3 @@
-/*
- * Copyright (c) Interactive Information R & D (I2RD) LLC.
- * All Rights Reserved.
- *
- * This software is confidential and proprietary information of
- * I2RD LLC ("Confidential Information"). You shall not disclose
- * such Confidential Information and shall use it only in
- * accordance with the terms of the license agreement you entered
- * into with I2RD.
- */
-
-
 
 //The global script scope
 def ctx = context(scope: scriptScope())
@@ -17,6 +5,7 @@ contributor(ctx) {
     method(name: 'build', type: 'Object', params: [job:'java.lang.String'], doc: 'Build a job')
     method(name: 'build', type: 'Object', namedParams: [parameter(name: 'job', type: 'java.lang.String'), parameter(name: 'parameters', type: 'Map'), parameter(name: 'propagate', type: 'boolean'), parameter(name: 'quietPeriod', type: 'java.lang.Integer'), parameter(name: 'wait', type: 'boolean'), ], doc: 'Build a job')
     method(name: 'echo', type: 'Object', params: [message:'java.lang.String'], doc: 'Print Message')
+    method(name: 'emailextrecipients', type: 'Object', params: [recipientProviders:'Map'], doc: 'Extended Email Recipients')
     method(name: 'error', type: 'Object', params: [message:'java.lang.String'], doc: 'Error signal')
     method(name: 'input', type: 'Object', params: [message:'java.lang.String'], doc: 'Wait for interactive input')
     method(name: 'input', type: 'Object', namedParams: [parameter(name: 'message', type: 'java.lang.String'), parameter(name: 'id', type: 'java.lang.String'), parameter(name: 'ok', type: 'java.lang.String'), parameter(name: 'parameters', type: 'Map'), parameter(name: 'submitter', type: 'java.lang.String'), ], doc: 'Wait for interactive input')
@@ -24,6 +13,7 @@ contributor(ctx) {
     method(name: 'mail', type: 'Object', namedParams: [parameter(name: 'subject', type: 'java.lang.String'), parameter(name: 'body', type: 'java.lang.String'), parameter(name: 'bcc', type: 'java.lang.String'), parameter(name: 'cc', type: 'java.lang.String'), parameter(name: 'charset', type: 'java.lang.String'), parameter(name: 'from', type: 'java.lang.String'), parameter(name: 'mimeType', type: 'java.lang.String'), parameter(name: 'replyTo', type: 'java.lang.String'), parameter(name: 'to', type: 'java.lang.String'), ], doc: 'Mail')
     method(name: 'node', type: 'Object', params: [label:java.lang.String, body:'Closure'], doc: 'Allocate node')
     method(name: 'properties', type: 'Object', params: [properties:'Map'], doc: 'Set job properties')
+    method(name: 'readTrusted', type: 'Object', params: [path:'java.lang.String'], doc: 'Read trusted file from SCM')
     method(name: 'retry', type: 'Object', params: [count:int, body:'Closure'], doc: 'Retry the body up to N times')
     method(name: 'slackSend', type: 'Object', params: [message:'java.lang.String'], doc: 'Send Slack Message')
     method(name: 'slackSend', type: 'Object', namedParams: [parameter(name: 'message', type: 'java.lang.String'), parameter(name: 'channel', type: 'java.lang.String'), parameter(name: 'color', type: 'java.lang.String'), parameter(name: 'failOnError', type: 'boolean'), parameter(name: 'teamDomain', type: 'java.lang.String'), parameter(name: 'token', type: 'java.lang.String'), ], doc: 'Send Slack Message')
@@ -55,7 +45,7 @@ contributor(nodeCtx) {
         method(name: 'checkout', type: 'Object', namedParams: [parameter(name: 'scm', type: 'Map'), parameter(name: 'changelog', type: 'boolean'), parameter(name: 'poll', type: 'boolean'), ], doc: 'General SCM')
         method(name: 'deleteDir', type: 'Object', params: [:], doc: 'Recursively delete the current directory from the workspace')
         method(name: 'dir', type: 'Object', params: [path:java.lang.String, body:'Closure'], doc: 'Change current directory')
-        method(name: 'emailext', type: 'Object', namedParams: [parameter(name: 'subject', type: 'java.lang.String'), parameter(name: 'body', type: 'java.lang.String'), parameter(name: 'attachLog', type: 'boolean'), parameter(name: 'attachmentsPattern', type: 'java.lang.String'), parameter(name: 'compressLog', type: 'boolean'), parameter(name: 'mimeType', type: 'java.lang.String'), parameter(name: 'replyTo', type: 'java.lang.String'), parameter(name: 'to', type: 'java.lang.String'), ], doc: 'Extended Email')
+        method(name: 'emailext', type: 'Object', namedParams: [parameter(name: 'subject', type: 'java.lang.String'), parameter(name: 'body', type: 'java.lang.String'), parameter(name: 'attachLog', type: 'boolean'), parameter(name: 'attachmentsPattern', type: 'java.lang.String'), parameter(name: 'compressLog', type: 'boolean'), parameter(name: 'mimeType', type: 'java.lang.String'), parameter(name: 'recipientProviders', type: 'Map'), parameter(name: 'replyTo', type: 'java.lang.String'), parameter(name: 'to', type: 'java.lang.String'), ], doc: 'Extended Email')
         method(name: 'fileExists', type: 'Object', params: [file:'java.lang.String'], doc: 'Verify if file exists in workspace')
         method(name: 'git', type: 'Object', params: [url:'java.lang.String'], doc: 'Git')
         method(name: 'git', type: 'Object', namedParams: [parameter(name: 'url', type: 'java.lang.String'), parameter(name: 'branch', type: 'java.lang.String'), parameter(name: 'changelog', type: 'boolean'), parameter(name: 'credentialsId', type: 'java.lang.String'), parameter(name: 'poll', type: 'boolean'), ], doc: 'Git')
