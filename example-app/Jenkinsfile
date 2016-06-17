@@ -87,7 +87,8 @@ node {
 
 
     stage 'Testing Something'
-    def creds = new net.proteusframework.CredentialHelper('proteus-sys-jenkins-integration').getSQSCredentials()
+    def ch = new net.proteusframework.CredentialHelper()
+    def creds = ch.getSQSCredentials('proteus-sys-jenkins-integration')
     dir('example-app') {
         withEnv(["JAVA_HOME=$jdkHome"]) {
             // Run the build
@@ -229,7 +230,8 @@ node {
                     slackSend color: 'good', message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be deployed to QA for testing.\n(<${env.JOB_URL}|Open>)"
                     //noinspection LongLine
                     input id: 'Deploy', message: 'Deploy build to QA Server?', ok: 'Deploy'
-                    def creds = new net.proteusframework.CredentialHelper().getSQSCredentials('proteus-sys-jenkins-integration')
+                    def ch = new net.proteusframework.CredentialHelper()
+                    def creds = ch.getSQSCredentials('proteus-sys-jenkins-integration')
                     dir('example-app') {
                         withEnv(["JAVA_HOME=$jdkHome"]) {
                             // Run the build
