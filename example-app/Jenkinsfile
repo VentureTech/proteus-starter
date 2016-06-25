@@ -1,4 +1,5 @@
-def repoUser, repoPassword, gradleOptions;
+def repoUser, repoPassword, gradleOptions, version, isSnapshot;
+def atUser=''
 
 try
 {
@@ -17,7 +18,18 @@ catch(error) {
 }
 
 node {
-
+    try
+    {
+        echo("${env.CHANGE_AUTHOR_EMAIL}")
+        if (env.CHANGE_AUTHOR_EMAIL && env.CHANGE_AUTHOR_EMAIL.indexOf('@') != -1)
+        {
+            atUser = '@' + env.CHANGE_AUTHOR_EMAIL.substring(0, env.CHANGE_AUTHOR_EMAIL.indexOf('@')) + ': '
+        }
+    }
+    catch(error)
+    {
+        echo "Unable to get atUser: $error"
+    }
     try
     {
         repoUser = repo_venturetech_username
@@ -33,28 +45,24 @@ node {
         repoUser = env.repo_venturetech_username
         repoPassword = env.repo_venturetech_password
     }
-    //noinspection LongLine
-    gradleOptions= $/-Prepo_venturetech_username=$repoUser -Prepo_venturetech_password=$repoPassword -Pcompile_libraries=true --no-daemon/$
-
 
     def jdkHome = tool 'JDK 8'
-    stage 'Checkout'
 
     // Get some code from a GitHub repository
-    git url: 'https://github.com/VentureTech/proteus-examples.git'
-    //checkout scm
+    //git url: 'https://github.com/VentureTech/proteus-examples.git'
+    checkout scm
 
     step([$class: 'GitHubSetCommitStatusBuilder', statusMessage: [content: 'Jenkins is building changes']])
 
     dir('example-app') {
         def gradleProps = readFile('gradle.properties')
-        def isSnapshot = !(env.BRANCH_NAME?.equals('master') || env.BRANCH_NAME?.startsWith('release/'))
+        isSnapshot = !(env.BRANCH_NAME?.equals('master') || env.BRANCH_NAME?.startsWith('release/'))
         def appVersion = getAppVersion(gradleProps).replace('-SNAPSHOT', '')
         def appName = getAppName(gradleProps)
         echo "Building $appName $appVersion"
-        def version = "${appVersion}.${currentBuild.number}${isSnapshot ? '-SNAPSHOT' : ''}"
-        //noinspection GrReassignedInClosureLocalVar
-        gradleOptions+=" -Papp_version=$version"
+        version = "${appVersion}.${currentBuild.number}${isSnapshot ? '-SNAPSHOT' : ''}"
+        //noinspection LongLine
+        gradleOptions= $/-Prepo_venturetech_username=$repoUser -Prepo_venturetech_password=$repoPassword --no-daemon -Papp_version=${version}/$
         currentBuild.displayName = "v${version}"
         stage "Build"
         gradleProps = null;
@@ -172,16 +180,77 @@ node {
               healthy: '', pmdActivated: false, unHealthy: ''])
 
         step([$class: 'GitHubCommitStatusSetter', errorHandlers: [[$class: 'ShallowAnyErrorHandler']]])
+
+        stage 'Libraries'
+        withEnv(["JAVA_HOME=$jdkHome"]) {
+            // Run the build
+            wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
+                sh "./gradlew assemble $gradleOptions -Pcompile_libraries=true"
+            }
+        }
     }
 
+    if(currentBuild.result == 'SUCCESS') {
+        try
+        {
+            stage 'Publish'
+            timeout(time: 4, unit: 'HOURS') {
+                //noinspection LongLine
+                slackSend color: 'good', message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be published to the artifactory repo.\n(<${env.JOB_URL}|Open>)"
+                //noinspection LongLine
+                def params = input id: 'Publish', message: 'Publish Artifacts To Repo Server', ok: 'Publish Artifacts', parameters: [[$class: 'StringParameterDefinition', defaultValue: 'rtennant', description: 'Username to publish artifacts', name: 'publish_venturetech_username'], [$class: 'PasswordParameterDefinition', defaultValue: '', description: 'Password publish artifacts', name: 'publish_venturetech_password']]
+                dir('example-app') {
+                    withEnv(["JAVA_HOME=$jdkHome","GRADLE_OPTS=-Xmx2024m -Xms512m"]) {
+                        // Run the build
+                        wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
+                            //noinspection LongLine
+                            echo "Publishing artifacts"
+                            //noinspection LongLine
+                            def additionalArgs = $/artifactoryPublish -Ppublish_venturetech_username=${params.publish_venturetech_username} -Ppublish_venturetech_password=${params.publish_venturetech_password}/$
+                            sh "./gradlew $gradleOptions $additionalArgs"
+                        }
+                    }
+                }
+            }
+            if(isSnapshot)
+            {
+                stage 'Deploy'
+                timeout(time: 4, unit: 'HOURS') {
+                    //noinspection LongLine
+                    slackSend color: 'good', message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be deployed to QA for testing.\n(<${env.JOB_URL}|Open>)"
+                    //noinspection LongLine
+                    input id: 'Deploy', message: 'Deploy build to QA Server?', ok: 'Deploy'
+                    dir('example-app') {
+                        withEnv(["JAVA_HOME=$jdkHome"]) {
+                            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'aws_id', credentialsId: 'proteus-sys-jenkins-integration', secretKeyVariable: 'aws_secret']]) {
+                                // Run the build
+                                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
+                                    //noinspection LongLine
+                                    echo "Deploying artifacts"
+                                    def additionalArgs = "autoDeploy -Paws_id=${env.aws_id} -Paws_secret=${env.aws_secret}"
+                                    sh "./gradlew $gradleOptions $additionalArgs"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch(error){
+            echo "$error"
+            //Skipping publish task
+        }
+    }
 }
 
 if(currentBuild.result == 'FAILURE') {
+    //noinspection LongLine
+    slackSend color: 'danger', message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} failed.\n(<${env.JOB_URL}|Open>)"
     mail to: "${env.CHANGE_AUTHOR_EMAIL}",
-        subject: "Job '${env.JOB_NAME}' (${env.BUILD_NUMBER}) failed",
+        subject: "Job '${env.JOB_NAME}' (${currentBuild.displayName}) failed",
         body: "Please go to ${env.BUILD_URL} and review the failure."
 } else if(currentBuild.result == 'SUCCESS' && currentBuild?.previousBuild?.result != 'SUCCESS') {
-    slackSend color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} is back to normal."
+    slackSend color: 'good', message: "${atUser} ${env.JOB_NAME} ${currentBuild.displayName} is back to normal."
 }
 
 
@@ -198,3 +267,4 @@ def getAppName(String text)
     def matcher = text =~ /app_name=(.+)/
     return matcher ? matcher[0][1] : 'App'
 }
+
