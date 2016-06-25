@@ -50,7 +50,7 @@ node {
     def jdkHome = tool 'JDK 8'
 
     // Get some code from a GitHub repository
-    git url: 'https://github.com/VentureTech/proteus-examples.git'
+    //git url: 'https://github.com/VentureTech/proteus-examples.git'
     //checkout scm
 
     step([$class: 'GitHubSetCommitStatusBuilder', statusMessage: [content: 'Jenkins is building changes']])
