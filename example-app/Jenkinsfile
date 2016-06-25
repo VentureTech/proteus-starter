@@ -18,7 +18,6 @@ catch(error) {
 }
 
 node {
-    stage 'SCM'
     try
     {
         echo("${env.CHANGE_AUTHOR_EMAIL}")
