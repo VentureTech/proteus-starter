@@ -14,8 +14,7 @@ buildscript {
     dependencies {
         // aspectj-weave plugin for our use of Spring @Configurable
         classpath 'com.i2rd:gradle-aspectj-weave:1.3',
-            'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1',
-            "com.amazonaws:aws-java-sdk-sqs:${version_aws}"
+            'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1'
     }
 
 }
@@ -51,9 +50,12 @@ apply from: 'gradle/idea.gradle'
 
 task createProject(type: com.proteusframework.build.CreateProjectTask)
 
-task autoDeploy(type: com.proteusframework.build.DeployTask){
-    id = aws_id
-    secret = aws_secret
+if(hasProperty('aws_id'))
+{
+    task autoDeploy(type: com.proteusframework.build.DeployTask) {
+        id = aws_id
+        secret = aws_secret
+    }
 }
 
 task wrapper(type: Wrapper) {
