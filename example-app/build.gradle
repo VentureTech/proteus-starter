@@ -50,13 +50,11 @@ apply from: 'gradle/idea.gradle'
 
 task createProject(type: com.proteusframework.build.CreateProjectTask)
 
-if(hasProperty('aws_id'))
-{
-    task autoDeploy(type: com.proteusframework.build.DeployTask) {
-        id = aws_id
-        secret = aws_secret
-    }
+task autoDeploy(type: com.proteusframework.build.DeployTask) {
+    id = "${aws_id?:'MISSING_ID'}"
+    secret ="${aws_secret?:'MISSING_SECRET'}"
 }
+
 
 task wrapper(type: Wrapper) {
     group 'Build Setup'

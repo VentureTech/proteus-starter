@@ -32,6 +32,7 @@ class DeployUtil
     {
         this.project = project;
         client = new AmazonSQSClient(new BasicAWSCredentials(id, secret))
+        println("Creating deploy utility for $id")
     }
 
     def autoDeploy(String deploymentContext)
