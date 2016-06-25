@@ -51,8 +51,8 @@ apply from: 'gradle/idea.gradle'
 task createProject(type: com.proteusframework.build.CreateProjectTask)
 
 task autoDeploy(type: com.proteusframework.build.DeployTask) {
-    id = "${aws_id?:'MISSING_ID'}"
-    secret ="${aws_secret?:'MISSING_SECRET'}"
+    id = "${findProperty('aws_id')?:'MISSING_ID'}"
+    secret ="${findProperty('aws_secret')?:'MISSING_SECRET'}"
 }
 
 
