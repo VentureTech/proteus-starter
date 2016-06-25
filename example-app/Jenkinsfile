@@ -18,6 +18,7 @@ catch(error) {
 }
 
 node {
+    stage 'SCM'
     try
     {
         echo("${env.CHANGE_AUTHOR_EMAIL}")
@@ -45,9 +46,6 @@ node {
         repoUser = env.repo_venturetech_username
         repoPassword = env.repo_venturetech_password
     }
-    //noinspection LongLine
-    gradleOptions= $/-Prepo_venturetech_username=$repoUser -Prepo_venturetech_password=$repoPassword -Pcompile_libraries=true --no-daemon/$
-
 
     def jdkHome = tool 'JDK 8'
 
@@ -64,13 +62,15 @@ node {
         def appName = getAppName(gradleProps)
         echo "Building $appName $appVersion"
         version = "${appVersion}.${currentBuild.number}${isSnapshot ? '-SNAPSHOT' : ''}"
+        //noinspection LongLine
+        gradleOptions= $/-Prepo_venturetech_username=$repoUser -Prepo_venturetech_password=$repoPassword --no-daemon -Papp_version=${version}/$
         currentBuild.displayName = "v${version}"
         stage "Build"
         gradleProps = null;
         withEnv(["JAVA_HOME=$jdkHome"]){
             // Run the build
             wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
-                sh "./gradlew clean assemble $gradleOptions -Papp_version=${version}"
+                sh "./gradlew clean assemble $gradleOptions"
             }
         }
         step([$class: 'ArtifactArchiver', artifacts: '**/build/gradle/libs/*', excludes: null,
@@ -95,7 +95,7 @@ node {
                     //noinspection LongLine
                     echo "Deploying artifacts"
                     def additionalArgs = "autoDeploy -Paws_id=${env.aws_id} -Paws_secret=${env.aws_secret}"
-                    sh "./gradlew $gradleOptions $additionalArgs -Papp_version=${version}"
+                    sh "./gradlew $gradleOptions $additionalArgs"
                 }
             }
         }
@@ -112,7 +112,7 @@ parallel(["Unit Tests": {
             withEnv(["JAVA_HOME=$jdkHome"]) {
                 // Run the build
                 wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
-                    sh "./gradlew test $gradleOptions -Papp_version=${version}"
+                    sh "./gradlew test $gradleOptions"
                 }
             }
             step([$class: 'JUnitResultArchiver', allowEmptyResults: true, healthScaleFactor: 2.0,
@@ -130,7 +130,7 @@ parallel(["Unit Tests": {
             withEnv(["JAVA_HOME=$jdkHome"]) {
                 // Run the build
                 wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
-                    sh "./gradlew test -PtestGroups=integration $gradleOptions -Papp_version=${version}"
+                    sh "./gradlew test -PtestGroups=integration $gradleOptions"
                 }
             }
             step([$class: 'JUnitResultArchiver', allowEmptyResults: true, healthScaleFactor: 4.0,
@@ -166,7 +166,7 @@ node {
         withEnv(["JAVA_HOME=$jdkHome"]) {
             // Run the build
             wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
-                sh "./gradlew findbugsMain $gradleOptions -Papp_version=${version}"
+                sh "./gradlew findbugsMain $gradleOptions"
             }
         }
         step([$class: 'FindBugsPublisher', canComputeNew: true, defaultEncoding: 'UTF-8', excludePattern: '', failedTotalAll: '8',
@@ -186,7 +186,7 @@ node {
         withEnv(["JAVA_HOME=$jdkHome"]) {
             // Run the build
             wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
-                sh "./gradlew javadoc $gradleOptions -Papp_version=${version}"
+                sh "./gradlew javadoc $gradleOptions"
             }
         }
         step([$class: 'WarningsPublisher', canComputeNew: true, canResolveRelativePaths: false,
@@ -199,6 +199,14 @@ node {
               healthy: '', pmdActivated: false, unHealthy: ''])
 
         step([$class: 'GitHubCommitStatusSetter', errorHandlers: [[$class: 'ShallowAnyErrorHandler']]])
+
+        stage 'Libraries'
+        withEnv(["JAVA_HOME=$jdkHome"]) {
+            // Run the build
+            wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
+                sh "./gradlew assemble $gradleOptions -Pcompile_libraries=true"
+            }
+        }
     }
 
     if(currentBuild.result == 'SUCCESS') {
@@ -218,7 +226,7 @@ node {
                             echo "Publishing artifacts"
                             //noinspection LongLine
                             def additionalArgs = $/artifactoryPublish -Ppublish_venturetech_username=${params.publish_venturetech_username} -Ppublish_venturetech_password=${params.publish_venturetech_password}/$
-                            sh "./gradlew $gradleOptions $additionalArgs -Papp_version=${version}"
+                            sh "./gradlew $gradleOptions $additionalArgs"
                         }
                     }
                 }
@@ -238,7 +246,7 @@ node {
                                     //noinspection LongLine
                                     echo "Deploying artifacts"
                                     def additionalArgs = "autoDeploy -Paws_id=${env.aws_id} -Paws_secret=${env.aws_secret}"
-                                    sh "./gradlew $gradleOptions $additionalArgs -Papp_version=${version}"
+                                    sh "./gradlew $gradleOptions $additionalArgs"
                                 }
                             }
                         }
