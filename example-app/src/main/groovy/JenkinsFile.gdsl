@@ -63,6 +63,7 @@ contributor(nodeCtx) {
         method(name: 'svn', type: 'Object', params: [url:'java.lang.String'], doc: 'Subversion')
         method(name: 'svn', type: 'Object', namedParams: [parameter(name: 'url', type: 'java.lang.String'), parameter(name: 'changelog', type: 'boolean'), parameter(name: 'poll', type: 'boolean'), ], doc: 'Subversion')
         method(name: 'unstash', type: 'Object', params: [name:'java.lang.String'], doc: 'Restore files previously stashed')
+        method(name: 'withCredentials', type: 'Object', params: [bindings:Map, body:'Closure'], doc: 'Bind credentials to variables')
         method(name: 'wrap', type: 'Object', params: [delegate:Map, body:'Closure'], doc: 'General Build Wrapper')
         method(name: 'writeFile', type: 'Object', namedParams: [parameter(name: 'file', type: 'java.lang.String'), parameter(name: 'text', type: 'java.lang.String'), parameter(name: 'encoding', type: 'java.lang.String'), ], doc: 'Write file to workspace')
         method(name: 'unarchive', type: 'Object', params: [:], doc: 'Advanced/Deprecated Copy archived artifacts into the workspace')
