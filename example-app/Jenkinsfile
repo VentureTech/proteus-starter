@@ -185,7 +185,7 @@ node {
         withEnv(["JAVA_HOME=$jdkHome"]) {
             // Run the build
             wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
-                sh "./gradlew assemble $gradleOptions -Pcompile_libraries=true"
+                sh "./gradlew assemble -x jar -x war $gradleOptions -Pcompile_libraries=true"
             }
         }
     }
