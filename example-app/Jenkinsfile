@@ -87,16 +87,16 @@ node {
 
 
     stage 'Testing Something'
-    def ch = new net.proteusframework.CredentialHelper()
-    def creds = ch.getSQSCredentials('proteus-sys-jenkins-integration')
     dir('example-app') {
         withEnv(["JAVA_HOME=$jdkHome"]) {
-            // Run the build
-            wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
-                //noinspection LongLine
-                echo "Deploying artifacts"
-                def additionalArgs = "autoDeploy -Paws_id=${creds.username} -Pasw_secret=${creds.password}"
-                sh "./gradlew $gradleOptions $additionalArgs -Papp_version=${version}"
+            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'aws_id', credentialsId: 'proteus-sys-jenkins-integration', secretKeyVariable: 'aws_secret']]) {
+                // Run the build
+                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
+                    //noinspection LongLine
+                    echo "Deploying artifacts"
+                    def additionalArgs = "autoDeploy -Paws_id=${env.aws_id} -Paws_secret=${env.aws_secret}"
+                    sh "./gradlew $gradleOptions $additionalArgs -Papp_version=${version}"
+                }
             }
         }
     }
@@ -209,7 +209,7 @@ node {
                 //noinspection LongLine
                 slackSend color: 'good', message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be published to the artifactory repo.\n(<${env.JOB_URL}|Open>)"
                 //noinspection LongLine
-                def params = input id: 'Publish', message: 'Publish Artifacts To Repo Server', ok: 'Publish Artifacts', parameters: [[$class: 'StringParameterDefinition', defaultValue: 'rtennant', description: 'Username to publish artifacts', name: 'publish_venturetech_username'], [$class: 'StringParameterDefinition', defaultValue: '', description: 'Password publish artifacts', name: 'publish_venturetech_password']]
+                def params = input id: 'Publish', message: 'Publish Artifacts To Repo Server', ok: 'Publish Artifacts', parameters: [[$class: 'StringParameterDefinition', defaultValue: 'rtennant', description: 'Username to publish artifacts', name: 'publish_venturetech_username'], [$class: 'PasswordParameterDefinition', defaultValue: '', description: 'Password publish artifacts', name: 'publish_venturetech_password']]
                 dir('example-app') {
                     withEnv(["JAVA_HOME=$jdkHome","GRADLE_OPTS=-Xmx2024m -Xms512m"]) {
                         // Run the build
@@ -230,16 +230,16 @@ node {
                     slackSend color: 'good', message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be deployed to QA for testing.\n(<${env.JOB_URL}|Open>)"
                     //noinspection LongLine
                     input id: 'Deploy', message: 'Deploy build to QA Server?', ok: 'Deploy'
-                    def ch = new net.proteusframework.CredentialHelper()
-                    def creds = ch.getSQSCredentials('proteus-sys-jenkins-integration')
                     dir('example-app') {
                         withEnv(["JAVA_HOME=$jdkHome"]) {
-                            // Run the build
-                            wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
-                                //noinspection LongLine
-                                echo "Deploying artifacts"
-                                def additionalArgs = "autoDeploy -Paws_id=${creds.username} -Pasw_secret=${creds.password}"
-                                sh "./gradlew $gradleOptions $additionalArgs -Papp_version=${version}"
+                            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'aws_id', credentialsId: 'proteus-sys-jenkins-integration', secretKeyVariable: 'aws_secret']]) {
+                                // Run the build
+                                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
+                                    //noinspection LongLine
+                                    echo "Deploying artifacts"
+                                    def additionalArgs = "autoDeploy -Paws_id=${env.aws_id} -Paws_secret=${env.aws_secret}"
+                                    sh "./gradlew $gradleOptions $additionalArgs -Papp_version=${version}"
+                                }
                             }
                         }
                     }
