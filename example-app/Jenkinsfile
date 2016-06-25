@@ -82,24 +82,6 @@ node {
 
     }
     stash excludes: '**/compiletime-aspects/**,**/build/gradle/libs/*.war', name: 'example-app buildFiles'
-
-
-
-    stage 'Testing Something'
-    dir('example-app') {
-        withEnv(["JAVA_HOME=$jdkHome"]) {
-            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'aws_id', credentialsId: 'proteus-sys-jenkins-integration', secretKeyVariable: 'aws_secret']]) {
-                // Run the build
-                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
-                    //noinspection LongLine
-                    echo "Deploying artifacts"
-                    def additionalArgs = "autoDeploy -Paws_id=${env.aws_id} -Paws_secret=${env.aws_secret}"
-                    sh "./gradlew $gradleOptions $additionalArgs"
-                }
-            }
-        }
-    }
-
 }
 stage 'Tests In Parallel'
 parallel(["Unit Tests": {
@@ -232,6 +214,7 @@ node {
             }
             if(isSnapshot)
             {
+                stage 'Deploy'
                 timeout(time: 4, unit: 'HOURS') {
                     //noinspection LongLine
                     slackSend color: 'good', message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be deployed to QA for testing.\n(<${env.JOB_URL}|Open>)"
@@ -267,7 +250,7 @@ if(currentBuild.result == 'FAILURE') {
         subject: "Job '${env.JOB_NAME}' (${currentBuild.displayName}) failed",
         body: "Please go to ${env.BUILD_URL} and review the failure."
 } else if(currentBuild.result == 'SUCCESS' && currentBuild?.previousBuild?.result != 'SUCCESS') {
-    slackSend color: 'good', message: "@${env.CHANGE_AUTHOR}: ${env.JOB_NAME} ${currentBuild.displayName} is back to normal."
+    slackSend color: 'good', message: "${atUser} ${env.JOB_NAME} ${currentBuild.displayName} is back to normal."
 }
 
 
