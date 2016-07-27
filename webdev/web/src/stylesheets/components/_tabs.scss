@@ -29,7 +29,7 @@
 			-moz-osx-font-smoothing: grayscale;
 			visibility: visible;
 			@include button-variant($color-app-grey, $btn-secondary-bg, $btn-secondary-border);
-			@include button-size($btn-padding-y, $btn-padding-x, $font-size-base, $line-height, $btn-border-radius);
+			@include button-size($btn-padding-y, $btn-padding-x, $font-size-base, $btn-border-radius);
 		}
 		&:hover:before {
 			background-color: $color-smokey-white;
