@@ -140,7 +140,13 @@ class ExternalNDEGenerator
                     }
                     else
                     {
+                        pw.append('<').append(nde.tagName())
+                        nde.attributes().each {Attribute attribute ->
+                            pw.appendEscapedAttribute(attribute.key, attribute.value)
+                        }
+                        pw.append('>')
                         pw.println(nde.html())
+                        pw.append('</').append(nde.tagName()).append('>')
                     }
                 }
                 final src = sw as String
