@@ -1,28 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Configuration status="debug" name="proteus" monitorInterval="90">
+<!--
+  ~ Copyright (c) Interactive Information R & D (I2RD) LLC.
+  ~ All Rights Reserved.
+  ~
+  ~ This software is confidential and proprietary information of
+  ~ I2RD LLC ("Confidential Information"). You shall not disclose
+  ~ such Confidential Information and shall use it only in
+  ~ accordance with the terms of the license agreement you entered
+  ~ into with I2RD.
+  -->
+
+<Configuration status="info" name="proteus" monitorInterval="90">
 
     <Appenders>
-        <Console name="STDOUT">
-            <PatternLayout pattern="%date %-5level %X %t %c{3} - %message%n"/>
-        </Console>
-
-        <Socket name="LogstashSocket" host="${sys:logstash.host}" port="${sys:logstash.port}" protocol="TCP"
-                reconnectionDelayMillis="1000" ignoreExceptions="false"
-                immediateFail="false">
-            <ProteusJSONLayout/>
-        </Socket>
-
-        <RollingRandomAccessFile name="LogstashFile" immediateFlush="false" fileName="logs/logstash.log"
-                                         filePattern="logs/logstash-%d{yyyy-MM-dd}-%i.log.gz">
-            <ProteusJSONLayout/>
-            <Policies>
-                <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="250 MB"/>
-            </Policies>
-            <DefaultRolloverStrategy max="20"/>
-        </RollingRandomAccessFile>
-
-        <RollingRandomAccessFile name="FILE" immediateFlush="false" fileName="logs/log4j.log"
+        <RollingRandomAccessFile name="FILE" immediateFlush="true" fileName="logs/log4j.log"
                                          filePattern="logs/$${date:yyyy-MM}/log4j-%d{yyyy-MM-dd}-%i.log.gz">
             <PatternLayout pattern="%date %-5level %X %t %c{3} - %message%n"/>
             <Policies>
@@ -30,12 +21,6 @@
                 <SizeBasedTriggeringPolicy size="250 MB"/>
             </Policies>
         </RollingRandomAccessFile>
-
-        <Failover name="Logstash" primary="LogstashSocket">
-            <Failovers>
-                <AppenderRef ref="LogstashFile"/>
-            </Failovers>
-        </Failover>
 
     </Appenders>
 
@@ -63,6 +48,7 @@
         <Logger name="org.hibernate.cache.internal.StandardQueryCache" level="warn"/>
         <Logger name="org.springframework.context.support.ClassPathXmlApplicationContext" level="warn"/>
         <Logger name="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" level="warn"/>
+        <Logger name="org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker" level="warn"/>
         <Logger name="org.hibernate.Version" level="warn"/>
         <Logger name="org.hibernate.internal.SessionFactoryImpl" level="warn"/>
         <Logger name="org.hibernate.hql.internal.ast.ASTQueryTranslatorFactory" level="warn"/>
@@ -75,14 +61,23 @@
         <Logger name="org.hibernate.cfg.SettingsFactory" level="warn"/>
         <Logger name="org.hibernate.cfg.Environment" level="warn"/>
         <Logger name="com.amazonaws.request" level="warn"/>
+        <Logger name="com.octo.captcha.service.image.DefaultManageableImageCaptchaService" level="warn"/>
+
+        <!-- Silence Narrowing Proxy Message-->
         <Logger name="org.hibernate.engine.internal.StatefulPersistenceContext" level="error"/>
+        <Logger name="org.hibernate.proxy.pojo.javassist.JavassistLazyInitializer" level="error"/>
 
         <!--  Silence overly verbose startup information. Comment out if you are experiencing issues. -->
         <Logger name="org.drools.spring.factory.RuleBuilder" level="warn"/>
+        <Logger name="com.i2rd.hibernate.ClobberPersistentEntitiesForDetachedUpdatesListener" level="fatal"/>
+
+
+
+        <!-- Silence WebDAV  -->
+        <Logger name="com.bradmcevoy.http.HandlerHelper" level="error"/>
 
         <Root level="info">
-
-            <!--<AppenderRef ref="STDOUT">
+            <AppenderRef ref="FILE">
                 <Filters>
                     <ThreadContextMapFilter onMatch="DENY" onMismatch="NEUTRAL">
                         <KeyValuePair key="type" value="access-origin"/>
@@ -91,22 +86,8 @@
                         <KeyValuePair key="type" value="vm-stats"/>
                     </ThreadContextMapFilter>
                 </Filters>
-            </AppenderRef>-->
+            </AppenderRef>
 
-            <!--<AppenderRef ref="FILE">
-                <Filters>
-                    <ThreadContextMapFilter onMatch="DENY" onMismatch="NEUTRAL">
-                        <KeyValuePair key="type" value="access-origin"/>
-                    </ThreadContextMapFilter>
-                    <ThreadContextMapFilter onMatch="DENY" onMismatch="NEUTRAL">
-                        <KeyValuePair key="type" value="vm-stats"/>
-                    </ThreadContextMapFilter>
-                </Filters>
-            </AppenderRef>-->
-
-            <!--<AppenderRef ref="LogstashFile"/>-->
-
-            <AppenderRef ref="Logstash"/>
         </Root>
     </Loggers>
 
