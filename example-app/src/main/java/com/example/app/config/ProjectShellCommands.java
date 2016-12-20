@@ -63,15 +63,17 @@ import net.proteusframework.core.locale.LocalizedObjectKey;
 import net.proteusframework.core.locale.TransientLocalizedObjectKey;
 import net.proteusframework.core.spring.CoreShellComponent;
 import net.proteusframework.users.model.Address;
-import net.proteusframework.users.model.AuthenticationDomain;
 import net.proteusframework.users.model.Contact;
 import net.proteusframework.users.model.ContactDataCategory;
 import net.proteusframework.users.model.EmailAddress;
 import net.proteusframework.users.model.PhoneNumber;
 import net.proteusframework.users.model.Principal;
 import net.proteusframework.users.model.dao.AuthenticationDomainDAO;
+import net.proteusframework.users.model.dao.AuthenticationDomainList;
 
 import static net.proteusframework.core.StringFactory.isEmptyString;
+import static net.proteusframework.users.model.dao.AuthenticationDomainList.createDomainList;
+import static net.proteusframework.users.model.dao.AuthenticationDomainList.emptyDomainList;
 
 /**
  * Shell commands for ldp project
@@ -482,10 +484,10 @@ public class ProjectShellCommands extends AbstractShellCommands
         @CliOption(key = "profile", help = "The profile entity programmatic identifier", mandatory = true) String profileId)
     {
         Preconditions.checkNotNull(username, "Username was null!");
-        AuthenticationDomain authDomain = null;
+        AuthenticationDomainList authDomain = emptyDomainList();
         if (!isEmptyString(authDomainName))
         {
-            authDomain = _domainDAO.getAuthenticationDomain(authDomainName);
+            authDomain = createDomainList(_domainDAO.getAuthenticationDomain(authDomainName));
         }
         Profile profile = _profileService.getProfileByProgrammaticIdentifier(profileId);
         if (profile == null)
