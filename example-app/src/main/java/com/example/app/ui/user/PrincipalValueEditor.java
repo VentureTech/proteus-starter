@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 
 import com.i2rd.miwt.util.CSSUtil;
 
@@ -49,6 +48,7 @@ import net.proteusframework.ui.miwt.validation.Validator;
 import net.proteusframework.users.model.AuthenticationDomain;
 import net.proteusframework.users.model.Principal;
 import net.proteusframework.users.model.PrincipalStatus;
+import net.proteusframework.users.model.dao.AuthenticationDomainList;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static com.example.app.ui.contact.AddressValueEditor.AddressValueEditorConfig;
@@ -64,6 +64,7 @@ import static net.proteusframework.core.notification.NotificationImpl.error;
 import static net.proteusframework.users.model.ContactDataCategory.BUSINESS;
 import static net.proteusframework.users.model.ContactDataCategory.PERSONAL;
 import static net.proteusframework.users.model.PhoneNumberType.MOBILE;
+import static net.proteusframework.users.model.dao.AuthenticationDomainList.createDomainList;
 
 /**
  * {@link CompositeValueEditor} for {@link Principal}
@@ -178,14 +179,9 @@ public class PrincipalValueEditor extends CompositeValueEditor<Principal>
                             Field field = (Field) component;
                             if (editor.getModificationState() != ModificationState.UNCHANGED)
                             {
-                                AtomicReference<Principal> result = new AtomicReference<>(null);
-                                getAuthDomains().forEach(authDomain -> {
-                                    if (result.get() == null)
-                                    {
-                                        result.set(_principalDAO.getPrincipalByLogin(field.getText(), authDomain));
-                                    }
-                                });
-                                if (result.get() != null && !Objects.equals(result.get(), getValue()))
+                                AuthenticationDomainList authDomain = createDomainList(getAuthDomains());
+                                Principal result = _principalDAO.getPrincipalByLogin(field.getText(), authDomain);
+                                if (result != null && !Objects.equals(result, getValue()))
                                 {
                                     NotificationImpl error = error(createText(ERROR_MESSAGE_USERNAME_EXISTS_FMT(), LABEL_EMAIL()));
                                     _notificationSourceSetter.setSource(this, field, error);
