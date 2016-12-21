@@ -91,16 +91,21 @@ dependencies {
         "org.springframework:spring-instrument:${version_spring}",
         "org.springframework:spring-aspects:${version_spring}"
 
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
     testCompile "net.proteusframework:proteusframework-core:${version_proteus}"
     testCompile "net.proteusframework:proteusframework-testing:${version_proteus}"
-    testCompile 'junit:junit:4.11'
     testCompile 'org.testng:testng:6.8.13'
+    testCompile 'junit:junit:4.11'
     testCompile('org.uncommons:reportng:1.1.2') {
         exclude group: "org.testng", module: "testng"
     }
     testCompile 'org.apache.derby:derby:10.12.1.1'
     testRuntime 'com.google.inject:guice:4.0'
-
+    testCompile 'org.jetbrains.spek:spek-api:1.0.89'
+    testRuntime 'org.jetbrains.spek:spek-junit-platform-engine:1.0.89'
 
     // These are for the war plugin
     if(warTaskSpecified)
