@@ -22,12 +22,21 @@ test {
     }
 
     options {
-        listeners << 'org.uncommons.reportng.HTMLReporter'
+//        listeners << 'org.uncommons.reportng.HTMLReporter'
         listeners << 'org.uncommons.reportng.JUnitXMLReporter'
         listeners << 'org.testng.reporters.XMLReporter'
     }
 }
+junitPlatform {
+    // For https://github.com/junit-team/junit5/issues/479
+    platformVersion = "1.0.0-M2"
 
+//    filters {
+        engines {
+            include 'spek'
+        }
+//    }
+}
 
 //
 //task browserTest(type: Test) {
