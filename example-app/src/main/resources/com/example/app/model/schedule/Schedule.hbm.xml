@@ -16,11 +16,11 @@
 
 <hibernate-mapping>
     <typedef class="org.hibernate.type.EnumType" name="temporalDirectionType">
-        <param name="enumClass">com.lrlabs.model.activity.config.TemporalDirection</param>
+        <param name="enumClass">com.example.app.model.schedule.TemporalDirection</param>
         <param name="type">12<!-- Types.VARCHAR --></param>
     </typedef>
     <class name="com.example.app.model.schedule.Schedule" abstract="true" schema="app" batch-size="15">
-        <cache usage="nonstrict-read-write" region="ldp_app.activity"/>
+        <!--<cache usage="nonstrict-read-write" region="I NEED A REGION"/>-->
 
         <id name="id" column="schedule_id" type="integer" unsaved-value="0">
             <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator">

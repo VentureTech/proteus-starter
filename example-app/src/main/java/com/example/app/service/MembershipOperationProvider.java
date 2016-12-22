@@ -58,6 +58,13 @@ public interface MembershipOperationProvider
     MembershipOperation modifyRepositoryResources();
 
     /**
+     * Get the "Manage User" MembershipOperation, or create it, if it has not been created yet.
+     *
+     * @return a MembershipOperation
+     */
+    MembershipOperation manageUser();
+
+    /**
      * Get the "Modify User" MembershipOperation, or create it, if it has not been created yet.
      *
      * @return a MembershipOperation

@@ -11,44 +11,55 @@
 
 package experimental.cms.dsl
 
+import net.proteusframework.cms.component.ContentElement
+import net.proteusframework.cms.component.editor.DefaultDelegatePurpose
+import net.proteusframework.cms.component.editor.DelegatePurpose
 
-interface Content : HTMLIdentifier, HTMLClass, ResourceCapable {
+internal fun createContentIdPredicate(existingId: String): (Content) -> Boolean = { it.id == existingId }
+
+interface ContentContainer {
+    val contentList: MutableList<Content>
+    val contentToRemove: MutableList<Content>
+    fun Content.remove() = contentToRemove.add(this)
+
+}
+internal fun _getSite(toCheck: Any?): Site {
+    return when (toCheck) {
+        is Site -> toCheck
+        is BoxedContent -> toCheck.site
+        is Content -> _getSite(toCheck.parent)
+        else -> throw IllegalStateException("Couldn't determine site")
+    }
+}
+
+interface DelegateContent : ContentContainer {
+    val defaultPurpose: DelegatePurpose
+    val contentPurpose: MutableMap<Content, DelegatePurpose>
+    var parent: Any?
+    fun <T : Content> content(content: T, purpose: DelegatePurpose = DefaultDelegatePurpose.NONE, init: T.() -> Unit={}): T {
+        contentList.add(content)
+        contentPurpose.put(content, purpose)
+        content.parent = this
+        return content.apply(init)
+    }
+    fun content(existingContentId: String, purpose: DelegatePurpose = DefaultDelegatePurpose.NONE): Content {
+        val contentById = _getSite(parent).getContentById(existingContentId)
+        contentList.add(contentById)
+        contentPurpose.put(contentById, purpose)
+        return contentById
+    }
+}
+
+interface Content : HTMLIdentifier, HTMLClass, ResourceCapable, PathCapable {
     val id: String
-}
+    var parent: Any?
 
-class Text(id: String, var htmlContent: String= "")
-    : Identifiable(id), Content {
-    override var htmlId: String=""
-    override var htmlClass: String=""
-    override val cssPaths = mutableListOf<String>()
-    override val javaScriptPaths = mutableListOf<String>()
-
-    override fun toString(): String {
-        return "Text(" +
-                "htmlContent='$htmlContent'," +
-                "htmlId='$htmlId'," +
-                "htmlClass='$htmlClass'," +
-                "cssPaths=$cssPaths," +
-                "javaScriptPaths=$javaScriptPaths" +
-                ")"
+    fun getSite(): Site {
+        return _getSite(parent)
     }
 
-
+    fun createInstance(helper: ContentHelper): ContentElement
+    fun isModified(helper: ContentHelper, contentElement: ContentElement): Boolean = false
 }
 
-class ApplicationFunction(id: String)
-    : Identifiable(id), Content {
-    override var htmlId: String=""
-    override var htmlClass: String=""
-    override val cssPaths = mutableListOf<String>()
-    override val javaScriptPaths = mutableListOf<String>()
 
-    override fun toString(): String {
-        return "ApplicationFunction(" +
-                "htmlId='$htmlId'," +
-                "htmlClass='$htmlClass'," +
-                "cssPaths=$cssPaths," +
-                "javaScriptPaths=$javaScriptPaths" +
-                ")"
-    }
-}

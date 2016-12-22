@@ -160,7 +160,7 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
     private ResourceTagsLabelProvider _rclp;
     @Autowired
     private ProfileTermProvider _terms;
-    @Autowired
+    @Autowired(required = false)
     private ProfileService _profileService;
 
     private User _currentUser;

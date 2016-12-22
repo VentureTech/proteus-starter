@@ -311,7 +311,9 @@
     <inspection_tool class="ComponentRegistrationProblems" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="ConditionalExpressionWithIdenticalBranches" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ConflictingAnnotations" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="ConflictingExtensionProperty" enabled="false" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ConflictingExtensionProperty" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Changed Files" level="WARNING" enabled="true" />
+    </inspection_tool>
     <inspection_tool class="ConstantAssertCondition" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ConstantConditions" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="SUGGEST_NULLABLE_ANNOTATIONS" value="true" />
@@ -333,7 +335,9 @@
     <inspection_tool class="Convert to string" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="Convert2Diamond" enabled="true" level="INFO" enabled_by_default="true" />
     <inspection_tool class="Convert2Lambda" enabled="true" level="INFO" enabled_by_default="true" />
-    <inspection_tool class="ConvertToStringTemplate" enabled="false" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ConvertToStringTemplate" enabled="true" level="INFORMATION" enabled_by_default="false">
+      <scope name="Changed Files" level="WARNING" enabled="true" />
+    </inspection_tool>
     <inspection_tool class="CssInvalidFunction" enabled="false" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="CssInvalidMediaFeature" enabled="false" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="CssInvalidPropertyValue" enabled="false" level="ERROR" enabled_by_default="true" />
@@ -362,7 +366,6 @@
     <inspection_tool class="CyclomaticComplexity" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="m_limit" value="20" />
     </inspection_tool>
-    <inspection_tool class="DanglingJavadoc" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="DataProviderReturnType" enabled="false" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="DeclareParentsInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="DefaultAnnotationParam" enabled="false" level="WARNING" enabled_by_default="true" />
@@ -402,6 +405,7 @@
           </list>
         </value>
       </option>
+      <option name="commentsAreContent" value="false" />
     </inspection_tool>
     <inspection_tool class="EmptyStatementBody" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="m_reportEmptyBlocks" value="true" />
@@ -556,7 +560,6 @@
     <inspection_tool class="InterfaceMayBeAnnotatedFunctional" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="InterfaceMethodClashesWithObject" enabled="false" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="InternalCommandFunctionOverride" enabled="false" level="WEAK WARNING" enabled_by_default="true" />
-    <inspection_tool class="IntroduceWhenSubject" enabled="false" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="InvalidImplementedBy" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="InvalidProvidedBy" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="InvalidRequestParameters" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -669,9 +672,10 @@
     <inspection_tool class="JsonDuplicatePropertyKeys" enabled="false" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="JsonStandardCompliance" enabled="false" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="JspTagBodyContent" enabled="false" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="KDocUnresolvedReference" enabled="false" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="KDocMissingDocumentation" enabled="true" level="INFORMATION" enabled_by_default="false">
+      <scope name="Changed Files" level="INFORMATION" enabled="true" />
+    </inspection_tool>
     <inspection_tool class="KeySetIterationMayUseEntrySet" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="KotlinDeprecation" enabled="false" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="KotlinInvalidBundleOrProperty" enabled="false" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="LambdaParameterHidingMemberVariable" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="LambdaUnfriendlyMethodOverload" enabled="true" level="WARNING" enabled_by_default="false">
@@ -800,7 +804,7 @@
       <option name="ignoreSerializable" value="true" />
       <option name="ignoreCloneable" value="true" />
     </inspection_tool>
-    <inspection_tool class="RedundantSamConstructor" enabled="false" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="RedundantSamConstructor" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="RedundantScopeBinding" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="RedundantStringFormatCall" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="RedundantSuppression" enabled="true" level="WARNING" enabled_by_default="true">
@@ -816,7 +820,9 @@
       <option name="ignoreEmptySuperMethods" value="true" />
       <option name="onlyReportWhenAnnotated" value="true" />
     </inspection_tool>
-    <inspection_tool class="RemoveCurlyBracesFromTemplate" enabled="false" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RemoveCurlyBracesFromTemplate" enabled="true" level="INFORMATION" enabled_by_default="false">
+      <scope name="Changed Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
     <inspection_tool class="RemoveExplicitSuperQualifier" enabled="false" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="RemoveExplicitTypeArguments" enabled="false" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="RemoveForLoopIndices" enabled="false" level="WARNING" enabled_by_default="true" />

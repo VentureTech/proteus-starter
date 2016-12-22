@@ -11,21 +11,44 @@
 
 package experimental.cms.dsl
 
-import org.springframework.context.annotation.Profile
-import org.springframework.stereotype.Component
+import java.util.*
 
 
-data class Hostname(val name: String, val welcomePage: Page)
+data class Hostname(val address: String, val welcomePage: Page)
 
-class Site(id: String) : IdentifiableParent<Page>(id) {
+class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer {
+    private val contentToRemoveImplementation: MutableList<Content> = mutableListOf()
+    override val contentToRemove: MutableList<Content>
+        get() = contentToRemoveImplementation
+    override val contentList: MutableList<Content> get() = content
     val hostnames = mutableListOf<Hostname>()
     val templates = mutableListOf<Template>()
     val layouts = mutableListOf<Layout>()
-    operator fun invoke(id:String="", body: Site.() -> Unit = {}){
-        if(id.isNotBlank()) this@Site.id = id
-        body()
+    val content = mutableListOf<Content>()
+    val pagesToRemove = mutableListOf<Page>()
+    var primaryLocale: Locale = Locale.ENGLISH
+    var defaultTimezone: TimeZone = TimeZone.getTimeZone("US/Central")
+    internal val siteConstructedCallbacks = mutableListOf<(Site) -> Unit>()
+
+    fun getContentById(existingId: String): Content {
+        val predicate = createContentIdPredicate(existingId)
+        return children.flatMap { it.contentList }.filter(predicate).firstOrNull()?:
+                templates.flatMap { it.contentList }.filter(predicate).firstOrNull()?:
+                content.filter(predicate).first()
     }
-    fun page(id:String, path:String, init: Page.() -> Unit) = Page(id, this@Site, path = path).apply(init)
+
+    fun <T : Content> content(content: T, init: T.() -> Unit={}): T {
+        this.content.add(content)
+        content.parent = this
+        return content.apply(init)
+    }
+    fun content(existingContentId: String): Content {
+        return getContentById(existingContentId)
+    }
+
+    fun page(id:String, path:String, init: Page.() -> Unit) = Page(id = id, site = this@Site, path = path).apply(init)
+
+    fun Page.remove() = pagesToRemove.add(this)
 
     fun template(id:String, init: Template.() -> Unit) = Template(id, this@Site).apply(init)
 
@@ -53,18 +76,23 @@ class Site(id: String) : IdentifiableParent<Page>(id) {
 
 }
 
-private val registeredSites = mutableListOf<Site>()
 
-
-@Profile("automation")
-@Component
-open class SiteDefinition(val definitionName: String, open val site: Site? = null) {
+open class SiteDefinition(val definitionName: String, val version: Int) {
+    companion object {
+        internal val registeredSites = mutableMapOf<SiteDefinition, MutableList<Site>>()
+    }
     fun createSite(id: String, init: Site.() -> Unit = {}): Site {
         val site = Site(id).apply(init)
-        registeredSites.add(site)
+        registeredSites.getOrPut(this, { mutableListOf<Site>() }).add(site)
+        for(callback in site.siteConstructedCallbacks) {
+            callback.invoke(site)
+        }
         return site
     }
+
+    fun getSites(): List<Site> = registeredSites[this]!!.toList()
+
     override fun toString(): String {
-        return "SiteDefinition(definitionName='$definitionName', site=$site)"
+        return "SiteDefinition(definitionName='$definitionName', sites=${getSites()})"
     }
 }

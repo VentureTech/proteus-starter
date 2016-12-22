@@ -6,7 +6,7 @@
   </component>
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="ajc" />
-    <resourceExtensions />
+    <addNotNullAssertions enabled="false" />
     <wildcardResourcePatterns>
       <entry name="!?*.java" />
       <entry name="!?*.form" />
@@ -22,7 +22,6 @@
         <sourceOutputDir name=".apt_generated" />
         <sourceTestOutputDir name=".apt_generated_tests" />
         <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
