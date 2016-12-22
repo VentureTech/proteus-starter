@@ -9,7 +9,7 @@
  * into with I2RD.
  */
 
-package cms.dsl
+package experimental.cms.dsl
 
 interface ResourceCapable {
     val cssPaths: MutableList<String>

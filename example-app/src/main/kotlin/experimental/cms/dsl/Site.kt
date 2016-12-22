@@ -9,7 +9,7 @@
  * into with I2RD.
  */
 
-package cms.dsl
+package experimental.cms.dsl
 
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
