@@ -46,32 +46,30 @@ class Layout(id: String, val parent: Site) : IdentifiableParent<Box>(id){
 
 }
 
-interface BoxedContent {
+interface BoxedContent : ContentContainer {
+    override val contentList: List<Content> get() = content.values.toList()
     val content: MutableMap<Box, Content>
-    val contentToRemove: MutableList<Content>
-    val parent: Site
+    val site: Site
     val layout: Layout
 
     fun <T : Content> content(boxId: String, content: T, init: T.() -> Unit={}): T {
         val box = layout.children.filter { it.id == boxId }.first()
         this.content[box] = content
+        content.parent = this
         content.apply(init)
         return content
     }
     fun content(boxId: String, existingContentId: String): Content {
         val box = layout.children.filter { it.id == boxId }.first()
-        val predicate: (Content) -> Boolean = { it.id == existingContentId }
-        val contentElement = parent.children.flatMap { it.content.values }.filter(predicate).firstOrNull()?:
-            parent.templates.flatMap { it.content.values }.filter(predicate).first()
+        val contentElement = site.getContentById(existingContentId)
         this.content[box] = contentElement
         return contentElement
     }
 
-    fun Content.remove() = contentToRemove.add(this)
 }
 
 
-class Template(id: String, override val parent: Site, override var layout: Layout = Layout("", parent))
+class Template(id: String, override val site: Site, override var layout: Layout = Layout("", site))
     : Identifiable(id), ResourceCapable, HTMLIdentifier, BoxedContent {
     override var htmlId: String = ""
     override val cssPaths = mutableListOf<String>()
@@ -80,29 +78,29 @@ class Template(id: String, override val parent: Site, override var layout: Layou
     override val contentToRemove = mutableListOf<Content>()
     init {
         if(id.isNotBlank())
-            parent.templates.add(this)
+            site.templates.add(this)
     }
 
     fun layout(id: String, init: Layout.() -> Unit): Unit {
         layout = if (id.isBlank() && this@Template.id.isNotBlank())
-            Layout("${this@Template.id}-${id}", parent)
+            Layout("${this@Template.id}-${id}", site)
         else
-            Layout(id, parent)
+            Layout(id, site)
         layout.apply(init)
     }
 
     fun layout(existingId: String): Unit {
-        layout = parent.layouts.filter({ it.id == existingId }).first()
+        layout = site.layouts.filter({ it.id == existingId }).first()
     }
 
     override fun toString(): String {
-        return "Template(id='$id', parent=${parent.id}, layout=$layout, htmlId='$htmlId')"
+        return "Template(id='$id', parent=${site.id}, layout=$layout, htmlId='$htmlId')"
     }
 
 
 }
 
-class Page(id: String, override val parent: Site, var template: Template = Template("", parent), var path: String = "")
+class Page(id: String, override val site: Site, var template: Template = Template("", site), var path: String = "")
     : Identifiable(id), ResourceCapable, BoxedContent {
     override val layout: Layout get() = template.layout
     override val cssPaths = mutableListOf<String>()
@@ -114,28 +112,28 @@ class Page(id: String, override val parent: Site, var template: Template = Templ
 
     init {
         if(id.isNotBlank())
-            parent.add(this)
+            site.add(this)
     }
     fun template(id: String, init: Template.() -> Unit): Unit {
-        template = Template(id, parent)
+        template = Template(id, site)
         template.apply(init)
     }
 
     fun template(existingId: String): Unit {
-        template = parent.templates.filter({ it.id == existingId }).first()
+        template = site.templates.filter({ it.id == existingId }).first()
     }
 
     fun permission(permission: String) {
         pagePermission = permission
     }
     fun authenticationPage(authenticationPageId: String) {
-        val page = parent.children.filter { it.id == authenticationPageId }.first()
+        val page = site.children.filter { it.id == authenticationPageId }.first()
         authenticationPage = page
     }
 
 
     override fun toString(): String {
-        return "Page(id='$id', parent=${parent.id}, template=$template, path='$path', content=$content)"
+        return "Page(id='$id', parent=${site.id}, template=$template, path='$path', content=$content)"
     }
 }
 

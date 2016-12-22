@@ -11,9 +11,18 @@
 
 package experimental.cms.dsl
 
+internal fun createContentIdPredicate(existingId: String):  (Content) -> Boolean = { it.id == existingId }
+
+interface ContentContainer {
+    val contentList: List<Content>
+    val contentToRemove: MutableList<Content>
+
+    fun Content.remove() = contentToRemove.add(this)
+}
 
 interface Content : HTMLIdentifier, HTMLClass, ResourceCapable {
     val id: String
+    var parent: Any?
 }
 
 class Text(id: String, var htmlContent: String= "")
@@ -22,6 +31,7 @@ class Text(id: String, var htmlContent: String= "")
     override var htmlClass: String=""
     override val cssPaths = mutableListOf<String>()
     override val javaScriptPaths = mutableListOf<String>()
+    override var parent: Any? = null
 
     override fun toString(): String {
         return "Text(" +
@@ -42,12 +52,16 @@ class ApplicationFunction(id: String)
     override var htmlClass: String=""
     override val cssPaths = mutableListOf<String>()
     override val javaScriptPaths = mutableListOf<String>()
+    override var parent: Any? = null
+
+    var registerLink: Boolean = true
 
     override fun toString(): String {
         return "ApplicationFunction(" +
                 "htmlId='$htmlId'," +
                 "htmlClass='$htmlClass'," +
                 "cssPaths=$cssPaths," +
+                "registerLink=$registerLink," +
                 "javaScriptPaths=$javaScriptPaths" +
                 ")"
     }
