@@ -9,7 +9,7 @@
  * into with I2RD.
  */
 
-package cms.dsl
+package experimental.cms.dsl
 
 import net.proteusframework.cms.component.page.PageProperties
 import net.proteusframework.cms.component.page.layout.BoxDescriptor

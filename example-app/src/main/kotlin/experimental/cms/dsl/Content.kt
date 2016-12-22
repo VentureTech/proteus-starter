@@ -9,7 +9,8 @@
  * into with I2RD.
  */
 
-package cms.dsl
+package experimental.cms.dsl
+
 
 interface Content : HTMLIdentifier, HTMLClass, ResourceCapable {
     val id: String

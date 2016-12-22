@@ -1,7 +1,8 @@
-import cms.dsl.ApplicationFunction
-import cms.dsl.SiteDefinition
-import cms.dsl.Text
+
 import com.example.app.ui.ApplicationFunctions
+import experimental.cms.dsl.ApplicationFunction
+import experimental.cms.dsl.SiteDefinition
+import experimental.cms.dsl.Text
 import net.proteusframework.cms.component.page.PageProperties.Type.page
 import net.proteusframework.cms.component.page.PageProperties.Type.page_template
 import net.proteusframework.cms.component.page.layout.BoxDescriptor.*
