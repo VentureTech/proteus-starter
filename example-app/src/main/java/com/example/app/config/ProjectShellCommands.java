@@ -32,7 +32,6 @@ import com.google.gson.GsonBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.shell.core.annotation.CliCommand;
 import org.springframework.shell.core.annotation.CliOption;
 import org.springframework.stereotype.Component;
@@ -81,8 +80,6 @@ import static net.proteusframework.users.model.dao.AuthenticationDomainList.empt
  * @author Alan Holt (aholt@venturetech.net)
  * @since 11/23/15 9:54 AM
  */
-@Component
-@Lazy
 public class ProjectShellCommands extends AbstractShellCommands
 {
     /** Logger. */
@@ -348,7 +345,7 @@ public class ProjectShellCommands extends AbstractShellCommands
             _shellLogger = logger;
         }
     }
-    @Autowired
+    @Autowired(required = false)
     private ProfileService _profileService;
     @Autowired
     private JDBCLocaleSource _jdbcLocaleSource;

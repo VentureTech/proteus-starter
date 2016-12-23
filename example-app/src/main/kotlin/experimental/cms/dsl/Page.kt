@@ -36,6 +36,11 @@ class Layout(id: String, val parent: Site) : IdentifiableParent<Box>(id){
         if(id.isNotBlank())
             parent.layouts.add(this)
     }
+    /**
+     * Add a Box to the layout.
+     * This is only used when a new Layout is created. It will not be used to modify an existing layout
+     * with new Boxes / removed Boxes.
+     */
     fun box(id: String, init: Box.() -> Unit) {
         add(Box(id)).apply(init)
     }
@@ -100,13 +105,14 @@ class Template(id: String, override val site: Site, override var layout: Layout 
 
 }
 
-class Page(id: String, override val site: Site, var template: Template = Template("", site), var path: String = "")
-    : Identifiable(id), ResourceCapable, BoxedContent {
+class Page(id: String, override val site: Site, override var path: String = "", var template: Template = Template("", site))
+    : Identifiable(id), ResourceCapable, BoxedContent, PathCapable {
     override val layout: Layout get() = template.layout
     override val cssPaths = mutableListOf<String>()
     override val javaScriptPaths = mutableListOf<String>()
     override val content = mutableMapOf<Box, Content>()
     override val contentToRemove = mutableListOf<Content>()
+
     var pagePermission: String? = null
     var authenticationPage: Page? = null
 

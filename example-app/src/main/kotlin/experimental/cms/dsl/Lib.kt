@@ -11,9 +11,28 @@
 
 package experimental.cms.dsl
 
-open class Identifiable(var  id: String) {
+interface PathCapable {
+    var path: String
+    fun isWildcard(): Boolean = path.endsWith("*")
+}
+
+open class Identifiable(val  id: String) {
+
     override fun toString(): String {
         return "Identifiable(id='$id')"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Identifiable) return false
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
     }
 }
 

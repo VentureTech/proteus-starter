@@ -20,13 +20,14 @@ interface ContentContainer {
     fun Content.remove() = contentToRemove.add(this)
 }
 
-interface Content : HTMLIdentifier, HTMLClass, ResourceCapable {
+interface Content : HTMLIdentifier, HTMLClass, ResourceCapable, PathCapable {
     val id: String
     var parent: Any?
 }
 
 class Text(id: String, var htmlContent: String= "")
     : Identifiable(id), Content {
+    override var path: String = ""
     override var htmlId: String=""
     override var htmlClass: String=""
     override val cssPaths = mutableListOf<String>()
@@ -48,6 +49,7 @@ class Text(id: String, var htmlContent: String= "")
 
 class ApplicationFunction(id: String)
     : Identifiable(id), Content {
+    override var path: String = ""
     override var htmlId: String=""
     override var htmlClass: String=""
     override val cssPaths = mutableListOf<String>()

@@ -11,12 +11,10 @@
 
 package experimental.cms.dsl
 
-import org.springframework.context.annotation.Profile
-import org.springframework.stereotype.Component
 import java.util.*
 
 
-data class Hostname(val name: String, val welcomePage: Page)
+data class Hostname(val address: String, val welcomePage: Page)
 
 class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer {
     private val contentToRemoveImplementation: MutableList<Content> = mutableListOf()
@@ -52,7 +50,7 @@ class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer {
         return getContentById(existingContentId)
     }
 
-    fun page(id:String, path:String, init: Page.() -> Unit) = Page(id, this@Site, path = path).apply(init)
+    fun page(id:String, path:String, init: Page.() -> Unit) = Page(id = id, site = this@Site, path = path).apply(init)
 
     fun Page.remove() = pagesToRemove.add(this)
 
@@ -82,18 +80,20 @@ class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer {
 
 }
 
-private val registeredSites = mutableListOf<Site>()
 
-
-@Profile("automation")
-@Component
-open class SiteDefinition(val definitionName: String, open val site: Site? = null) {
+open class SiteDefinition(val definitionName: String, val version: Int) {
+    companion object {
+        internal val registeredSites = mutableMapOf<SiteDefinition, MutableList<Site>>()
+    }
     fun createSite(id: String, init: Site.() -> Unit = {}): Site {
         val site = Site(id).apply(init)
-        registeredSites.add(site)
+        registeredSites.getOrPut(this, { mutableListOf<Site>() }).add(site)
         return site
     }
+
+    fun getSites(): List<Site> = registeredSites[this]!!.toList()
+
     override fun toString(): String {
-        return "SiteDefinition(definitionName='$definitionName', site=$site)"
+        return "SiteDefinition(definitionName='$definitionName', sites=${getSites()})"
     }
 }
