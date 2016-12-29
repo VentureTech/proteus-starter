@@ -87,10 +87,7 @@ class Template(id: String, override val site: Site, override var layout: Layout 
     }
 
     fun layout(id: String, init: Layout.() -> Unit): Unit {
-        layout = if (id.isBlank() && this@Template.id.isNotBlank())
-            Layout("${this@Template.id}-${id}", site)
-        else
-            Layout(id, site)
+        layout = Layout(id, site)
         layout.apply(init)
     }
 

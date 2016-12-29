@@ -26,13 +26,8 @@ class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer {
     val layouts = mutableListOf<Layout>()
     val content = mutableListOf<Content>()
     val pagesToRemove = mutableListOf<Page>()
-    var primaryLocale = Locale.ENGLISH
-    var defaultTimezone = TimeZone.getTimeZone("US/Central")
-
-    operator fun invoke(id:String="", body: Site.() -> Unit = {}){
-        if(id.isNotBlank()) this@Site.id = id
-        body()
-    }
+    var primaryLocale: Locale = Locale.ENGLISH
+    var defaultTimezone: TimeZone = TimeZone.getTimeZone("US/Central")
 
     fun getContentById(existingId: String): Content {
         val predicate = createContentIdPredicate(existingId)
