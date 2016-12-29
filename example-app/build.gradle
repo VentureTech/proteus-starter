@@ -1,7 +1,7 @@
 import com.proteusframework.build.GitInfo
 
 buildscript {
-    ext.kotlin_version = '1.0.5-3'
+    ext.kotlin_version = '1.0.6'
     repositories {
         if(hasLocalRepo){ maven { url = local_repo } }
         maven {
