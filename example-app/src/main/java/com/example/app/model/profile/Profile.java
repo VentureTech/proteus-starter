@@ -221,25 +221,25 @@ public abstract class Profile extends AbstractAuditableEntity<Integer> implement
     }
 
     /**
-     * Get this CoachingEntity's Repository
+     * Get this Company's Repository
      *
      * @return the repository
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = Repository.ID_COLUMN)
     @Cascade(CascadeType.ALL)
-    @Nullable
+    @NotNull
     public Repository getRepository()
     {
         return _repository;
     }
 
     /**
-     * Set this CoachingEntity's Repository
+     * Set this Company's Repository
      *
      * @param repository the repository
      */
-    public void setRepository(@Nullable Repository repository)
+    public void setRepository(@Nonnull Repository repository)
     {
         _repository = repository;
     }

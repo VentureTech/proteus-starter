@@ -15,9 +15,10 @@ import com.example.app.model.profile.MembershipOperation;
 import com.example.app.model.repository.Repository;
 import com.example.app.model.repository.RepositoryDAO;
 import com.example.app.model.repository.RepositoryItem;
+import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
-import com.example.app.terminology.ProfileTermProvider;
+
 import com.example.app.ui.SelectActionColumn;
 import com.google.common.base.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;

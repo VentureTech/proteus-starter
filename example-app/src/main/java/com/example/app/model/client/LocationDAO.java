@@ -9,7 +9,7 @@
  * into with I2RD.
  */
 
-package com.example.app.model.company;
+package com.example.app.model.client;
 
 import com.example.app.model.SoftDeleteEntity;
 import com.example.app.model.profile.ProfileTypeProvider;
@@ -51,7 +51,7 @@ public final class LocationDAO extends DAOHelper implements Serializable
      *
      * @param companies the companies
      */
-    public void deleteAllLocations(final Collection<? extends Company> companies)
+    public void deleteAllLocations(final Collection<? extends Client> companies)
     {
         doInTransaction(session -> {
             final String hql = "update " + Location.class.getSimpleName()
@@ -83,19 +83,19 @@ public final class LocationDAO extends DAOHelper implements Serializable
     }
 
     /**
-     * Get the active locations for a company.
+     * Get the active locations for a client.
      *
-     * @param company the company
+     * @param client the client
      *
      * @return the locations, sorted by name
      */
     @NotNull
-    public List<Location> getActiveLocations(@NotNull Company company)
+    public List<Location> getActiveLocations(@NotNull Client client)
     {
         Query q = getSession().createQuery("from " + Location.class.getSimpleName()
                                            + " l where l.company = :company and l.status = :active order by getText(l.name)");
-        q.setParameter("company", company);
-        q.setParameter("active", CompanyStatus.ACTIVE);
+        q.setParameter("company", client);
+        q.setParameter("active", ClientStatus.ACTIVE);
 
         @SuppressWarnings("unchecked")
         final List<Location> location = (List<Location>) q.list();
@@ -117,18 +117,18 @@ public final class LocationDAO extends DAOHelper implements Serializable
     }
 
     /**
-     * Get all the locations for a company.
+     * Get all the locations for a client.
      *
-     * @param company the company
+     * @param client the client
      *
      * @return the locations, sorted by name
      */
     @NotNull
-    public List<Location> getLocations(@NotNull Company company)
+    public List<Location> getLocations(@NotNull Client client)
     {
         Query q = getSession().createQuery("from " + Location.class.getSimpleName()
                                            + " l where l.company = :company order by getText(l.name)");
-        q.setParameter("company", company);
+        q.setParameter("company", client);
 
         @SuppressWarnings("unchecked")
         final List<Location> location = (List<Location>) q.list();
@@ -136,18 +136,18 @@ public final class LocationDAO extends DAOHelper implements Serializable
     }
 
     /**
-     * Check if a company has active locations.
+     * Check if a client has active locations.
      *
-     * @param company the company
+     * @param client the client
      *
-     * @return true if the company has at least one active location
+     * @return true if the client has at least one active location
      */
-    public boolean hasActiveLocations(final Company company)
+    public boolean hasActiveLocations(final Client client)
     {
         Query q = getSession().createQuery("select count(*) > 0 from " + Location.class.getSimpleName()
                                            + " l where l.company = :company and l.status = :active");
-        q.setParameter("company", company);
-        q.setParameter("active", CompanyStatus.ACTIVE);
+        q.setParameter("company", client);
+        q.setParameter("active", ClientStatus.ACTIVE);
 
         @SuppressWarnings("unchecked")
         final List<Boolean> location = (List<Boolean>) q.list();

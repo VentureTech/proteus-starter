@@ -14,10 +14,11 @@ package com.example.app.ui.user;
 import com.example.app.model.profile.Membership;
 import com.example.app.model.profile.MembershipOperation;
 import com.example.app.model.profile.ProfileDAO;
+import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.model.user.User;
 import com.example.app.service.MembershipOperationProvider;
 import com.example.app.support.AppUtil;
-import com.example.app.terminology.ProfileTermProvider;
+
 import com.example.app.ui.ApplicationFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -37,6 +38,9 @@ import net.proteusframework.ui.management.ApplicationFunction;
 import net.proteusframework.ui.management.ApplicationRegistry;
 import net.proteusframework.ui.miwt.event.Event;
 
+import static com.example.app.ui.UIText.RESOURCES;
+import static com.example.app.ui.UIText.USERS;
+
 /**
  * Login Landing Links
  *
@@ -49,14 +53,14 @@ public enum LoginLandingLinks
     OP_USERS(
         ApplicationFunctions.User.MANAGEMENT,
         daos -> daos.mop.modifyUser(),
-        (daos, lc) -> "Operation / " + daos.terms.users().getText(lc)
+        (daos, lc) -> "Operation / " + USERS().getText(lc)
     ),
 
-    /** configuration / resouce management */
+    /** configuration / resource management */
     CNF_RESOURCES(
         ApplicationFunctions.ResourceRepositoryItem.MANAGEMENT,
         daos -> daos.mop.modifyRepositoryResources(),
-        (daos, lc) -> "Configuration / " + daos.terms.resources().getText(lc)
+        (daos, lc) -> "Configuration / " + RESOURCES().getText(lc)
     );
 
     @Configurable

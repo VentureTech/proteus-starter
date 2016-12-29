@@ -19,13 +19,14 @@ import com.example.app.model.repository.RepositoryItemStatus;
 import com.example.app.model.repository.ResourceRepositoryItem;
 import com.example.app.model.resource.Resource;
 import com.example.app.model.resource.ResourceVisibility;
+import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
 import com.example.app.service.ResourceCategoryLabelProvider;
 import com.example.app.support.AppUtil;
 import com.example.app.support.EntityIdCollector;
 import com.example.app.support.InstantDayComparator;
-import com.example.app.terminology.ProfileTermProvider;
+
 import com.example.app.ui.KeywordConstraint;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;

@@ -9,7 +9,7 @@
  * into with I2RD.
  */
 
-package com.example.app.model.company;
+package com.example.app.model.client;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,7 +21,7 @@ import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
 
-import static com.example.app.model.company.LocationStatusLOK.*;
+import static com.example.app.model.client.LocationStatusLOK.*;
 
 /**
  * Statuses for a {@link Location}

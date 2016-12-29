@@ -11,21 +11,22 @@
 
 package com.example.app.ui.user;
 
+import com.example.app.model.company.CompanyDAO;
 import com.example.app.model.profile.Membership;
 import com.example.app.model.profile.MembershipType;
 import com.example.app.model.profile.Profile;
 import com.example.app.model.profile.ProfileDAO;
+import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.model.user.ContactMethod;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.model.user.UserPosition;
 import com.example.app.service.MembershipOperationProvider;
-import com.example.app.service.ProfileService;
 import com.example.app.support.AppUtil;
 import com.example.app.support.ContactUtil;
-import com.example.app.terminology.ProfileTermProvider;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
+import com.example.app.ui.UIPreferences;
 import com.example.app.ui.URLProperties;
 import com.google.common.base.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +91,7 @@ import net.proteusframework.users.model.ContactDataCategory;
 import net.proteusframework.users.model.PhoneNumber;
 import net.proteusframework.users.model.PrincipalStatus;
 
+import static com.example.app.ui.UIText.USER;
 import static com.example.app.ui.user.UserManagementLOK.*;
 import static net.proteusframework.core.locale.TextSources.createText;
 
@@ -134,13 +136,15 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
     @Autowired
     private EntityRetriever _er;
     @Autowired
-    private ProfileService _profileService;
-    @Autowired
     private ProfileDAO _profileDAO;
     @Autowired
     private MembershipOperationProvider _mop;
     @Autowired
     private ProfileTermProvider _terms;
+    @Autowired
+    private CompanyDAO _companyDAO;
+    @Autowired
+    private UIPreferences _uiPreferences;
 
     private SearchUIImpl _searchUI;
     private NavigationAction _addAction;
@@ -202,7 +206,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
     {
         SearchModelImpl searchModel = new SearchModelImpl();
         searchModel.setName("User Search");
-        searchModel.setDisplayName(createText(SEARCH_MODEL_NAME_FMT(), _terms.user()));
+        searchModel.setDisplayName(SEARCH_MODEL_NAME_FMT(USER()));
 
         addConstraints(searchModel);
 
@@ -211,8 +215,8 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
         addBulkActions(searchModel);
 
         SearchSupplierImpl searchSupplier = new SearchSupplierImpl();
-        searchSupplier.setName(createText(SEARCH_SUPPLIER_NAME_FMT(), _terms.user()));
-        searchSupplier.setDescription(createText(SEARCH_SUPPLIER_DESCRIPTION_FMT(), _terms.user()));
+        searchSupplier.setName(SEARCH_SUPPLIER_NAME_FMT(USER()));
+        searchSupplier.setDescription(SEARCH_SUPPLIER_DESCRIPTION_FMT(USER()));
         searchSupplier.setSearchModel(searchModel);
 
         return searchSupplier;
@@ -437,7 +441,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
         return () -> {
             final Integer userProfileId = _userProfile.getId();
 
-            QLBuilder profileQB = _profileService.getQLBuilder();
+            QLBuilder profileQB = _companyDAO.getCompanyQLBuilder();
             profileQB.appendCriteria("id", Operator.eq, userProfileId);
             // FIXME : you may need to update this based on your mapping of AdminProfile <-> user
             final JoinedQLBuilder userQB = profileQB.createJoin(JoinType.INNER, "users", UserDAO.ALIAS);
@@ -516,8 +520,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
     void configure(ParsedRequest request)
     {
         _currentUser = _userDAO.getAssertedCurrentUser();
-        _userProfile = _profileService.getAdminProfileForUser(_currentUser)
-            .orElseThrow(() -> new IllegalStateException("User must have profile."));
+        _userProfile = _uiPreferences.getSelectedCompany();
 
         if (!_profileDAO.canOperate(_currentUser, _userProfile, AppUtil.UTC, _mop.viewUser()))
             throw new IllegalArgumentException("Invalid Permissions To View Page");

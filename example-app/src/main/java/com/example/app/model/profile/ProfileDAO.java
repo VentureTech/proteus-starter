@@ -54,6 +54,7 @@ import net.proteusframework.core.locale.LocalizedObjectKey;
 import net.proteusframework.core.locale.TextSource;
 import net.proteusframework.core.spring.ApplicationContextUtils;
 import net.proteusframework.ui.search.JoinedQLBuilder;
+import net.proteusframework.ui.search.PropertyConstraint;
 import net.proteusframework.ui.search.QLBuilder;
 import net.proteusframework.ui.search.QLBuilderImpl;
 import net.proteusframework.ui.search.QLResolverOptions;
@@ -236,6 +237,21 @@ public class ProfileDAO extends DAOHelper implements Serializable
         pdr.setSubCategory(subCategory);
         saveProfileDatedRecord(pdr);
         return pdr;
+    }
+
+    /**
+     * Gets profile.
+     *
+     * @param <P> the type parameter
+     * @param clazz the clazz
+     * @param profileId the profile id
+     *
+     * @return the profile
+     */
+    @SuppressWarnings("unchecked")
+    public <P extends Profile> P getProfile(Class<P> clazz, Integer profileId)
+    {
+        return (P) getSession().get(clazz, profileId);
     }
 
     /**
@@ -514,6 +530,35 @@ public class ProfileDAO extends DAOHelper implements Serializable
     }
 
     /**
+     * Get the MembershipType whose ProgrammaticIdentifier corresponds to the given ProgrammaticIdentifier.
+     * If one does not exist, it is created and persisted.
+     *
+     * @param profileType the ProfileType that owns the MembershipType to search for
+     * @param info the membershiptype info
+     * @param defaultOperationsSupplier a supplier for the MembershipOperations for the MembershipType
+     *
+     * @return a matching MembershipType, or a newly persisted one.
+     */
+    @Nonnull
+    public MembershipType getMembershipTypeOrNew(@Nonnull ProfileType profileType, MembershipTypeInfo info, @Nonnull
+        Supplier<List<MembershipOperation>> defaultOperationsSupplier)
+    {
+        MembershipType mt = getMembershipType(profileType, info.getProgId()).orElseGet(() -> {
+            ProfileType pt = _er.reattachIfNecessary(profileType);
+            MembershipType membershipType = new MembershipType();
+            membershipType.setProfileType(pt);
+            membershipType.setName(info.getNewNameLocalizedObjectKey());
+            membershipType.setProgrammaticIdentifier(info.getProgId());
+            pt.getMembershipTypeSet().add(membershipType);
+            pt = mergeProfileType(pt);
+            return getMembershipType(pt, info.getProgId()).orElseThrow(() -> new IllegalStateException(
+                "Unable to find MembershipType even after it was persisted."));
+        });
+        mt.setDefaultOperations(defaultOperationsSupplier.get());
+        return mergeMembershipType(mt);
+    }
+
+    /**
      * Get the MembershipType whose ProgrammaticIdentifier corresponds to the given ProgrammaticIdentifier,
      * or null if one does not exist
      *
@@ -538,21 +583,35 @@ public class ProfileDAO extends DAOHelper implements Serializable
     @Nonnull
     public MembershipType mergeMembershipType(MembershipType membershipType)
     {
+        return mergeMembershipType(membershipType, _updateMemberships);
+    }
+
+    /**
+     * Merge the given MembershipType into the database
+     *
+     * @param membershipType the membership type to save
+     * @param updateMemberships boolean flag.  If true, will update existing Memberships that use the given MembershipType
+     *
+     * @return the persisted membership type
+     */
+    @Nonnull
+    public MembershipType mergeMembershipType(MembershipType membershipType, boolean updateMemberships)
+    {
         return doInTransaction(session -> {
-            MembershipType mt = (MembershipType) session.merge(membershipType);
-            if (_updateMemberships)
+            MembershipType mt = (MembershipType)session.merge(membershipType);
+            if(updateMemberships)
             {
                 QLBuilderImpl membershipBuilder = new QLBuilderImpl(Membership.class, "membershipAlias");
                 membershipBuilder.appendCriteria(Membership.MEMBERSHIP_TYPE_PROP, eq, mt);
                 List<Membership> memberships = membershipBuilder.getQueryResolver().list();
-                if (!memberships.isEmpty())
+                if(!memberships.isEmpty())
                 {
-                    _logger.warn("Updating existing memberships within the system based on recently updated membership type.  "
-                                 + "If this should not be happening, set update-memberships to false in default.properties.");
+                    _logger.debug("Updating existing memberships within the system based on recently updated membership type: "
+                                  + mt.getId());
                 }
                 memberships.forEach(membership -> {
                     mt.getDefaultOperations().forEach(op -> {
-                        if (!membership.getOperations().contains(op))
+                        if(!membership.getOperations().contains(op))
                         {
                             membership.getOperations().add(op);
                         }
@@ -612,6 +671,23 @@ public class ProfileDAO extends DAOHelper implements Serializable
     {
         if (profile == null) return Collections.emptyList();
         return new ArrayList<>(profile.getProfileType().getMembershipTypeSet());
+    }
+
+    /**
+     * Determines if the given MembershipType is currently assigned to any Users via a Membership
+     *
+     * @param membershipType the membership type
+     *
+     * @return true if in use, false otherwise
+     */
+    public boolean isMembershipTypeInUse(@Nonnull MembershipType membershipType)
+    {
+        return doInTransaction(session -> (Long)session.createQuery(
+            "SELECT COUNT(mem) FROM Membership mem\n"
+            + "WHERE mem.membershipType.id = :memTypeId")
+            .setParameter("memTypeId", membershipType.getId())
+            .setMaxResults(1)
+            .uniqueResult()) > 0;
     }
 
     /**

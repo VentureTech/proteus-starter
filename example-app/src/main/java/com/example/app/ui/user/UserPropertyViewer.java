@@ -14,12 +14,12 @@ package com.example.app.ui.user;
 
 import com.example.app.model.profile.Profile;
 import com.example.app.model.profile.ProfileDAO;
+import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
-import com.example.app.service.ProfileService;
-import com.example.app.terminology.ProfileTermProvider;
 import com.example.app.ui.ApplicationFunctions;
+import com.example.app.ui.UIPreferences;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -40,6 +40,7 @@ import net.proteusframework.ui.miwt.component.composite.editor.PropertyViewer;
 import net.proteusframework.ui.miwt.event.Event;
 import net.proteusframework.ui.miwt.util.CommonActions;
 
+import static com.example.app.ui.UIText.USER;
 import static com.example.app.ui.user.UserPropertyViewerLOK.ERROR_MESSAGE_INSUFFICIENT_PERMISSIONS_VIEW_FMT;
 import static com.example.app.ui.user.UserPropertyViewerLOK.LABEL_UPDATE_PASSWORD;
 import static net.proteusframework.core.locale.TextSources.createText;
@@ -70,9 +71,10 @@ public class UserPropertyViewer extends PropertyViewer
     @Autowired
     private UserDAO _userDAO;
     @Autowired
-    private ProfileService _profileService;
-    @Autowired
     private ProfileTermProvider _terms;
+    @Autowired
+    private UIPreferences _uiPreferences;
+
     private boolean _canEdit;
 
     /**
@@ -86,21 +88,18 @@ public class UserPropertyViewer extends PropertyViewer
         setHTMLElement(HTMLElement.section);
     }
 
-    @SuppressWarnings("unused")
-        //Used by ApplicationFunction
     void configure(@Nullable User user)
     {
         UserValueViewer viewer;
         if (user != null)
         {
-            Profile adminProfile = _profileService.getAdminProfileForUser(user)
-                .orElseThrow(() -> new IllegalStateException("User must have an admin profile."));
+            Profile adminProfile = _uiPreferences.getSelectedCompany();
             User currentUser = _userDAO.getAssertedCurrentUser();
             final TimeZone timeZone = Event.getRequest().getTimeZone();
             boolean canView = _profileDAO.canOperate(currentUser, adminProfile, timeZone, _mop.viewUser());
             if (!canView)
             {
-                _messages.sendNotification(error(createText(ERROR_MESSAGE_INSUFFICIENT_PERMISSIONS_VIEW_FMT(), _terms.user())));
+                _messages.sendNotification(error(ERROR_MESSAGE_INSUFFICIENT_PERMISSIONS_VIEW_FMT(USER())));
                 viewer = null;
             }
             else
@@ -117,7 +116,9 @@ public class UserPropertyViewer extends PropertyViewer
             viewer = null;
         }
         setValueViewer(viewer);
-    }    @Override
+    }
+
+    @Override
     public void init()
     {
         super.init();

@@ -20,10 +20,11 @@ import com.example.app.model.repository.RepositoryItemRelationType;
 import com.example.app.model.repository.ResourceRepositoryItem;
 import com.example.app.model.resource.ResourceDAO;
 import com.example.app.model.resource.ResourceType;
+import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
-import com.example.app.terminology.ProfileTermProvider;
+
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
 import com.example.app.ui.URLConfigurations;

@@ -12,16 +12,17 @@
 package com.example.app.ui.user;
 
 
+import com.example.app.model.company.Company;
+import com.example.app.model.company.CompanyDAO;
 import com.example.app.model.profile.MembershipType;
 import com.example.app.model.profile.Profile;
 import com.example.app.model.profile.ProfileDAO;
+import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
-import com.example.app.service.ProfileService;
 import com.example.app.support.AppUtil;
 import com.example.app.support.ContactUtil;
-import com.example.app.terminology.ProfileTermProvider;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
 import com.example.app.ui.UIPreferences;
@@ -77,6 +78,7 @@ import net.proteusframework.users.model.PasswordCredentials;
 import net.proteusframework.users.model.dao.NonUniqueCredentialsException;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
+import static com.example.app.ui.UIText.USER;
 import static com.example.app.ui.user.UserPropertyEditorLOK.*;
 import static net.proteusframework.core.locale.TextSources.createText;
 import static net.proteusframework.core.notification.NotificationImpl.error;
@@ -131,8 +133,6 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
     @Autowired
     private ProfileDAO _profileDAO;
     @Autowired
-    private ProfileService _profileService;
-    @Autowired
     private MembershipOperationProvider _mop;
     @Autowired
     private EntityRetriever _er;
@@ -142,6 +142,8 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
     private ProfileTermProvider _terms;
     @Autowired
     private UIPreferences _uiPreferences;
+    @Autowired
+    private CompanyDAO _companyDAO;
     private User _saved;
 
     /**
@@ -162,18 +164,15 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
     {
         User value = request.getPropertyValue(URLProperties.USER);
         _newUser = value == null || value.getId() == null || value.getId() < 1;
-        Profile profile = request.getPropertyValue(URLProperties.PROFILE);
         getValueEditor().setAuthDomains(_userDAO.getAuthenticationDomainsToSaveOnUserPrincipal(value));
-        profile = _profileService.getAdminProfileForUser(value).orElse(profile);
-        assert profile != null : "Coaching Entity was null.  This should not happen.";
-        getValueEditor().setInitialProfile(profile);
+        Company profile = _uiPreferences.getSelectedCompany();
         User currentUser = _userDAO.getAssertedCurrentUser();
         final TimeZone timeZone = Event.getRequest().getTimeZone();
         if (!_profileDAO.canOperate(currentUser, profile, timeZone, _mop.viewUser())
             || !_profileDAO.canOperate(currentUser, profile, timeZone, _mop.modifyUser()))
         {
             getValueEditor().setEditable(false);
-            _notifications.add(error(createText(ERROR_INSUFFICIENT_PERMISSIONS_FMT(), _terms.user())));
+            _notifications.add(error(ERROR_INSUFFICIENT_PERMISSIONS_FMT(USER())));
         }
         else
         {
@@ -268,9 +267,11 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
                             _principalDAO.savePrincipal(user.getPrincipal());
                         }
                         user = _userDAO.mergeUser(user);
-                        Profile userProfile = _er.reattachIfNecessary(editor.commitValueUserProfileOwner());
-                        if (!_profileService.setAdminProfileForUser(user, userProfile))
+                        Company userProfile = _uiPreferences.getSelectedCompany();
+                        if (!userProfile.getUsers().contains(user) && _newUser)
                         {
+                            _companyDAO.addUserToCompany(userProfile, user);
+
                             List<MembershipType> coachingMemTypes = editor.commitValueCoachingMemType();
                             final User finalUser = user;
                             coachingMemTypes.forEach(coachingMemType ->
@@ -292,7 +293,7 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
                     catch (NonUniqueCredentialsException e)
                     {
                         _logger.error("Unable to persist changes to the Principal.", e);
-                        getNotifiable().sendNotification(error(createText(ERROR_MESSAGE_USERNAME_EXISTS_FMT(), _terms.user())));
+                        getNotifiable().sendNotification(error(ERROR_MESSAGE_USERNAME_EXISTS_FMT(USER())));
                     }
                         _sessionHelper.commitTransaction();
                 }

@@ -16,14 +16,14 @@ import com.example.app.model.profile.Membership;
 import com.example.app.model.profile.MembershipTypeProvider;
 import com.example.app.model.profile.Profile;
 import com.example.app.model.profile.ProfileDAO;
+import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.model.user.ContactMethod;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
-import com.example.app.service.ProfileService;
 import com.example.app.support.AppUtil;
 import com.example.app.support.ContactUtil;
-import com.example.app.terminology.ProfileTermProvider;
+import com.example.app.ui.UIPreferences;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,13 +165,13 @@ public class UserValueViewer extends Container
     @Autowired
     private MembershipOperationProvider _mop;
     @Autowired
-    private ProfileService _profileService;
-    @Autowired
     private PrincipalDAO _principalDAO;
     @Autowired
     private ProfileTermProvider _terms;
     @Autowired
     private MembershipTypeProvider _mtp;
+    @Autowired
+    private UIPreferences _uiPreferences;
 
     private boolean _adminMode = true;
     private User _user;
@@ -316,7 +316,7 @@ public class UserValueViewer extends Container
     {
         User currentUser = _userDAO.getAssertedCurrentUser();
         final TimeZone timeZone = getSession().getTimeZone();
-        Profile profile = _profileService.getAdminProfileForUser(getUser()).orElse(null);
+        Profile profile = _uiPreferences.getSelectedCompany();
         return _profileDAO.canOperate(currentUser, profile, timeZone, _mop.changeUserPassword())
                || Objects.equals(currentUser.getId(), getUser().getId());
     }
@@ -358,7 +358,7 @@ public class UserValueViewer extends Container
         removeAllComponents();
 
         User currentUser = _userDAO.getAssertedCurrentUser();
-        Profile profile = _profileService.getAdminProfileForUser(getUser()).orElse(null);
+        Profile profile = _uiPreferences.getSelectedCompany();
 
         final ImageComponent userImage = new ImageComponent();
         if (getUser().getImage() != null)
@@ -421,7 +421,7 @@ public class UserValueViewer extends Container
         timeZoneField.addClassName("time-zone");
 
         final ComboBoxValueEditor<Profile> coachingField = new ComboBoxValueEditor<>(
-            _terms.userProfile(), Collections.singletonList(profile), profile);
+            _terms.company(), Collections.singletonList(profile), profile);
         coachingField.setEditable(false);
         coachingField.addClassName("coaching");
 
@@ -441,7 +441,7 @@ public class UserValueViewer extends Container
             links,
             null);
         //This field is available when the current user is the user being viewed
-        // AND only to the user who has a particular membership under the coaching entity.
+        // AND only to the user who has a particular membership under the company.
         loginLangingPage.setVisible(
             Objects.equals(currentUser.getId(), getUser().getId())
             && _profileDAO.getMembershipsForUser(getUser(), null, getSession().getTimeZone()).stream()

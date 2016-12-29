@@ -11,11 +11,12 @@
 
 package com.example.app.ui.user;
 
+import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.model.user.UserPosition;
 import com.example.app.support.AppUtil;
-import com.example.app.terminology.ProfileTermProvider;
+
 import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -51,6 +52,7 @@ import net.proteusframework.ui.search.SearchUIOperationContext;
 import net.proteusframework.ui.search.SearchUIOperationHandler;
 
 import static com.example.app.support.AppUtil.UTC;
+import static com.example.app.ui.UIText.USER;
 import static com.example.app.ui.user.UserPositionManagementLOK.*;
 import static net.proteusframework.core.locale.TextSources.createText;
 
@@ -146,7 +148,7 @@ public class UserPositionManagement extends HistoryContainer implements SearchUI
     {
         SearchModelImpl searchModel = new SearchModelImpl();
         searchModel.setName("User Position Search");
-        searchModel.setDisplayName(createText(SEARCH_MODEL_NAME_FMT(), _terms.user()));
+        searchModel.setDisplayName(SEARCH_MODEL_NAME_FMT(USER()));
 
         ActionColumn actions = new ActionColumn();
         actions.setIncludeCopy(false);
@@ -183,8 +185,8 @@ public class UserPositionManagement extends HistoryContainer implements SearchUI
 
 
         SearchSupplierImpl searchSupplier = new SearchSupplierImpl();
-        searchSupplier.setName(createText(SEARCH_SUPPLIER_NAME_FMT(), _terms.user()));
-        searchSupplier.setDescription(createText(SEARCH_SUPPLIER_DESCRIPTION_FMT(), _terms.user()));
+        searchSupplier.setName(SEARCH_SUPPLIER_NAME_FMT(USER()));
+        searchSupplier.setDescription(SEARCH_SUPPLIER_DESCRIPTION_FMT(USER()));
         searchSupplier.setSearchModel(searchModel);
 
         searchSupplier.setBuilderSupplier(() ->

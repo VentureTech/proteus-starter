@@ -9,7 +9,7 @@
  * into with I2RD.
  */
 
-package com.example.app.model.company;
+package com.example.app.model.client;
 
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
@@ -21,6 +21,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
+import javax.annotation.Nullable;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -33,6 +34,7 @@ import javax.validation.constraints.NotNull;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
+import net.proteusframework.data.filesystem.FileEntity;
 import net.proteusframework.users.model.Address;
 import net.proteusframework.users.model.EmailAddress;
 import net.proteusframework.users.model.PhoneNumber;
@@ -40,51 +42,45 @@ import net.proteusframework.users.model.PhoneNumber;
 import static net.proteusframework.core.locale.annotation.I18NFile.Visibility.PUBLIC;
 
 /**
- * Represents a location for a company.
+ * Represents a client.
  *
  * @author Ken Logan (klogan@venturetech.net)
  */
 @Entity
-@Table(name = Location.TABLE_NAME, schema = ProjectConfig.PROJECT_SCHEMA)
+@Table(name = Client.TABLE_NAME, schema = ProjectConfig.PROJECT_SCHEMA)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.PROFILE_DATA)
 @Audited
-@DiscriminatorValue("location")
+@DiscriminatorValue("client")
 @I18NFile(
-    symbolPrefix = "com.example.app.model.company.Location",
+    symbolPrefix = "com.example.app.model.client.Client",
     classVisibility = PUBLIC,
     i18n = {
-        @I18N(symbol = "Certification Info Prop Name", l10n = @L10N("Certification or Qualification Information")),
-        @I18N(symbol = "Company Prop Name", l10n = @L10N("Company")),
-        @I18N(symbol = "Location Name Prop Name", l10n = @L10N("Plant Location")),
-        @I18N(symbol = "Payment Info Prop Name", l10n = @L10N("Payment Info (Sent to the Winner)")),
-        @I18N(symbol = "USDA Plant ID Prop Name", l10n = @L10N("USDA Plant ID")),
+        @I18N(symbol = "Client Name Prop Name", l10n = @L10N("Client Name")),
         @I18N(symbol = "Email Address Prop Name", l10n = @L10N("Main Contact Email Address")),
-        @I18N(symbol = "Unsold Recipients Prop Name", l10n = @L10N("Unsold Recipients")),
-        @I18N(symbol = "Sold Recipients Prop Name", l10n = @L10N("Sold Recipients")),
         @I18N(symbol = "Address Prop Name", l10n = @L10N("Address")),
-        @I18N(symbol = "Phone Prop Name", l10n = @L10N("Main Contact Phone"))
+        @I18N(symbol = "Phone Prop Name", l10n = @L10N("Main Contact Phone")),
+        @I18N(symbol = "Logo Prop Name", l10n = @L10N("Logo")),
     }
 )
-public class Location extends Profile
+public class Client extends Profile
 {
     /** The database table name */
-    public static final String TABLE_NAME = "Location";
+    public static final String TABLE_NAME = "Client";
     /** The property: address */
     public static final String ADDRESS_PROP = "address";
-    /** The property: company */
-    public static final String COMPANY_PROP = "company";
     /** The property: emailAddress */
     public static final String EMAIL_ADDRESS_PROP = "emailAddress";
     /** The property: phoneNumber */
     public static final String PHONE_NUMBER_PROP = "phoneNumber";
     /** The property: status */
     public static final String STATUS_PROP = "status";
-
-    /** Serial id */
-    private static final long serialVersionUID = 4763895118879179540L;
+    /** The property: logo */
+    public static final String LOGO_PROP = "logo";
+    /** Serial ID */
+    private static final long serialVersionUID = 9008466730246583817L;
 
     /** Status */
-    private LocationStatus _status = LocationStatus.ACTIVE;
+    private ClientStatus _status = ClientStatus.PENDING;
 
     /** Address */
     private Address _address;
@@ -95,13 +91,13 @@ public class Location extends Profile
     /** Primary Phone */
     private PhoneNumber _phoneNumber;
 
-    /** Company */
-    private Company _company;
+    /** Logo */
+    private FileEntity _logo;
 
     /**
      * Default constructor
      */
-    public Location()
+    public Client()
     {
         super();
     }
@@ -130,28 +126,6 @@ public class Location extends Profile
     }
 
     /**
-     * Get the {@link Company} this location belongs to
-     *
-     * @return the company
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @NotNull
-    public Company getCompany()
-    {
-        return _company;
-    }
-
-    /**
-     * Set the company
-     *
-     * @param company the company
-     */
-    public void setCompany(Company company)
-    {
-        _company = company;
-    }
-
-    /**
      * Get primary contact email address
      *
      * @return the primary email address
@@ -172,6 +146,30 @@ public class Location extends Profile
     public void setEmailAddress(EmailAddress emailAddress)
     {
         _emailAddress = emailAddress;
+    }
+
+    /**
+     * Get the client logo
+     *
+     * @return the logo
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.PERSIST, CascadeType.MERGE, CascadeType.SAVE_UPDATE})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Nullable
+    public FileEntity getLogo()
+    {
+        return _logo;
+    }
+
+    /**
+     * Set the client logo
+     *
+     * @param logo the logo
+     */
+    public void setLogo(@Nullable FileEntity logo)
+    {
+        _logo = logo;
     }
 
     /**
@@ -204,7 +202,7 @@ public class Location extends Profile
      */
     @Enumerated(EnumType.STRING)
     @NotNull
-    public LocationStatus getStatus()
+    public ClientStatus getStatus()
     {
         return _status;
     }
@@ -214,9 +212,10 @@ public class Location extends Profile
      *
      * @param status the status
      */
-    public void setStatus(LocationStatus status)
+    public void setStatus(ClientStatus status)
     {
         _status = status;
     }
+
 
 }

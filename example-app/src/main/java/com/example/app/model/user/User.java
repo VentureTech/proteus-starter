@@ -14,13 +14,12 @@ package com.example.app.model.user;
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
 import com.example.app.model.AbstractAuditableEntity;
-import com.example.app.model.SoftDeleteEntity;
+import com.example.app.model.company.Company;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 import org.hibernate.validator.constraints.URL;
@@ -36,6 +35,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -100,6 +100,8 @@ public class User extends AbstractAuditableEntity<Integer> implements NamedObjec
     public static final String PREFERRED_CONTACT_METHOD_PROP = "preferredContactMethod";
     /** The database column for property: preferredContactMethodProcess */
     public static final String PREFERRED_CONTACT_METHOD_COLUMN = "preferredContactMethod";
+    /** The property: companies */
+    public static final String COMPANIES_PROP = "companies";
     /** Preference Node for Login */
     public static final String LOGIN_PREF_NODE = "LOGIN_PREF";
     /** Prefernce for Login Landing Page */
@@ -126,6 +128,8 @@ public class User extends AbstractAuditableEntity<Integer> implements NamedObjec
     private PhoneNumber _smsPhone;
     /** preferred contact method */
     private ContactMethod _preferredContactMethod;
+    /** coaching entities for this user */
+    private List<Company> _companies = new ArrayList<>();
 
     /**
      * Constructor.
@@ -375,4 +379,24 @@ public class User extends AbstractAuditableEntity<Integer> implements NamedObjec
         _userPositions = userPositions;
     }
 
+    /**
+     * Gets coaching entities.
+     *
+     * @return the coaching entities
+     */
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = Company.USERS_PROP)
+    public List<Company> getCompanies()
+    {
+        return _companies;
+    }
+
+    /**
+     * Sets coaching entities.
+     *
+     * @param companies the coaching entities
+     */
+    public void setCompanies(List<Company> companies)
+    {
+        _companies = companies;
+    }
 }

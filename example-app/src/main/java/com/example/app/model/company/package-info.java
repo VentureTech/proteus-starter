@@ -10,6 +10,8 @@
  */
 
 /**
- * Company profile.
+ * Objects and classes associated with Client model
+ *
+ * @since 12/29/16
  */
 package com.example.app.model.company;

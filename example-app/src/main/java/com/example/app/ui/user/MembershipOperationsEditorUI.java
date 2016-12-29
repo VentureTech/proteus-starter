@@ -16,7 +16,8 @@ import com.example.app.model.profile.Membership;
 import com.example.app.model.profile.MembershipOperation;
 import com.example.app.model.profile.MembershipType;
 import com.example.app.model.profile.ProfileType;
-import com.example.app.terminology.ProfileTermProvider;
+import com.example.app.model.terminology.ProfileTermProvider;
+
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -52,6 +53,7 @@ import net.proteusframework.ui.search.SearchResultColumnImpl;
 import net.proteusframework.ui.search.SearchSupplierImpl;
 import net.proteusframework.ui.search.SearchUIImpl;
 
+import static com.example.app.ui.UIText.USER;
 import static com.example.app.ui.user.UserMembershipManagementLOK.*;
 import static net.proteusframework.core.locale.TextSources.createText;
 import static net.proteusframework.ui.search.PropertyConstraint.Operator;
@@ -157,7 +159,7 @@ class MembershipOperationsEditorUI extends Container
     {
         SearchModelImpl searchModel = new SearchModelImpl();
         searchModel.setName("Operations Selector");
-        searchModel.setDisplayName(createText(OPERATIONS_SEARCH_MODEL_NAME_FMT(), _terms.user()));
+        searchModel.setDisplayName(OPERATIONS_SEARCH_MODEL_NAME_FMT(USER()));
 
         searchModel.getResultColumns().add(new SearchResultColumnImpl()
             .withName("operation")
@@ -186,8 +188,8 @@ class MembershipOperationsEditorUI extends Container
             .withTableCellRenderer(actionColumnRenderer));
 
         SearchSupplierImpl searchSupplier = new SearchSupplierImpl();
-        searchSupplier.setName(createText(OPERATIONS_SEARCH_SUPPLIER_NAME_FMT(), _terms.user()));
-        searchSupplier.setDescription(createText(OPERATIONS_SEARCH_SUPPLIER_DESCRIPTION_FMT(), _terms.user()));
+        searchSupplier.setName(OPERATIONS_SEARCH_SUPPLIER_NAME_FMT(USER()));
+        searchSupplier.setDescription(OPERATIONS_SEARCH_SUPPLIER_DESCRIPTION_FMT(USER()));
         searchSupplier.setSearchModel(searchModel);
         searchSupplier.setBuilderSupplier(() -> {
             final QLBuilderImpl qb = new QLBuilderImpl(ProfileType.class, "ptAlias");
