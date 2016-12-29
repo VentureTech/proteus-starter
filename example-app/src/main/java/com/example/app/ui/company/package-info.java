@@ -10,6 +10,8 @@
  */
 
 /**
- * Classes related to business specific terms.
+ * Classes and objects associated with Company UIs
+ *
+ * @since 12/29/16
  */
-package com.example.app.terminology;
+package com.example.app.ui.company;

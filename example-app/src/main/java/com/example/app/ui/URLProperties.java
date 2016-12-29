@@ -12,6 +12,7 @@
 package com.example.app.ui;
 
 
+import com.example.app.model.company.Company;
 import com.example.app.model.profile.Profile;
 import com.example.app.model.repository.Repository;
 import com.example.app.model.repository.RepositoryItem;
@@ -50,6 +51,9 @@ public final class URLProperties
     public static final String RESOURCES = "resources";
     /** URL Property to signify a selector action that should be fired upon page load */
     public static final String SELECTOR_ACTION = "selector-action";
+    /** URL Property to signify a {@link Company} */
+    public static final String COMPANY = "company";
+
     /** Path Info for URL Property user */
     public static final String USER_PATH_INFO = '/' + USER + "-{" + USER + '}';
     /** Path Info for URL Property repo-item */
@@ -72,6 +76,8 @@ public final class URLProperties
     public static final String RESOURCE_PATH_INFO = '/' + RESOURCE + "-{" + RESOURCE + '}';
     /** Path Info for URL Property selector-action */
     public static final String SELECTOR_ACTION_PATH_INFO = '/' + SELECTOR_ACTION + "-{" + SELECTOR_ACTION + '}';
+    /** Path Info for URL Property company */
+    public static final String COMPANY_PATH_INFO = '/' + COMPANY + "-{" + COMPANY + '}';
     private URLProperties()
     {
     }

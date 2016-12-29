@@ -16,8 +16,9 @@ import com.example.app.model.repository.RepositoryDAO;
 import com.example.app.model.repository.RepositoryItem;
 import com.example.app.model.repository.ResourceRepositoryItem;
 import com.example.app.model.resource.Resource;
+import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.support.AppUtil;
-import com.example.app.terminology.ProfileTermProvider;
+
 import com.example.app.ui.resource.ResourceRepositoryItemValueViewer;
 import com.example.app.ui.resource.ResourceSelector;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ import net.proteusframework.ui.miwt.component.PushButton;
 import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.ui.search.SearchUIAction;
 
+import static com.example.app.ui.UIText.RESOURCES;
 import static com.example.app.ui.repository.RepositoryItemResourceListingLOK.BUTTON_TEXT_SELECT_RESOURCES_FMT;
 import static com.example.app.ui.repository.RepositoryItemResourceListingLOK.LABEL_SELECT_RESOURCES_FMT;
 import static net.proteusframework.core.locale.TextSources.createText;
@@ -91,7 +93,7 @@ public abstract class RepositoryItemResourceListing<RI extends RepositoryItem> e
     {
         super.init();
 
-        PushButton selectResources = new PushButton(createText(BUTTON_TEXT_SELECT_RESOURCES_FMT(), _terms.resources()));
+        PushButton selectResources = new PushButton(BUTTON_TEXT_SELECT_RESOURCES_FMT(RESOURCES()));
         selectResources.addActionListener(ev -> beginResourceSelection());
         selectResources.addClassName("select-resources");
 
@@ -166,7 +168,7 @@ public abstract class RepositoryItemResourceListing<RI extends RepositoryItem> e
     @SuppressWarnings("ConstantConditions")
     private void beginResourceSelection()
     {
-        final Dialog dlg = new Dialog(getApplication(), createText(LABEL_SELECT_RESOURCES_FMT(), _terms.resources()));
+        final Dialog dlg = new Dialog(getApplication(), LABEL_SELECT_RESOURCES_FMT(RESOURCES()));
         dlg.addClassName("resource-selector-dialog");
 
         ResourceSelector selector = new ResourceSelector(_repositoryDAO.getOwnerOfRepositoryItem(getValue()),

@@ -12,7 +12,7 @@
 package com.example.app.email;
 
 import com.example.app.model.profile.Profile;
-import com.example.app.terminology.ProfileTermProvider;
+import com.example.app.model.terminology.ProfileTermProvider;
 import com.google.common.base.Preconditions;
 import com.google.common.io.CharStreams;
 import org.apache.logging.log4j.Level;
@@ -97,6 +97,7 @@ import net.proteusframework.users.model.Principal;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static com.example.app.email.EmailTemplateConfigurationUILOK.*;
+import static com.example.app.ui.UIText.PROFILE;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.regex.Pattern.compile;
@@ -743,7 +744,7 @@ public class EmailTemplateConfigurationUI extends Container
         Dialog dialog = new Dialog(getApplication(), ACTION_ADD_RECIPIENT());
         dialog.setVisible(true);
         getWindowManager().add(dialog);
-        Label instructions = new Label(createText(INSTRUCTIONS_ADD_RECIPIENT(), _profileTermProvider.profile()));
+        Label instructions = new Label(INSTRUCTIONS_ADD_RECIPIENT(PROFILE()));
         instructions.setHTMLElement(HTMLElement.p);
         instructions.addClassName(CSSUtil.CSS_INSTRUCTIONS);
         dialog.add(instructions);

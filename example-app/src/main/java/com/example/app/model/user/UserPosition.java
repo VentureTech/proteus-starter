@@ -38,7 +38,7 @@ import java.util.Date;
 import java.util.Optional;
 
 /**
- * A User Position Entity -- It represents a position held by the user within their company.
+ * A User Position Entity -- It represents a position held by the user within their client.
  * This Entity is fully auditable and implements soft delete.
  *
  * @author Alan Holt (aholt@venturetech.net)

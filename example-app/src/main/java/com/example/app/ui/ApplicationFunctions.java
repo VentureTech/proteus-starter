@@ -67,6 +67,23 @@ public final class ApplicationFunctions
         }
     }
 
+    /**
+     * Static class defining Application Functions for {@link com.example.app.model.company.Company}
+     *
+     * @author Alan Holt (aholt@venturetech.net)
+     */
+    public static final class Company
+    {
+        /** The constant MANAGEMENT. */
+        public static final String MANAGEMENT = "Company Management";
+        /** The constant EDIT. */
+        public static final String EDIT = "Company Editor";
+        /** The constant VIEW. */
+        public static final String VIEW = "Company Viewer";
+
+        private Company(){}
+    }
+
     private ApplicationFunctions()
     {
     }

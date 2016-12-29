@@ -13,12 +13,13 @@ package com.example.app.model.user;
 
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.support.AppUtil;
-import com.example.app.support.ImageSaver;
+import com.example.app.support.FileSaver;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -50,6 +51,7 @@ import net.proteusframework.users.model.AuthenticationDomain;
 import net.proteusframework.users.model.Contact;
 import net.proteusframework.users.model.Principal;
 import net.proteusframework.users.model.PrincipalStatus;
+import net.proteusframework.users.model.dao.AuthenticationDomainList;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static com.example.app.support.AppUtil.getExtensionWithDot;
@@ -89,7 +91,7 @@ public class UserDAO extends DAOHelper implements Serializable
     /** principal dao */
     @Autowired
     protected transient PrincipalDAO _principalDAO;
-    private ImageSaver<User> _userImageSaver;
+    private FileSaver<User> _userImageSaver;
 
     /**
      * Delete the given user from the database
@@ -170,18 +172,52 @@ public class UserDAO extends DAOHelper implements Serializable
     }
 
     /**
-     * Get a user by email address.
+     * Gets users by email address.
      *
-     * @param emailAddress the email address.
+     * @param emailAddress the email address
+     * @param domainList authentication domain list.
+     * @return the users by email address.
+     */
+    @SuppressWarnings("unchecked")
+    public List<User> getUsersByEmailAddress(String emailAddress, AuthenticationDomainList domainList)
+    {
+        return (List<User>)
+            doInTransaction(session -> {
+                @Language("HQL")
+                String hql = "SELECT DISTINCT u FROM User u INNER JOIN u.principal p\n"
+                             + "INNER JOIN p.credentials cred\n"
+                             + "INNER JOIN p.authenticationDomains ad\n"
+                             + "INNER JOIN p.contact c INNER JOIN c.emailAddresses ea\n"
+                             + "WHERE (LOWER(ea.email) = LOWER(:email) OR LOWER(cred.username) = LOWER(:email))\n";
+                if(!domainList.isEmpty())
+                {
+                    hql += " AND ad IN (:authDomains)";
+                }
+
+                Query query = session.createQuery(hql)
+                    .setParameter("email", emailAddress);
+                if(!domainList.isEmpty())
+                {
+                    query.setParameterList("authDomains", domainList.getAuthenticationDomainList());
+                }
+
+                return query.list();
+            });
+    }
+
+    /**
+     * Get a user by login.
+     *
+     * @param emailAddressOrUsername the login.
      * @param status optional status to limit.
      *
      * @return the user.
      */
-    public Optional<User> getUserByEmailAddress(String emailAddress, @Nullable PrincipalStatus... status)
+    public Optional<User> getUserByLogin(String emailAddressOrUsername, @Nullable PrincipalStatus... status)
     {
-        if (isEmptyString(emailAddress))
+        if (isEmptyString(emailAddressOrUsername))
             return Optional.empty();
-        final Principal login = _principalDAO.getPrincipalByLogin(emailAddress, null);
+        final Principal login = _principalDAO.getPrincipalByLogin(emailAddressOrUsername, null);
         return Optional.ofNullable(getUserForPrincipal(login, status));
     }
 
@@ -372,7 +408,7 @@ public class UserDAO extends DAOHelper implements Serializable
     @Nonnull
     public User saveUserImage(@Nonnull User user, @Nullable FileItem image)
     {
-        return getUserImageSaver().saveImage(user, image);
+        return getUserImageSaver().save(user, image);
     }
 
     /**
@@ -381,11 +417,11 @@ public class UserDAO extends DAOHelper implements Serializable
      * @return the User Image Saver
      */
     @Nonnull
-    protected ImageSaver<User> getUserImageSaver()
+    protected FileSaver<User> getUserImageSaver()
     {
         if (_userImageSaver == null)
         {
-            _userImageSaver = new ImageSaver<>((user, image) -> {
+            _userImageSaver = new FileSaver<>((user, image) -> {
                 user.setImage(image);
                 return user;
             }, User::getImage, (user, image) -> {

@@ -14,6 +14,7 @@ package com.example.app.model.profile;
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
 import com.example.app.model.AbstractAuditableEntity;
+import com.example.app.support.AppUtil;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
@@ -41,6 +42,7 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.proteusframework.core.GloballyUniqueStringGenerator;
 import net.proteusframework.core.locale.LocalizedObjectKey;
 import net.proteusframework.core.locale.NamedObject;
 import net.proteusframework.core.locale.TextSource;
@@ -70,6 +72,8 @@ public class MembershipType extends AbstractAuditableEntity<Integer> implements 
     public static final String ID_COLUMN = "membershiptype_id";
     /** The database column name and property: name */
     public static final String NAME_COLUMN_PROP = "name";
+    /** The property: description */
+    public static final String DESC_COLUMN_PROP = "description";
     /** The database column name and property: defaultOperations */
     public static final String DEFAULT_OPERATIONS_PROP = "defaultOperations";
     /** The database column name and property: programmaticIdentifier */
@@ -81,9 +85,30 @@ public class MembershipType extends AbstractAuditableEntity<Integer> implements 
     /** The ID generator identifier for this entity */
     private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + ".membershiptype_id_seq";
     private LocalizedObjectKey _name;
+    private LocalizedObjectKey _description;
     private String _programmaticIdentifier;
     private ProfileType _profileType;
     private List<MembershipOperation> _defaultOperations = new ArrayList<>();
+
+    /**
+     * Create a copy of this membership type.
+     * @param generateNewPID generate new programmatic identifier.
+     * @return the membership type.
+     */
+    public MembershipType createCopy(boolean generateNewPID)
+    {
+        MembershipType membershipType = new MembershipType();
+        AppUtil lrLabsUtil = AppUtil.getInstance();
+        membershipType.setName(lrLabsUtil.copyLocalizedObjectKey(getName()));
+        membershipType.setDescription(lrLabsUtil.copyLocalizedObjectKey(getDescription()));
+        if(generateNewPID)
+            membershipType.setProgrammaticIdentifier(GloballyUniqueStringGenerator.getUniqueString());
+        else
+            membershipType.setProgrammaticIdentifier(getProgrammaticIdentifier());
+        membershipType.setProfileType(getProfileType());
+        membershipType.getDefaultOperations().addAll(getDefaultOperations());
+        return membershipType;
+    }
 
     /**
      * Get the default operations for new Memberships.
@@ -131,12 +156,22 @@ public class MembershipType extends AbstractAuditableEntity<Integer> implements 
         return _name;
     }
 
-    @Transient
+    @Column(name = DESC_COLUMN_PROP)
     @Nullable
     @Override
-    public TextSource getDescription()
+    public LocalizedObjectKey getDescription()
     {
-        return null;
+        return _description;
+    }
+
+    /**
+     * Sets description.
+     *
+     * @param description the description
+     */
+    public void setDescription(@Nullable LocalizedObjectKey description)
+    {
+        _description = description;
     }
 
     /**
