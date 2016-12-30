@@ -9,7 +9,7 @@
  * into with I2RD.
  */
 
-package experimental.cms.dsl.impl
+package experimental.cms.dsl.shell
 
 import experimental.cms.dsl.SiteDefinition
 import org.apache.logging.log4j.LogManager

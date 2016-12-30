@@ -9,14 +9,13 @@
  * into with I2RD.
  */
 
-package experimental.cms.dsl.impl
+package experimental.cms.dsl.content
 
-import org.jetbrains.exposed.sql.Table
+import com.i2rd.cms.bean.HTMLContentElement
+import experimental.cms.dsl.Content
 
-object SiteDefinitionRecord : Table() {
-    val id = integer("id").autoIncrement().primaryKey()
-    val name = varchar("name", 512).uniqueIndex()
-    val version = integer("version")
-    val created = datetime("created")
-    val modified = datetime("modified")
+class HTML(id: String, htmlContent: String = "")
+    : Text(id, htmlContent), Content {
+
+    override fun createContentElement() = HTMLContentElement()
 }

@@ -20,7 +20,7 @@ class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer {
     private val contentToRemoveImplementation: MutableList<Content> = mutableListOf()
     override val contentToRemove: MutableList<Content>
         get() = contentToRemoveImplementation
-    override val contentList: List<Content> get() = content
+    override val contentList: MutableList<Content> get() = content
     val hostnames = mutableListOf<Hostname>()
     val templates = mutableListOf<Template>()
     val layouts = mutableListOf<Layout>()
@@ -28,11 +28,12 @@ class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer {
     val pagesToRemove = mutableListOf<Page>()
     var primaryLocale: Locale = Locale.ENGLISH
     var defaultTimezone: TimeZone = TimeZone.getTimeZone("US/Central")
+    internal val siteConstructedCallbacks = mutableListOf<(Site) -> Unit>()
 
     fun getContentById(existingId: String): Content {
         val predicate = createContentIdPredicate(existingId)
-        return children.flatMap { it.content.values }.filter(predicate).firstOrNull()?:
-                templates.flatMap { it.content.values }.filter(predicate).firstOrNull()?:
+        return children.flatMap { it.contentList }.filter(predicate).firstOrNull()?:
+                templates.flatMap { it.contentList }.filter(predicate).firstOrNull()?:
                 content.filter(predicate).first()
     }
 
@@ -83,6 +84,9 @@ open class SiteDefinition(val definitionName: String, val version: Int) {
     fun createSite(id: String, init: Site.() -> Unit = {}): Site {
         val site = Site(id).apply(init)
         registeredSites.getOrPut(this, { mutableListOf<Site>() }).add(site)
+        for(callback in site.siteConstructedCallbacks) {
+            callback.invoke(site)
+        }
         return site
     }
 

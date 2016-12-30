@@ -52,14 +52,14 @@ class Layout(id: String, val parent: Site) : IdentifiableParent<Box>(id){
 }
 
 interface BoxedContent : ContentContainer {
-    override val contentList: List<Content> get() = content.values.toList()
-    val content: MutableMap<Box, Content>
+    override val contentList: MutableList<Content> get() = content.values.flatMap { it }.toMutableList()
+    val content: MutableMap<Box, MutableList<Content>>
     val site: Site
     val layout: Layout
 
     fun <T : Content> content(boxId: String, content: T, init: T.() -> Unit={}): T {
         val box = layout.children.filter { it.id == boxId }.first()
-        this.content[box] = content
+        this.content.getOrPut(box, {mutableListOf<Content>()}).add(content)
         content.parent = this
         content.apply(init)
         return content
@@ -67,7 +67,7 @@ interface BoxedContent : ContentContainer {
     fun content(boxId: String, existingContentId: String): Content {
         val box = layout.children.filter { it.id == boxId }.first()
         val contentElement = site.getContentById(existingContentId)
-        this.content[box] = contentElement
+        this.content.getOrPut(box, { mutableListOf<Content>() }).add(contentElement)
         return contentElement
     }
 
@@ -79,7 +79,7 @@ class Template(id: String, override val site: Site, override var layout: Layout 
     override var htmlId: String = ""
     override val cssPaths = mutableListOf<String>()
     override val javaScriptPaths = mutableListOf<String>()
-    override val content = mutableMapOf<Box, Content>()
+    override val content = mutableMapOf<Box, MutableList<Content>>()
     override val contentToRemove = mutableListOf<Content>()
     init {
         if(id.isNotBlank())
@@ -107,7 +107,7 @@ class Page(id: String, override val site: Site, override var path: String = "", 
     override val layout: Layout get() = template.layout
     override val cssPaths = mutableListOf<String>()
     override val javaScriptPaths = mutableListOf<String>()
-    override val content = mutableMapOf<Box, Content>()
+    override val content = mutableMapOf<Box, MutableList<Content>>()
     override val contentToRemove = mutableListOf<Content>()
 
     var pagePermission: String? = null
@@ -129,9 +129,12 @@ class Page(id: String, override val site: Site, override var path: String = "", 
     fun permission(permission: String) {
         pagePermission = permission
     }
+
     fun authenticationPage(authenticationPageId: String) {
-        val page = site.children.filter { it.id == authenticationPageId }.first()
-        authenticationPage = page
+        site.siteConstructedCallbacks.add({ site ->
+            val page = site.children.filter { it.id == authenticationPageId }.first()
+            authenticationPage = page
+        })
     }
 
 

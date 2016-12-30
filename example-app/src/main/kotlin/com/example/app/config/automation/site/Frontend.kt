@@ -21,9 +21,11 @@ package com.example.app.config.automation.site/*
  */
 
 import com.example.app.ui.ApplicationFunctions
-import experimental.cms.dsl.ApplicationFunction
 import experimental.cms.dsl.SiteDefinition
-import experimental.cms.dsl.Text
+import experimental.cms.dsl.content.ApplicationFunction
+import experimental.cms.dsl.content.Composite
+import experimental.cms.dsl.content.Login
+import experimental.cms.dsl.content.Text
 import net.proteusframework.cms.component.page.PageProperties.Type.page
 import net.proteusframework.cms.component.page.PageProperties.Type.page_template
 import net.proteusframework.cms.component.page.layout.BoxDescriptor.*
@@ -74,9 +76,19 @@ open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
             hostname("capmc.russ1-vdm.vipasuite.com", "Home") {
                 path = "/home"
                 template("Login")
-                content("Content", Text("Please Login")) {
-                    htmlContent = """<p>Please Login</p><p><a href="/config/user">User Mgt</a></p>"""
+                content("Content", Login("Please Login")) {
+                    landingPage("User Management")
+                    titleText = """<p>Please Login</p>"""
                     htmlClass = "please-login"
+                }
+                content("Content", Composite("Composite1")){
+
+                    content(Text("CompositeText1")){
+                        htmlContent = "<p>This is text 1</p>"
+                    }
+                    content(Text("CompositeText2")){
+                        htmlContent = "<p>This is text 2</p>"
+                    }
                 }
             }
 

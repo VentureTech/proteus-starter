@@ -9,7 +9,7 @@
  * into with I2RD.
  */
 
-package experimental.cms.dsl.impl
+package experimental.cms.dsl.shell
 
 import com.i2rd.cms.util.AbstractShellCommands
 import experimental.cms.dsl.SiteDefinition

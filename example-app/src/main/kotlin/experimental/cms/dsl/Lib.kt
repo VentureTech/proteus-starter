@@ -20,6 +20,7 @@ import net.proteusframework.core.html.Element
 import net.proteusframework.core.html.EntityUtil
 import net.proteusframework.core.html.HTMLElement
 import net.proteusframework.core.xml.*
+import net.proteusframework.internet.http.Link
 import net.proteusframework.ui.miwt.component.Component
 import org.apache.logging.log4j.LogManager
 import org.xml.sax.Attributes
@@ -136,6 +137,11 @@ interface ContentHelper {
      * @param link the link to convert.
      */
     fun getInternalLink(link: String): String
+
+    /**
+     * Give a page, return the CMS Link.
+     */
+    fun getCMSLink(page: Page): Link
 
     /**
      * Convert XHTML links using #getInternalLink(String)
