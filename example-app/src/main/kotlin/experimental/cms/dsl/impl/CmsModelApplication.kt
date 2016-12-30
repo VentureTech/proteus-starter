@@ -218,6 +218,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
                 cmsPage.lastModified = Date()
                 cmsPage.pageTemplate = getOrCreatePageTemplatePass1(site, page.template)
                 session.save(cmsPage)
+                createNDEs(site, cmsPage, page)
                 updatePageElementPath(cmsPage, page)
                 cmsBackendDAO.savePage(cmsPage)
                 session.flush()
@@ -293,6 +294,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             }
             contentElement.dataVersions.addAll(dataVersions)
         }
+        createNDEs(site, contentElement, content)
         return contentElement
     }
 
@@ -332,7 +334,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             pageTemplate.cssName = template.htmlId
             pageTemplate.lastModified = Date()
             pageTemplate.layout = getOrCreateLayout(site, template.layout)
-            createNDEs(site, template)
+            createNDEs(site, pageTemplate, template)
             populateBeanBoxLists(pageTemplate)
             session.flush()
         } else {
@@ -386,7 +388,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             }
             val dataVersions = ce.dataVersions
             if (ce.publishedData.isNotEmpty() || dataVersions.isNotEmpty()) {
-                val dataSet = if (dataVersions.isNotEmpty())  dataVersions[dataVersions.size-1] else
+                val dataSet = if (dataVersions.isNotEmpty())  dataVersions.last() else
                     ce.publishedData.values.iterator().next()
                 if(dataSet.locale == null)
                     dataSet.locale = currentSite!!.primaryLocale
@@ -468,16 +470,16 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
         return cmsBox
     }
 
-    private fun createNDEs(site: CmsSite, resources: ResourceCapable) {
+    private fun createNDEs(site: CmsSite, siteElement: Any, resources: ResourceCapable) {
 
-        for(nde in createNDEs(site, NDEType.CSS, resources.cssPaths, resources)) {
-            NDEUtil.addNDEToEntity(resources, nde,
+        for(nde in createNDEs(site, NDEType.CSS, resources.cssPaths, siteElement)) {
+            NDEUtil.addNDEToEntity(siteElement, nde,
                 ContentTypes.Text.html.contentType,
                 ContentTypes.Application.xhtml_xml.contentType
                 )
         }
-        for(nde in createNDEs(site, NDEType.JS, resources.javaScriptPaths, resources)) {
-            NDEUtil.addNDEToEntity(resources, nde,
+        for(nde in createNDEs(site, NDEType.JS, resources.javaScriptPaths, siteElement)) {
+            NDEUtil.addNDEToEntity(siteElement, nde,
                 ContentTypes.Text.html.contentType,
                 ContentTypes.Application.xhtml_xml.contentType
                                   )
@@ -485,7 +487,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
 
     }
 
-    private fun createNDEs(site: CmsSite, type: NDEType, paths: List<String>, resources: ResourceCapable): List<FactoryNDE> {
+    private fun createNDEs(site: CmsSite, type: NDEType, paths: List<String>, siteElement : Any): List<FactoryNDE> {
         val list = mutableListOf<FactoryNDE>()
         val root = FileSystemDirectory.getRootDirectory(site)
         val query = hsh.session.createQuery(
@@ -503,7 +505,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
                 nde.resource = fserf.createResource(file)
                 if (nde.resource == null)
                     throw IllegalStateException("Unable to get resource for file#${file.id}")
-                NDEUtil.updateEntityReferences(resources, file)
+                NDEUtil.updateEntityReferences(siteElement, file)
                 list.add(nde)
             }
         }
