@@ -22,15 +22,14 @@ package com.example.app.config.automation.site/*
 
 import com.example.app.ui.ApplicationFunctions
 import experimental.cms.dsl.SiteDefinition
-import experimental.cms.dsl.content.ApplicationFunction
-import experimental.cms.dsl.content.Composite
-import experimental.cms.dsl.content.Login
-import experimental.cms.dsl.content.Text
+import experimental.cms.dsl.content.*
 import net.proteusframework.cms.component.page.PageProperties.Type.page
 import net.proteusframework.cms.component.page.PageProperties.Type.page_template
 import net.proteusframework.cms.component.page.layout.BoxDescriptor.*
+import net.proteusframework.internet.http.Link
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
+import java.net.URI
 
 @Profile("automation")
 @Component
@@ -61,6 +60,22 @@ open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
 <img src="entropy/logo.png" alt="Logo" /></h1>"""
                     htmlId = "logo"
                 }
+                content("Header", Menu("Top Menu")) {
+                    htmlClass = "top-menu"
+                    label("A Menu Item Label") {
+                        htmlClass = "label-class"
+                        tooltip = "Label Tooltip!"
+                        page("User Mgt", "User Management") {
+                            htmlClass = "user-mgt"
+                            tooltip = "User Mgt Yo!"
+                        }
+                    }
+                    link("Google", Link(URI.create("http://google.com/"))) {
+                        htmlClass = "google-link"
+                        tooltip = "Googly"
+                    }
+                    page("Resource Mgt", "Resource Management")
+                }
                 content("Footer", Text("Copyright Us")) {
                     htmlContent = """<p>Copyright Capstone Technologies LLC.</p>"""
                     htmlClass = "copyright"
@@ -89,6 +104,9 @@ open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
                     content(Text("CompositeText2")){
                         htmlContent = "<p>This is text 2</p>"
                     }
+                }
+                content("Content", HTML("HTML Example")) {
+                    htmlContent = "<div>Some HTML Content</div>"
                 }
             }
 

@@ -41,6 +41,7 @@ import net.proteusframework.core.hibernate.HibernateSessionHelper
 import net.proteusframework.core.hibernate.dao.DAOHelper
 import net.proteusframework.core.locale.TransientLocalizedObjectKey
 import net.proteusframework.core.net.ContentTypes
+import net.proteusframework.data.filesystem.DirectoryEntity
 import net.proteusframework.data.filesystem.FileEntity
 import net.proteusframework.data.filesystem.FileSystemDAO
 import net.proteusframework.data.filesystem.http.FileSystemEntityResourceFactory
@@ -109,6 +110,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     private val layoutToBoxInformation = mutableMapOf<Layout, BoxInformation>()
     private val pagePaths = mutableMapOf<String, PageElementPath>()
     var currentSite: CmsSite? = null
+    lateinit var currentWebRoot: DirectoryEntity
 
     fun applyDefinition(siteDefinition: SiteDefinition) {
         siteDefinition.getSites().forEach { siteModel ->
@@ -131,6 +133,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
 
         val site = getOrCreateSite(siteModel)
         currentSite = site
+        currentWebRoot = FileSystemDirectory.getRootDirectory(site)
         val ctrList = mutableSetOf<Content>()
         ctrList.addAll(siteModel.contentToRemove)
         val pageList = mutableListOf<Page>()
@@ -330,6 +333,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             for (dv in dataVersions) {
                 dv.contentElement = contentElement
             }
+            logger.info("Cms Content Is Modified: ${contentElement.name}")
             contentElement.dataVersions.addAll(dataVersions)
         }
         contentElement.dataVersions.lastOrNull()?.let {
@@ -439,17 +443,18 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     private fun saveContentElements(elements: MutableList<ContentElement>,
         hibernateUtil: HibernateUtil = HibernateUtil.getInstance(), site: CmsSite) {
         val it = elements.listIterator()
+        loop@
         while (it.hasNext()) {
             var ce = it.next()
             saveChildElements(ce, hibernateUtil, site)
             if (ce.dataVersions.isEmpty()) {
                 logger.info("Saving Cms Content: ${ce.name}")
                 cmsBackendDAO.saveBean(ce.delegate as ContentElement?)
-                continue
+                continue@loop
             }
-            if (hibernateUtil.isPersistent(ce) && ce.dataVersions.filter { hibernateUtil.isTransient(it) }.none()) {
+            if (hibernateUtil.isPersistent(ce) && ce.publishedData[site.primaryLocale] == ce.dataVersions.last()) {
                 logger.info("Skipping persistent Cms Content: ${ce.name}")
-                continue
+                continue@loop
             }
             val dataVersions = ce.dataVersions
             if (dataVersions.isNotEmpty()) {
@@ -549,10 +554,9 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
 
     private fun createNDEs(site: CmsSite, type: NDEType, paths: List<String>, siteElement: Any): List<FactoryNDE> {
         val list = mutableListOf<FactoryNDE>()
-        val root = FileSystemDirectory.getRootDirectory(site)
         val query = hsh.session.createQuery(
             "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root")
-            .setParameter("root", root)
+            .setParameter("root", currentWebRoot)
         for (path in paths) {
             @Suppress("UNCHECKED_CAST")
             val result: List<FileEntity> = query.setParameter("path", "%" + path).list() as List<FileEntity>
@@ -582,10 +586,9 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
         if (exactPath != null)
             return LinkUtil.getCMSLink(exactPath.pageElement).uriAsString
 
-        val root = FileSystemDirectory.getRootDirectory(site)
         val query = hsh.session.createQuery(
             "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root")
-            .setParameter("root", root)
+            .setParameter("root", currentWebRoot)
             .setParameter("path", "%" + link)
         @Suppress("UNCHECKED_CAST")
         val results: List<FileEntity> = query.list() as List<FileEntity>

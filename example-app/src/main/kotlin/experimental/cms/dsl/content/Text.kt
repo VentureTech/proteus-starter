@@ -42,7 +42,7 @@ open class Text(id: String, var htmlContent: String = "")
     override fun isModified(helper: ContentHelper, contentElement: ContentElement): Boolean {
         val toCheck = helper.convertXHTML(htmlContent)
         val dataSet = contentElement.publishedData[helper.getCmsSite().primaryLocale]
-        val dataSetDAO = ModelDataDAO.getInstance(TextBean().contentModelDefinition)
+        val dataSetDAO = ModelDataDAO.getInstance(contentElement.contentModelDefinition)
         if(dataSet == null || dataSet.modelData.isEmpty())
             return true
         val modelData = dataSetDAO.getData(dataSet, DefaultDataPurpose.rendering.name) as ModelDataXML

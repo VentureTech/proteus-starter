@@ -13,6 +13,7 @@ package experimental.cms.dsl.content
 
 import com.i2rd.cms.bean.LoginBean
 import com.i2rd.cms.bean.LoginBeanContentBuilder
+import com.i2rd.xml.XsdConstants
 import experimental.cms.dsl.Content
 import experimental.cms.dsl.ContentHelper
 import experimental.cms.dsl.Identifiable
@@ -55,9 +56,9 @@ class Login(id: String)
         val lpToCheck = landingPage
         if (lpToCheck != null)
             builder.landing = helper.getCMSLink(lpToCheck)
-        builder.setData(LoginBean.ContentPurpose.forgotten_password, forgotPasswordText, null)
-        builder.setData(LoginBean.ContentPurpose.reset_password, resetPasswordText, null)
-        builder.setData(LoginBean.ContentPurpose.login_form_title, titleText, null)
+        builder.setData(LoginBean.ContentPurpose.forgotten_password, forgotPasswordText, XsdConstants.XHTML_FRAGMENT_XSD)
+        builder.setData(LoginBean.ContentPurpose.reset_password, resetPasswordText, XsdConstants.XHTML_FRAGMENT_XSD)
+        builder.setData(LoginBean.ContentPurpose.login_form_title, titleText, XsdConstants.XHTML_FRAGMENT_XSD)
     }
 
 
