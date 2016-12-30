@@ -32,7 +32,7 @@ import net.proteusframework.ui.miwt.util.CommonActions;
  * @since 6/28/16 10:14 AM
  */
 @Configurable
-public class CoachingEntityPropertyViewer extends PropertyViewer
+public class CompanyPropertyViewer extends PropertyViewer
 {
     @Autowired
     private UserDAO _userDAO;
@@ -40,7 +40,7 @@ public class CoachingEntityPropertyViewer extends PropertyViewer
     /**
      * Instantiates a new company property viewer.
      */
-    public CoachingEntityPropertyViewer()
+    public CompanyPropertyViewer()
     {
         super();
 
@@ -70,9 +70,9 @@ public class CoachingEntityPropertyViewer extends PropertyViewer
 
     @Nullable
     @Override
-    public CoachingEntityValueViewer getValueViewer()
+    public CompanyValueViewer getValueViewer()
     {
-        return (CoachingEntityValueViewer)super.getValueViewer();
+        return (CompanyValueViewer)super.getValueViewer();
     }
 
     /**
@@ -82,7 +82,7 @@ public class CoachingEntityPropertyViewer extends PropertyViewer
      *
      * @return the company property viewer
      */
-    public CoachingEntityPropertyViewer configure(Company value)
+    public CompanyPropertyViewer configure(Company value)
     {
         final User currentUser = _userDAO.getAssertedCurrentUser();
         if(!AppUtil.userHasAdminRole(currentUser))
@@ -93,8 +93,8 @@ public class CoachingEntityPropertyViewer extends PropertyViewer
             throw new IllegalArgumentException("Unable to determine Development Provider");
         }
 
-        CoachingEntityValueViewer viewer = new CoachingEntityValueViewer();
-        viewer.setCoaching(value);
+        CompanyValueViewer viewer = new CompanyValueViewer();
+        viewer.setCompany(value);
         setValueViewer(viewer);
         return this;
     }

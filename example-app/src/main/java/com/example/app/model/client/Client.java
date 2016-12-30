@@ -21,23 +21,26 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
 import net.proteusframework.data.filesystem.FileEntity;
-import net.proteusframework.users.model.Address;
-import net.proteusframework.users.model.EmailAddress;
-import net.proteusframework.users.model.PhoneNumber;
 
 import static net.proteusframework.core.locale.annotation.I18NFile.Visibility.PUBLIC;
 
@@ -66,32 +69,24 @@ public class Client extends Profile
 {
     /** The database table name */
     public static final String TABLE_NAME = "Client";
-    /** The property: address */
-    public static final String ADDRESS_PROP = "address";
-    /** The property: emailAddress */
-    public static final String EMAIL_ADDRESS_PROP = "emailAddress";
-    /** The property: phoneNumber */
-    public static final String PHONE_NUMBER_PROP = "phoneNumber";
     /** The property: status */
     public static final String STATUS_PROP = "status";
     /** The property: logo */
     public static final String LOGO_PROP = "logo";
+    /** The property: locations */
+    public static final String LOCATIONS_PROP = "locations";
+    /** Joni Column for relationship between Location Client */
+    public static final String LOCATIONS_JOIN_COLUMN = "location_id";
+    /** Join table for relationship between Location and Client */
+    public static final String LOCATIONS_JOIN_TABLE = TABLE_NAME + '_' + Location.TABLE_NAME;
+    /** The property: primaryLocation */
+    public static final String PRIMARY_LOCATION_PROP = "primaryLocation";
     /** Serial ID */
     private static final long serialVersionUID = 9008466730246583817L;
 
-    /** Status */
     private ClientStatus _status = ClientStatus.PENDING;
-
-    /** Address */
-    private Address _address;
-
-    /** Primary Email */
-    private EmailAddress _emailAddress;
-
-    /** Primary Phone */
-    private PhoneNumber _phoneNumber;
-
-    /** Logo */
+    private List<Location> _locations = new ArrayList<>();
+    private Location _primaryLocation;
     private FileEntity _logo;
 
     /**
@@ -103,49 +98,53 @@ public class Client extends Profile
     }
 
     /**
-     * Get the address
+     * Gets locations.
      *
-     * @return the address
+     * @return the locations
+     */
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = LOCATIONS_JOIN_TABLE, schema = ProjectConfig.PROJECT_SCHEMA,
+        joinColumns = @JoinColumn(name = ID_COLUMN),
+        inverseJoinColumns = @JoinColumn(name = LOCATIONS_JOIN_COLUMN))
+    @Cascade(CascadeType.ALL)
+    @Nonnull
+    public List<Location> getLocations()
+    {
+        return _locations;
+    }
+
+    /**
+     * Sets locations.
+     *
+     * @param locations the locations
+     */
+    public void setLocations(@Nonnull List<Location> locations)
+    {
+        _locations = locations;
+    }
+
+    /**
+     * Gets primary location.
+     *
+     * @return the primary location
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.PERSIST, CascadeType.MERGE, CascadeType.SAVE_UPDATE})
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    public Address getAddress()
+    @JoinColumn(name = LOCATIONS_JOIN_COLUMN)
+    @Cascade(CascadeType.ALL)
+    @Nullable
+    public Location getPrimaryLocation()
     {
-        return _address;
+        return _primaryLocation;
     }
 
     /**
-     * Set the address
+     * Sets primary location.
      *
-     * @param address the address
+     * @param primaryLocation the primary location
      */
-    public void setAddress(Address address)
+    public void setPrimaryLocation(@Nullable Location primaryLocation)
     {
-        _address = address;
-    }
-
-    /**
-     * Get primary contact email address
-     *
-     * @return the primary email address
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.PERSIST, CascadeType.MERGE, CascadeType.SAVE_UPDATE})
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    public EmailAddress getEmailAddress()
-    {
-        return _emailAddress;
-    }
-
-    /**
-     * Set the email address
-     *
-     * @param emailAddress the email address
-     */
-    public void setEmailAddress(EmailAddress emailAddress)
-    {
-        _emailAddress = emailAddress;
+        _primaryLocation = primaryLocation;
     }
 
     /**
@@ -170,29 +169,6 @@ public class Client extends Profile
     public void setLogo(@Nullable FileEntity logo)
     {
         _logo = logo;
-    }
-
-    /**
-     * Get the phone number
-     *
-     * @return the phone number
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.PERSIST, CascadeType.MERGE, CascadeType.SAVE_UPDATE})
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    public PhoneNumber getPhoneNumber()
-    {
-        return _phoneNumber;
-    }
-
-    /**
-     * Set the phone number
-     *
-     * @param phoneNumber the phone number
-     */
-    public void setPhoneNumber(PhoneNumber phoneNumber)
-    {
-        _phoneNumber = phoneNumber;
     }
 
     /**

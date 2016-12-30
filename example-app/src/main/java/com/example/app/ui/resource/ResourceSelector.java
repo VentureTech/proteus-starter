@@ -11,15 +11,14 @@
 
 package com.example.app.ui.resource;
 
+import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.repository.Repository;
 import com.example.app.model.repository.RepositoryDAO;
 import com.example.app.model.repository.RepositoryItemStatus;
 import com.example.app.model.repository.ResourceRepositoryItem;
 import com.example.app.model.resource.Resource;
-import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.service.ResourceCategoryLabelProvider;
 import com.example.app.service.ResourceTagsLabelProvider;
-
 import com.example.app.ui.SelectActionColumn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -67,14 +66,12 @@ import net.proteusframework.ui.search.SearchUIOperationHandler;
 import net.proteusframework.ui.search.SimpleConstraint;
 
 import static com.example.app.support.AppUtil.nullFirst;
-import static com.example.app.ui.UIText.*;
+import static com.example.app.ui.UIText.RESOURCE;
 import static com.example.app.ui.resource.ResourceSelectorLOK.*;
-import static com.example.app.ui.resource.ResourceSelectorLOK.LABEL_CATEGORY;
 import static com.example.app.ui.resource.ResourceText.LABEL_AUTHOR;
 import static com.example.app.ui.resource.ResourceValueEditorLOK.LABEL_NAME;
 import static com.example.app.ui.resource.ResourceValueEditorLOK.LABEL_TYPE;
 import static net.proteusframework.core.locale.TextSources.EMPTY;
-import static net.proteusframework.core.locale.TextSources.createText;
 import static net.proteusframework.ui.search.SearchUIAction.search;
 
 /**
@@ -112,7 +109,7 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
     @Autowired
     private RepositoryDAO _repositoryDAO;
     @Autowired
-    private ProfileTermProvider _terms;
+    private SelectedCompanyTermProvider _terms;
     private Function<SearchUIOperationContext, Void> _onSelect;
 
     /**

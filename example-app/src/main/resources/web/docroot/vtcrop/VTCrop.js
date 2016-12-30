@@ -498,14 +498,16 @@ function VTCrop(crop_opts) {
 
     $("<img/>")
         .attr("src", $(image_target).attr("src"))
-        .load(function() {
+        .on('load', function() {
           var square = this.height == this.width;
           var vertical = square != true && this.height > this.width;
           var origHeight = use_orig_ar ? orig_src.height : this.height,
-              origWidth = use_orig_ar ? orig_src.width : this.width;
+              origWidth = use_orig_ar ? orig_src.width : this.width,
+              new_height,
+              new_width;
           if((square || vertical) && this.height != crop_height) {
-            var new_height = crop_height,
-                new_width = getConstrainedWidth(new_height, origWidth, origHeight);
+            new_height = crop_height;
+              new_width = getConstrainedWidth(new_height, origWidth, origHeight);
             if(new_width > crop_width) {
               new_width = crop_width;
               new_height = getConstrainedHeight(new_width, origWidth, origHeight);
@@ -513,8 +515,8 @@ function VTCrop(crop_opts) {
             scaleImage(new_width, new_height, this, preScaleCallback);
           }
           else if(this.width != crop_width) {
-            var new_width = crop_width,
-                new_height = getConstrainedHeight(new_width, origWidth, origHeight);
+            new_width = crop_width;
+            new_height = getConstrainedHeight(new_width, origWidth, origHeight);
             if(new_height > crop_height) {
               new_height = crop_height;
               new_width = getConstrainedWidth(new_height, origWidth, origHeight);

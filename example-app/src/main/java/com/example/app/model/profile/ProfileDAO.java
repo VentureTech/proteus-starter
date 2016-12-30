@@ -13,6 +13,7 @@ package com.example.app.model.profile;
 
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.model.user.User;
+import com.example.app.support.AppUtil;
 import com.google.common.base.Preconditions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,7 +55,6 @@ import net.proteusframework.core.locale.LocalizedObjectKey;
 import net.proteusframework.core.locale.TextSource;
 import net.proteusframework.core.spring.ApplicationContextUtils;
 import net.proteusframework.ui.search.JoinedQLBuilder;
-import net.proteusframework.ui.search.PropertyConstraint;
 import net.proteusframework.ui.search.QLBuilder;
 import net.proteusframework.ui.search.QLBuilderImpl;
 import net.proteusframework.ui.search.QLResolverOptions;
@@ -101,6 +101,7 @@ public class ProfileDAO extends DAOHelper implements Serializable
      */
     public boolean canOperate(@Nullable User user, @Nullable Profile profile, TimeZone timeZone, MembershipOperation... operations)
     {
+        if(user != null && AppUtil.userHasAdminRole(user)) return true;
         if (profile == null) return false;
         return canOperate(user, Collections.singletonList(profile), timeZone, operations);
     }
@@ -120,6 +121,7 @@ public class ProfileDAO extends DAOHelper implements Serializable
         TimeZone timeZone,
         @Nonnull MembershipOperation... operations)
     {
+        if(user != null && AppUtil.userHasAdminRole(user)) return true;
         if (user == null || profiles.isEmpty())
             return false;
         final Date now = convertForPersistence(getZonedDateTimeForComparison(timeZone));
@@ -160,6 +162,7 @@ public class ProfileDAO extends DAOHelper implements Serializable
         TimeZone timeZone,
         MembershipOperation... operations)
     {
+        if(user != null && AppUtil.userHasAdminRole(user)) return true;
         if (user == null || profileType == null) return false;
         Preconditions.checkArgument(operations.length > 0);
         final Date now = convertForPersistence(getZonedDateTimeForComparison(timeZone));

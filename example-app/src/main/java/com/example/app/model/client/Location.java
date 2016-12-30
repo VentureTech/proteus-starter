@@ -53,14 +53,9 @@ import static net.proteusframework.core.locale.annotation.I18NFile.Visibility.PU
     symbolPrefix = "com.example.app.model.client.Location",
     classVisibility = PUBLIC,
     i18n = {
-        @I18N(symbol = "Certification Info Prop Name", l10n = @L10N("Certification or Qualification Information")),
         @I18N(symbol = "Client Prop Name", l10n = @L10N("Company")),
-        @I18N(symbol = "Location Name Prop Name", l10n = @L10N("Plant Location")),
-        @I18N(symbol = "Payment Info Prop Name", l10n = @L10N("Payment Info (Sent to the Winner)")),
-        @I18N(symbol = "USDA Plant ID Prop Name", l10n = @L10N("USDA Plant ID")),
+        @I18N(symbol = "Location Name Prop Name", l10n = @L10N("Location")),
         @I18N(symbol = "Email Address Prop Name", l10n = @L10N("Main Contact Email Address")),
-        @I18N(symbol = "Unsold Recipients Prop Name", l10n = @L10N("Unsold Recipients")),
-        @I18N(symbol = "Sold Recipients Prop Name", l10n = @L10N("Sold Recipients")),
         @I18N(symbol = "Address Prop Name", l10n = @L10N("Address")),
         @I18N(symbol = "Phone Prop Name", l10n = @L10N("Main Contact Phone"))
     }
@@ -71,8 +66,6 @@ public class Location extends Profile
     public static final String TABLE_NAME = "Location";
     /** The property: address */
     public static final String ADDRESS_PROP = "address";
-    /** The property: client */
-    public static final String COMPANY_PROP = "client";
     /** The property: emailAddress */
     public static final String EMAIL_ADDRESS_PROP = "emailAddress";
     /** The property: phoneNumber */
@@ -94,9 +87,6 @@ public class Location extends Profile
 
     /** Primary Phone */
     private PhoneNumber _phoneNumber;
-
-    /** Client */
-    private Client _client;
 
     /**
      * Default constructor
@@ -127,28 +117,6 @@ public class Location extends Profile
     public void setAddress(Address address)
     {
         _address = address;
-    }
-
-    /**
-     * Get the {@link Client} this location belongs to
-     *
-     * @return the client
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @NotNull
-    public Client getClient()
-    {
-        return _client;
-    }
-
-    /**
-     * Set the client
-     *
-     * @param client the client
-     */
-    public void setClient(Client client)
-    {
-        _client = client;
     }
 
     /**

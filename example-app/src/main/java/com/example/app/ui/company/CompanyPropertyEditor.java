@@ -15,12 +15,12 @@ import com.example.app.model.company.Company;
 import com.example.app.model.company.CompanyDAO;
 import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.profile.ProfileDAO;
-import com.example.app.model.repository.Repository;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.ResourceCategoryLabelProvider;
 import com.example.app.service.ResourceTagsLabelProvider;
 import com.example.app.support.AppUtil;
+import com.example.app.support.Functions;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
 import com.example.app.ui.URLConfigurations;
@@ -47,7 +47,6 @@ import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.ConcatTextSource;
 import net.proteusframework.core.locale.LocalizedObjectKey;
 import net.proteusframework.core.locale.TextSource;
-import net.proteusframework.core.locale.TransientLocalizedObjectKey;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
@@ -67,16 +66,14 @@ import net.proteusframework.ui.miwt.event.ActionEvent;
 import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
 import net.proteusframework.users.model.AuthenticationDomain;
+import net.proteusframework.users.model.Principal;
+import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static com.example.app.ui.UIText.RESOURCE;
 import static com.example.app.ui.URLProperties.COMPANY;
 import static com.example.app.ui.URLProperties.COMPANY_PATH_INFO;
-import static com.example.app.ui.company.CoachingEntityPropertyEditorLOK.INSTRUCTIONS_COPY_CATEGORIES_AND_TAGS_FMT;
-import static com.example.app.ui.company.CoachingEntityPropertyEditorLOK.LABEL_COPY_CATEGORIES_AND_TAGS_QUESTION_FMT;
-import static com.example.app.ui.company.CoachingEntityPropertyEditorLOK.TITLE_COPY_CATEGORIES_AND_TAGS_FMT;
-import static com.example.app.ui.company.CoachingEntityViewerComponentLOK.COMPONENT_NAME;
+import static com.example.app.ui.company.CompanyPropertyEditorLOK.*;
 import static com.i2rd.miwt.util.CSSUtil.CSS_INSTRUCTIONS;
-import static net.proteusframework.core.locale.TextSources.createText;
 
 /**
  * {@link PropertyEditor} implementation for {@link Company}
@@ -85,7 +82,7 @@ import static net.proteusframework.core.locale.TextSources.createText;
  * @since 6/27/16 1:04 PM
  */
 @I18NFile(
-    symbolPrefix = "com.lrsuccess.ldp.ui.coaching.CoachingEntityPropertyEditor",
+    symbolPrefix = "com.lrsuccess.ldp.ui.coaching.CompanyPropertyEditor",
     i18n = {
         @I18N(symbol = "Component Name", l10n = @L10N("Company Editor")),
         @I18N(symbol = "Title Copy Categories and Tags FMT", l10n = @L10N("Copy {0} Categories and Tags?")),
@@ -106,35 +103,27 @@ import static net.proteusframework.core.locale.TextSources.createText;
         pathInfoPattern = COMPANY_PATH_INFO
     )
 )
-public class CoachingEntityPropertyEditor extends MIWTPageElementModelPropertyEditor<Company>
+public class CompanyPropertyEditor extends MIWTPageElementModelPropertyEditor<Company>
 {
-    @Autowired
-    private EntityRetriever _er;
-    @Autowired
-    private UserDAO _userDAO;
-    @Autowired
-    private CompanyDAO _coachingEntityDAO;
-    @Autowired
-    private ProfileDAO _profileDAO;
-    @Autowired
-    private SelectedCompanyTermProvider _terms;
-    @Autowired
-    private ResourceCategoryLabelProvider _rclp;
-    @Autowired
-    private ResourceTagsLabelProvider _rtlp;
-    @Autowired
-    private LabelDAO _labelDAO;
-    @Autowired
-    private AppUtil _appUtil;
+    @Autowired private PrincipalDAO _principalDAO;
+    @Autowired private EntityRetriever _er;
+    @Autowired private UserDAO _userDAO;
+    @Autowired private CompanyDAO _companyDAO;
+    @Autowired private ProfileDAO _profileDAO;
+    @Autowired private SelectedCompanyTermProvider _terms;
+    @Autowired private ResourceCategoryLabelProvider _rclp;
+    @Autowired private ResourceTagsLabelProvider _rtlp;
+    @Autowired private LabelDAO _labelDAO;
+    @Autowired private AppUtil _appUtil;
 
     private Company _saved;
 
     /**
      * Instantiates a new company property editor.
      */
-    public CoachingEntityPropertyEditor()
+    public CompanyPropertyEditor()
     {
-        super(new CoachingEntityValueEditor());
+        super(new CompanyValueEditor());
         setName(COMPONENT_NAME());
         addCategory(CmsCategory.ClientBackend);
         addClassName("company-editor");
@@ -142,9 +131,9 @@ public class CoachingEntityPropertyEditor extends MIWTPageElementModelPropertyEd
     }
 
     @Override
-    public CoachingEntityValueEditor getValueEditor()
+    public CompanyValueEditor getValueEditor()
     {
-        return (CoachingEntityValueEditor)super.getValueEditor();
+        return (CompanyValueEditor)super.getValueEditor();
     }
 
     /**
@@ -174,51 +163,45 @@ public class CoachingEntityPropertyEditor extends MIWTPageElementModelPropertyEd
 
         final ReflectiveAction saveAction = CommonActions.SAVE.defaultAction();
         saveAction.setActionListener(ev -> {
-            if(persist(coaching -> {
-                final CoachingEntityValueEditor editor = getValueEditor();
-                assert coaching != null : "Company should not be null if you are persisting!";
-                setProfileTypesIfNeeded(coaching);
+            if(persist(company -> {
+                final CompanyValueEditor editor = getValueEditor();
+                assert company != null : "Company should not be null if you are persisting!";
+                setProfileTypesIfNeeded(company);
 
-                if(coaching.getName() instanceof TransientLocalizedObjectKey)
-                {
-                    final Repository repository = _er.reattachIfNecessary(coaching.getRepository());
-                    final TransientLocalizedObjectKey tlok = new TransientLocalizedObjectKey(
-                        repository.getName(), ((TransientLocalizedObjectKey)coaching.getName()).getText());
-                    repository.setName(tlok);
-                    coaching.setRepository(repository);
-                }
-                if(_coachingEntityDAO.isTransient(coaching) || coaching.getHostname().getDomain() == null)
+                company.getRepository().setName(_appUtil.copyLocalizedObjectKey(company.getName()));
+
+                if(_companyDAO.isTransient(company) || company.getHostname().getDomain() == null)
                 {
                     final AuthenticationDomain authDomain = new AuthenticationDomain();
-                    authDomain.setDomainName(coaching.getHostname().getName());
-                    coaching.getHostname().setDomain(authDomain);
-                    coaching.getHostname().setDestination(HostnameDestination.welcome_page);
-                    coaching.getHostname().setPageTitleAffix(LocalizedObjectKey.copyLocalizedObjectKey(
-                        getLocaleContext().getLocaleSource(), coaching.getName()));
-                    coaching.getHostname().setPageTitleAffixOption(PageTitleAffixOption.Prefix);
+                    authDomain.setDomainName(company.getHostname().getName());
+                    company.getHostname().setDomain(authDomain);
+                    company.getHostname().setDestination(HostnameDestination.welcome_page);
+                    company.getHostname().setPageTitleAffix(LocalizedObjectKey.copyLocalizedObjectKey(
+                        getLocaleContext().getLocaleSource(), company.getName()));
+                    company.getHostname().setPageTitleAffixOption(PageTitleAffixOption.Prefix);
                     final CmsSite site = _appUtil.getSite();
-                    coaching.getHostname().setSite(site);
-                    coaching.getHostname().setSslOption(SiteSSLOption.no_influence);
-                    coaching.getHostname().setWelcomePage(site.getDefaultHostname().getWelcomePage());
+                    company.getHostname().setSite(site);
+                    company.getHostname().setSslOption(SiteSSLOption.no_influence);
+                    company.getHostname().setWelcomePage(site.getDefaultHostname().getWelcomePage());
                 }
 
-                if(StringFactory.isEmptyString(coaching.getProgrammaticIdentifier()))
+                if(StringFactory.isEmptyString(company.getProgrammaticIdentifier()))
                 {
-                    coaching.setProgrammaticIdentifier(GloballyUniqueStringGenerator.getUniqueString());
+                    company.setProgrammaticIdentifier(GloballyUniqueStringGenerator.getUniqueString());
                 }
 
-                coaching = _coachingEntityDAO.mergeCompany(coaching);
+                company = _companyDAO.mergeCompany(company);
 
                 if(editor.getWebLogoEditor().getModificationState().isModified())
                 {
-                    coaching = _coachingEntityDAO.saveCompanyImage(coaching, editor.getWebLogoEditor().commitValue());
+                    company = _companyDAO.saveCompanyImage(company, editor.getWebLogoEditor().commitValue());
                 }
                 if(editor.getEmailLogoEditor().getModificationState().isModified())
                 {
-                    coaching = _coachingEntityDAO.saveCompanyEmailLogo(coaching, editor.getEmailLogoEditor().commitValue());
+                    company = _companyDAO.saveCompanyEmailLogo(company, editor.getEmailLogoEditor().commitValue());
                 }
-                _coachingEntityDAO.updateAdminsForCompany(coaching);
-                setSaved(coaching);
+                _companyDAO.updateAdminsForCompany(company);
+                setSaved(company);
 
                 return Boolean.TRUE;
             }))
@@ -251,17 +234,17 @@ public class CoachingEntityPropertyEditor extends MIWTPageElementModelPropertyEd
 
         final boolean isNew = !Optional.ofNullable(getValueEditor().getValue())
             .filter(ce -> ce.getId() != null && ce.getId() > 0).isPresent();
-        final TextSource editCoaching = ConcatTextSource.create(
+        final TextSource editCompany = ConcatTextSource.create(
             isNew ? CommonButtonText.NEW : CommonButtonText.EDIT,
             _terms.company()).withSpaceSeparator();
-        final TextSource coachingName = Optional.ofNullable(getValueEditor().getValue())
+        final TextSource companyName = Optional.ofNullable(getValueEditor().getValue())
             .filter(ce -> ce.getId() != null && ce.getId() > 0)
             .map(Company::getName)
             .map(name -> (TextSource)name)
             .orElse(CommonButtonText.NEW);
         moveToTop(of("text", new Label(isNew
-                ? editCoaching
-                : ConcatTextSource.create(editCoaching, coachingName).withSeparator(": "))
+                ? editCompany
+                : ConcatTextSource.create(editCompany, companyName).withSeparator(": "))
             .withHTMLElement(HTMLElement.h1)));
     }
 
@@ -303,7 +286,7 @@ public class CoachingEntityPropertyEditor extends MIWTPageElementModelPropertyEd
 
             saved.setResourceCategories(rcld);
             saved.setResourceTags(rtld);
-            setSaved(_coachingEntityDAO.mergeCompany(saved));
+            setSaved(_companyDAO.mergeCompany(saved));
             dlg.close();
             finalAction.actionPerformed(ev);
         });
@@ -319,7 +302,7 @@ public class CoachingEntityPropertyEditor extends MIWTPageElementModelPropertyEd
             _labelDAO.saveLabelDomain(rtld);
             saved.setResourceCategories(rcld);
             saved.setResourceTags(rtld);
-            setSaved(_coachingEntityDAO.mergeCompany(saved));
+            setSaved(_companyDAO.mergeCompany(saved));
             dlg.close();
             finalAction.actionPerformed(ev);
         });
@@ -344,23 +327,26 @@ public class CoachingEntityPropertyEditor extends MIWTPageElementModelPropertyEd
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void setProfileTypesIfNeeded(Company coaching)
+    private void setProfileTypesIfNeeded(Company company)
     {
-        if(coaching.getProfileType() == null
-           || coaching.getProfileType().getId() == null
-           || coaching.getProfileType().getId() == 0)
+        if(company.getProfileType() == null
+           || company.getProfileType().getId() == null
+           || company.getProfileType().getId() == 0)
         {
-            coaching.setProfileType(_profileDAO.mergeProfileType(_coachingEntityDAO.createCompanyProfileType(null)));
+            company.setProfileType(_profileDAO.mergeProfileType(_companyDAO.createCompanyProfileType(null)));
         }
     }
 
     @SuppressWarnings("unused") //Used by ApplicationFunction
     void configure(ParsedRequest request)
     {
-        final User currentUser = _userDAO.getAssertedCurrentUser();
-        if(!AppUtil.userHasAdminRole(currentUser))
+        final User currentUser = _userDAO.getCurrentUser();
+        final Principal currentPrincipal = _principalDAO.getCurrentPrincipal();
+        if(currentPrincipal == null
+           || !Optional.ofNullable(currentUser).map(AppUtil::userHasAdminRole).orElse(AppUtil.userHasAdminRole(currentPrincipal)))
             throw new IllegalArgumentException(String.format("User %s does not have the correct role to view this page",
-                currentUser.getId()));
+                Functions.orElseFlatMap(Optional.ofNullable(currentUser).map(User::getId),
+                    () -> Optional.ofNullable(currentPrincipal).map(Principal::getId).map(Long::intValue)).orElse(0)));
 
         final Company val = request.getPropertyValue(COMPANY);
         if(val == null)

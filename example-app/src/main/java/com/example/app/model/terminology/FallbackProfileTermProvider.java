@@ -14,6 +14,10 @@ package com.example.app.model.terminology;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.annotation.Nullable;
+
+import java.util.Optional;
+
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.core.locale.TextSource;
 import net.proteusframework.core.locale.TransientLocalizedObjectKey;
@@ -43,7 +47,7 @@ public class FallbackProfileTermProvider implements ProfileTermProvider
      *
      * @param profileTermProvider the profile term provider.
      */
-    public FallbackProfileTermProvider(ProfileTermProvider profileTermProvider)
+    public FallbackProfileTermProvider(@Nullable ProfileTermProvider profileTermProvider)
     {
         _profileTermProvider = profileTermProvider;
     }
@@ -51,14 +55,14 @@ public class FallbackProfileTermProvider implements ProfileTermProvider
     @Override
     public TextSource company()
     {
-        return isBlank(getProfileTermProvider().company())
+        return isBlank(Optional.ofNullable(getProfileTermProvider()).map(ProfileTermProvider::company).orElse(null))
             ? _defaultProfileTermProvider.company() : getProfileTermProvider().company();
     }
 
     @Override
     public TextSource companies()
     {
-        return isBlank(getProfileTermProvider().companies())
+        return isBlank(Optional.ofNullable(getProfileTermProvider()).map(ProfileTermProvider::companies).orElse(null))
             ? _defaultProfileTermProvider.companies() : getProfileTermProvider().companies();
     }
 
@@ -67,6 +71,7 @@ public class FallbackProfileTermProvider implements ProfileTermProvider
      *
      * @return the profile term provider.
      */
+    @Nullable
     public ProfileTermProvider getProfileTermProvider()
     {
         return _entityRetriever.reattachIfNecessary(_profileTermProvider);

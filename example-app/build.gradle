@@ -22,7 +22,7 @@ buildscript {
 
 }
 repositories {
-    mavenLocal()
+//    mavenLocal()
     if(hasLocalRepo){ maven { url = local_repo } }
     maven {
         credentials {

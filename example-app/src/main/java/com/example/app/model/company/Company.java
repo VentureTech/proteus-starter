@@ -13,6 +13,7 @@ package com.example.app.model.company;
 
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
+import com.example.app.model.client.Location;
 import com.example.app.model.profile.Profile;
 import com.example.app.model.terminology.ProfileTerms;
 import com.example.app.model.user.User;
@@ -47,7 +48,6 @@ import net.proteusframework.cms.CmsHostname;
 import net.proteusframework.cms.label.LabelDomain;
 import net.proteusframework.cms.label.LabelDomainProvider;
 import net.proteusframework.data.filesystem.FileEntity;
-import net.proteusframework.users.model.Contact;
 
 /**
  * An entity that represents a person or organization within the leadership development platform that facilitates coaching and
@@ -67,10 +67,6 @@ public class Company extends Profile
 
     /** The database table name */
     public static final String TABLE_NAME = "Company";
-    /** The database column for property: contact */
-    public static final String CONTACT_COLUMN = "contact_id";
-    /** The property: contact */
-    public static final String CONTACT_PROP = "contact";
     /** The database column and property: programmaticName */
     public static final String PROGRAMMATIC_IDENTIFIER_COLUMN_PROP = "programmaticIdentifier";
     /** THe database join table for Company to User */
@@ -85,6 +81,14 @@ public class Company extends Profile
     public static final String FACEBOOK_LINK_COLUMN_PROP = "facebookLink";
     /** the database column name and property: googlePlusLink */
     public static final String GOOGLEPLUS_LINK_COLUMN_PROP = "googlePlusLink";
+    /** The property: locations */
+    public static final String LOCATIONS_PROP = "locations";
+    /** Joni Column for relationship between Location and Company */
+    public static final String LOCATIONS_JOIN_COLUMN = "location_id";
+    /** Join table for relationship between Location and Company */
+    public static final String LOCATIONS_JOIN_TABLE = TABLE_NAME + '_' + Location.TABLE_NAME;
+    /** The property: primaryLocation */
+    public static final String PRIMARY_LOCATION_PROP = "primaryLocation";
     /** the database column name for the property: emailLogo */
     public static final String EMAIL_LOGO_COLUMN = "emaillogo_id";
     /** the database column name for the property: emailLogo */
@@ -117,7 +121,8 @@ public class Company extends Profile
     private String _twitterLink;
     private String _facebookLink;
     private String _googlePlusLink;
-    private Contact _contact = new Contact();
+    private List<Location> _locations = new ArrayList<>();
+    private Location _primaryLocation;
     private String _programmaticIdentifier;
     private List<User> _users = new ArrayList<>();
     private CompanyStatus _status = CompanyStatus.Inactive;
@@ -131,32 +136,7 @@ public class Company extends Profile
      */
     public Company()
     {
-    }
-
-    /**
-     * Get this Company's contact info
-     *
-     * @return the contact info
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = CONTACT_COLUMN)
-    @Cascade(CascadeType.ALL)
-    @Nonnull
-    @NotNull
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    public Contact getContact()
-    {
-        return _contact;
-    }
-
-    /**
-     * Set this Company's contact info
-     *
-     * @param contact the contact info
-     */
-    public void setContact(@Nonnull Contact contact)
-    {
-        _contact = contact;
+        super();
     }
 
     /**
@@ -276,6 +256,7 @@ public class Company extends Profile
      */
     @Column(name = WEBSITE_LINK_PROP)
     @URL
+    @Nullable
     public String getWebsiteLink()
     {
         return _websiteLink;
@@ -286,7 +267,7 @@ public class Company extends Profile
      *
      * @param websiteLink the website link
      */
-    public void setWebsiteLink(String websiteLink)
+    public void setWebsiteLink(@Nullable String websiteLink)
     {
         _websiteLink = websiteLink;
     }
@@ -298,6 +279,7 @@ public class Company extends Profile
      */
     @Column(name = LINKEDIN_LINK_COLUMN_PROP)
     @URL
+    @Nullable
     public String getLinkedInLink()
     {
         return _linkedInLink;
@@ -320,6 +302,7 @@ public class Company extends Profile
      */
     @Column(name = TWITTER_LINK_COLUMN_PROP)
     @URL
+    @Nullable
     public String getTwitterLink()
     {
         return _twitterLink;
@@ -342,6 +325,7 @@ public class Company extends Profile
      */
     @Column(name = FACEBOOK_LINK_COLUMN_PROP)
     @URL
+    @Nullable
     public String getFacebookLink()
     {
         return _facebookLink;
@@ -364,6 +348,7 @@ public class Company extends Profile
      */
     @Column(name = GOOGLEPLUS_LINK_COLUMN_PROP)
     @URL
+    @Nullable
     public String getGooglePlusLink()
     {
         return _googlePlusLink;
@@ -377,6 +362,56 @@ public class Company extends Profile
     public void setGooglePlusLink(@Nullable String googlePlusLink)
     {
         _googlePlusLink = googlePlusLink;
+    }
+
+    /**
+     * Gets locations.
+     *
+     * @return the locations
+     */
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = LOCATIONS_JOIN_TABLE, schema = ProjectConfig.PROJECT_SCHEMA,
+        joinColumns = @JoinColumn(name = ID_COLUMN),
+        inverseJoinColumns = @JoinColumn(name = LOCATIONS_JOIN_COLUMN))
+    @Cascade(CascadeType.ALL)
+    @Nonnull
+    public List<Location> getLocations()
+    {
+        return _locations;
+    }
+
+    /**
+     * Sets locations.
+     *
+     * @param locations the locations
+     */
+    public void setLocations(@Nonnull List<Location> locations)
+    {
+        _locations = locations;
+    }
+
+    /**
+     * Gets primary location.
+     *
+     * @return the primary location
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = LOCATIONS_JOIN_COLUMN)
+    @Cascade(CascadeType.ALL)
+    @Nullable
+    public Location getPrimaryLocation()
+    {
+        return _primaryLocation;
+    }
+
+    /**
+     * Sets primary location.
+     *
+     * @param primaryLocation the primary location
+     */
+    public void setPrimaryLocation(@Nullable Location primaryLocation)
+    {
+        _primaryLocation = primaryLocation;
     }
 
     /**

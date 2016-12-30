@@ -17,6 +17,7 @@ import com.example.app.model.profile.MembershipTypeInfo;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.support.AppUtil;
+import com.example.app.support.Functions;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
 import com.example.app.ui.UIPreferences;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelContainer;
@@ -51,10 +53,10 @@ import net.proteusframework.ui.miwt.component.TabItemDisplay;
 import net.proteusframework.ui.miwt.component.composite.TabbedContainerImpl;
 import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
+import net.proteusframework.users.model.Principal;
+import net.proteusframework.users.model.dao.PrincipalDAO;
 
-import static com.example.app.ui.UIText.INFO;
-import static com.example.app.ui.UIText.MEMBERSHIPS;
-import static com.example.app.ui.UIText.RESOURCE;
+import static com.example.app.ui.UIText.*;
 import static com.example.app.ui.URLProperties.COMPANY;
 import static com.example.app.ui.URLProperties.COMPANY_PATH_INFO;
 import static com.example.app.ui.company.CompanyViewerComponentLOK.*;
@@ -90,16 +92,13 @@ public class CompanyViewerComponent extends MIWTPageElementModelContainer
 {
     private static final String SELECTED_TAB_PROP = "company-selected-tab-";
 
-    @Autowired
-    private EntityRetriever _er;
-    @Autowired
-    private UIPreferences _uiPreferences;
-    @Autowired
-    private UserDAO _userDAO;
-    @Autowired
-    private SelectedCompanyTermProvider _terms;
+    @Autowired private PrincipalDAO _principalDAO;
+    @Autowired private EntityRetriever _er;
+    @Autowired private UIPreferences _uiPreferences;
+    @Autowired private UserDAO _userDAO;
+    @Autowired private SelectedCompanyTermProvider _terms;
 
-    private Company _coaching;
+    private Company _company;
 
     /**
      * Instantiates a new company viewer component.
@@ -113,16 +112,16 @@ public class CompanyViewerComponent extends MIWTPageElementModelContainer
         setHTMLElement(HTMLElement.section);
     }
 
-    private Company getCoaching()
+    private Company getCompany()
     {
-        return _er.reattachIfNecessary(_coaching);
+        return _er.reattachIfNecessary(_company);
     }
 
     private String getSelectedTabProp()
     {
-        return SELECTED_TAB_PROP + (getCoaching() != null
-            ? getCoaching().getId() != null
-            ? getCoaching().getId()
+        return SELECTED_TAB_PROP + (getCompany() != null
+            ? getCompany().getId() != null
+            ? getCompany().getId()
             : 0 : 0);
     }
 
@@ -158,19 +157,19 @@ public class CompanyViewerComponent extends MIWTPageElementModelContainer
         };
         resourceTagsCatsTID.addClassName("resource-tags-cats-management");
 
-        CoachingEntityPropertyViewer propertyViewer = new CoachingEntityPropertyViewer().configure(getCoaching());
+        CompanyPropertyViewer propertyViewer = new CompanyPropertyViewer().configure(getCompany());
         propertyViewer.addComponentClosedListener(componentEvent -> queueClose());
 
-        ProfileTypeMembershipTypeManagement roleMgt = new ProfileTypeMembershipTypeManagement(getCoaching().getProfileType());
+        ProfileTypeMembershipTypeManagement roleMgt = new ProfileTypeMembershipTypeManagement(getCompany().getProfileType());
         roleMgt.setCoreTypeProgIds(((Supplier<List<String>>)() -> {
             List<String> coreProgIds = new ArrayList<>();
             coreProgIds.add(MembershipTypeInfo.SystemAdmin.getProgId());
             return coreProgIds;
         }).get());
 
-        assert getCoaching().getResourceCategories() != null;
+        assert getCompany().getResourceCategories() != null;
         LabelDomainLabelManagement categoriesManagement = new LabelDomainLabelManagement(
-            getCoaching().getResourceCategories(), null){
+            getCompany().getResourceCategories(), null){
             @Override
             protected TextSource getLabel()
             {
@@ -178,9 +177,9 @@ public class CompanyViewerComponent extends MIWTPageElementModelContainer
             }
         };
         categoriesManagement.addClassName("categories-management");
-        assert getCoaching().getResourceTags() != null;
+        assert getCompany().getResourceTags() != null;
         LabelDomainLabelManagement tagsManagement = new LabelDomainLabelManagement(
-            getCoaching().getResourceTags(), null){
+            getCompany().getResourceTags(), null){
             @Override
             protected TextSource getLabel()
             {
@@ -199,8 +198,8 @@ public class CompanyViewerComponent extends MIWTPageElementModelContainer
         tabs.getSelectionModel().addListSelectionListener(e ->
             _uiPreferences.setStoredInteger(getSelectedTabProp(), e.getFirstIndex()));
 
-        TextSource viewCoaching = ConcatTextSource.create(CommonButtonText.VIEW, _terms.company()).withSpaceSeparator();
-        add(of("text", new Label(ConcatTextSource.create(viewCoaching, _coaching.getName()).withSeparator(": "))
+        TextSource viewCompany = ConcatTextSource.create(CommonButtonText.VIEW, _terms.company()).withSpaceSeparator();
+        add(of("text", new Label(ConcatTextSource.create(viewCompany, _company.getName()).withSeparator(": "))
             .withHTMLElement(HTMLElement.h1)));
         add(of("actions nav-actions", new PushButton(backAction)));
         add(tabs);
@@ -209,14 +208,17 @@ public class CompanyViewerComponent extends MIWTPageElementModelContainer
     @SuppressWarnings("unused") //Used by ApplicationFunction
     void configure(ParsedRequest request)
     {
-        final User currentUser = _userDAO.getAssertedCurrentUser();
-        if(!AppUtil.userHasAdminRole(currentUser))
+        final User currentUser = _userDAO.getCurrentUser();
+        final Principal currentPrincipal = _principalDAO.getCurrentPrincipal();
+        if(currentPrincipal == null
+           || !Optional.ofNullable(currentUser).map(AppUtil::userHasAdminRole).orElse(AppUtil.userHasAdminRole(currentPrincipal)))
             throw new IllegalArgumentException(String.format("User %s does not have the correct role to view this page",
-                currentUser.getId()));
+                Functions.orElseFlatMap(Optional.ofNullable(currentUser).map(User::getId),
+                    () -> Optional.ofNullable(currentPrincipal).map(Principal::getId).map(Long::intValue)).orElse(0)));
 
-        _coaching = request.getPropertyValue(COMPANY);
+        _company = request.getPropertyValue(COMPANY);
 
-        if(_coaching == null)
+        if(_company == null)
         {
             throw new IllegalArgumentException("Unable to determine Development Provider");
         }

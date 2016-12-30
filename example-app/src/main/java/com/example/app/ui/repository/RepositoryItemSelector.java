@@ -11,6 +11,7 @@
 
 package com.example.app.ui.repository;
 
+import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.profile.MembershipOperation;
 import com.example.app.model.repository.Repository;
 import com.example.app.model.repository.RepositoryDAO;
@@ -96,7 +97,7 @@ public abstract class RepositoryItemSelector<RI extends RepositoryItem> extends 
     @Autowired
     protected MembershipOperationProvider _mop;
     @Autowired
-    protected ProfileTermProvider _terms;
+    protected SelectedCompanyTermProvider _terms;
 
     private final List<Repository> _repositories = new ArrayList<>();
     private RepositoryItemSelectorMode _mode = LONG;

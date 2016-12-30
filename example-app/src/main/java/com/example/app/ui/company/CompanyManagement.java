@@ -11,13 +11,14 @@
 
 package com.example.app.ui.company;
 
+import com.example.app.model.client.Location;
 import com.example.app.model.company.Company;
 import com.example.app.model.company.CompanyDAO;
 import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.support.AppUtil;
-import com.example.app.support.ContactUtil;
+import com.example.app.support.Functions;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
 import com.example.app.ui.URLProperties;
@@ -25,6 +26,7 @@ import com.google.common.base.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelContainer;
 
@@ -66,18 +68,15 @@ import net.proteusframework.ui.search.SearchUIOperation;
 import net.proteusframework.ui.search.SearchUIOperationContext;
 import net.proteusframework.ui.search.SearchUIOperationHandler;
 import net.proteusframework.ui.search.SimpleConstraint;
-import net.proteusframework.users.model.ContactDataCategory;
 import net.proteusframework.users.model.PhoneNumber;
+import net.proteusframework.users.model.Principal;
+import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static com.example.app.model.company.CompanyStatus.Active;
 import static com.example.app.model.company.CompanyStatus.Inactive;
-import static com.example.app.ui.UIText.SEARCH_MODEL_NAME_FMT;
-import static com.example.app.ui.UIText.SEARCH_SUPPLIER_DESCRIPTION_FMT;
-import static com.example.app.ui.UIText.SEARCH_SUPPLIER_NAME_FMT;
-import static com.example.app.ui.company.CompanyManagementLOK.ACTIVATE_BUTTON;
-import static com.example.app.ui.company.CompanyManagementLOK.DEACTIVATE_BUTTON;
-import static com.example.app.ui.company.CompanyManagementLOK.MESSAGE_ARE_YOU_SURE_DEACTIVATE;
-import static com.example.app.ui.company.CoachingEntityValueEditorLOK.LABEL_WEBSITE;
+import static com.example.app.ui.UIText.*;
+import static com.example.app.ui.company.CompanyManagementLOK.*;
+import static com.example.app.ui.company.CompanyValueEditorLOK.LABEL_WEBSITE;
 import static net.proteusframework.core.locale.TextSources.EMPTY;
 
 /**
@@ -153,13 +152,10 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
             return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         }
     }
-
-    @Autowired
-    private UserDAO _userDAO;
-    @Autowired
-    private CompanyDAO _companyDAO;
-    @Autowired
-    private SelectedCompanyTermProvider _terms;
+    @Autowired private PrincipalDAO _principalDAO;
+    @Autowired private UserDAO _userDAO;
+    @Autowired private CompanyDAO _companyDAO;
+    @Autowired private SelectedCompanyTermProvider _terms;
 
     /**
      * Instantiates a new company management.
@@ -294,14 +290,16 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
             .withName("name")
             .withTableColumn(new PropertyColumn(Company.class, Company.NAME_COLUMN_PROP)
                 .withColumnName(CommonColumnText.NAME))
-            .withOrderBy(new QLOrderByImpl("coachingName")));
+            .withOrderBy(new QLOrderByImpl("companyName")));
 
         searchModel.getResultColumns().add(new SearchResultColumnImpl()
             .withName("address")
             .withTableColumn(new FixedValueColumn().withColumnName(CommonColumnText.ADDRESS))
             .withTableCellRenderer(new CustomCellRenderer(EMPTY, input -> {
                 Company company = (Company) input;
-                return ContactUtil.getAddress(company.getContact(), ContactDataCategory.values())
+                return Optional.ofNullable(company)
+                    .map(Company::getPrimaryLocation)
+                    .map(Location::getAddress)
                     .map(a -> a.getAddressLine(1)).orElse("");
             })));
 
@@ -310,7 +308,9 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
             .withTableColumn(new FixedValueColumn().withColumnName(LABEL_WEBSITE()))
             .withTableCellRenderer(new CustomCellRenderer(EMPTY, input -> {
                 Company company = (Company) input;
-                return company.getWebsiteLink();
+                return Optional.ofNullable(company)
+                    .map(Company::getWebsiteLink)
+                    .orElse("");
             })));
 
         searchModel.getResultColumns().add(new SearchResultColumnImpl()
@@ -318,7 +318,9 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
             .withTableColumn(new FixedValueColumn().withColumnName(CommonColumnText.PHONE))
             .withTableCellRenderer(new CustomCellRenderer(EMPTY, input -> {
                 Company company = (Company)input;
-                return ContactUtil.getPhoneNumber(company.getContact(), ContactDataCategory.values())
+                return Optional.ofNullable(company)
+                    .map(Company::getPrimaryLocation)
+                    .map(Location::getPhoneNumber)
                     .map(PhoneNumber::toExternalForm).orElse("");
             })));
 
@@ -330,7 +332,7 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
         return () -> {
             QLBuilder builder = new QLBuilderImpl(Company.class, "ce");
             builder.setProjection("distinct " + builder.getAlias() + ", getText(" + builder.getAlias() + '.' + Company
-                .NAME_COLUMN_PROP + ") as coachingName");
+                .NAME_COLUMN_PROP + ") as companyName");
             return builder;
         };
     }
@@ -338,9 +340,12 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
     @SuppressWarnings("unused") //Used by ApplicationFunction
     void configure(ParsedRequest parsedRequest)
     {
-        final User currentUser = _userDAO.getAssertedCurrentUser();
-        if(!AppUtil.userHasAdminRole(currentUser))
+        final User currentUser = _userDAO.getCurrentUser();
+        final Principal currentPrincipal = _principalDAO.getCurrentPrincipal();
+        if(currentPrincipal == null
+           || !Optional.ofNullable(currentUser).map(AppUtil::userHasAdminRole).orElse(AppUtil.userHasAdminRole(currentPrincipal)))
             throw new IllegalArgumentException(String.format("User %s does not have the correct role to view this page",
-                currentUser.getId()));
+                Functions.orElseFlatMap(Optional.ofNullable(currentUser).map(User::getId),
+                    () -> Optional.ofNullable(currentPrincipal).map(Principal::getId).map(Long::intValue)).orElse(0)));
     }
 }

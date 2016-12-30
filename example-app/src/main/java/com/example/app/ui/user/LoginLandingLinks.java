@@ -14,11 +14,10 @@ package com.example.app.ui.user;
 import com.example.app.model.profile.Membership;
 import com.example.app.model.profile.MembershipOperation;
 import com.example.app.model.profile.ProfileDAO;
-import com.example.app.model.terminology.ProfileTermProvider;
+import com.example.app.model.terminology.DefaultProfileTermProvider;
 import com.example.app.model.user.User;
 import com.example.app.service.MembershipOperationProvider;
 import com.example.app.support.AppUtil;
-
 import com.example.app.ui.ApplicationFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -71,7 +70,7 @@ public enum LoginLandingLinks
         @Autowired
         MembershipOperationProvider mop;
         @Autowired
-        ProfileTermProvider terms;
+        DefaultProfileTermProvider terms;
         @Autowired
         ApplicationRegistry applicationRegistry;
     }

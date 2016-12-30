@@ -11,11 +11,14 @@
 
 package com.example.app.ui.company;
 
+import com.example.app.model.client.Location;
 import com.example.app.model.company.Company;
 import com.example.app.support.AppUtil;
 import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import java.util.Optional;
 
 import com.i2rd.hr.miwt.AddressCellRenderer;
 
@@ -27,12 +30,9 @@ import net.proteusframework.ui.miwt.component.ImageComponent;
 import net.proteusframework.ui.miwt.component.Label;
 import net.proteusframework.ui.miwt.util.CommonColumnText;
 import net.proteusframework.users.model.Address;
-import net.proteusframework.users.model.ContactDataCategory;
 import net.proteusframework.users.model.PhoneNumber;
 
-import static com.example.app.support.ContactUtil.getAddress;
-import static com.example.app.support.ContactUtil.getPhoneNumber;
-import static com.example.app.ui.company.CoachingEntityValueEditorLOK.*;
+import static com.example.app.ui.company.CompanyValueEditorLOK.*;
 import static net.proteusframework.core.locale.TextSources.createText;
 
 /**
@@ -42,44 +42,44 @@ import static net.proteusframework.core.locale.TextSources.createText;
  * @since 6/28/16 10:15 AM
  */
 @Configurable
-public class CoachingEntityValueViewer extends Container
+public class CompanyValueViewer extends Container
 {
     @Autowired
     private EntityRetriever _er;
     @Autowired
     private AppUtil _labsUtil;
 
-    private Company _coaching;
+    private Company _company;
 
     /**
      * Instantiates a new company value viewer.
      * <br>
-     *     NOTE: Must set Company with {@link #setCoaching(Company)} before initialization.
+     *     NOTE: Must set Company with {@link #setCompany(Company)} before initialization.
      */
-    public CoachingEntityValueViewer()
+    public CompanyValueViewer()
     {
         super();
     }
 
     /**
-     * Gets coaching.
+     * Gets company.
      *
-     * @return the coaching
+     * @return the company
      */
-    public Company getCoaching()
+    public Company getCompany()
     {
-        Preconditions.checkNotNull(_coaching, "Company has not been set, so it cannot be retrieved.");
-        return _er.reattachIfNecessary(_coaching);
+        Preconditions.checkNotNull(_company, "Company has not been set, so it cannot be retrieved.");
+        return _er.reattachIfNecessary(_company);
     }
 
     /**
-     * Sets coaching.
+     * Sets company.
      *
-     * @param coaching the coaching
+     * @param company the company
      */
-    public void setCoaching(Company coaching)
+    public void setCompany(Company company)
     {
-        _coaching = coaching;
+        _company = company;
 
         if(isInited())
         {
@@ -99,34 +99,37 @@ public class CoachingEntityValueViewer extends Container
     {
         removeAllComponents();
 
-        final ImageComponent logoField = new ImageComponent(getCoaching().getImage() != null
-            ? new Image(getCoaching().getImage())
+        final ImageComponent logoField = new ImageComponent(getCompany().getImage() != null
+            ? new Image(getCompany().getImage())
             : new Image(_labsUtil.getDefaultResourceImage()));
         logoField.setWidth(new PixelMetric(200));
-        final ImageComponent emailLogoField = new ImageComponent(getCoaching().getEmailLogo() != null
-            ? new Image(getCoaching().getEmailLogo())
+        final ImageComponent emailLogoField = new ImageComponent(getCompany().getEmailLogo() != null
+            ? new Image(getCompany().getEmailLogo())
             : new Image(_labsUtil.getDefaultResourceImage()));
         emailLogoField.setWidth(new PixelMetric(200));
 
-        final Container nameCon = of("prop name", CommonColumnText.NAME, new Label(getCoaching().getName()));
+        final Container nameCon = of("prop name", CommonColumnText.NAME, new Label(getCompany().getName()));
 
-        final Address address = getAddress(getCoaching().getContact(), ContactDataCategory.values())
+        final Address address = Optional.ofNullable(getCompany().getPrimaryLocation())
+            .map(Location::getAddress)
             .orElse(new Address());
         final Container addressCon = of("prop address", CommonColumnText.ADDRESS, new AddressCellRenderer(address));
 
-        final Container phoneCon = of("prop phone", CommonColumnText.PHONE, new Label(createText( getPhoneNumber(
-            getCoaching().getContact(), ContactDataCategory.values()).map(PhoneNumber::toExternalForm).orElse(""))));
+        final String phoneNumber = Optional.ofNullable(getCompany().getPrimaryLocation())
+            .map(Location::getPhoneNumber)
+            .map(PhoneNumber::toExternalForm).orElse("");
+        final Container phoneCon = of("prop phone", CommonColumnText.PHONE, new Label(createText(phoneNumber)));
 
-        final Container websiteCon = of("prop website", LABEL_WEBSITE(), new Label(createText(getCoaching().getWebsiteLink())));
+        final Container websiteCon = of("prop website", LABEL_WEBSITE(), new Label(createText(getCompany().getWebsiteLink())));
 
         final Container hostnameCon = of("prop hostname", LABEL_SUB_DOMAIN(),
-            new Label(createText(getCoaching().getHostname().getName())));
+            new Label(createText(getCompany().getHostname().getName())));
 
-        final Container linkedInCon = of("prop linkedIn", LABEL_LINKEDIN(), new Label(createText(getCoaching().getLinkedInLink())));
+        final Container linkedInCon = of("prop linkedIn", LABEL_LINKEDIN(), new Label(createText(getCompany().getLinkedInLink())));
 
-        final Container twitterCon = of("prop twitter", LABEL_TWITTER(), new Label(createText(getCoaching().getTwitterLink())));
+        final Container twitterCon = of("prop twitter", LABEL_TWITTER(), new Label(createText(getCompany().getTwitterLink())));
 
-        final Container facebookCon = of("prop facebook", LABEL_FACEBOOK(), new Label(createText(getCoaching().getFacebookLink())));
+        final Container facebookCon = of("prop facebook", LABEL_FACEBOOK(), new Label(createText(getCompany().getFacebookLink())));
 
         add(of("logos",
             of("prop", LABEL_WEB_LOGO(), logoField),

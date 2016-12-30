@@ -47,24 +47,6 @@ public final class LocationDAO extends DAOHelper implements Serializable
     private transient ProfileTypeProvider _profileTypeProvider;
 
     /**
-     * Delete all Locations for a the specified companies.
-     *
-     * @param companies the companies
-     */
-    public void deleteAllLocations(final Collection<? extends Client> companies)
-    {
-        doInTransaction(session -> {
-            final String hql = "update " + Location.class.getSimpleName()
-                               + " set " + SoftDeleteEntity.SOFT_DELETE_COLUMN_PROP + " = true"
-                               + " where " + Location.COMPANY_PROP + " in :companies";
-
-            session.createQuery(hql)
-                .setParameterList("companies", companies)
-                .executeUpdate();
-        });
-    }
-
-    /**
      * Delete the given Locations from the database
      *
      * @param locations the locations to delete

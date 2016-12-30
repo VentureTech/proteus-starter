@@ -50,7 +50,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.TimeZone;
 import java.util.function.Consumer;
 
@@ -126,13 +125,13 @@ public class AppUtil implements Serializable
     private transient PrincipalDAO _principalDAO;
     @Autowired
     private transient CmsFrontendDAO _cmsFrontendDAO;
-    @Value("${frontend-access-role:}")
+    @Value("${frontend-access-role}")
     private String _frontEndRoleProgId;
-    @Value("${admin-access-role:}")
+    @Value("${admin-access-role}")
     private String _adminRoleProgId;
     @Value("${default_site_assignment}")
     private Long _defaultEmailTemplateSite;
-    @Value("${system.sender:}")
+    @Value("${system.sender}")
     private String _systemSender;
     @Autowired @Qualifier("localeSource")
     private LocaleSource _localeSource;
@@ -168,11 +167,13 @@ public class AppUtil implements Serializable
     @Contract("null->null;!null->!null")
     public TransientLocalizedObjectKey copyLocalizedObjectKey(@Nullable LocalizedObjectKey toCopy)
     {
-        if(LocalizedObjectKey.isNull(toCopy))
+        if(LocalizedObjectKey.isNull(toCopy) && !(toCopy instanceof TransientLocalizedObjectKey))
             return null;
         try
         {
-            TransientLocalizedObjectKey tlok = TransientLocalizedObjectKey.getTransientLocalizedObjectKey(_localeSource, toCopy);
+            TransientLocalizedObjectKey tlok = toCopy instanceof TransientLocalizedObjectKey
+                ? (TransientLocalizedObjectKey)toCopy
+                : TransientLocalizedObjectKey.getTransientLocalizedObjectKey(_localeSource, toCopy);
             if (tlok != null)
                 return new TransientLocalizedObjectKey(tlok.getText());
             else
@@ -685,8 +686,9 @@ public class AppUtil implements Serializable
      *
      * @param value the value.
      */
-    public static void initialize(ProfileType value)
+    public static void initialize(@Nullable ProfileType value)
     {
+        if(value == null) return;
         Hibernate.initialize(value);
         Hibernate.initialize(value.getMembershipTypeSet());
         value.getMembershipTypeSet().forEach(Hibernate::initialize);
@@ -933,6 +935,22 @@ public class AppUtil implements Serializable
         EntityRetriever er = AppUtil.autowire(EntityRetriever.class, EntityRetriever.RESOURCE_NAME);
 
         return principalDAO.getAllRoles(er.reattachIfNecessary(user).getPrincipal()).contains(appUtil.getAdminAccessRole());
+    }
+
+    /**
+     * User has admin role boolean.
+     *
+     * @param user the user
+     *
+     * @return the boolean
+     */
+    public static boolean userHasAdminRole(Principal user)
+    {
+        PrincipalDAO principalDAO = AppUtil.autowire(PrincipalDAO.class);
+        AppUtil appUtil = AppUtil.autowire(AppUtil.class);
+        EntityRetriever er = AppUtil.autowire(EntityRetriever.class, EntityRetriever.RESOURCE_NAME);
+
+        return principalDAO.getAllRoles(er.reattachIfNecessary(user)).contains(appUtil.getAdminAccessRole());
     }
 
     /**

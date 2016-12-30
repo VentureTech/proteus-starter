@@ -12,12 +12,11 @@
 package com.example.app.ui.user;
 
 
+import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.profile.Membership;
 import com.example.app.model.profile.MembershipOperation;
 import com.example.app.model.profile.MembershipType;
 import com.example.app.model.profile.ProfileType;
-import com.example.app.model.terminology.ProfileTermProvider;
-
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -111,7 +110,7 @@ class MembershipOperationsEditorUI extends Container
     private final History _history;
     private final List<MembershipOperation> _selectedOperations = new ArrayList<>();
     @Autowired
-    private ProfileTermProvider _terms;
+    private SelectedCompanyTermProvider _terms;
     private SearchUIImpl _searchUI;
 
     public MembershipOperationsEditorUI(@Nonnull Membership membership, @Nonnull History history)
