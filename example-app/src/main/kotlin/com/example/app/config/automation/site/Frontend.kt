@@ -44,7 +44,7 @@ open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
                         boxType = HEADER
                     }
                     box("Content") {
-                        htmlId = "com.example.app.config.automation.site.main"
+                        htmlId = "main"
                         defaultContentArea = page
                         boxType = MAIN
                     }
@@ -55,7 +55,8 @@ open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
                     }
                 }
                 content("Header", Text("Logo")) {
-                    htmlContent = """<h1 class="logo"><span>Capstone Mail Compliance</span></h1>"""
+                    htmlContent = """<h1 class="logo"><span>Capstone Mail Compliance</span>
+<img src="entropy/logo.png" alt="Logo" /></h1>"""
                     htmlId = "logo"
                 }
                 content("Footer", Text("Copyright Us")) {
@@ -70,11 +71,11 @@ open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
                 content("Footer", "Copyright Us")
             }
 
-            hostname("capmc-\${proteus.install.name}.venturetech.net", "Home") {
+            hostname("capmc.russ1-vdm.vipasuite.com", "Home") {
                 path = "/home"
                 template("Login")
                 content("Content", Text("Please Login")) {
-                    htmlContent = """<p>Please Login</p>"""
+                    htmlContent = """<p>Please Login</p><p><a href="/config/user">User Mgt</a></p>"""
                     htmlClass = "please-login"
                 }
             }

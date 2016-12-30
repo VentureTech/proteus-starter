@@ -17,6 +17,7 @@
 
     <bean class="experimental.cms.dsl.impl.CmsDSLShellCommands"/>
     <bean class="com.example.app.config.ProjectShellCommands"/>
+    <bean class="com.example.app.config.ShellCommandsUtil"/>
     <bean class="experimental.cms.dsl.impl.SiteDefinitionConverter"/>
     <bean class="experimental.cms.dsl.impl.CmsModelApplication"/>
 

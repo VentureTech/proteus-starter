@@ -19,13 +19,9 @@ import net.proteusframework.core.StringFactory.trimSlashes
 import net.proteusframework.core.html.Element
 import net.proteusframework.core.html.EntityUtil
 import net.proteusframework.core.html.HTMLElement
-import net.proteusframework.core.xml.GenericParser
-import net.proteusframework.core.xml.TagListener
-import net.proteusframework.core.xml.TagListenerConfiguration
-import net.proteusframework.core.xml.XMLUtil
+import net.proteusframework.core.xml.*
 import net.proteusframework.ui.miwt.component.Component
 import org.apache.logging.log4j.LogManager
-import org.ccil.cowan.tagsoup.jaxp.SAXParserImpl
 import org.xml.sax.Attributes
 import java.io.IOException
 import java.io.PrintWriter
@@ -92,6 +88,8 @@ internal class LinkTagConverter(val helper: ContentHelper) : TagListener<TagList
         }
         XMLUtil.writeAttributes(writer, attributes, convertedAttributes.keys)
         if (HTMLElement.valueOf(ename).kind() == Element.Kind.VOID)
+            writer.append("/>")
+        else
             writer.append(">")
 
         return true
@@ -127,6 +125,7 @@ internal class LinkTagConverter(val helper: ContentHelper) : TagListener<TagList
 interface ContentHelper {
     companion object {
         val logger = LogManager.getLogger(ContentHelper::class.java)!!
+        const val PARSER_FAKE_ROOT = "parser_fake_root"
     }
 
     /**
@@ -145,20 +144,27 @@ interface ContentHelper {
     fun convertXHTML(html: String): String {
         val sw = StringWriter(html.length)
         val pw = PrintWriter(sw)
-        val parser = GenericParser(pw)
-        parser.isHtmlCompatible = false
+        val htmlParser = GenericParser(pw)
+        htmlParser.isHtmlCompatible = false
         val config = TagListenerConfiguration(pw)
+        val skipTagListener = SkipTagListener(PARSER_FAKE_ROOT)
+        skipTagListener.init(config)
         val linkTagConverter = LinkTagConverter(this)
         linkTagConverter.init(config)
+        htmlParser.setTagListeners(listOf(skipTagListener, linkTagConverter))
         try {
-            val tagSoupParser = SAXParserImpl.newInstance(emptyMap<Any, Any>())
-            XMLUtil.parseAndWrapException(tagSoupParser, parser, EntityUtil.escapeForXMLParsing(html),
+            val parser = XMLUtil.createParserAndWrapException(false, RuntimeException::class.java)
+            htmlParser.enableCommentOutput(parser)
+            val toParse = StringBuilder(html.length + 40).append('<').append(PARSER_FAKE_ROOT).append('>').append(html)
+                .append("</").append(PARSER_FAKE_ROOT).append('>').toString()
+            XMLUtil.parseAndWrapException(parser, htmlParser, EntityUtil.escapeForXMLParsing(toParse),
                 IOException::class.java)
             return sw.toString()
         } catch (e: IOException) {
             logger.warn("Unable to parse HTML.", e)
         } finally {
             linkTagConverter.destroy()
+            skipTagListener.destroy()
         }
         return html
     }

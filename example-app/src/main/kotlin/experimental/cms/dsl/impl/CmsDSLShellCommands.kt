@@ -13,6 +13,8 @@ package experimental.cms.dsl.impl
 
 import com.i2rd.cms.util.AbstractShellCommands
 import experimental.cms.dsl.SiteDefinition
+import net.proteusframework.core.hibernate.HibernateSessionHelper
+import net.proteusframework.core.lang.InternationalizedException
 import net.proteusframework.core.text.FriendlyDateFormat
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SchemaUtils.create
@@ -30,9 +32,11 @@ open class CmsDSLShellCommands : AbstractShellCommands() {
 
     @Autowired(required = false)
     lateinit var siteDefinitionList: List<SiteDefinition>
+    @Autowired
+    lateinit var modelApplication: CmsModelApplication
 
     @PostConstruct
-    fun postConstruct(){
+    fun postConstruct() {
         Database.connect(dataConfig.dataSource())
     }
 
@@ -48,15 +52,15 @@ open class CmsDSLShellCommands : AbstractShellCommands() {
         val list = sdMap.values.toList().sortedBy { it.definitionName }
 
         transaction {
-//            logger.addLogger(StdOutSqlLogger())
-            if(!SiteDefinitionRecord.exists())
+            //            logger.addLogger(StdOutSqlLogger())
+            if (!SiteDefinitionRecord.exists())
                 create(SiteDefinitionRecord)
             list.forEach { sd ->
                 val result = SiteDefinitionRecord
-                        .slice(SiteDefinitionRecord.version, SiteDefinitionRecord.modified)
-                        .select(SiteDefinitionRecord.name eq sd.definitionName)
-                        .limit(1)
-                if(result.empty()) {
+                    .slice(SiteDefinitionRecord.version, SiteDefinitionRecord.modified)
+                    .select(SiteDefinitionRecord.name eq sd.definitionName)
+                    .limit(1)
+                if (result.empty()) {
                     println("${sd.definitionName}(${sd.version}): Never Applied")
                 } else {
                     val row = result.iterator().next()
@@ -72,17 +76,31 @@ open class CmsDSLShellCommands : AbstractShellCommands() {
     @Suppress("IMPLICIT_CAST_TO_ANY")
     @CliCommand(value = "experimental cms dsl apply")
     fun apply(@CliOption(key = arrayOf("definition"), mandatory = true) siteDefinition: SiteDefinition) {
-        if(principalDAO.currentPrincipal == null) {
+        if (principalDAO.currentPrincipal == null) {
             shellLogger.warning("Please login first")
             return
         }
         transaction {
-            if(!SiteDefinitionRecord.exists())
+            if (!SiteDefinitionRecord.exists())
                 create(SiteDefinitionRecord)
+        }
 
+        try {
+            modelApplication.applyDefinition(siteDefinition)
+        } catch(e: InternationalizedException) {
+            sendNotification(e.createNotification())
+            cleanupSession()
+            throw e
+        }
+        catch(e: Throwable) {
+            cleanupSession()
+            throw e
+        }
+        cleanupSession()
+        transaction {
             val now = DateTime.now()
             val result = SiteDefinitionRecord.select(SiteDefinitionRecord.name eq siteDefinition.definitionName).limit(1)
-            if(result.empty()) {
+            if (result.empty()) {
                 SiteDefinitionRecord.insert {
                     it[name] = siteDefinition.definitionName
                     it[version] = siteDefinition.version
@@ -90,11 +108,20 @@ open class CmsDSLShellCommands : AbstractShellCommands() {
                     it[modified] = now
                 }
             } else {
-                SiteDefinitionRecord.update({SiteDefinitionRecord.id eq result.iterator().next()[SiteDefinitionRecord.id]}) {
+                SiteDefinitionRecord.update({ SiteDefinitionRecord.id eq result.iterator().next()[SiteDefinitionRecord.id] }) {
                     it[version] = siteDefinition.version
                     it[modified] = now
                 }
             }
+        }
+    }
+
+    private fun cleanupSession() {
+        try {
+            hibernateSessionHelper.session.clear()
+            HibernateSessionHelper.flushAndClearSession(hibernateSessionHelper.session)
+        } catch (d: Throwable) {
+            shellLogger.fine("Could not clear session.")
         }
     }
 

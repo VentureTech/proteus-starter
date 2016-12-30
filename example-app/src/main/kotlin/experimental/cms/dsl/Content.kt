@@ -14,10 +14,12 @@ package experimental.cms.dsl
 import com.i2rd.cms.bean.TextBean
 import com.i2rd.cms.bean.contentmodel.CmsModelDataSet
 import com.i2rd.cms.component.miwt.MIWTPageElementModel
+import com.i2rd.contentmodel.data.ModelDataDAO
 import com.i2rd.contentmodel.data.ModelDataXML
 import net.proteusframework.cms.PageElementModelImpl.StandardIdentifier
 import net.proteusframework.cms.component.ContentElement
 import net.proteusframework.cms.component.content.DefaultDataPurpose
+import net.proteusframework.core.xml.XMLUtil
 
 internal fun createContentIdPredicate(existingId: String): (Content) -> Boolean = { it.id == existingId }
 
@@ -32,6 +34,7 @@ interface Content : HTMLIdentifier, HTMLClass, ResourceCapable, PathCapable {
     val id: String
     var parent: Any?
     fun createInstance(helper: ContentHelper): ContentElement
+    fun isModified(helper: ContentHelper, contentElement: ContentElement): Boolean = false
 }
 
 class Text(id: String, var htmlContent: String = "")
@@ -39,9 +42,6 @@ class Text(id: String, var htmlContent: String = "")
 
     override fun createInstance(helper: ContentHelper): ContentElement {
         val textBean = TextBean()
-        textBean.name = id
-        textBean.cssName = htmlId
-        textBean.styleClass = htmlClass
         val dataSet = CmsModelDataSet()
         dataSet.contentElement = textBean
         val xhtml = ModelDataXML()
@@ -50,6 +50,16 @@ class Text(id: String, var htmlContent: String = "")
         dataSet.addModelData(xhtml)
         textBean.dataVersions.add(dataSet)
         return textBean
+    }
+
+    override fun isModified(helper: ContentHelper, contentElement: ContentElement): Boolean {
+        val toCheck = helper.convertXHTML(htmlContent)
+        val dataSet = contentElement.publishedData[helper.getCmsSite().primaryLocale]
+        val dataSetDAO = ModelDataDAO.getInstance(TextBean().contentModelDefinition)
+        if(dataSet == null || dataSet.modelData.isEmpty())
+            return true
+        val modelData = dataSetDAO.getData(dataSet, DefaultDataPurpose.rendering.name) as ModelDataXML
+        return XMLUtil.getIdentity("<div>${modelData.value}</div>") != XMLUtil.getIdentity("<div>${toCheck}</div>")
     }
 
     override var path: String = ""
