@@ -12,6 +12,7 @@
 package com.example.app.ui.user;
 
 import com.example.app.config.ProjectCacheRegions;
+import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.profile.Membership;
 import com.example.app.model.profile.MembershipType;
 import com.example.app.model.profile.MembershipTypeProvider;
@@ -140,7 +141,7 @@ public class ProfileMembershipManagement extends HistoryContainer
     @Autowired
     private MembershipOperationProvider _mop;
     @Autowired
-    private ProfileTermProvider _terms;
+    private SelectedCompanyTermProvider _terms;
     @Autowired
     private MembershipTypeProvider _membershipTypeProvider;
     private DataColumnTable<Membership> _membershipTable;

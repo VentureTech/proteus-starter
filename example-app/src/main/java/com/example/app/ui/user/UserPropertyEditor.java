@@ -14,10 +14,10 @@ package com.example.app.ui.user;
 
 import com.example.app.model.company.Company;
 import com.example.app.model.company.CompanyDAO;
+import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.profile.MembershipType;
 import com.example.app.model.profile.Profile;
 import com.example.app.model.profile.ProfileDAO;
-import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
@@ -80,7 +80,6 @@ import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static com.example.app.ui.UIText.USER;
 import static com.example.app.ui.user.UserPropertyEditorLOK.*;
-import static net.proteusframework.core.locale.TextSources.createText;
 import static net.proteusframework.core.notification.NotificationImpl.error;
 
 /**
@@ -139,7 +138,7 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
     @Autowired
     private AppUtil _appUtil;
     @Autowired
-    private ProfileTermProvider _terms;
+    private SelectedCompanyTermProvider _terms;
     @Autowired
     private UIPreferences _uiPreferences;
     @Autowired
@@ -268,7 +267,7 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
                         }
                         user = _userDAO.mergeUser(user);
                         Company userProfile = _uiPreferences.getSelectedCompany();
-                        if (!userProfile.getUsers().contains(user) && _newUser)
+                        if (userProfile != null && !userProfile.getUsers().contains(user) && _newUser)
                         {
                             _companyDAO.addUserToCompany(userProfile, user);
 

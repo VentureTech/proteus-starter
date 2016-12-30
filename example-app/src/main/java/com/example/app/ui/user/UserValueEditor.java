@@ -13,11 +13,11 @@ package com.example.app.ui.user;
 
 
 import com.example.app.config.UserConfig;
+import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.profile.Membership;
 import com.example.app.model.profile.MembershipType;
 import com.example.app.model.profile.MembershipTypeProvider;
 import com.example.app.model.profile.ProfileDAO;
-import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.model.user.ContactMethod;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
@@ -103,7 +103,7 @@ public class UserValueEditor extends CompositeValueEditor<User>
     @Qualifier(UserConfig.PICTURE_EDITOR_CONFIG)
     private VTCropPictureEditorConfig _pictureEditorConfig;
     @Autowired
-    private ProfileTermProvider _terms;
+    private SelectedCompanyTermProvider _terms;
     @Autowired
     private MembershipTypeProvider _mtp;
     @Autowired

@@ -12,11 +12,11 @@
 package com.example.app.ui.user;
 
 import com.example.app.model.company.CompanyDAO;
+import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.profile.Membership;
 import com.example.app.model.profile.MembershipType;
 import com.example.app.model.profile.Profile;
 import com.example.app.model.profile.ProfileDAO;
-import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.model.user.ContactMethod;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
@@ -93,7 +93,6 @@ import net.proteusframework.users.model.PrincipalStatus;
 
 import static com.example.app.ui.UIText.USER;
 import static com.example.app.ui.user.UserManagementLOK.*;
-import static net.proteusframework.core.locale.TextSources.createText;
 
 /**
  * UI for managing {@link User}s
@@ -140,7 +139,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
     @Autowired
     private MembershipOperationProvider _mop;
     @Autowired
-    private ProfileTermProvider _terms;
+    private SelectedCompanyTermProvider _terms;
     @Autowired
     private CompanyDAO _companyDAO;
     @Autowired

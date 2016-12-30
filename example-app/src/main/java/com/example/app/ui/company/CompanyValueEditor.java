@@ -12,13 +12,16 @@
 package com.example.app.ui.company;
 
 import com.example.app.config.CompanyConfig;
+import com.example.app.model.client.Location;
 import com.example.app.model.company.Company;
 import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.support.AppUtil;
 import com.example.app.ui.CommonEditorFields;
 import com.example.app.ui.UIHelper;
-import com.example.app.ui.contact.ContactValueEditor;
-import com.example.app.ui.contact.ContactValueEditor.ContactValueEditorConfig;
+import com.example.app.ui.contact.AddressValueEditor;
+import com.example.app.ui.contact.AddressValueEditor.AddressValueEditorConfig;
+import com.example.app.ui.contact.PhoneNumberValueEditor;
+import com.example.app.ui.contact.PhoneNumberValueEditor.PhoneNumberValueEditorConfig;
 import com.example.app.ui.vtcrop.VTCropPictureEditor;
 import com.example.app.ui.vtcrop.VTCropPictureEditorConfig;
 import org.hibernate.Hibernate;
@@ -48,7 +51,7 @@ import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.URLEditor;
 
 import static com.example.app.ui.UIText.INSTRUCTIONS_PICTURE_EDITOR_FMT;
-import static com.example.app.ui.company.CoachingEntityValueEditorLOK.*;
+import static com.example.app.ui.company.CompanyValueEditorLOK.*;
 import static com.i2rd.miwt.util.CSSUtil.CSS_INSTRUCTIONS;
 import static net.proteusframework.core.StringFactory.stringToURL;
 import static net.proteusframework.core.StringFactory.urlToString;
@@ -62,7 +65,7 @@ import static net.proteusframework.core.locale.TextSources.createText;
  * @since 6/27/16 1:49 PM
  */
 @I18NFile(
-    symbolPrefix = "com.example.app.ui.company.CoachingEntityValueEditor",
+    symbolPrefix = "com.example.app.ui.company.CompanyValueEditor",
     classVisibility = I18NFile.Visibility.PUBLIC,
     i18n = {
         @I18N(symbol = "Label LinkedIn", l10n = @L10N("LinkedIn")),
@@ -84,7 +87,7 @@ import static net.proteusframework.core.locale.TextSources.createText;
     }
 )
 @Configurable
-public class CoachingEntityValueEditor extends CompositeValueEditor<Company>
+public class CompanyValueEditor extends CompositeValueEditor<Company>
 {
     private static final Pattern HOSTNAME_VALIDITY_PATTERN1 = Pattern.compile("_| ");
     private static final Pattern HOSTNAME_VALIDITY_PATTERN2 = Pattern.compile("[^a-zA-Z\\-0-9]");
@@ -100,7 +103,7 @@ public class CoachingEntityValueEditor extends CompositeValueEditor<Company>
     /**
      * Instantiates a new company value editor.
      */
-    public CoachingEntityValueEditor()
+    public CompanyValueEditor()
     {
         super(Company.class);
     }
@@ -109,11 +112,11 @@ public class CoachingEntityValueEditor extends CompositeValueEditor<Company>
     public void init()
     {
         _webLogoEditor = new VTCropPictureEditor(_webLogoConfig);
-        _webLogoEditor.addClassName("coaching-web-logo");
+        _webLogoEditor.addClassName("company-web-logo");
         _webLogoEditor.setDefaultResource(_appUtil.getDefaultResourceImage());
 
         _emailLogoEditor = new VTCropPictureEditor(_emailLogoConfig);
-        _emailLogoEditor.addClassName("coaching-web-logo");
+        _emailLogoEditor.addClassName("company-web-logo");
         _emailLogoEditor.setDefaultResource(_appUtil.getDefaultResourceImage());
 
         super.init();
@@ -135,10 +138,25 @@ public class CoachingEntityValueEditor extends CompositeValueEditor<Company>
             of("prop", LABEL_EMAIL_LOGO(), _emailLogoEditor, emailLogoInstructions)));
         CommonEditorFields.addNameEditor(this);
         addEditorForProperty(() -> {
-            final ContactValueEditorConfig cfg = new ContactValueEditorConfig();
-            cfg.setEmailAddressConfigs();
-            return new ContactValueEditor(cfg);
-        }, Company.CONTACT_PROP);
+            final CompositeValueEditor<Location> editor = new CompositeValueEditor<>(Location.class);
+
+            editor.addEditorForProperty(() -> {
+                AddressValueEditorConfig cfg = new AddressValueEditorConfig();
+                return new AddressValueEditor(cfg);
+            }, Location.ADDRESS_PROP);
+
+//            editor.addEditorForProperty(() -> {
+//                EmailAddressValueEditorConfig cfg = new EmailAddressValueEditorConfig();
+//                return new EmailAddressValueEditor(cfg);
+//            }, Location.EMAIL_ADDRESS_PROP);
+
+            editor.addEditorForProperty(() -> {
+                PhoneNumberValueEditorConfig cfg = new PhoneNumberValueEditorConfig();
+                return new PhoneNumberValueEditor(cfg);
+            }, Location.PHONE_NUMBER_PROP);
+
+            return editor;
+        }, Company.PRIMARY_LOCATION_PROP);
 
         addEditorForProperty(() -> {
             final URLEditor editor = new URLEditor(LABEL_WEBSITE(), null);
@@ -221,8 +239,8 @@ public class CoachingEntityValueEditor extends CompositeValueEditor<Company>
                 editor.addClassName("linkedin");
                 return editor;
             },
-            coachingEntity -> stringToURL(coachingEntity.getLinkedInLink(), null),
-            (coachingEntity, url) -> coachingEntity.setLinkedInLink(urlToString(url))
+            company -> stringToURL(company.getLinkedInLink(), null),
+            (company, url) -> company.setLinkedInLink(urlToString(url))
             );
 
         addEditorForProperty(() -> {
@@ -230,16 +248,16 @@ public class CoachingEntityValueEditor extends CompositeValueEditor<Company>
             editor.addClassName("twitter");
             return editor;
         },
-            coachingEntity -> stringToURL(coachingEntity.getTwitterLink(), null),
-            (coachingEntity, url) -> coachingEntity.setTwitterLink(urlToString(url)));
+            company -> stringToURL(company.getTwitterLink(), null),
+            (company, url) -> company.setTwitterLink(urlToString(url)));
 
         addEditorForProperty(() -> {
             final URLEditor editor = new URLEditor(LABEL_FACEBOOK(), null);
             editor.addClassName("facebook");
             return editor;
         },
-            coachingEntity -> stringToURL(coachingEntity.getFacebookLink(), null),
-            (coachingEntity, url) -> coachingEntity.setFacebookLink(urlToString(url)));
+            company -> stringToURL(company.getFacebookLink(), null),
+            (company, url) -> company.setFacebookLink(urlToString(url)));
     }
 
     @Override

@@ -12,9 +12,9 @@
 package com.example.app.ui.user;
 
 
+import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.profile.Profile;
 import com.example.app.model.profile.ProfileDAO;
-import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
@@ -43,7 +43,6 @@ import net.proteusframework.ui.miwt.util.CommonActions;
 import static com.example.app.ui.UIText.USER;
 import static com.example.app.ui.user.UserPropertyViewerLOK.ERROR_MESSAGE_INSUFFICIENT_PERMISSIONS_VIEW_FMT;
 import static com.example.app.ui.user.UserPropertyViewerLOK.LABEL_UPDATE_PASSWORD;
-import static net.proteusframework.core.locale.TextSources.createText;
 import static net.proteusframework.core.notification.NotificationImpl.error;
 
 /**
@@ -71,7 +70,7 @@ public class UserPropertyViewer extends PropertyViewer
     @Autowired
     private UserDAO _userDAO;
     @Autowired
-    private ProfileTermProvider _terms;
+    private SelectedCompanyTermProvider _terms;
     @Autowired
     private UIPreferences _uiPreferences;
 

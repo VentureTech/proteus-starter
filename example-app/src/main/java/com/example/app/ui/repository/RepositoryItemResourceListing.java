@@ -12,13 +12,12 @@
 package com.example.app.ui.repository;
 
 
+import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.repository.RepositoryDAO;
 import com.example.app.model.repository.RepositoryItem;
 import com.example.app.model.repository.ResourceRepositoryItem;
 import com.example.app.model.resource.Resource;
-import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.support.AppUtil;
-
 import com.example.app.ui.resource.ResourceRepositoryItemValueViewer;
 import com.example.app.ui.resource.ResourceSelector;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,6 @@ import net.proteusframework.ui.search.SearchUIAction;
 import static com.example.app.ui.UIText.RESOURCES;
 import static com.example.app.ui.repository.RepositoryItemResourceListingLOK.BUTTON_TEXT_SELECT_RESOURCES_FMT;
 import static com.example.app.ui.repository.RepositoryItemResourceListingLOK.LABEL_SELECT_RESOURCES_FMT;
-import static net.proteusframework.core.locale.TextSources.createText;
 
 /**
  * Provides a UI for listing Resources owned by a RepositoryItem
@@ -72,7 +70,7 @@ public abstract class RepositoryItemResourceListing<RI extends RepositoryItem> e
     @Autowired
     private RepositoryDAO _repositoryDAO;
     @Autowired
-    private ProfileTermProvider _terms;
+    private SelectedCompanyTermProvider _terms;
 
     /**
      * Instantiates a new instance of RepositoryItemResourceListing

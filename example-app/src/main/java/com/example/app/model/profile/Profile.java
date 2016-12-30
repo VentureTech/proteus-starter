@@ -47,8 +47,6 @@ import java.util.Set;
 import net.proteusframework.core.locale.LocalizedObjectKey;
 import net.proteusframework.core.locale.NamedObject;
 
-import static com.example.app.model.SoftDeleteEntity.SOFT_DELETE_COLUMN_PROP;
-
 /**
  * Profile superclass.  It is fully auditable and implements a soft delete functionality.
  *
@@ -87,10 +85,6 @@ public abstract class Profile extends AbstractAuditableEntity<Integer> implement
     public static final String DESCRIPTION_COLUMN_PROP = "description";
     /** The property: repository */
     public static final String REPOSITORY_PROP = "repository";
-    /** Where clause for a collection containing Resources */
-    public static final String COLLECTION_WHERE_CLAUSE =
-        ID_COLUMN + " in (select profile." + ID_COLUMN + " from app." + TABLE_NAME
-        + " profile where profile." + SOFT_DELETE_COLUMN_PROP + "='false')";
     /** The serial version UID */
     private static final long serialVersionUID = -7189722406282887545L;
     /** The ID generator identifier for this entity */

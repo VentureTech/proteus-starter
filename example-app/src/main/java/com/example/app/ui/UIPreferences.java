@@ -17,6 +17,8 @@ import com.example.app.model.terminology.FallbackProfileTermProvider;
 import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -45,14 +47,11 @@ import net.proteusframework.internet.http.SiteContext;
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UIPreferences
 {
-    @Autowired
-    private SiteContext _siteContext;
-    @Autowired
-    private CompanyDAO _companyDAO;
-    @Autowired
-    private UserDAO _userDAO;
-    @Autowired
-    private EntityRetriever _entityRetriever;
+    private static final Logger _logger = LogManager.getLogger(UIPreferences.class);
+    @Autowired private SiteContext _siteContext;
+    @Autowired private CompanyDAO _companyDAO;
+    @Autowired private UserDAO _userDAO;
+    @Autowired private EntityRetriever _entityRetriever;
 
     private final HashMap<String, Integer> _intPrefs = new HashMap<>();
     private final HashMap<String, Object> _objPrefs = new HashMap<>();
@@ -161,19 +160,16 @@ public class UIPreferences
      *
      * @return the company for current user
      */
-    @Nonnull
+    @Nullable
     public synchronized Company getSelectedCompany()
     {
         if(_selectedCompany == null)
         {
             //Get the Company from the hostname of the Request.
-            //If hostname is not a CmsHostname (it should always be one),
-            // or if the hostname is not associated with a Company,
-            // then return the FIRST owning Company for the current user.
             Hostname hostname = _siteContext.getRequestedHostname();
             _selectedCompany = _companyDAO.getCompanyForHostname(hostname);
             if(_selectedCompany == null)
-                throw new IllegalArgumentException("Unable to determine Company for hostname: " + hostname.getName());
+                _logger.error("Unable to determine Company for hostname: " + hostname.getName());
             return _selectedCompany;
         }
         else
@@ -202,7 +198,8 @@ public class UIPreferences
     {
         if(_selectedCompanyTermProvider == null)
         {
-            return _selectedCompanyTermProvider = new FallbackProfileTermProvider(getSelectedCompany().getProfileTerms());
+            return _selectedCompanyTermProvider = new FallbackProfileTermProvider(
+                Optional.ofNullable(getSelectedCompany()).map(Company::getProfileTerms).orElse(null));
         }
         else
         {

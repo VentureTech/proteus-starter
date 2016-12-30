@@ -94,7 +94,7 @@ public class CompanyDAO extends DAOHelper implements Serializable
     @Autowired private transient CmsFrontendDAO _cmsFrontendDAO;
     @Autowired private transient FileSystemDAO _fileSystemDAO;
     @Autowired private transient AppUtil _appUtil;
-    @Value("${admin-access-role:}") private String _adminRoleProgId;
+    @Value("${admin-access-role}") private String _adminRoleProgId;
 
     private FileSaver<Company> _webImageSaver;
     private FileSaver<Company> _emailLogoSaver;

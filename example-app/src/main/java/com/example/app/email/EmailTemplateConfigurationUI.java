@@ -11,8 +11,8 @@
 
 package com.example.app.email;
 
+import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.profile.Profile;
-import com.example.app.model.terminology.ProfileTermProvider;
 import com.google.common.base.Preconditions;
 import com.google.common.io.CharStreams;
 import org.apache.logging.log4j.Level;
@@ -313,7 +313,7 @@ public class EmailTemplateConfigurationUI extends Container
     @Autowired
     private EmailTemplateProcessor _emailTemplateProcessor;
     @Autowired
-    private ProfileTermProvider _profileTermProvider;
+    private SelectedCompanyTermProvider _profileTermProvider;
     @Autowired
     private CmsFrontendDAO _siteContext;
     @Autowired

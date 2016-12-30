@@ -11,9 +11,9 @@
 
 package com.example.app.model.company;
 
+import com.example.app.model.client.Location;
 import com.example.app.model.terminology.DefaultProfileTermProvider;
 import com.example.app.support.AppUtil;
-import com.example.app.support.ContactUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 import com.i2rd.domainmodel.context.DomainModelContext;
 import com.i2rd.domainmodel.extension.impl.AbstractModelExtension;
@@ -50,11 +51,9 @@ import net.proteusframework.data.http.URLGenerator;
 import net.proteusframework.internet.http.resource.FactoryResourceConfiguration;
 import net.proteusframework.users.model.PhoneNumber;
 
-
 import static com.example.app.model.company.CompanyModelExtensionLOK.*;
 import static net.proteusframework.cms.support.ImageFileUtil.getDimension;
 import static net.proteusframework.cms.support.ImageFileUtil.getScaledDimension;
-import static net.proteusframework.users.model.ContactDataCategory.*;
 
 /**
  * Extension for Company.
@@ -85,7 +84,7 @@ public class CompanyModelExtension extends AbstractModelExtension
     @Autowired
     private DefaultProfileTermProvider _terms;
 
-    private final DataTypeResolver _coachingEntityResolver = new DataTypeResolver(Company.class);
+    private final DataTypeResolver _companyResolver = new DataTypeResolver(Company.class);
     @Autowired
     private AppUtil _appUtil;
 
@@ -215,7 +214,7 @@ public class CompanyModelExtension extends AbstractModelExtension
     public CompanyModelExtension()
     {
         super();
-        _coachingEntityResolver.setCache(true);
+        _companyResolver.setCache(true);
         addSupportedExtensionPoint(Company.class);
     }
 
@@ -227,14 +226,14 @@ public class CompanyModelExtension extends AbstractModelExtension
 
         dmb.addChild("name", String.class)
             .setUsageInstructions(INSTRUCTIONS_NAME(_terms.company()))
-            .addDataResolver(String.class, new PropertyPathResolver(_coachingEntityResolver,
+            .addDataResolver(String.class, new PropertyPathResolver(_companyResolver,
                 Company.NAME_COLUMN_PROP + ".getText[lc].toString")
                 .addFixedArg("lc", context.getLocaleContext()))
         ;
 
         dmb.addChild("description", String.class)
             .setUsageInstructions(INSTRUCTIONS_NAME(_terms.company()))
-            .addDataResolver(String.class, new PropertyPathResolver(_coachingEntityResolver,
+            .addDataResolver(String.class, new PropertyPathResolver(_companyResolver,
                 Company.NAME_COLUMN_PROP + ".getText[lc].toString")
                 .addFixedArg("lc", context.getLocaleContext()))
         ;
@@ -247,7 +246,8 @@ public class CompanyModelExtension extends AbstractModelExtension
             .setUsageInstructions(PHONE_NUMBER_USAGE_INSTRUCTIONS(_terms.company()))
             .addDataResolver(String.class, (ctx, dm, args) -> {
                 final Company company = getCoachingEntity(ctx, dm, args);
-                return ContactUtil.getPhoneNumber(company.getContact(), UNKNOWN, BUSINESS, PERSONAL)
+                return Optional.ofNullable(company.getPrimaryLocation())
+                    .map(Location::getPhoneNumber)
                     .map(PhoneNumber::toExternalForm).orElse("");
             })
         ;
@@ -255,9 +255,9 @@ public class CompanyModelExtension extends AbstractModelExtension
         addSocialMediaModels(dmb);
 
         addImage(new ImageParams(dmb,"image",
-            new PropertyPathResolver(_coachingEntityResolver, Company.IMAGE_PROP), null));
+            new PropertyPathResolver(_companyResolver, Company.IMAGE_PROP), null));
         addImage(new ImageParams(dmb, "email_logo",
-            new PropertyPathResolver(_coachingEntityResolver, Company.EMAIL_LOGO_PROP), null));
+            new PropertyPathResolver(_companyResolver, Company.EMAIL_LOGO_PROP), null));
 
         return dmb.getRootChildren();
     }
@@ -267,25 +267,25 @@ public class CompanyModelExtension extends AbstractModelExtension
         dmb.addChild("linkedin", String.class)
             .setUsageInstructions(LINKED_IN_USAGE_INSTRUCTIONS())
             .addDataResolver(String.class,
-                new PropertyPathResolver(_coachingEntityResolver, Company.LINKEDIN_LINK_COLUMN_PROP)
+                new PropertyPathResolver(_companyResolver, Company.LINKEDIN_LINK_COLUMN_PROP)
                 .setDefault(""))
         ;
         dmb.addChild("twitter", String.class)
             .setUsageInstructions(TWITTER_USAGE_INSTRUCTIONS())
             .addDataResolver(String.class,
-                new PropertyPathResolver(_coachingEntityResolver, Company.TWITTER_LINK_COLUMN_PROP)
+                new PropertyPathResolver(_companyResolver, Company.TWITTER_LINK_COLUMN_PROP)
                 .setDefault(""))
         ;
         dmb.addChild("facebook", String.class)
             .setUsageInstructions(FACEBOOK_USAGE_INSTRUCTIONS())
             .addDataResolver(String.class,
-                new PropertyPathResolver(_coachingEntityResolver, Company.FACEBOOK_LINK_COLUMN_PROP)
+                new PropertyPathResolver(_companyResolver, Company.FACEBOOK_LINK_COLUMN_PROP)
                 .setDefault(""))
         ;
         dmb.addChild("google_plus", String.class)
             .setUsageInstructions(GOOGLE_PLUS_USAGE_INSTRUCTIONS())
             .addDataResolver(String.class,
-                new PropertyPathResolver(_coachingEntityResolver, Company.GOOGLEPLUS_LINK_COLUMN_PROP)
+                new PropertyPathResolver(_companyResolver, Company.GOOGLEPLUS_LINK_COLUMN_PROP)
                 .setDefault(""))
         ;
     }
@@ -368,7 +368,7 @@ public class CompanyModelExtension extends AbstractModelExtension
         List<DomainData<?>> arguments)
     {
         final Company company =
-            (Company) _coachingEntityResolver.resolve(domainModelContext, domainModel, arguments);
+            (Company) _companyResolver.resolve(domainModelContext, domainModel, arguments);
         assert company != null;
         return EntityRetriever.getInstance().reattachIfNecessary(company);
     }

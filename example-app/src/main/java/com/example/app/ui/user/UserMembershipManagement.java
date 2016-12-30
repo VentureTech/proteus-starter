@@ -11,10 +11,10 @@
 
 package com.example.app.ui.user;
 
+import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.profile.Membership;
 import com.example.app.model.profile.Profile;
 import com.example.app.model.profile.ProfileDAO;
-import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
@@ -110,7 +110,7 @@ public class UserMembershipManagement extends HistoryContainer implements Search
     @Autowired
     private MembershipOperationProvider _mop;
     @Autowired
-    private ProfileTermProvider _terms;
+    private SelectedCompanyTermProvider _terms;
     private SearchUIImpl _searchUI;
 
     /**
