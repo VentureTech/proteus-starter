@@ -83,6 +83,8 @@ open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
 
             page("User Management", "/config/user") {
                 template("Frontend")
+                pagePermission = "CAPMC Backend"
+                authenticationPage("Home")
                 content("Content", ApplicationFunction(ApplicationFunctions.User.MANAGEMENT)) {
                     htmlClass = "user-mgt"
 
@@ -91,6 +93,8 @@ open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
 
             page("Resource Management", "/config/resource") {
                 template("Frontend")
+                pagePermission = "CAPMC Backend"
+                authenticationPage("Home")
                 content("Content", ApplicationFunction(ApplicationFunctions.ResourceRepositoryItem.MANAGEMENT)) {
                     htmlClass = "resource-mgt"
                     css("entropy/page/page--resource-mgt.css")

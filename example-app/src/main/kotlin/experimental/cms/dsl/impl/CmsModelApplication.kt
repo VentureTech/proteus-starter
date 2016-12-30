@@ -32,7 +32,9 @@ import net.proteusframework.cms.component.page.PageTemplate
 import net.proteusframework.cms.controller.LinkUtil
 import net.proteusframework.cms.dao.CmsFrontendDAO
 import net.proteusframework.cms.dao.PageElementPathDAO
+import net.proteusframework.cms.permission.PagePermission
 import net.proteusframework.cms.support.HTMLPageElementUtil.populateBeanBoxLists
+import net.proteusframework.core.StringFactory.convertToProgrammaticName2
 import net.proteusframework.core.hibernate.HibernateSessionHelper
 import net.proteusframework.core.hibernate.dao.DAOHelper
 import net.proteusframework.core.locale.TransientLocalizedObjectKey
@@ -46,6 +48,7 @@ import net.proteusframework.ui.management.ApplicationRegistry
 import net.proteusframework.ui.management.link.RegisteredLink
 import net.proteusframework.ui.management.link.RegisteredLinkDAO
 import net.proteusframework.ui.miwt.component.Component
+import net.proteusframework.users.model.AuthenticationMethodSecurityLevel
 import net.proteusframework.users.model.dao.PrincipalDAO
 import org.apache.logging.log4j.LogManager
 import org.hibernate.Hibernate
@@ -98,6 +101,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     lateinit var registeredLinkDAO : RegisteredLinkDAO
 
 
+    private val pagePermissionCache = mutableMapOf<String, PagePermission>()
     private val pageModelToCmsPage = mutableMapOf<Page, net.proteusframework.cms.component.page.Page>()
     private val layoutToBoxInformation = mutableMapOf<Layout, BoxInformation>()
     private val pagePaths = mutableMapOf<String, PageElementPath>()
@@ -263,6 +267,26 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
                 createContentInstance(value, site) // Update content if needed
             }
             save(site, bbl)
+        }
+        if(!page.pagePermission.isNullOrBlank()) {
+            val programmaticName: String = convertToProgrammaticName2(page.pagePermission)!!
+            var permission = pagePermissionCache[programmaticName]?:
+                siteDefinitionDAO.getPagePermissionByProgrammaticName(site, programmaticName)
+            if(permission == null) {
+                permission = PagePermission(programmaticName)
+                permission.siteId = site.id
+                permission.displayName = TransientLocalizedObjectKey(mutableMapOf(Locale.ENGLISH to page.pagePermission))
+                permission.minimumSecurityLevel = AuthenticationMethodSecurityLevel.SHARED_SECRET
+                session.save(permission)
+                pagePermissionCache.put(programmaticName, permission)
+            }
+            cmsPage.authorization = permission
+            cmsPage.touch()
+        }
+        val authenticationPageModel = page.authenticationPage
+        if(authenticationPageModel != null) {
+            cmsPage.authorizationPage = pageModelToCmsPage[authenticationPageModel]
+            cmsPage.touch()
         }
         return cmsPage
     }
