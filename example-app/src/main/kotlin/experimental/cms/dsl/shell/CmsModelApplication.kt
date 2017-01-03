@@ -460,6 +460,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             }
             if (hibernateUtil.isPersistent(ce) && ce.publishedData[site.primaryLocale] == ce.dataVersions.last()) {
                 logger.info("Skipping persistent Cms Content: ${ce.name}")
+                cmsBackendDAO.saveBean(ce.delegate as ContentElement?)
                 continue@loop
             }
             val dataVersions = ce.dataVersions
