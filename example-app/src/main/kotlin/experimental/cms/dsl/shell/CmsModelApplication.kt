@@ -349,11 +349,17 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
         createNDEs(site, contentElement, content)
         if (content is DelegateContent) {
             for (child in content.contentList) {
-                if (!content.contentToRemove.contains(child)) {
+                val ceDelegates = contentElement.delegates
+                if (content.contentToRemove.contains(child))
+                    continue
+                val existingDelegate = ceDelegates.filter { it.delegate.name == child.id }.firstOrNull()
+                if (existingDelegate == null) {
                     logger.info("Creating Cms Content: ${child.id}. Adding To Content: ${content.id}")
                     val delegate = createContentInstance(child, site)
                     val delegateElement = DelegateElement(delegate, content.contentPurpose[child] ?: content.defaultPurpose)
-                    contentElement.delegates.add(delegateElement)
+                    ceDelegates.add(delegateElement)
+                } else {
+                    createContentInstance(child, site) // Check to see if the delegate has been modified
                 }
             }
         }
@@ -449,7 +455,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             saveChildElements(ce, hibernateUtil, site)
             if (ce.dataVersions.isEmpty()) {
                 logger.info("Saving Cms Content: ${ce.name}")
-                cmsBackendDAO.saveBean(ce.delegate as ContentElement?)
+                session.saveOrUpdate(ce.delegate)
                 continue@loop
             }
             if (hibernateUtil.isPersistent(ce) && ce.publishedData[site.primaryLocale] == ce.dataVersions.last()) {

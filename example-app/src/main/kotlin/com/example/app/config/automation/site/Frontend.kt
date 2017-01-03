@@ -102,7 +102,7 @@ open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
                         htmlContent = "<p>This is text 1</p>"
                     }
                     content(Text("CompositeText2")){
-                        htmlContent = "<p>This is text 2</p>"
+                        htmlContent = "<p>This is text 2a</p>"
                     }
                 }
                 content("Content", HTML("HTML Example")) {

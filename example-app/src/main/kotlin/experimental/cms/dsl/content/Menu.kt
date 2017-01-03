@@ -116,24 +116,32 @@ class Menu(id: String): Identifiable(id), Content, MenuBuilder {
 
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun createInstance(helper: ContentHelper): ContentElement {
         val contentElement = MenuBean()
         val dataSet = builder.getContent(contentElement)
         val dataSetDAO = ModelDataDAO.getInstance(contentElement.contentModelDefinition)
-        @Suppress("UNCHECKED_CAST")
         val data = dataSetDAO.getData(dataSet, DefaultDataPurpose.rendering.name)!! as ModelData<String>
-        data.value = helper.convertXHTML(data.value)
+        data.value = helper.convertXHTML(data.value, mutableSetOf("link"))
         contentElement.dataVersions.add(dataSet)
         return contentElement
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun isModified(helper: ContentHelper, contentElement: ContentElement): Boolean {
-        val dataSetToCheck = builder.getContent(contentElement as MenuBean)
         val dataSetDAO = ModelDataDAO.getInstance(contentElement.contentModelDefinition)
-        val dataSet = contentElement.publishedData[helper.getCmsSite().primaryLocale]
-        val dataToCheck = dataSetDAO.getData(dataSetToCheck, DefaultDataPurpose.rendering.name)!! as ModelData<String>
-        val data = dataSetDAO.getData(dataSet, DefaultDataPurpose.rendering.name)!! as ModelData<String>
-        return XMLUtil.getIdentity("<div>${dataToCheck.value}</div>") != XMLUtil.getIdentity("<div>${data.value}</div>")
+        val existingBuilder = MenuBeanContentBuilder.load(contentElement.publishedData[helper.getCmsSite().primaryLocale], false)
+        existingBuilder.style = builder.style
+        existingBuilder.dropdownButtonText = builder.dropdownButtonText
+        existingBuilder.isMarkActiveParentLinks = builder.isMarkActiveParentLinks
+        val oldMenuHTML = dataSetDAO.getData(existingBuilder.getContent(contentElement as MenuBean?),
+            DefaultDataPurpose.rendering.name)!! as ModelData<String>
+        @Suppress("UNCHECKED_CAST")
+        val data = dataSetDAO.getData(builder.getContent(contentElement), DefaultDataPurpose.rendering.name)!!
+            as ModelData<String>
+        val newMenuHTML = helper.convertXHTML(data.value, mutableSetOf("link"))
+        val id1 = XMLUtil.getIdentity(oldMenuHTML.value)
+        val id2 = XMLUtil.getIdentity(newMenuHTML)
+        return existingBuilder.isDirty || id1 != id2
     }
 }

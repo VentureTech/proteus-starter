@@ -68,6 +68,7 @@ open class IdentifiableParent<C>(id: String) : Identifiable(id) {
 internal class LinkTagConverter(val helper: ContentHelper) : TagListener<TagListenerConfiguration>() {
 
     val writer: PrintWriter get() = configuration.writer
+    val overrideNonVoid = mutableSetOf<String>()
 
     override fun closeStartElement() {
         writer.append('>')
@@ -88,7 +89,7 @@ internal class LinkTagConverter(val helper: ContentHelper) : TagListener<TagList
             writer.append(" ").append(key).append("=\"").append(value).append("\"")
         }
         XMLUtil.writeAttributes(writer, attributes, convertedAttributes.keys)
-        if (HTMLElement.valueOf(ename).kind() == Element.Kind.VOID)
+        if (isVoidElement(ename))
             writer.append("/>")
         else
             writer.append(">")
@@ -96,10 +97,13 @@ internal class LinkTagConverter(val helper: ContentHelper) : TagListener<TagList
         return true
     }
 
+    private fun isVoidElement(ename: String) = HTMLElement.valueOf(ename).kind() == Element.Kind.VOID
+        && !overrideNonVoid.contains(ename)
+
 
     override fun endElement(uri: String?, localName: String?, qName: String?, empty: Boolean, closedStartElement: Boolean) {
         val ename = getElementName(uri, localName, qName)
-        if (HTMLElement.valueOf(ename).kind() == Element.Kind.VOID)
+        if (isVoidElement(ename))
             return
         writer.append("</").append(ename).append(">")
     }
@@ -147,15 +151,16 @@ interface ContentHelper {
      * Convert XHTML links using #getInternalLink(String)
      * @param html the HTML to convert.
      */
-    fun convertXHTML(html: String): String {
+    fun convertXHTML(html: String, nonVoidElements: MutableSet<String> = mutableSetOf()): String {
         val sw = StringWriter(html.length)
         val pw = PrintWriter(sw)
         val htmlParser = GenericParser(pw)
-        htmlParser.isHtmlCompatible = false
+        htmlParser.isHtmlCompatible = true
         val config = TagListenerConfiguration(pw)
         val skipTagListener = SkipTagListener(PARSER_FAKE_ROOT)
         skipTagListener.init(config)
         val linkTagConverter = LinkTagConverter(this)
+        linkTagConverter.overrideNonVoid.addAll(nonVoidElements)
         linkTagConverter.init(config)
         htmlParser.setTagListeners(listOf(skipTagListener, linkTagConverter))
         try {
