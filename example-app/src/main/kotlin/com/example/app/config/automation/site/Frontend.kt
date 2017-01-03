@@ -85,6 +85,7 @@ open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
             template("Frontend") {
                 layout("Header, Main, Footer")
                 content("Header", "Logo")
+                content("Header", Logout("Logout"))
                 content("Footer", "Copyright Us")
             }
 

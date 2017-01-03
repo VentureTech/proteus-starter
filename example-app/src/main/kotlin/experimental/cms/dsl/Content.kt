@@ -58,6 +58,11 @@ interface Content : HTMLIdentifier, HTMLClass, ResourceCapable, PathCapable {
         return _getSite(parent)
     }
 
+    /**
+     * Create a ContentElement implementation. If the implementation is configurable,
+     * implementors should add a CmsModelDataSet to the [ContentElement.getDataVersions]
+     * and set the [com.i2rd.cms.bean.contentmodel.CmsModelDataSet.setContentElement] property.
+     */
     fun createInstance(helper: ContentHelper): ContentElement
     fun isModified(helper: ContentHelper, contentElement: ContentElement): Boolean = false
 }
