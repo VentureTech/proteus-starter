@@ -25,6 +25,7 @@ import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationConfiguration;
 import com.example.app.support.AppUtil;
+import com.example.app.support.EntityIdCollector;
 import com.example.app.support.FileSaver;
 import org.apache.commons.fileupload.FileItem;
 import org.hibernate.Query;
@@ -45,6 +46,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -52,6 +54,7 @@ import net.proteusframework.cms.FileSystemDirectory;
 import net.proteusframework.cms.dao.CmsFrontendDAO;
 import net.proteusframework.core.GloballyUniqueStringGenerator;
 import net.proteusframework.core.hibernate.dao.DAOHelper;
+import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.core.locale.TransientLocalizedObjectKey;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
@@ -93,8 +96,8 @@ public class CompanyDAO extends DAOHelper implements Serializable
     @Autowired private transient MembershipOperationConfiguration _mop;
     @Autowired private transient CmsFrontendDAO _cmsFrontendDAO;
     @Autowired private transient FileSystemDAO _fileSystemDAO;
-    @Autowired private transient AppUtil _appUtil;
     @Value("${admin-access-role}") private String _adminRoleProgId;
+    @Autowired private transient EntityRetriever _er;
 
     private FileSaver<Company> _webImageSaver;
     private FileSaver<Company> _emailLogoSaver;
@@ -122,7 +125,7 @@ public class CompanyDAO extends DAOHelper implements Serializable
                     return _fileSystemDAO.mkdirs(dir, null, "CoachingPictures", coaching.getId().toString());
                 },
                 (coaching, image) -> "web-logo" + AppUtil.getExtensionWithDot(image),
-                this::mergeCompany);
+                this::saveCompany);
         }
         return _webImageSaver;
     }
@@ -149,7 +152,7 @@ public class CompanyDAO extends DAOHelper implements Serializable
                     return _fileSystemDAO.mkdirs(dir, null, "CoachingPictures", coaching.getId().toString());
                 },
                 (coaching, image) -> "email-logo" + AppUtil.getExtensionWithDot(image),
-                this::mergeCompany);
+                this::saveCompany);
         }
         return _emailLogoSaver;
     }
@@ -181,40 +184,35 @@ public class CompanyDAO extends DAOHelper implements Serializable
      * Save the given Company into the database
      *
      * @param company the company to save
+     * @return the saved Company
      */
-    public void saveCompany(Company company)
+    public Company saveCompany(Company company)
     {
-        doInTransaction(session -> {
-            presave(company, session);
-            session.saveOrUpdate(company);
-        });
-    }
-
-    private static void presave(Company company, Session session)
-    {
-        if(company.getProfileTerms() == null)
-            company.setProfileTerms(new ProfileTerms());
-        if(company.getHostname().getDomain() != null
-           && (company.getHostname().getDomain().getId() == null
-               || company.getHostname().getDomain().getId() == 0L))
+        BiConsumer<Company, Session> presave = (toSave, session) -> {
+            if(toSave.getProfileTerms() == null)
+                toSave.setProfileTerms(new ProfileTerms());
+            AuthenticationDomain domain = toSave.getHostname().getDomain();
+            if(domain != null
+               && (domain.getId() == null || domain.getId() == 0L))
+            {
+                session.save(domain);
+            }
+        };
+        if(isAttached(company))
         {
-            session.save(company.getHostname().getDomain());
+            return doInTransaction(session -> {
+                presave.accept(company, session);
+                session.saveOrUpdate(company);
+                return company;
+            });
         }
-    }
-
-    /**
-     * Merge company company.
-     *
-     * @param company the company
-     *
-     * @return the company
-     */
-    public Company mergeCompany(Company company)
-    {
-        return doInTransaction(session -> {
-            presave(company, session);
-            return (Company) session.merge(company);
-        });
+        else
+        {
+            return doInTransaction(session -> {
+                presave.accept(company, session);
+                return (Company)session.merge(company);
+            });
+        }
     }
 
     /**
@@ -478,15 +476,38 @@ public class CompanyDAO extends DAOHelper implements Serializable
     @SuppressWarnings("unchecked")
     public List<Company> getActiveCompanies(User user)
     {
+        List<Long> domainIds = _er.reattachIfNecessary(user.getPrincipal()).getAuthenticationDomains()
+            .stream().map(AuthenticationDomain::getId).collect(new EntityIdCollector<>(() -> 0L));
         return doInTransaction(session -> (List<Company>)session.createQuery(
             "SELECT DISTINCT ce FROM Company ce\n"
             + "INNER JOIN ce.hostname h\n"
             + "WHERE ce.status = :active\n"
-            + "AND h.domain IN (:domains)")
-            .setCacheable(true)
-            .setCacheRegion(ProjectCacheRegions.PROFILE_QUERY)
+            + "AND h.domain.id IN (:domainIds)")
             .setParameter("active", CompanyStatus.Active)
-            .setParameterList("domains", user.getPrincipal().getAuthenticationDomains())
+            .setParameterList("domainIds", domainIds)
+            .list());
+    }
+
+    /**
+     * Gets active coaching entities for a user.
+     * This is all {@link User#getCompanies()} less any
+     * CoachingEntities whose hostname authentication domain is not
+     * present on the {@link User#getPrincipal()}.
+     * @param user the user.
+     * @return the active coaching entities for the user.
+     */
+    @SuppressWarnings("unchecked")
+    public List<Company> getActiveCompanies(Principal user)
+    {
+        List<Long> domainIds = _er.reattachIfNecessary(user.getAuthenticationDomains())
+            .stream().map(AuthenticationDomain::getId).collect(new EntityIdCollector<>(() -> 0L));
+        return doInTransaction(session -> (List<Company>)session.createQuery(
+            "SELECT DISTINCT ce FROM Company ce\n"
+            + "INNER JOIN ce.hostname h\n"
+            + "WHERE ce.status = :active\n"
+            + "AND h.domain.id IN (:domainIds)")
+            .setParameter("active", CompanyStatus.Active)
+            .setParameterList("domainIds", domainIds)
             .list());
     }
 

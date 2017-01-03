@@ -15,10 +15,6 @@ import com.example.app.model.client.Location;
 import com.example.app.model.company.Company;
 import com.example.app.model.company.CompanyDAO;
 import com.example.app.model.company.SelectedCompanyTermProvider;
-import com.example.app.model.user.User;
-import com.example.app.model.user.UserDAO;
-import com.example.app.support.AppUtil;
-import com.example.app.support.Functions;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
 import com.example.app.ui.URLProperties;
@@ -69,8 +65,6 @@ import net.proteusframework.ui.search.SearchUIOperationContext;
 import net.proteusframework.ui.search.SearchUIOperationHandler;
 import net.proteusframework.ui.search.SimpleConstraint;
 import net.proteusframework.users.model.PhoneNumber;
-import net.proteusframework.users.model.Principal;
-import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static com.example.app.model.company.CompanyStatus.Active;
 import static com.example.app.model.company.CompanyStatus.Inactive;
@@ -152,10 +146,10 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
             return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         }
     }
-    @Autowired private PrincipalDAO _principalDAO;
-    @Autowired private UserDAO _userDAO;
+
     @Autowired private CompanyDAO _companyDAO;
     @Autowired private SelectedCompanyTermProvider _terms;
+    @Autowired private CompanyUIPermissionCheck _permissionCheck;
 
     /**
      * Instantiates a new company management.
@@ -340,12 +334,6 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
     @SuppressWarnings("unused") //Used by ApplicationFunction
     void configure(ParsedRequest parsedRequest)
     {
-        final User currentUser = _userDAO.getCurrentUser();
-        final Principal currentPrincipal = _principalDAO.getCurrentPrincipal();
-        if(currentPrincipal == null
-           || !Optional.ofNullable(currentUser).map(AppUtil::userHasAdminRole).orElse(AppUtil.userHasAdminRole(currentPrincipal)))
-            throw new IllegalArgumentException(String.format("User %s does not have the correct role to view this page",
-                Functions.orElseFlatMap(Optional.ofNullable(currentUser).map(User::getId),
-                    () -> Optional.ofNullable(currentPrincipal).map(Principal::getId).map(Long::intValue)).orElse(0)));
+        _permissionCheck.checkPermissionsForCurrent("You do not have the correct role to view this page");
     }
 }

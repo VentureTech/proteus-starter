@@ -197,6 +197,7 @@ public abstract class Profile extends AbstractAuditableEntity<Integer> implement
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = PROFILE_TYPE_COLUMN)
+    @Cascade({CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REPLICATE, CascadeType.SAVE_UPDATE})
     @NotNull
     @Nonnull
     public ProfileType getProfileType()

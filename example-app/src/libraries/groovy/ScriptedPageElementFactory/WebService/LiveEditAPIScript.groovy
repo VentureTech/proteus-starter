@@ -67,7 +67,6 @@ import net.proteusframework.cms.dao.CmsFrontendDAO
 import net.proteusframework.cms.permission.PagePermission
 import net.proteusframework.cms.support.HTMLPageElementUtil
 import net.proteusframework.core.StringFactory
-import net.proteusframework.core.html.Element
 import net.proteusframework.core.html.HTMLDoctype
 import net.proteusframework.core.html.HTMLElement
 import net.proteusframework.core.io.EntityUtilWriter
@@ -87,13 +86,13 @@ import net.proteusframework.internet.http.Scope
 import net.proteusframework.internet.http.resource.html.NDE
 import net.proteusframework.internet.http.resource.html.NDEResourceComparator
 import net.proteusframework.internet.http.useragent.UserAgent
-import net.proteusframework.ui.miwt.HTMLRenderContext
 import net.proteusframework.ui.miwt.MIWTApplication
 import net.proteusframework.ui.miwt.MIWTSession
 import net.proteusframework.ui.miwt.component.ComboBox
 import net.proteusframework.ui.miwt.component.ComponentImpl
 import net.proteusframework.ui.miwt.component.Container
 import net.proteusframework.ui.miwt.component.Frame
+import net.proteusframework.ui.miwt.component.JavaScriptComponent
 import net.proteusframework.ui.miwt.component.Label
 import net.proteusframework.ui.miwt.component.event.ComponentAdapter
 import net.proteusframework.ui.miwt.component.event.ComponentEvent
@@ -101,7 +100,6 @@ import net.proteusframework.ui.miwt.data.SimpleListModel
 import net.proteusframework.ui.miwt.event.Event
 import net.proteusframework.ui.miwt.event.EventQueue
 import net.proteusframework.ui.miwt.event.EventQueueElement
-import net.proteusframework.ui.miwt.layout.LayoutConstraint
 import net.proteusframework.ui.miwt.util.ComponentTreeIterator
 import net.proteusframework.ui.miwt.util.MIWTUtil
 import net.proteusframework.ui.miwt.util.RendererEditorState
@@ -213,78 +211,6 @@ class ComponentEditorRequest
         if (!this.locale.equals(cer.locale))
             return false
         return true
-    }
-}
-
-class JavaScriptComponent extends ComponentImpl
-{
-    int renderCount = 0;
-    int renderLimit = 0;
-    boolean alwayInvalidate = false
-    String code
-
-    JavaScriptComponent(String code)
-    {
-        this.code = code;
-    }
-
-    JavaScriptComponent withAlwaysInvalidate(boolean value)
-    {
-        this.alwayInvalidate = value;
-        return this
-    }
-
-    JavaScriptComponent withRenderLimit(int limit)
-    {
-        if (limit < 0) limit = 0
-        this.renderLimit = limit
-        return this
-    }
-
-    @Override
-    Element getHTMLElement()
-    {
-        // Fully qualified to workaround groovy bug
-        return net.proteusframework.core.html.HTMLElement.script
-    }
-
-    @Override
-    void preRenderProcess(Request request, Response response, RendererEditorState state)
-    {
-        super.preRenderProcess(request, response, state);
-        if (alwayInvalidate)
-        {
-            invalidate()
-        }
-        if (renderLimit > 0 && renderCount >= renderLimit)
-        {
-            EventQueue.queue(new EventQueueElement() {
-
-                public int getEventPriority()
-                {
-                    return Event.PRIORITY_ACTION;
-                }
-
-                public void fire()
-                {
-                    JavaScriptComponent.this.close();
-                }
-            });
-        }
-    }
-
-    @Override
-    public void render(LayoutConstraint constraint, HTMLRenderContext context)
-    {
-        if (code && (renderLimit == 0 || renderCount < renderLimit))
-        {
-            renderCount++;
-            context.print('<script');
-            context.printHtmlAttribute('type', 'text/javascript');
-            context.println('>');
-            context.print(code)
-            context.print('\n</script>');
-        }
     }
 }
 

@@ -12,7 +12,6 @@
 package com.example.app.ui.user;
 
 import com.example.app.model.company.CompanyDAO;
-import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.profile.Membership;
 import com.example.app.model.profile.MembershipType;
 import com.example.app.model.profile.Profile;
@@ -22,7 +21,6 @@ import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.model.user.UserPosition;
 import com.example.app.service.MembershipOperationProvider;
-import com.example.app.support.AppUtil;
 import com.example.app.support.ContactUtil;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
@@ -130,20 +128,13 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
         }
     }
 
-    @Autowired
-    private UserDAO _userDAO;
-    @Autowired
-    private EntityRetriever _er;
-    @Autowired
-    private ProfileDAO _profileDAO;
-    @Autowired
-    private MembershipOperationProvider _mop;
-    @Autowired
-    private SelectedCompanyTermProvider _terms;
-    @Autowired
-    private CompanyDAO _companyDAO;
-    @Autowired
-    private UIPreferences _uiPreferences;
+    @Autowired private UserDAO _userDAO;
+    @Autowired private EntityRetriever _er;
+    @Autowired private ProfileDAO _profileDAO;
+    @Autowired private MembershipOperationProvider _mop;
+    @Autowired private CompanyDAO _companyDAO;
+    @Autowired private UIPreferences _uiPreferences;
+    @Autowired private UserManagementPermissionCheck _permissionCheck;
 
     private SearchUIImpl _searchUI;
     private NavigationAction _addAction;
@@ -521,7 +512,6 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
         _currentUser = _userDAO.getAssertedCurrentUser();
         _userProfile = _uiPreferences.getSelectedCompany();
 
-        if (!_profileDAO.canOperate(_currentUser, _userProfile, AppUtil.UTC, _mop.viewUser()))
-            throw new IllegalArgumentException("Invalid Permissions To View Page");
+        _permissionCheck.checkPermissionsForCurrent("Invalid Permissions To View Page");
     }
 }

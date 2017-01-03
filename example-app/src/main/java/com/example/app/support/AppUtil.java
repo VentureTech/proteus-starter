@@ -11,7 +11,9 @@
 
 package com.example.app.support;
 
+import com.example.app.model.company.Company;
 import com.example.app.model.profile.Membership;
+import com.example.app.model.profile.Profile;
 import com.example.app.model.profile.ProfileType;
 import com.example.app.model.resource.Resource;
 import com.example.app.model.user.User;
@@ -661,6 +663,34 @@ public class AppUtil implements Serializable
         Hibernate.initialize(value);
         EntityRetriever er = autowire(EntityRetriever.class, EntityRetriever.RESOURCE_NAME);
         Hibernate.initialize(er.reattachIfNecessary(value.getPrincipal()));
+    }
+
+    /**
+     * Initialize.
+     *
+     * @param value the value
+     */
+    public static void initialize(Profile value)
+    {
+        Hibernate.initialize(value);
+        Hibernate.initialize(value.getRepository());
+        initialize(value.getProfileType());
+    }
+
+    /**
+     * Initialize.
+     *
+     * @param value the value
+     */
+    public static void initialize(Company value)
+    {
+        initialize((Profile)value);
+        Hibernate.initialize(value.getEmailLogo());
+        Hibernate.initialize(value.getHostname());
+        Hibernate.initialize(value.getImage());
+        initialize(value.getPrimaryLocation());
+        Hibernate.initialize(value.getProfileTerms());
+        value.getLocations().forEach(AppUtil::initialize);
     }
 
     /**

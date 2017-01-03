@@ -154,9 +154,8 @@ public class UIPreferences
     }
 
     /**
-     * Gets the selected {@link Company} for the {@link UserDAO#getAssertedCurrentUser()}
-     * First checks User Preferences for a selected one, then falls back to User's owning Company.
-     * This method will never return null.
+     * Gets the selected {@link Company} based on the current Hostname.
+     * If no company exists for the current Hostname, then null is returned.
      *
      * @return the company for current user
      */

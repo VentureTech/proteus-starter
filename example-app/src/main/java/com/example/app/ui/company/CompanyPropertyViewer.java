@@ -12,9 +12,6 @@
 package com.example.app.ui.company;
 
 import com.example.app.model.company.Company;
-import com.example.app.model.user.User;
-import com.example.app.model.user.UserDAO;
-import com.example.app.support.AppUtil;
 import com.example.app.ui.ApplicationFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -34,8 +31,7 @@ import net.proteusframework.ui.miwt.util.CommonActions;
 @Configurable
 public class CompanyPropertyViewer extends PropertyViewer
 {
-    @Autowired
-    private UserDAO _userDAO;
+    @Autowired private CompanyUIPermissionCheck _permissionCheck;
 
     /**
      * Instantiates a new company property viewer.
@@ -84,10 +80,8 @@ public class CompanyPropertyViewer extends PropertyViewer
      */
     public CompanyPropertyViewer configure(Company value)
     {
-        final User currentUser = _userDAO.getAssertedCurrentUser();
-        if(!AppUtil.userHasAdminRole(currentUser))
-            throw new IllegalArgumentException(String.format("User %s does not have the correct role to view this page",
-                currentUser.getId()));
+        _permissionCheck.checkPermissionsForCurrent("You do not have the correct role to view this page");
+
         if(value == null)
         {
             throw new IllegalArgumentException("Unable to determine Development Provider");

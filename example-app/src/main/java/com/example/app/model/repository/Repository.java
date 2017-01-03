@@ -18,7 +18,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.envers.Audited;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -52,16 +51,10 @@ public class Repository extends AbstractAuditableEntity<Integer> implements Name
     public static final String NAME_COLUMN_PROP = "name";
     /** The database column and property: description */
     public static final String DESCRIPTION_COLUMN_PROP = "description";
-    /** The property: owned */
-    public static final String OWNED_PROP = "owned";
-    /** The database join table for property: assigned */
-    public static final String ASSIGNED_JOIN_TABLE = "repository_assigned";
-    /** The inverse join column for property: assigned */
-    public static final String ASSIGNED_INVERSE_JOIN = "assigned_id";
-    /** The property: assigned */
-    public static final String ASSIGNED_PROP = "assigned";
+
     private static final long serialVersionUID = -3033481916961512269L;
     private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + '.' + ID_COLUMN + "_seq";
+
     private LocalizedObjectKey _name;
     private LocalizedObjectKey _description;
 
@@ -76,9 +69,9 @@ public class Repository extends AbstractAuditableEntity<Integer> implements Name
         return super.getId();
     }
 
+    @SuppressWarnings("NullableProblems")
     @Column(name = NAME_COLUMN_PROP)
     @NotNull
-    @Nonnull
     @Override
     public LocalizedObjectKey getName()
     {
