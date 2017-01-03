@@ -61,8 +61,9 @@ import static com.example.app.ui.user.MyAccountViewLOK.LABEL_UPDATE_PASSWORD;
 public class MyAccountView extends MIWTPageElementModelPropertyViewer
 {
     private final MessageContainer _messages = new MessageContainer(35_000L);
-    @Autowired
-    private UserDAO _userDAO;
+
+    @Autowired private UserDAO _userDAO;
+    @Autowired private MyAccountPermissionCheck _permissionCheck;
 
     /**
      * Instantiate a new instance of MyAccountView
@@ -118,6 +119,7 @@ public class MyAccountView extends MIWTPageElementModelPropertyViewer
         //Used by ApplicationFunction
     void configure(ParsedRequest request)
     {
+        _permissionCheck.checkPermissionsForCurrent("You don't have a User account in the system.");
         UserValueViewer valueViewer = new UserValueViewer();
         valueViewer.setUser(_userDAO.getAssertedCurrentUser());
         valueViewer.setNotifiable(_messages);

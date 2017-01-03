@@ -84,6 +84,17 @@ public final class ApplicationFunctions
         private Company(){}
     }
 
+    /**
+     * Static class defining Application Functions for the Starter Site.
+     *
+     * @author Alan Holt (aholt@venturetech.net)
+     */
+    public static final class StarterSite
+    {
+        /** Starter Site Setup Application Function */
+        public static final String SETUP = "Starter Site Setup";
+    }
+
     private ApplicationFunctions()
     {
     }

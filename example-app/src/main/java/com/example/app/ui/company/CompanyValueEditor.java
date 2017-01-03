@@ -24,7 +24,6 @@ import com.example.app.ui.contact.PhoneNumberValueEditor;
 import com.example.app.ui.contact.PhoneNumberValueEditor.PhoneNumberValueEditorConfig;
 import com.example.app.ui.vtcrop.VTCropPictureEditor;
 import com.example.app.ui.vtcrop.VTCropPictureEditorConfig;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -51,6 +50,7 @@ import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.URLEditor;
 
 import static com.example.app.ui.UIText.INSTRUCTIONS_PICTURE_EDITOR_FMT;
+import static com.example.app.ui.company.AbstractCompanyPropertyEditor.*;
 import static com.example.app.ui.company.CompanyValueEditorLOK.*;
 import static com.i2rd.miwt.util.CSSUtil.CSS_INSTRUCTIONS;
 import static net.proteusframework.core.StringFactory.stringToURL;
@@ -62,7 +62,7 @@ import static net.proteusframework.core.locale.TextSources.createText;
  * {@link CompositeValueEditor} for {@link Company}
  *
  * @author Alan Holt (aholt@venturetech.net)
- * @since 6/27/16 1:49 PM
+ * @since 6 /27/16 1:49 PM
  */
 @I18NFile(
     symbolPrefix = "com.example.app.ui.company.CompanyValueEditor",
@@ -99,6 +99,7 @@ public class CompanyValueEditor extends CompositeValueEditor<Company>
 
     private VTCropPictureEditor _webLogoEditor;
     private VTCropPictureEditor _emailLogoEditor;
+    private EditMode _editMode = EditMode.StandardCompany;
 
     /**
      * Instantiates a new company value editor.
@@ -106,6 +107,29 @@ public class CompanyValueEditor extends CompositeValueEditor<Company>
     public CompanyValueEditor()
     {
         super(Company.class);
+    }
+
+    /**
+     * Sets edit mode.
+     *
+     * @param editMode the edit mode
+     */
+    public void setEditMode(EditMode editMode)
+    {
+        _editMode = editMode;
+    }
+
+    /**
+     * With edit mode company value editor.
+     *
+     * @param editMode the edit mode
+     *
+     * @return the company value editor
+     */
+    public CompanyValueEditor withEditMode(EditMode editMode)
+    {
+        setEditMode(editMode);
+        return this;
     }
 
     @Override
@@ -167,72 +191,80 @@ public class CompanyValueEditor extends CompositeValueEditor<Company>
             (ce, url) -> ce.setWebsiteLink(urlToString(url))
         );
 
-        final String superdomainName = _appUtil.getSite().getDefaultHostname().getName();
-        final AtomicReference<TextEditor> domainNameEditor = new AtomicReference<>();
-        final AtomicReference<Container> inputInstructionsRef = new AtomicReference<>();
-        final AtomicReference<Container> customDomainInstructionsRef = new AtomicReference<>();
-        final AtomicReference<Label> superdomainLabelRef = new AtomicReference<>();
-        Function<String, String> convertDomainUIValue = val -> {
-            if(!StringFactory.isEmptyString(val))
+        if(_editMode == EditMode.StandardCompany)
+        {
+            final String superdomainName = _appUtil.getSite().getDefaultHostname().getName();
+            final AtomicReference<TextEditor> domainNameEditor = new AtomicReference<>();
+            final AtomicReference<Container> inputInstructionsRef = new AtomicReference<>();
+            final AtomicReference<Container> customDomainInstructionsRef = new AtomicReference<>();
+            final AtomicReference<Label> superdomainLabelRef = new AtomicReference<>();
+            Function<String, String> convertDomainUIValue = val ->
             {
-                String converted = val;
-                if(converted.endsWith('.' + superdomainName))
-                    converted = converted.replace('.' + superdomainName, "");
-                converted = HOSTNAME_VALIDITY_PATTERN1.matcher(converted).replaceAll("-");
-                converted = HOSTNAME_VALIDITY_PATTERN2.matcher(converted).replaceAll("").toLowerCase();
-                return converted;
-            }
-            return val;
-        };
-        addEditorForProperty(() -> {
-            final TextEditor editor = new TextEditor(LABEL_SUB_DOMAIN(), null);
-            final Container inputInstructions = _uiHelper.createInputInstructions(
-                INSTRUCTIONS_SUB_DOMAIN(_terms.company()));
-            final Container customDomainInstructions = _uiHelper.createInputInstructions(
-                INSTRUCTIONS_CUSTOM_DOMAIN(_terms.company()));
-            final Label superdomainNameLabel = new Label(createText('.' + superdomainName), span, "super-domain-name");
-            editor.moveToTop(customDomainInstructions);
-            editor.moveToTop(inputInstructions);
-            editor.moveToTop(editor.getLabel());
-            editor.add(editor.getValueComponent());
-            editor.add(superdomainNameLabel);
-            editor.getValueComponent().addPropertyChangeListener(Field.PROP_TEXT, evt -> {
-                if(editor.isEditable())
+                if (!StringFactory.isEmptyString(val))
                 {
-                    String uiValue = editor.getValueComponent().getText();
-                    editor.getValueComponent().setText(convertDomainUIValue.apply(uiValue));
+                    String converted = val;
+                    if (converted.endsWith('.' + superdomainName))
+                        converted = converted.replace('.' + superdomainName, "");
+                    converted = HOSTNAME_VALIDITY_PATTERN1.matcher(converted).replaceAll("-");
+                    converted = HOSTNAME_VALIDITY_PATTERN2.matcher(converted).replaceAll("").toLowerCase();
+                    return converted;
                 }
-            });
+                return val;
+            };
+            addEditorForProperty(() ->
+                {
+                    final TextEditor editor = new TextEditor(LABEL_SUB_DOMAIN(), null);
+                    final Container inputInstructions = _uiHelper.createInputInstructions(
+                        INSTRUCTIONS_SUB_DOMAIN(_terms.company()));
+                    final Container customDomainInstructions = _uiHelper.createInputInstructions(
+                        INSTRUCTIONS_CUSTOM_DOMAIN(_terms.company()));
+                    final Label superdomainNameLabel = new Label(createText('.' + superdomainName), span, "super-domain-name");
+                    editor.moveToTop(customDomainInstructions);
+                    editor.moveToTop(inputInstructions);
+                    editor.moveToTop(editor.getLabel());
+                    editor.add(editor.getValueComponent());
+                    editor.add(superdomainNameLabel);
+                    editor.getValueComponent().addPropertyChangeListener(Field.PROP_TEXT, evt ->
+                    {
+                        if (editor.isEditable())
+                        {
+                            String uiValue = editor.getValueComponent().getText();
+                            editor.getValueComponent().setText(convertDomainUIValue.apply(uiValue));
+                        }
+                    });
 
-            editor.setRequiredValueValidator();
-            domainNameEditor.set(editor);
-            inputInstructionsRef.set(inputInstructions);
-            customDomainInstructionsRef.set(customDomainInstructions);
-            superdomainLabelRef.set(superdomainNameLabel);
-            return editor;
-        },
-            ce -> {
-                final TextEditor editor = domainNameEditor.get();
-                String cehostname = ce.getHostname().getName();
-                if(cehostname == null) cehostname = "";
-                domainNameEditor.get().setEditable(!(!StringFactory.isEmptyString(cehostname)
-                                                     && !cehostname.endsWith('.' + superdomainName)));
-                if(editor.isEditable())
+                    editor.setRequiredValueValidator();
+                    domainNameEditor.set(editor);
+                    inputInstructionsRef.set(inputInstructions);
+                    customDomainInstructionsRef.set(customDomainInstructions);
+                    superdomainLabelRef.set(superdomainNameLabel);
+                    return editor;
+                },
+                ce ->
                 {
-                    cehostname = convertDomainUIValue.apply(cehostname.replace('.' + superdomainName, ""));
+                    final TextEditor editor = domainNameEditor.get();
+                    String cehostname = ce.getHostname().getName();
+                    if (cehostname == null) cehostname = "";
+                    domainNameEditor.get().setEditable(!(!StringFactory.isEmptyString(cehostname)
+                                                         && !cehostname.endsWith('.' + superdomainName)));
+                    if (editor.isEditable())
+                    {
+                        cehostname = convertDomainUIValue.apply(cehostname.replace('.' + superdomainName, ""));
+                    }
+                    inputInstructionsRef.get().setVisible(editor.isEditable());
+                    superdomainLabelRef.get().setVisible(editor.isEditable());
+                    customDomainInstructionsRef.get().setVisible(!editor.isEditable());
+                    return cehostname;
+                },
+                (ce, value) ->
+                {
+                    if (domainNameEditor.get().isEditable())
+                        ce.getHostname().setName(String.join(".", value, superdomainName));
+                    else
+                        ce.getHostname().setName(ce.getHostname().getName());
                 }
-                inputInstructionsRef.get().setVisible(editor.isEditable());
-                superdomainLabelRef.get().setVisible(editor.isEditable());
-                customDomainInstructionsRef.get().setVisible(!editor.isEditable());
-                return cehostname;
-            },
-            (ce, value) -> {
-                if(domainNameEditor.get().isEditable())
-                    ce.getHostname().setName(String.join(".", value, superdomainName));
-                else
-                    ce.getHostname().setName(ce.getHostname().getName());
-            }
-        );
+            );
+        }
 
         addEditorForProperty(() -> {
                 final URLEditor editor = new URLEditor(LABEL_LINKEDIN(), null);
@@ -267,8 +299,7 @@ public class CompanyValueEditor extends CompositeValueEditor<Company>
 
         if(value != null)
         {
-            Hibernate.initialize(value);
-            AppUtil.initialize(value.getProfileType());
+            AppUtil.initialize(value);
         }
 
         if(isInited())

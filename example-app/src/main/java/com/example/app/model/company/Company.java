@@ -122,7 +122,7 @@ public class Company extends Profile
     private String _facebookLink;
     private String _googlePlusLink;
     private List<Location> _locations = new ArrayList<>();
-    private Location _primaryLocation;
+    private Location _primaryLocation = new Location();
     private String _programmaticIdentifier;
     private List<User> _users = new ArrayList<>();
     private CompanyStatus _status = CompanyStatus.Inactive;
@@ -398,7 +398,7 @@ public class Company extends Profile
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = LOCATIONS_JOIN_COLUMN)
     @Cascade(CascadeType.ALL)
-    @Nullable
+    @NotNull
     public Location getPrimaryLocation()
     {
         return _primaryLocation;
@@ -409,7 +409,7 @@ public class Company extends Profile
      *
      * @param primaryLocation the primary location
      */
-    public void setPrimaryLocation(@Nullable Location primaryLocation)
+    public void setPrimaryLocation(@NotNull Location primaryLocation)
     {
         _primaryLocation = primaryLocation;
     }

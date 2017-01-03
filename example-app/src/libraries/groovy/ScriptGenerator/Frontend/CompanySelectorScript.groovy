@@ -30,6 +30,8 @@ import net.proteusframework.core.locale.NamedObjectComparator
 import net.proteusframework.core.spring.ApplicationContextUtils
 import net.proteusframework.data.http.URLGenerator
 import net.proteusframework.internet.http.Scope
+import net.proteusframework.users.model.Principal
+import net.proteusframework.users.model.dao.PrincipalDAO
 import org.springframework.beans.factory.annotation.Autowired
 
 import java.util.concurrent.TimeUnit
@@ -44,6 +46,7 @@ import static net.proteusframework.cms.support.HTMLPageElementUtil.getExpireTime
 @CompileStatic
 class CompanySelectorGenerator extends AbstractScriptGenerator
 {
+    @Autowired PrincipalDAO _principalDAO
     @Autowired UserDAO _userDAO
     @Autowired CompanyDAO _companyDAO
     @Autowired ProfileDAO _profileDAO
@@ -51,6 +54,7 @@ class CompanySelectorGenerator extends AbstractScriptGenerator
     @Autowired UIPreferences _uiPreferences
 
     private User _currentUser
+    private Principal _currentPrincipal
     private Company _currentCompany
     private List<Company> _companies
     long expireTime = 0L;
@@ -84,11 +88,14 @@ class CompanySelectorGenerator extends AbstractScriptGenerator
     void preRenderProcess(CmsRequest request, CmsResponse response, ProcessChain chain)
     {
         _currentUser = _userDAO.currentUser
-        if (_currentUser == null)
+        _currentPrincipal = _principalDAO.currentPrincipal
+        if (_currentUser == null && _currentPrincipal == null)
             return
         setExpireTime(getExpireTime(request.getPageElement(), TimeUnit.MINUTES, 10))
         _currentCompany = _uiPreferences.getSelectedCompany()
-        _companies = _companyDAO.getActiveCompanies(_currentUser)
+        _companies = (_currentUser != null
+            ? _companyDAO.getActiveCompanies(_currentUser)
+            : _companyDAO.getActiveCompanies(_currentPrincipal))
         if (!_companies.contains(_currentCompany) && _currentCompany != null)
         {
             _companies.add(0, _currentCompany)
@@ -99,27 +106,30 @@ class CompanySelectorGenerator extends AbstractScriptGenerator
     @Override
     void render(CmsRequest request, CmsResponse response, RenderChain chain) throws IOException
     {
-        if(_currentUser == null)
+        if(_currentUser == null && _currentPrincipal == null)
             return
 
         EntityUtilWriter writer = response.getContentWriter()
 
         writer.append('<span class="company-selector dropdown">')
         writer.append('<span class="toggler-wrapper" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">')
-        writer.append('<span class="selected-logo"')
-        if(_currentCompany.getImage() != null)
+        if(_currentCompany != null)
         {
-            def imageURL = _urlGenerator.createURL(_currentCompany.getImage())
-            writer.appendEscapedAttribute('data-background-image', imageURL.getURL(true))
+            writer.append('<span class="selected-logo"')
+            if (_currentCompany.getImage() != null)
+            {
+                def imageURL = _urlGenerator.createURL(_currentCompany.getImage())
+                writer.appendEscapedAttribute('data-background-image', imageURL.getURL(true))
+            }
+            writer.append('>').appendEscapedData(_currentCompany.getName()).append('</span>')
+            if (_companies.size() > 1)
+            {
+                writer.append('<span class="fa fa-chevron-right"></span>')
+            }
+            writer.append('</span>')
         }
-        writer.append('>').appendEscapedData(_currentCompany.getName()).append('</span>')
-        if(_companies.size() > 1)
-        {
-            writer.append('<span class="fa fa-chevron-right"></span>')
-        }
-        writer.append('</span>')
 
-        if(_companies.size() > 1)
+        if(_companies.size() > 1 || (_companies.size() > 0 && _currentCompany == null))
         {
             writer.append('<span class="dropdown-menu">')
             _companies.forEach({Company company ->

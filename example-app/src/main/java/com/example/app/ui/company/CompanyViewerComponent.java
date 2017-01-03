@@ -14,10 +14,6 @@ package com.example.app.ui.company;
 import com.example.app.model.company.Company;
 import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.profile.MembershipTypeInfo;
-import com.example.app.model.user.User;
-import com.example.app.model.user.UserDAO;
-import com.example.app.support.AppUtil;
-import com.example.app.support.Functions;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
 import com.example.app.ui.UIPreferences;
@@ -28,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelContainer;
@@ -53,8 +48,6 @@ import net.proteusframework.ui.miwt.component.TabItemDisplay;
 import net.proteusframework.ui.miwt.component.composite.TabbedContainerImpl;
 import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
-import net.proteusframework.users.model.Principal;
-import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static com.example.app.ui.UIText.*;
 import static com.example.app.ui.URLProperties.COMPANY;
@@ -92,11 +85,10 @@ public class CompanyViewerComponent extends MIWTPageElementModelContainer
 {
     private static final String SELECTED_TAB_PROP = "company-selected-tab-";
 
-    @Autowired private PrincipalDAO _principalDAO;
     @Autowired private EntityRetriever _er;
     @Autowired private UIPreferences _uiPreferences;
-    @Autowired private UserDAO _userDAO;
     @Autowired private SelectedCompanyTermProvider _terms;
+    @Autowired private CompanyUIPermissionCheck _permissionCheck;
 
     private Company _company;
 
@@ -208,13 +200,7 @@ public class CompanyViewerComponent extends MIWTPageElementModelContainer
     @SuppressWarnings("unused") //Used by ApplicationFunction
     void configure(ParsedRequest request)
     {
-        final User currentUser = _userDAO.getCurrentUser();
-        final Principal currentPrincipal = _principalDAO.getCurrentPrincipal();
-        if(currentPrincipal == null
-           || !Optional.ofNullable(currentUser).map(AppUtil::userHasAdminRole).orElse(AppUtil.userHasAdminRole(currentPrincipal)))
-            throw new IllegalArgumentException(String.format("User %s does not have the correct role to view this page",
-                Functions.orElseFlatMap(Optional.ofNullable(currentUser).map(User::getId),
-                    () -> Optional.ofNullable(currentPrincipal).map(Principal::getId).map(Long::intValue)).orElse(0)));
+        _permissionCheck.checkPermissionsForCurrent("You do not have the correct role to view this page");
 
         _company = request.getPropertyValue(COMPANY);
 
