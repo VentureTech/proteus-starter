@@ -14,7 +14,9 @@ package experimental.cms.dsl
 import com.i2rd.cms.backend.BackendConfig
 import com.i2rd.cms.bean.ScriptingBeanPageElementModelFactory
 import com.i2rd.cms.component.miwt.MIWTPageElementModelFactory
+import com.i2rd.lib.ILibraryType
 import com.i2rd.lib.Library
+import com.i2rd.lib.LibraryConfiguration
 import net.proteusframework.cms.CmsSite
 import net.proteusframework.core.StringFactory.trimSlashes
 import net.proteusframework.core.html.Element
@@ -203,4 +205,6 @@ interface ContentHelper {
     fun createLibrary(libraryName: String, libraryPath: String, libraryType: String): Library<*>?
 
     fun saveLibrary(library: Library<*>)
+    fun <LT : ILibraryType<LT>?> getLibraryConfiguration(library: Library<LT>): LibraryConfiguration<LT>?
+    fun saveLibraryConfiguration(libraryConfiguration: LibraryConfiguration<*>)
 }
