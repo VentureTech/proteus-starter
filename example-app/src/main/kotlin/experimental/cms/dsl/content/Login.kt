@@ -13,17 +13,20 @@ package experimental.cms.dsl.content
 
 import com.i2rd.cms.bean.LoginBean
 import com.i2rd.cms.bean.LoginBeanContentBuilder
+import com.i2rd.cms.scripts.impl.ScriptableRedirectType
+import com.i2rd.lib.Library
+import com.i2rd.lib.LibraryConfiguration
 import com.i2rd.xml.XsdConstants
 import experimental.cms.dsl.*
 import net.proteusframework.cms.component.ContentElement
 
-class Login(id: String)
-    : Identifiable(id), Content {
+class Login(id: String) : Identifiable(id), Content {
 
-    var landingPage: Page? = null
+    private var landingPage: Page? = null
     var forgotPasswordText = ""
     var resetPasswordText = ""
     var titleText = ""
+    private var scriptedRedirect: Script? = null
 
     fun landingPage(landingPageId: String) {
         getSite().siteConstructedCallbacks.add({ site ->
@@ -32,8 +35,12 @@ class Login(id: String)
         })
     }
 
+    fun scriptedRedirect(file: String) {
+        scriptedRedirect = Script(ScriptType.LoginRedirect, file)
+    }
+
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
-        val contentElement = existing?:LoginBean()
+        val contentElement = existing ?: LoginBean()
         val builder = LoginBeanContentBuilder()
         updateBuilder(builder, helper)
         return ContentInstance(contentElement, builder.content)
@@ -53,6 +60,22 @@ class Login(id: String)
         builder.setData(LoginBean.ContentPurpose.forgotten_password, forgotPasswordText, XsdConstants.XHTML_FRAGMENT_XSD)
         builder.setData(LoginBean.ContentPurpose.reset_password, resetPasswordText, XsdConstants.XHTML_FRAGMENT_XSD)
         builder.setData(LoginBean.ContentPurpose.login_form_title, titleText, XsdConstants.XHTML_FRAGMENT_XSD)
+        val redirect = scriptedRedirect
+        if(redirect != null) {
+            @Suppress("UNCHECKED_CAST")
+            val library = helper.createLibrary(id, redirect.file, redirect.type.modelName) as Library<ScriptableRedirectType>?
+            if(library != null) {
+                var lc = helper.getLibraryConfiguration(library)
+                if(lc == null) {
+                    lc = LibraryConfiguration<ScriptableRedirectType>(library)
+                    helper.saveLibraryConfiguration(lc)
+                    builder.scriptInstance = lc.getId()
+                }
+            }
+        }
+        else {
+            builder.scriptInstance = 0
+        }
     }
 
 

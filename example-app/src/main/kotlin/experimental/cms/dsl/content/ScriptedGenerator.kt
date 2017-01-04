@@ -90,6 +90,20 @@ class ScriptedGenerator(id: String) : Identifiable(id), Content {
         parameters.put(parameterName, parameterValue)
     }
 
+    override fun toString(): String {
+        return "ScriptedGenerator(" +
+            "script=$script," +
+            "parameters=$parameters," +
+            "category=$category," +
+            "path='$path'," +
+            "htmlId='$htmlId'," +
+            "htmlClass='$htmlClass'," +
+            "cssPaths=$cssPaths," +
+            "javaScriptPaths=$javaScriptPaths" +
+            ")"
+    }
+
+
     override var path: String = ""
     override var htmlId: String = ""
     override var htmlClass: String = ""

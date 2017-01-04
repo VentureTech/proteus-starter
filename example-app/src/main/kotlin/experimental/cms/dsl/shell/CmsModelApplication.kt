@@ -26,7 +26,9 @@ import com.i2rd.cms.page.BeanBoxList
 import com.i2rd.cms.util.NDEUtil
 import com.i2rd.cms.workflow.WorkFlowFactory
 import com.i2rd.hibernate.util.HibernateUtil
+import com.i2rd.lib.ILibraryType
 import com.i2rd.lib.Library
+import com.i2rd.lib.LibraryConfiguration
 import com.i2rd.lib.LibraryDAO
 import experimental.cms.dsl.*
 import experimental.cms.dsl.content.ApplicationFunction
@@ -167,7 +169,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             site.defaultHostname = hostnames[0]
             cmsBackendDAO.saveSite(site, hostnames)
             val user = principalDAO.currentPrincipal!!
-            if(!user.authenticationDomains.contains(site.domain)) {
+            if (!user.authenticationDomains.contains(site.domain)) {
                 user.authenticationDomains.add(site.domain)
                 principalDAO.savePrincipal(user)
             }
@@ -275,7 +277,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             }
             val bbl = cmsPage.getBeanBoxList().filter { it.box == box }.first()
             val contentList = valueList.filter { !page.contentToRemove.contains(it) }
-            for(value in contentList) {
+            for (value in contentList) {
                 if (bbl.elements.filter { it.name == value.id }.none()) {
                     logger.info("Creating Cms Content: ${value.id}. Adding To Box: ${box.name}")
                     val contentElement = createContentInstance(value, site)
@@ -359,16 +361,16 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
         return contentElement
     }
 
-    private fun handleNewDataSet(instance: ContentInstance, content:Content, site: CmsSite): Unit {
+    private fun handleNewDataSet(instance: ContentInstance, content: Content, site: CmsSite): Unit {
         val contentElement = instance.contentElement
         contentElement.lastModified = Date()
-        if(contentElement.name.isNullOrBlank())
+        if (contentElement.name.isNullOrBlank())
             contentElement.name = content.id
         contentElement.cssName = content.htmlId
         contentElement.styleClass = content.htmlClass
         contentElement.lastModUser = principalDAO.currentPrincipal
         contentElement.lastModified = Date()
-        if(contentElement.site == null)
+        if (contentElement.site == null)
             contentElement.site = site
         logger.info("Saving Cms Content: ${contentElement.name}")
         //session.saveOrUpdate(contentElement)
@@ -439,7 +441,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
                 IllegalArgumentException("Missing Box: ${key.id}")
             }
             val bbl = pageTemplate.getBeanBoxList().filter { it.box == box }.first()
-            for(value in contentList) {
+            for (value in contentList) {
                 if (bbl.elements.filter { it.name == value.id }.none()) {
                     logger.info("Creating Cms Content: ${value.id}. Adding To Box: ${bbl.box.name}")
                     val contentElement = createContentInstance(value, site)
@@ -476,7 +478,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
         while (it.hasNext()) {
             val ce = it.next()
             val dataSet = contentElementData.remove(ce.delegate)
-           saveChildElements(ce, hibernateUtil, site)
+            saveChildElements(ce, hibernateUtil, site)
             if (dataSet != null) {
                 logger.info("Creating New Cms Content Revision: ${ce.name}")
                 if (dataSet.id != 0)
@@ -484,9 +486,9 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
                 val newCE = contentElementDAO.createNewRevision(ce.delegate, site.primaryLocale, dataSet,
                     site.workFlow.finalState) as ContentElement
                 it.set(newCE)
-                if(ce is DelegateElement)
+                if (ce is DelegateElement)
                     ce.delegate = newCE
-            } else  {
+            } else {
                 session.save(ce.delegate)
             }
         }
@@ -498,7 +500,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
         for (de in child.delegates) {
             dElements.add(de)
         }
-        if(dElements.isNotEmpty())
+        if (dElements.isNotEmpty())
             saveContentElements(dElements, hibernateUtil, site)
     }
 
@@ -630,7 +632,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
 
     override fun assignToSite(componentIdentifier: String) {
         val siteConfiguration = cmsBackendDAO.getSiteConfiguration(currentSite)
-        if(siteConfiguration.assignedComponentIdentifiers.add(componentIdentifier))
+        if (siteConfiguration.assignedComponentIdentifiers.add(componentIdentifier))
             cmsBackendDAO.saveSiteConfiguration(siteConfiguration)
     }
 
@@ -648,7 +650,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
         } else if (results.isNotEmpty()) {
             val file = results[0]
             val libraryList = libraryDAO.getLibraries(site, file)
-            if(libraryList.size > 1)
+            if (libraryList.size > 1)
                 throw IllegalArgumentException("Multiple libraries match file link: $libraryPath for site: ${site.id}")
             var library = libraryList.firstOrNull()
             if (library == null) {
@@ -666,6 +668,26 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
 
     override fun saveLibrary(library: Library<*>) {
         libraryDAO.saveLibrary(library)
+    }
+
+    override fun <LT : ILibraryType<LT>?> getLibraryConfiguration(library: Library<LT>): LibraryConfiguration<LT>? {
+        val query = session.createQuery("SELECT lc FROM LibraryConfiguration lc WHERE lc.library = :library")
+            .setParameter("library", library)
+        @Suppress("UNCHECKED_CAST")
+        val results = query.list() as List<LibraryConfiguration<LT>>
+        if (results.size > 1) {
+            throw IllegalArgumentException(
+                "Multiple LibraryConfigurations match library: ${library.id} for site: ${currentSite!!.id}")
+        } else if (results.isNotEmpty()) {
+            return results[0]
+        } else {
+            return null
+        }
+
+    }
+
+    override fun saveLibraryConfiguration(libraryConfiguration: LibraryConfiguration<*>) {
+        libraryDAO.saveLibraryConfiguration(libraryConfiguration)
     }
 }
 
