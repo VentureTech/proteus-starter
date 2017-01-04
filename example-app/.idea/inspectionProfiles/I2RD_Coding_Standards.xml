@@ -910,6 +910,7 @@
       <option name="processLiterals" value="false" />
       <option name="processComments" value="true" />
     </inspection_tool>
+    <inspection_tool class="SpringAutowiredFieldsWarningInspection" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="SpringBootAdditionalConfig" enabled="false" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="SpringBootApplicationProperties" enabled="false" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SpringBootApplicationYaml" enabled="false" level="WARNING" enabled_by_default="true" />
@@ -1024,11 +1025,6 @@
     <inspection_tool class="UsePropertyAccessSyntax" enabled="false" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="UseVirtualFileEquals" enabled="false" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="VolatileArrayField" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="VtlDirectiveArgsInspection" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="VtlFileReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="VtlInterpolationsInspection" enabled="true" level="ERROR" enabled_by_default="true" />
-    <inspection_tool class="VtlReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="VtlTypesInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="W3CssValidation" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myCssVersion" value="css3" />
       <option name="myIgnoreVendorSpecificProperties" value="true" />
