@@ -17,6 +17,7 @@ import com.i2rd.contentmodel.data.ModelDataDAO
 import com.i2rd.contentmodel.data.ModelDataXML
 import experimental.cms.dsl.Content
 import experimental.cms.dsl.ContentHelper
+import experimental.cms.dsl.ContentInstance
 import experimental.cms.dsl.Identifiable
 import net.proteusframework.cms.component.ContentElement
 import net.proteusframework.cms.component.content.DefaultDataPurpose
@@ -27,16 +28,14 @@ open class Text(id: String, var htmlContent: String = "")
 
     internal open fun createContentElement(): ContentElement = TextBean()
 
-    override fun createInstance(helper: ContentHelper): ContentElement {
+    override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
         val contentElement = createContentElement()
         val dataSet = CmsModelDataSet()
-        dataSet.contentElement = contentElement
         val xhtml = ModelDataXML()
         xhtml.modelField = DefaultDataPurpose.rendering.name
         xhtml.value = helper.convertXHTML(htmlContent)
         dataSet.addModelData(xhtml)
-        contentElement.dataVersions.add(dataSet)
-        return contentElement
+        return ContentInstance(contentElement, dataSet)
     }
 
     override fun isModified(helper: ContentHelper, contentElement: ContentElement): Boolean {

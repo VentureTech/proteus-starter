@@ -11,6 +11,7 @@
 
 package experimental.cms.dsl
 
+import com.i2rd.cms.bean.contentmodel.CmsModelDataSet
 import net.proteusframework.cms.component.ContentElement
 import net.proteusframework.cms.component.editor.DefaultDelegatePurpose
 import net.proteusframework.cms.component.editor.DelegatePurpose
@@ -50,6 +51,8 @@ interface DelegateContent : ContentContainer {
     }
 }
 
+data class ContentInstance(val contentElement: ContentElement, val dataSet: CmsModelDataSet? = null)
+
 interface Content : HTMLIdentifier, HTMLClass, ResourceCapable, PathCapable {
     val id: String
     var parent: Any?
@@ -59,11 +62,12 @@ interface Content : HTMLIdentifier, HTMLClass, ResourceCapable, PathCapable {
     }
 
     /**
-     * Create a ContentElement implementation. If the implementation is configurable,
-     * implementors should add a CmsModelDataSet to the [ContentElement.getDataVersions]
-     * and set the [com.i2rd.cms.bean.contentmodel.CmsModelDataSet.setContentElement] property.
+     * Create a ContentInstance. If the implementation is configurable, populate
+     * the [ContentInstance.dataSet] property with a value.
+     * @param helper helper class for creating content.
+     * @param existing optional existing content element to update.
      */
-    fun createInstance(helper: ContentHelper): ContentElement
+    fun createInstance(helper: ContentHelper, existing: ContentElement? = null): ContentInstance
     fun isModified(helper: ContentHelper, contentElement: ContentElement): Boolean = false
 }
 
