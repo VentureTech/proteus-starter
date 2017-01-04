@@ -19,6 +19,7 @@ import com.i2rd.contentmodel.data.ModelData
 import com.i2rd.contentmodel.data.ModelDataDAO
 import experimental.cms.dsl.Content
 import experimental.cms.dsl.ContentHelper
+import experimental.cms.dsl.ContentInstance
 import experimental.cms.dsl.Identifiable
 import net.proteusframework.cms.component.ContentElement
 import net.proteusframework.cms.component.content.DefaultDataPurpose
@@ -117,14 +118,13 @@ class Menu(id: String): Identifiable(id), Content, MenuBuilder {
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun createInstance(helper: ContentHelper): ContentElement {
+    override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
         val contentElement = MenuBean()
         val dataSet = builder.getContent(contentElement)
         val dataSetDAO = ModelDataDAO.getInstance(contentElement.contentModelDefinition)
         val data = dataSetDAO.getData(dataSet, DefaultDataPurpose.rendering.name)!! as ModelData<String>
         data.value = helper.convertXHTML(data.value, mutableSetOf("link"))
-        contentElement.dataVersions.add(dataSet)
-        return contentElement
+        return ContentInstance(contentElement, dataSet)
     }
 
     @Suppress("UNCHECKED_CAST")

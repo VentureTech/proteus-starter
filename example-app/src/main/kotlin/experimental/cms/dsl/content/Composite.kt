@@ -12,10 +12,7 @@
 package experimental.cms.dsl.content
 
 import com.i2rd.cms.bean.CompositeBean
-import experimental.cms.dsl.Content
-import experimental.cms.dsl.ContentHelper
-import experimental.cms.dsl.DelegateContent
-import experimental.cms.dsl.Identifiable
+import experimental.cms.dsl.*
 import net.proteusframework.cms.component.ContentElement
 import net.proteusframework.cms.component.editor.DefaultDelegatePurpose
 import net.proteusframework.cms.component.editor.DelegatePurpose
@@ -25,7 +22,7 @@ class Composite(id: String)
     override val contentPurpose: MutableMap<Content, DelegatePurpose> = mutableMapOf()
     override val defaultPurpose: DelegatePurpose = DefaultDelegatePurpose.NONE
 
-    override fun createInstance(helper: ContentHelper): ContentElement = CompositeBean()
+    override fun createInstance(helper: ContentHelper, existing: ContentElement?) = ContentInstance(CompositeBean())
 
     override val contentList = mutableListOf<Content>()
     override val contentToRemove = mutableListOf<Content>()

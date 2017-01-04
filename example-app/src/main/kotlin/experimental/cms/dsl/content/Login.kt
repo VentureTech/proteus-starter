@@ -14,10 +14,7 @@ package experimental.cms.dsl.content
 import com.i2rd.cms.bean.LoginBean
 import com.i2rd.cms.bean.LoginBeanContentBuilder
 import com.i2rd.xml.XsdConstants
-import experimental.cms.dsl.Content
-import experimental.cms.dsl.ContentHelper
-import experimental.cms.dsl.Identifiable
-import experimental.cms.dsl.Page
+import experimental.cms.dsl.*
 import net.proteusframework.cms.component.ContentElement
 
 class Login(id: String)
@@ -35,14 +32,11 @@ class Login(id: String)
         })
     }
 
-    override fun createInstance(helper: ContentHelper): ContentElement {
+    override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
         val contentElement = LoginBean()
         val builder = LoginBeanContentBuilder()
         updateBuilder(builder, helper)
-        val dataSet = builder.content
-        dataSet.contentElement = contentElement
-        contentElement.dataVersions.add(dataSet)
-        return contentElement
+        return ContentInstance(contentElement, builder.content)
     }
 
     override fun isModified(helper: ContentHelper, contentElement: ContentElement): Boolean {

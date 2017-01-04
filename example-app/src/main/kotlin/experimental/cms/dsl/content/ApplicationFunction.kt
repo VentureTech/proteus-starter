@@ -14,6 +14,7 @@ package experimental.cms.dsl.content
 import com.i2rd.cms.component.miwt.MIWTPageElementModel
 import experimental.cms.dsl.Content
 import experimental.cms.dsl.ContentHelper
+import experimental.cms.dsl.ContentInstance
 import experimental.cms.dsl.Identifiable
 import net.proteusframework.cms.PageElementModelImpl
 import net.proteusframework.cms.component.ContentElement
@@ -30,7 +31,7 @@ class ApplicationFunction(id: String)
 
     var registerLink: Boolean = true
 
-    override fun createInstance(helper: ContentHelper): ContentElement {
+    override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
         val match = helper.getApplicationFunctions().filter {
             val annotation = it.javaClass.getAnnotation(ApplicationFunction::class.java)
             annotation.name == this@ApplicationFunction.id
@@ -39,7 +40,7 @@ class ApplicationFunction(id: String)
             PageElementModelImpl.StandardIdentifier(it.identifier).virtualIdentifier == match.javaClass.name
         }.first()
         helper.assignToSite(pageElementModel.identifier)
-        return helper.getMIWTPageElementModelFactory().createInstance(pageElementModel)
+        return ContentInstance(helper.getMIWTPageElementModelFactory().createInstance(pageElementModel))
     }
 
     override fun toString(): String {

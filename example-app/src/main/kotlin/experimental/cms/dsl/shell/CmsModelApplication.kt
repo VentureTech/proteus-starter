@@ -16,6 +16,7 @@ import com.i2rd.cms.SiteSSLOption
 import com.i2rd.cms.backend.BackendConfig
 import com.i2rd.cms.backend.layout.BoxInformation
 import com.i2rd.cms.bean.DelegateElement
+import com.i2rd.cms.bean.contentmodel.CmsModelDataSet
 import com.i2rd.cms.component.miwt.MIWTPageElementModelFactory
 import com.i2rd.cms.dao.CmsBackendDAO
 import com.i2rd.cms.dao.CmsSiteDefinitionDAO
@@ -105,6 +106,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     lateinit var registeredLinkDAO: RegisteredLinkDAO
 
 
+    private val contentElementData = mutableMapOf<ContentElement, CmsModelDataSet>()
     private val pagePermissionCache = mutableMapOf<String, PagePermission>()
     private val pageModelToCmsPage = mutableMapOf<Page, net.proteusframework.cms.component.page.Page>()
     private val layoutToBoxInformation = mutableMapOf<Layout, BoxInformation>()
@@ -271,6 +273,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
                     val contentElement = createContentInstance(value, site)
                     bbl.elements.add(contentElement)
                     if (value is ApplicationFunction && value.registerLink) {
+                        // FIXME : don't insert duplicate registered links
                         //                    val appFun = applicationRegistry.getApplicationFunctionByName(value.id)
                         val registeredLink = RegisteredLink()
                         registeredLink.siteId = site.id
@@ -311,15 +314,12 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     private fun createContentInstance(content: Content, site: CmsSite): ContentElement {
         var contentElement = siteDefinitionDAO.getContentElementByName(site, content.id)
         if (contentElement == null) {
-            contentElement = content.createInstance(this)
-            contentElement.name = content.id
-            contentElement.cssName = content.htmlId
-            contentElement.styleClass = content.htmlClass
-            contentElement.lastModUser = principalDAO.currentPrincipal
-            contentElement.lastModified = Date()
-            contentElement.site = site
-        } else if (content.isModified(this, contentElement)) {
             val instance = content.createInstance(this)
+            contentElement = instance.contentElement
+            handleNewDataSet(instance, content, site)
+        } else if (content.isModified(this, contentElement)) {
+            val instance = content.createInstance(this, contentElement)
+            handleNewDataSet(instance, content, site)
             Hibernate.initialize(contentElement)
             Hibernate.initialize(contentElement.dataVersions)
             for (dv in contentElement.dataVersions) {
@@ -329,22 +329,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
                 }
             }
             Hibernate.initialize(contentElement.publishedData)
-            val dataVersions = instance.dataVersions
-            for (dv in dataVersions) {
-                dv.contentElement = contentElement
-            }
             logger.info("Cms Content Is Modified: ${contentElement.name}")
-            contentElement.dataVersions.addAll(dataVersions)
-        }
-        contentElement.dataVersions.lastOrNull()?.let {
-            if (it.locale == null)
-                it.locale = currentSite!!.primaryLocale
-            it.lastModUser = principalDAO.currentPrincipal
-            it.lastModTime = Date()
-            it.modelData.forEach {
-                it.lastModUser = principalDAO.currentPrincipal
-                it.lastModTime = Date()
-            }
         }
         createNDEs(site, contentElement, content)
         if (content is DelegateContent) {
@@ -364,6 +349,31 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             }
         }
         return contentElement
+    }
+
+    private fun handleNewDataSet(instance: ContentInstance, content:Content, site: CmsSite): Unit {
+        val contentElement = instance.contentElement
+        contentElement.lastModified = Date()
+        if(contentElement.name.isNullOrBlank())
+            contentElement.name = content.id
+        contentElement.cssName = content.htmlId
+        contentElement.styleClass = content.htmlClass
+        contentElement.lastModUser = principalDAO.currentPrincipal
+        contentElement.lastModified = Date()
+        if(contentElement.site == null)
+            contentElement.site = site
+        logger.info("Saving Cms Content: ${contentElement.name}")
+        //session.saveOrUpdate(contentElement)
+        val dataSet = instance.dataSet ?: return
+        contentElementData.put(contentElement, dataSet)
+        if (dataSet.locale == null)
+            dataSet.locale = currentSite!!.primaryLocale
+        dataSet.lastModUser = principalDAO.currentPrincipal
+        dataSet.lastModTime = Date()
+        dataSet.modelData.forEach {
+            dataSet.lastModUser = principalDAO.currentPrincipal
+            dataSet.lastModTime = Date()
+        }
     }
 
     private fun createPageElementPath(pageElement: PageElement, pathInfo: PathCapable): PageElementPath {
@@ -451,22 +461,10 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
         val it = elements.listIterator()
         loop@
         while (it.hasNext()) {
-            var ce = it.next()
-            saveChildElements(ce, hibernateUtil, site)
-            if (ce.dataVersions.isEmpty()) {
-                logger.info("Saving Cms Content: ${ce.name}")
-                session.saveOrUpdate(ce.delegate)
-                continue@loop
-            }
-            if (hibernateUtil.isPersistent(ce) && ce.publishedData[site.primaryLocale] == ce.dataVersions.last()) {
-                logger.info("Skipping persistent Cms Content: ${ce.name}")
-                cmsBackendDAO.saveBean(ce.delegate as ContentElement?)
-                continue@loop
-            }
-            val dataVersions = ce.dataVersions
-            if (dataVersions.isNotEmpty()) {
-                val dataSet = dataVersions.last()
-                dataVersions.remove(dataSet)
+            val ce = it.next()
+            val dataSet = contentElementData.remove(ce.delegate)
+           saveChildElements(ce, hibernateUtil, site)
+            if (dataSet != null) {
                 logger.info("Creating New Cms Content Revision: ${ce.name}")
                 if (dataSet.id != 0)
                     throw IllegalStateException("New dataset must be new")
@@ -475,11 +473,9 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
                 it.set(newCE)
                 if(ce is DelegateElement)
                     ce.delegate = newCE
-                else
-                    ce = newCE
+            } else  {
+                session.save(ce.delegate)
             }
-            logger.info("Saving Cms Content: ${ce.name}")
-            cmsBackendDAO.saveBean(ce.delegate as ContentElement?)
 
         }
     }

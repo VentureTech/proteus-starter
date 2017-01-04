@@ -60,6 +60,12 @@ open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
 <img src="entropy/logo.png" alt="Logo" /></h1>"""
                     htmlId = "logo"
                 }
+                content("Header", JavaScript("test-js")){
+                    javaScriptContent = """alert("Hey There!");"""
+                }
+                content("Header", JavaScript("test-js2")){
+                    javaScriptContent = """alert("Hey There!");"""
+                }
                 content("Header", Menu("Top Menu")) {
                     htmlClass = "top-menu"
                     label("A Menu Item Label") {

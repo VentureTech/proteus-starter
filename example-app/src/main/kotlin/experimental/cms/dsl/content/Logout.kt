@@ -16,6 +16,7 @@ import com.i2rd.cms.bean.util.LogoutBeanContentBuilder
 import com.i2rd.expression.IExpression
 import experimental.cms.dsl.Content
 import experimental.cms.dsl.ContentHelper
+import experimental.cms.dsl.ContentInstance
 import experimental.cms.dsl.Identifiable
 import net.proteusframework.cms.component.ContentElement
 import java.util.regex.Pattern
@@ -46,7 +47,7 @@ class Logout(id: String) : Identifiable(id), Content {
     }
     var logoutExpression = DEFAULT_EXPRESSION
 
-    override fun createInstance(helper: ContentHelper): ContentElement {
+    override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
         val contentElement = LogoutBean()
         var expression = helper.convertXHTML(logoutExpression)
         expression = expression.replace(Logout.PAT_CMSLINK.toRegex(),
@@ -55,10 +56,18 @@ class Logout(id: String) : Identifiable(id), Content {
         builder.logoutOption = LogoutBean.LogoutOption.expression
         builder.logoutExpressionType = IExpression.Type.FreeMarker
         builder.logoutExpression = expression
-        val dataSet = builder.content
-        dataSet.contentElement = contentElement
-        contentElement.dataVersions.add(dataSet)
-        return contentElement
+        return ContentInstance(contentElement, builder.content)
+    }
+
+    override fun toString(): String {
+        return "Logout(" +
+            "logoutExpression='$logoutExpression'," +
+            "path='$path'," +
+            "htmlId='$htmlId'," +
+            "htmlClass='$htmlClass'," +
+            "cssPaths=$cssPaths," +
+            "javaScriptPaths=$javaScriptPaths" +
+            ")"
     }
 
     override var path: String = ""
@@ -67,4 +76,6 @@ class Logout(id: String) : Identifiable(id), Content {
     override val cssPaths = mutableListOf<String>()
     override val javaScriptPaths = mutableListOf<String>()
     override var parent: Any? = null
+
+
 }
