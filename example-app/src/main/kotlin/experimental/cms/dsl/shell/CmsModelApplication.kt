@@ -162,7 +162,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
         val hostnames = getOrCreateHostnames(siteModel, site)
         if (hostnames.isNotEmpty()) {
             site.defaultHostname = hostnames[0]
-            session.saveOrUpdate(site)
+            cmsBackendDAO.saveSite(site, hostnames)
         }
         pageList.forEach { getOrCreatePagePass1(site, it) }
         pageList.forEach { getOrCreatePagePass2(site, it) }
@@ -286,7 +286,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
                     createContentInstance(value, site) // Update content if needed
                 }
             }
-            save(site, bbl)
+            save(site, bbl, key, page)
         }
         if (!page.pagePermission.isNullOrBlank()) {
             val programmaticName: String = convertToProgrammaticName2(page.pagePermission)!!
@@ -440,12 +440,12 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
                     createContentInstance(value, site) // Update content if needed
                 }
             }
-            save(site, bbl)
+            save(site, bbl, key, template)
         }
         return pageTemplate
     }
 
-    private fun save(site: CmsSite, beanBoxList: BeanBoxList) {
+    private fun save(site: CmsSite, beanBoxList: BeanBoxList, boxModel: Box, boxedContentModel: BoxedContent) {
         logger.info("Saving BeanBoxList: ${beanBoxList.box.name}")
         val hibernateUtil = HibernateUtil.getInstance()
         val session = hsh.session
@@ -453,6 +453,11 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
         session.save(beanBoxList.box)
         val elements: MutableList<ContentElement> = beanBoxList.elements
         saveContentElements(elements, hibernateUtil, site)
+        elements.sortWith(Comparator { e1, e2 ->
+            val idx1: Int = boxedContentModel.indexOf(boxModel, e1.name)
+            val idx2: Int = boxedContentModel.indexOf(boxModel, e2.name)
+            idx1 - idx2
+        });
         session.flush()
     }
 
@@ -476,7 +481,6 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             } else  {
                 session.save(ce.delegate)
             }
-
         }
     }
 
