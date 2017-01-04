@@ -32,6 +32,8 @@ class ApplicationFunction(id: String)
     var registerLink: Boolean = true
 
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
+        if(existing != null)
+            return ContentInstance(existing)
         val match = helper.getApplicationFunctions().filter {
             val annotation = it.javaClass.getAnnotation(ApplicationFunction::class.java)
             annotation.name == this@ApplicationFunction.id

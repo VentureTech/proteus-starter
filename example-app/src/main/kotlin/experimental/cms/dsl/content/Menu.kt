@@ -119,7 +119,7 @@ class Menu(id: String): Identifiable(id), Content, MenuBuilder {
 
     @Suppress("UNCHECKED_CAST")
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
-        val contentElement = MenuBean()
+        val contentElement: MenuBean = existing as MenuBean? ?:MenuBean()
         val dataSet = builder.getContent(contentElement)
         val dataSetDAO = ModelDataDAO.getInstance(contentElement.contentModelDefinition)
         val data = dataSetDAO.getData(dataSet, DefaultDataPurpose.rendering.name)!! as ModelData<String>

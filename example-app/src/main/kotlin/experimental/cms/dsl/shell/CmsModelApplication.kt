@@ -16,6 +16,7 @@ import com.i2rd.cms.SiteSSLOption
 import com.i2rd.cms.backend.BackendConfig
 import com.i2rd.cms.backend.layout.BoxInformation
 import com.i2rd.cms.bean.DelegateElement
+import com.i2rd.cms.bean.ScriptingBeanPageElementModelFactory
 import com.i2rd.cms.bean.contentmodel.CmsModelDataSet
 import com.i2rd.cms.component.miwt.MIWTPageElementModelFactory
 import com.i2rd.cms.dao.CmsBackendDAO
@@ -74,6 +75,8 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     lateinit var _backendConfig: BackendConfig
     @Autowired
     lateinit var _miwtPageElementModelFactory: MIWTPageElementModelFactory
+    @Autowired
+    lateinit var _scriptingBeanPageElementModelFactory: ScriptingBeanPageElementModelFactory
     @Autowired(required = false)
     @Qualifier("ApplicationFunction")
     lateinit var _applicationFunctionComponents: List<Component>
@@ -163,10 +166,11 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
         if (hostnames.isNotEmpty()) {
             site.defaultHostname = hostnames[0]
             cmsBackendDAO.saveSite(site, hostnames)
-            val user = principalDAO.currentPrincipal
-            user!!.authenticationDomains.add(site.domain)
-            principalDAO.savePrincipal(user)
-
+            val user = principalDAO.currentPrincipal!!
+            if(!user.authenticationDomains.contains(site.domain)) {
+                user.authenticationDomains.add(site.domain)
+                principalDAO.savePrincipal(user)
+            }
         }
         pageList.forEach { getOrCreatePagePass1(site, it) }
         pageList.forEach { getOrCreatePagePass2(site, it) }
@@ -618,14 +622,16 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
 
     override fun getMIWTPageElementModelFactory() = _miwtPageElementModelFactory
 
+    override fun getScriptingBeanPageElementModelFactory() = _scriptingBeanPageElementModelFactory
+
     override fun getApplicationFunctions(): List<Component> = _applicationFunctionComponents
 
     override fun getCmsSite() = currentSite!!
 
     override fun assignToSite(componentIdentifier: String) {
         val siteConfiguration = cmsBackendDAO.getSiteConfiguration(currentSite)
-        siteConfiguration.assignedComponentIdentifiers.add(componentIdentifier)
-        cmsBackendDAO.saveSiteConfiguration(siteConfiguration)
+        if(siteConfiguration.assignedComponentIdentifiers.add(componentIdentifier))
+            cmsBackendDAO.saveSiteConfiguration(siteConfiguration)
     }
 
     override fun createLibrary(libraryName: String, libraryPath: String, libraryType: String): Library<*>? {
@@ -641,7 +647,10 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             throw IllegalArgumentException("Multiple files match file link: $libraryPath for site: ${site.id}")
         } else if (results.isNotEmpty()) {
             val file = results[0]
-            var library = libraryDAO.getLibraries(site, file).firstOrNull()
+            val libraryList = libraryDAO.getLibraries(site, file)
+            if(libraryList.size > 1)
+                throw IllegalArgumentException("Multiple libraries match file link: $libraryPath for site: ${site.id}")
+            var library = libraryList.firstOrNull()
             if (library == null) {
                 val type = libraryDAO.libraryTypes.filter { it.getModelName() == libraryType }.first()
                 library = type.createLibrary()

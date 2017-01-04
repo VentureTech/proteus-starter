@@ -23,13 +23,12 @@ import net.proteusframework.cms.component.ContentElement
 import net.proteusframework.cms.component.content.DefaultDataPurpose
 import net.proteusframework.core.xml.XMLUtil
 
-open class Text(id: String, var htmlContent: String = "")
-    : Identifiable(id), Content {
+open class Text(id: String, var htmlContent: String = "") : Identifiable(id), Content {
 
     internal open fun createContentElement(): ContentElement = TextBean()
 
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
-        val contentElement = createContentElement()
+        val contentElement = existing?:createContentElement()
         val dataSet = CmsModelDataSet()
         val xhtml = ModelDataXML()
         xhtml.modelField = DefaultDataPurpose.rendering.name

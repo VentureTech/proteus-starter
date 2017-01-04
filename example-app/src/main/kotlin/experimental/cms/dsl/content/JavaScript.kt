@@ -23,7 +23,7 @@ class JavaScript(id: String, var javaScriptContent: String = "", var renderInHea
     : Identifiable(id), Content {
 
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
-        val contentElement = JavaScriptBean()
+        val contentElement = existing?:JavaScriptBean()
         val builder = JavaScriptBeanContentBuilder()
         builder.isOutputInHEAD = renderInHead
         builder.javaScriptData = javaScriptContent
