@@ -14,11 +14,10 @@ package com.example.app.ui.user;
 
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
-import com.example.app.service.ProfileService;
 import com.example.app.support.ContactUtil;
-import com.example.app.terminology.ProfileTermProvider;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
+import com.example.app.ui.UIPreferences;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +46,9 @@ import net.proteusframework.users.model.PasswordCredentials;
 import net.proteusframework.users.model.dao.NonUniqueCredentialsException;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
+import static com.example.app.ui.UIText.USER;
 import static com.example.app.ui.user.MyAccountEditLOK.COMPONENT_NAME;
 import static com.example.app.ui.user.MyAccountEditLOK.ERROR_MESSAGE_USERNAME_EXISTS_FMT;
-import static net.proteusframework.core.locale.TextSources.createText;
 import static net.proteusframework.core.notification.NotificationImpl.error;
 
 /**
@@ -59,7 +58,7 @@ import static net.proteusframework.core.notification.NotificationImpl.error;
  * @since 12/22/15 3:15 PM
  */
 @I18NFile(
-    symbolPrefix = "com.lrsuccess.ldp.ui.user.MyAccountEdit",
+    symbolPrefix = "com.example.app.ui.user.MyAccountEdit",
     i18n = {
         @I18N(symbol = "Component Name", l10n = @L10N("My Account Edit")),
         @I18N(symbol = "Error Message Username Exists FMT",
@@ -77,17 +76,11 @@ public class MyAccountEdit extends MIWTPageElementModelPropertyEditor<User>
     /** Logger. */
     private static final Logger _logger = LogManager.getLogger(MyAccountEdit.class);
 
-    @Autowired
-    private UserDAO _userDAO;
-    @Autowired
-    private ProfileService _profileService;
-    @Autowired
-    private PrincipalDAO _principalDAO;
-    @Autowired
-    @Qualifier(HibernateSessionHelper.RESOURCE_NAME)
-    private HibernateSessionHelper _sessionHelper;
-    @Autowired
-    private ProfileTermProvider _terms;
+    @Autowired private UserDAO _userDAO;
+    @Autowired private PrincipalDAO _principalDAO;
+    @Autowired @Qualifier(HibernateSessionHelper.RESOURCE_NAME) private HibernateSessionHelper _sessionHelper;
+    @Autowired private UIPreferences _uiPreferences;
+    @Autowired private MyAccountPermissionCheck _permissionCheck;
 
     /**
      * Instantiate a new instance of MyAccountEdit
@@ -106,13 +99,14 @@ public class MyAccountEdit extends MIWTPageElementModelPropertyEditor<User>
         //Used by ApplicationFunction
     void configure(ParsedRequest request)
     {
+        _permissionCheck.checkPermissionsForCurrent("You don't have a User account in the system.");
         User currentUser = _userDAO.getAssertedCurrentUser();
-        getValueEditor().setInitialProfile(_profileService.getAdminProfileForUser(currentUser).orElseThrow(
-            () -> new IllegalArgumentException("Coaching Entity on User for My Account was null.  This should not happen.")));
         getValueEditor().setAuthDomains(_userDAO.getAuthenticationDomainsToSaveOnUserPrincipal(currentUser));
         getValueEditor().setAdminMode(false);
         getValueEditor().setValue(currentUser);
-    }    @SuppressWarnings("Duplicates")
+    }
+
+    @SuppressWarnings("Duplicates")
     @Override
     public void init()
     {
@@ -165,7 +159,7 @@ public class MyAccountEdit extends MIWTPageElementModelPropertyEditor<User>
                     catch (NonUniqueCredentialsException e)
                     {
                         _logger.error("Unable to persist changes to the Principal.", e);
-                        getNotifiable().sendNotification(error(createText(ERROR_MESSAGE_USERNAME_EXISTS_FMT(), _terms.user())));
+                        getNotifiable().sendNotification(error(ERROR_MESSAGE_USERNAME_EXISTS_FMT(USER())));
                     }
                     _sessionHelper.commitTransaction();
                 }

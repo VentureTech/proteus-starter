@@ -16,44 +16,37 @@ import javax.annotation.Nullable;
 
 import net.proteusframework.core.locale.NamedObject;
 import net.proteusframework.core.locale.TextSource;
-import net.proteusframework.core.locale.TextSources;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
 
-import static com.example.app.model.company.LocationStatusLOK.*;
-
 /**
- * Statuses for a {@link Company}
+ * Enum defining possible status of a {@link Company}
  *
- * @author Ken Logan (klogan@venturetech.net)
+ * @author Alan Holt (aholt@venturetech.net)
+ * @since 6/27/16 10:22 AM
  */
-@SuppressWarnings("unused")
 @I18NFile(
-    symbolPrefix = "com.poultryexchange.tpe.model.CompanyStatus",
+    symbolPrefix = "com.example.app.model.company.CompanyStatus",
     i18n = {
-        @I18N(symbol = "Name Pending", l10n = @L10N("Pending")),
-        @I18N(symbol = "Name Active", l10n = @L10N("Active")),
-        @I18N(symbol = "Name Inactive", l10n = @L10N("Inactive")),
+        @I18N(symbol = "Active Name", l10n = @L10N("Active")),
+        @I18N(symbol = "Inactive Name", l10n = @L10N("Inactive"))
     }
 )
 public enum CompanyStatus implements NamedObject
 {
-    /** Pending */
-    PENDING(NAME_PENDING()),
     /** Active */
-    ACTIVE(NAME_ACTIVE()),
+    Active(CompanyStatusLOK.ACTIVE_NAME()),
     /** Inactive */
-    INACTIVE(NAME_INACTIVE()),;
+    Inactive(CompanyStatusLOK.INACTIVE_NAME())
+    ;
 
-    /** Localized name */
     private final TextSource _name;
 
-    CompanyStatus(TextSource name)
+    CompanyStatus(@Nonnull TextSource name)
     {
         _name = name;
     }
-
 
     @Nonnull
     @Override
@@ -66,8 +59,6 @@ public enum CompanyStatus implements NamedObject
     @Override
     public TextSource getDescription()
     {
-        return TextSources.EMPTY;
+        return null;
     }
-
-
 }

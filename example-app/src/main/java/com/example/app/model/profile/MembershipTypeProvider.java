@@ -91,8 +91,7 @@ public class MembershipTypeProvider implements ApplicationListener<ApplicationCo
     @Bean
     public MembershipType companyAdmin()
     {
-        return _profileDAO.getMembershipTypeOrNew(_profileTypeProvider.company(), "admin",
-            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "System Admin For Companies"),
+        return _profileDAO.getMembershipTypeOrNew(_profileTypeProvider.company(), MembershipTypeInfo.SystemAdmin,
             () -> _mop.getOperations());
     }
 }

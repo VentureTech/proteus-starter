@@ -11,13 +11,15 @@
 
 package com.example.app.ui.repository;
 
+import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.profile.MembershipOperation;
 import com.example.app.model.repository.Repository;
 import com.example.app.model.repository.RepositoryDAO;
 import com.example.app.model.repository.RepositoryItem;
+import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
-import com.example.app.terminology.ProfileTermProvider;
+
 import com.example.app.ui.SelectActionColumn;
 import com.google.common.base.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +97,7 @@ public abstract class RepositoryItemSelector<RI extends RepositoryItem> extends 
     @Autowired
     protected MembershipOperationProvider _mop;
     @Autowired
-    protected ProfileTermProvider _terms;
+    protected SelectedCompanyTermProvider _terms;
 
     private final List<Repository> _repositories = new ArrayList<>();
     private RepositoryItemSelectorMode _mode = LONG;

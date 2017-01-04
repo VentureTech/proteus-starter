@@ -72,7 +72,7 @@ public class PublicResourceListing extends ResourceListing
     @PostConstruct
     public void postConstruct()
     {
-        setIcon(_classPathResourceLibraryHelper.createResource("lr/cms/icons/plan-resources.png"));
+        setIcon(_classPathResourceLibraryHelper.createResource("example/cms/icons/resources.png"));
     }
 
     @Override

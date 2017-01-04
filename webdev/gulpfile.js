@@ -153,3 +153,5 @@ gulp.task('favicons:clean', function(callback) {
         callback();
     });
 });
+
+require('gulp-task-list')(gulp);

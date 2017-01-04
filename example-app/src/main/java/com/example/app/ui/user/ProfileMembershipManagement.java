@@ -12,17 +12,17 @@
 package com.example.app.ui.user;
 
 import com.example.app.config.ProjectCacheRegions;
+import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.profile.Membership;
 import com.example.app.model.profile.MembershipType;
 import com.example.app.model.profile.MembershipTypeProvider;
 import com.example.app.model.profile.Profile;
 import com.example.app.model.profile.ProfileDAO;
 import com.example.app.model.profile.ProfileType;
+import com.example.app.model.terminology.ProfileTermProvider;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
-import com.example.app.service.ProfileService;
-import com.example.app.terminology.ProfileTermProvider;
 import com.google.common.base.Preconditions;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,11 +139,9 @@ public class ProfileMembershipManagement extends HistoryContainer
     @Autowired
     private UserDAO _userDAO;
     @Autowired
-    private ProfileService _profileService;
-    @Autowired
     private MembershipOperationProvider _mop;
     @Autowired
-    private ProfileTermProvider _terms;
+    private SelectedCompanyTermProvider _terms;
     @Autowired
     private MembershipTypeProvider _membershipTypeProvider;
     private DataColumnTable<Membership> _membershipTable;
@@ -276,13 +274,12 @@ public class ProfileMembershipManagement extends HistoryContainer
         Hibernate.initialize(currentUser);
         Hibernate.initialize(currentUser.getPrincipal());
         Hibernate.initialize(currentUser.getPrincipal().getContact());
-        final Profile adminProfile = _profileService.getAdminProfileForUser(currentUser)
-            .orElseThrow(() -> new IllegalArgumentException("A user must have a coaching entity."));
+        final Profile adminProfile = getProfile();
         final TimeZone timeZone = getSession().getTimeZone();
         boolean isAdminish = _profileDAO.canOperate(currentUser, adminProfile, timeZone, _mop.modifyCompany());
         if (!_profileDAO.canOperate(currentUser, adminProfile, timeZone, _mop.modifyUserRoles()))
         {
-            Label label = new Label(createText(INSUFFICIENT_PERMISSIONS(), _terms.membership()))
+            Label label = new Label(INSUFFICIENT_PERMISSIONS(MEMBERSHIP()))
                 .withHTMLElement(HTMLElement.h3);
             setDefaultComponent(label);
             return;
@@ -308,7 +305,7 @@ public class ProfileMembershipManagement extends HistoryContainer
         userColumn.setColumnName(CommonColumnText.USER);
         userColumn.setComparator(nocComparator);
         PropertyColumn membershipTypeColumn = new PropertyColumn(Membership.class, Membership.MEMBERSHIP_TYPE_PROP);
-        membershipTypeColumn.setColumnName(_terms.membershipType());
+        membershipTypeColumn.setColumnName(MEMBERSHIP_TYPE());
         membershipTypeColumn.setComparator(nocComparator);
         PropertyColumn membershipDStartColumn = new PropertyColumn(Membership.class, Membership.START_DATE_PROP);
         membershipDStartColumn.setColumnName(START_DATE());
@@ -381,7 +378,7 @@ public class ProfileMembershipManagement extends HistoryContainer
         };
         editOperationsBtn.addActionListener(eev -> doOperationEdit(_membershipTable.getLeadSelection()));
         PushButton editActivationDatesBtn = new PushButton(ACTION_EDIT_DATES());
-        editActivationDatesBtn.setTooltip(createText(TOOLTIP_EDIT_DATES(), _terms.membership()));
+        editActivationDatesBtn.setTooltip(TOOLTIP_EDIT_DATES(MEMBERSHIP()));
         editActivationDatesBtn.addActionListener(eev -> doDatesEdit(_membershipTable.getLeadSelection()));
 
         PushButton deactivateBtn = new PushButton(ACTION_DEACTIVATE())
@@ -409,7 +406,7 @@ public class ProfileMembershipManagement extends HistoryContainer
         });
 
         PushButton deleteBtn = CommonActions.DELETE.push();
-        deleteBtn.getButtonDisplay().setConfirmText(createText(DELETE_CONFIRM_TEXT_FMT(), _terms.membership()));
+        deleteBtn.getButtonDisplay().setConfirmText(DELETE_CONFIRM_TEXT_FMT(MEMBERSHIP()));
         deleteBtn.addActionListener(dev -> {
             final Membership membership = _membershipTable.getLeadSelection();
             assert membership != null;
@@ -431,7 +428,7 @@ public class ProfileMembershipManagement extends HistoryContainer
 
 
         Menu menu = new Menu(CommonButtonText.ADD);
-        menu.setTooltip(ConcatTextSource.create(CommonButtonText.ADD, _terms.membershipType()).withSpaceSeparator());
+        menu.setTooltip(ConcatTextSource.create(CommonButtonText.ADD, MEMBERSHIP_TYPE()).withSpaceSeparator());
         enableTooltip(menu);
         menu.addClassName("entity-action");
         LocaleContext lc = getLocaleContext();

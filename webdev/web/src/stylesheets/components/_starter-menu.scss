@@ -48,7 +48,7 @@
 
 
 .field span.label,
-.top-menu a.dropdown{
+.starter-menu a.dropdown{
 	color: #444;
 	font-size: 90%;
 }
@@ -105,7 +105,7 @@ header {
 	}
 }
 
-.top-menu {
+.starter-menu {
 
 	> li {
 		float: left;
@@ -224,7 +224,7 @@ header {
 		background: transparent;
 	}
 
-	div.lr-top-menu {
+	div.starter-menu-wrapper {
 		position: fixed;
 		width: 100%;
 		left: 0;
@@ -234,7 +234,7 @@ header {
 
 	}
 
-	.top-menu {
+	.starter-menu {
 		margin-top: 0;
 		@include clearfix();
 		display: flex;

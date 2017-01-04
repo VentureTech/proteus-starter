@@ -23,14 +23,13 @@ import com.example.app.model.resource.Resource;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
-import com.example.app.service.ProfileService;
 import com.example.app.service.ResourceCategoryLabelProvider;
 import com.example.app.service.ResourceTagsLabelProvider;
 import com.example.app.service.ResourceTypeService;
 import com.example.app.support.AppUtil;
-import com.example.app.terminology.ProfileTermProvider;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
+import com.example.app.ui.UIPreferences;
 import com.example.app.ui.URLProperties;
 import com.google.common.base.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +89,8 @@ import net.proteusframework.ui.search.SearchUIOperationHandler;
 import net.proteusframework.ui.search.SimpleConstraint;
 
 import static com.example.app.support.AppUtil.nullFirst;
+import static com.example.app.ui.UIText.REPOSITORY;
+import static com.example.app.ui.UIText.RESOURCE;
 import static com.example.app.ui.resource.ResourceRepositoryItemManagementLOK.*;
 import static com.example.app.ui.resource.ResourceText.LABEL_AUTHOR;
 import static net.proteusframework.core.locale.TextSources.createText;
@@ -101,7 +102,7 @@ import static net.proteusframework.core.locale.TextSources.createText;
  * @since 12/11/15 4:19 PM
  */
 @I18NFile(
-    symbolPrefix = "com.lrsuccess.ldp.ui.resource.ResourceRepositoryItemManagement",
+    symbolPrefix = "com.example.app.ui.resource.ResourceRepositoryItemManagement",
     i18n = {
         @I18N(symbol = "Component Name", l10n = @L10N("Resource Repository Item Management")),
         @I18N(symbol = "Search Model Name FMT", l10n = @L10N("{0} {1} Item Search")),
@@ -159,9 +160,7 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
     @Autowired
     private ResourceTagsLabelProvider _rclp;
     @Autowired
-    private ProfileTermProvider _terms;
-    @Autowired(required = false)
-    private ProfileService _profileService;
+    private UIPreferences _uiPreferences;
 
     private User _currentUser;
     private Profile _adminProfile;
@@ -190,7 +189,7 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
         options.setSearchOnPageLoad(true);
 
         _addMenu = new Menu(CommonButtonText.ADD);
-        _addMenu.setTooltip(ConcatTextSource.create(CommonButtonText.ADD, _terms.resource()).withSpaceSeparator());
+        _addMenu.setTooltip(ConcatTextSource.create(CommonButtonText.ADD, RESOURCE()).withSpaceSeparator());
         AppUtil.enableTooltip(_addMenu);
         _addMenu.addClassName("entity-action");
         _rts.getResourceTypes().forEach(resourceType -> {
@@ -227,15 +226,15 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
     {
         SearchModelImpl searchModel = new SearchModelImpl();
         searchModel.setName("Resource Repository Item Search");
-        searchModel.setDisplayName(createText(SEARCH_MODEL_NAME_FMT(), _terms.resource(), _terms.repository()));
+        searchModel.setDisplayName(SEARCH_MODEL_NAME_FMT(RESOURCE(), REPOSITORY()));
 
         addConstraints(searchModel);
 
         addResultColumns(searchModel);
 
         SearchSupplierImpl searchSupplier = new SearchSupplierImpl();
-        searchSupplier.setName(createText(SEARCH_SUPPLIER_NAME_FMT(), _terms.resource(), _terms.repository()));
-        searchSupplier.setDescription(createText(SEARCH_SUPPLIER_DESCRIPTION_FMT(), _terms.resource(), _terms.repository()));
+        searchSupplier.setName(SEARCH_SUPPLIER_NAME_FMT(RESOURCE(), REPOSITORY()));
+        searchSupplier.setDescription(SEARCH_SUPPLIER_DESCRIPTION_FMT(RESOURCE(), REPOSITORY()));
         searchSupplier.setSearchModel(searchModel);
 
         return searchSupplier;
@@ -477,7 +476,7 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
                         {
                             _repositoryDAO.deleteRepositoryItemRelation(relation);
                             _searchUI.sendNotification(new NotificationImpl(NotificationType.SUCCESS,
-                                createText(MESSAGE_RESOURCE_DELETED_FMT(), _terms.resource())));
+                                MESSAGE_RESOURCE_DELETED_FMT(RESOURCE())));
                         }
                     }
                 }
@@ -493,8 +492,7 @@ public class ResourceRepositoryItemManagement extends MIWTPageElementModelHistor
     void configure(ParsedRequest request)
     {
         _currentUser = _userDAO.getAssertedCurrentUser();
-        _adminProfile = _profileService.getAdminProfileForUser(_currentUser)
-            .orElseThrow(() -> new IllegalStateException("Users must have an admin profile."));
+        _adminProfile = _uiPreferences.getSelectedCompany();
 
         if (!_profileDAO.canOperate(_currentUser, _adminProfile, AppUtil.UTC, _mop.viewRepositoryResources()))
             throw new IllegalArgumentException("Invalid Permissions To View Page");

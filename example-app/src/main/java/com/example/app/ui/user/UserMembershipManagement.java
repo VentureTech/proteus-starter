@@ -11,6 +11,7 @@
 
 package com.example.app.ui.user;
 
+import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.profile.Membership;
 import com.example.app.model.profile.Profile;
 import com.example.app.model.profile.ProfileDAO;
@@ -18,7 +19,6 @@ import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
 import com.example.app.support.AppUtil;
-import com.example.app.terminology.ProfileTermProvider;
 import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -71,11 +71,8 @@ import net.proteusframework.ui.search.SearchUIOperation;
 import net.proteusframework.ui.search.SearchUIOperationContext;
 import net.proteusframework.ui.search.SearchUIOperationHandler;
 
-import static com.example.app.ui.UIText.SEARCH_MODEL_NAME_FMT;
-import static com.example.app.ui.UIText.SEARCH_SUPPLIER_DESCRIPTION_FMT;
-import static com.example.app.ui.UIText.SEARCH_SUPPLIER_NAME_FMT;
+import static com.example.app.ui.UIText.*;
 import static com.example.app.ui.user.UserMembershipManagementLOK.*;
-import static net.proteusframework.core.locale.TextSources.createText;
 
 /**
  * Management UI for Memberships between a User and Profile(s)
@@ -113,7 +110,7 @@ public class UserMembershipManagement extends HistoryContainer implements Search
     @Autowired
     private MembershipOperationProvider _mop;
     @Autowired
-    private ProfileTermProvider _terms;
+    private SelectedCompanyTermProvider _terms;
     private SearchUIImpl _searchUI;
 
     /**
@@ -151,7 +148,7 @@ public class UserMembershipManagement extends HistoryContainer implements Search
         _searchUI = new SearchUIImpl(options);
 
         Menu menu = new Menu(CommonButtonText.ADD);
-        menu.setTooltip(ConcatTextSource.create(CommonButtonText.ADD, _terms.membershipType()).withSpaceSeparator());
+        menu.setTooltip(ConcatTextSource.create(CommonButtonText.ADD, MEMBERSHIP()).withSpaceSeparator());
         AppUtil.enableTooltip(menu);
         menu.addClassName("entity-action");
         AtomicReference<Integer> counter = new AtomicReference<>(0);
@@ -177,7 +174,7 @@ public class UserMembershipManagement extends HistoryContainer implements Search
     {
         SearchModelImpl searchModel = new SearchModelImpl();
         searchModel.setName("User Role Search");
-        searchModel.setDisplayName(createText(SEARCH_MODEL_NAME_FMT(), _terms.user()));
+        searchModel.setDisplayName(UserMembershipManagementLOK.SEARCH_MODEL_NAME_FMT(USER()));
         final TimeZone tz = getSession().getTimeZone();
         ActionColumn actions = new ActionColumn()
         {
@@ -219,7 +216,7 @@ public class UserMembershipManagement extends HistoryContainer implements Search
         actions.setIncludeCopy(false);
         actions.setIncludeView(false);
         actions.setIncludeEdit(false);
-        actions.getDeleteButton().getButtonDisplay().setConfirmText(createText(DELETE_CONFIRM_TEXT_FMT(), _terms.membership()));
+        actions.getDeleteButton().getButtonDisplay().setConfirmText(DELETE_CONFIRM_TEXT_FMT(MEMBERSHIP()));
         searchModel.getResultColumns().add(actions);
 
         searchModel.getResultColumns().add(new SearchResultColumnImpl()
@@ -241,11 +238,11 @@ public class UserMembershipManagement extends HistoryContainer implements Search
         {
             searchModel.getResultColumns().add(new SearchResultColumnImpl()
                 .withName("profile")
-                .withTableColumn(new PropertyColumn(Membership.class, Membership.PROFILE_PROP).withColumnName(_terms.profile())));
+                .withTableColumn(new PropertyColumn(Membership.class, Membership.PROFILE_PROP).withColumnName(PROFILE())));
 
             searchModel.getResultColumns().add(new SearchResultColumnImpl()
                 .withName("profile-type")
-                .withTableColumn(new FixedValueColumn().withColumnName(_terms.profileType()))
+                .withTableColumn(new FixedValueColumn().withColumnName(PROFILE_TYPE()))
                 .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
                     Membership mem = _er.reattachIfNecessary((Membership) input);
                     return TextSources.createTextForAny(mem.getProfile().getProfileType());
@@ -253,8 +250,8 @@ public class UserMembershipManagement extends HistoryContainer implements Search
         }
 
         SearchSupplierImpl searchSupplier = new SearchSupplierImpl();
-        searchSupplier.setName(createText(SEARCH_SUPPLIER_NAME_FMT(), _terms.user()));
-        searchSupplier.setDescription(createText(SEARCH_SUPPLIER_DESCRIPTION_FMT(), _terms.user()));
+        searchSupplier.setName(UserMembershipManagementLOK.SEARCH_SUPPLIER_NAME_FMT(USER()));
+        searchSupplier.setDescription(UserMembershipManagementLOK.SEARCH_SUPPLIER_DESCRIPTION_FMT());
         searchSupplier.setSearchModel(searchModel);
 
         searchSupplier.setBuilderSupplier(() -> {

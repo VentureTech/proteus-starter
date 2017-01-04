@@ -11,6 +11,7 @@
 
 package com.example.app.ui.resource;
 
+import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.profile.Profile;
 import com.example.app.model.profile.ProfileDAO;
 import com.example.app.model.repository.Repository;
@@ -23,7 +24,6 @@ import com.example.app.model.resource.ResourceType;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
-import com.example.app.terminology.ProfileTermProvider;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
 import com.example.app.ui.URLConfigurations;
@@ -103,7 +103,7 @@ public class ResourceRepositoryItemPropertyEditor extends MIWTPageElementModelPr
     @Autowired
     private EntityRetriever _er;
     @Autowired
-    private ProfileTermProvider _terms;
+    private SelectedCompanyTermProvider _terms;
 
     private boolean _canEdit;
     private ResourceRepositoryItem _saved;

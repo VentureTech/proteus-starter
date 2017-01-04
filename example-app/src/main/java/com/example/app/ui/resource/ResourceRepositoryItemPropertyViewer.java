@@ -11,13 +11,13 @@
 
 package com.example.app.ui.resource;
 
+import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.repository.Repository;
 import com.example.app.model.repository.RepositoryDAO;
 import com.example.app.model.repository.ResourceRepositoryItem;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
-import com.example.app.terminology.ProfileTermProvider;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
 import com.example.app.ui.URLConfigurations;
@@ -44,9 +44,9 @@ import net.proteusframework.ui.miwt.event.Event;
 import net.proteusframework.ui.miwt.util.CommonActions;
 
 import static com.example.app.ui.UIText.ERROR_MESSAGE_INSUFFICIENT_PERMISSIONS_FMT;
+import static com.example.app.ui.UIText.RESOURCE;
 import static com.example.app.ui.resource.PublicResourceListingLOK.COMPONENT_NAME;
 import static com.example.app.ui.resource.ResourceRepositoryItemPropertyViewerLOK.ERROR_UNABLE_TO_FIND_RESOURCE_FMT;
-import static net.proteusframework.core.locale.TextSources.createText;
 import static net.proteusframework.core.notification.NotificationImpl.error;
 
 /**
@@ -86,7 +86,7 @@ public class ResourceRepositoryItemPropertyViewer extends MIWTPageElementModelPr
     @Autowired
     private MembershipOperationProvider _mop;
     @Autowired
-    private ProfileTermProvider _terms;
+    private SelectedCompanyTermProvider _terms;
     private boolean _canEdit;
 
     /**
@@ -136,7 +136,7 @@ public class ResourceRepositoryItemPropertyViewer extends MIWTPageElementModelPr
         ResourceRepositoryItem value = request.getPropertyValue(URLProperties.REPOSITORY_ITEM);
 
         if (value == null)
-            _messages.sendNotification(error(createText(ERROR_UNABLE_TO_FIND_RESOURCE_FMT(), _terms.resource())));
+            _messages.sendNotification(error(ERROR_UNABLE_TO_FIND_RESOURCE_FMT(RESOURCE())));
         else
         {
             final TimeZone timeZone = Event.getRequest().getTimeZone();
@@ -149,7 +149,7 @@ public class ResourceRepositoryItemPropertyViewer extends MIWTPageElementModelPr
                 return;
             }
             else
-                _messages.sendNotification(error(createText(ERROR_MESSAGE_INSUFFICIENT_PERMISSIONS_FMT(), _terms.resource())));
+                _messages.sendNotification(error(ERROR_MESSAGE_INSUFFICIENT_PERMISSIONS_FMT(RESOURCE())));
         }
         setValueViewer(null);
     }

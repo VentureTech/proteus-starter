@@ -20,6 +20,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.urlshortener.Urlshortener;
 import com.google.api.services.urlshortener.UrlshortenerRequestInitializer;
 import com.google.api.services.urlshortener.model.Url;
+import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.RateLimiter;
 import com.ibm.icu.text.BreakIterator;
 import org.apache.logging.log4j.LogManager;
@@ -34,13 +35,17 @@ import javax.annotation.Nullable;
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import com.i2rd.java.qrelay.mail.StaticMailRequest;
 import com.i2rd.mail.MailConfig;
 import com.i2rd.mail.model.TrackedEmail;
+import com.i2rd.qrelay.scheduled.ScheduledRequestProcessor;
 
 import net.proteusframework.core.StringFactory;
 import net.proteusframework.core.mail.EmailValidationService;
@@ -76,39 +81,16 @@ public class NotificationService implements ApplicationListener<ContextRefreshed
     private DeploymentContext _deploymentContext;
     @Autowired
     private EmailValidationService _emailValidationService;
-    //    @Autowired
-    //    private ProfileDAO _profileDAO;
+    @Autowired
+    private ScheduledRequestProcessor _scheduledRequestProcessor;
     @Autowired
     private MailConfig _mailConfig;
     @Autowired
     private SmsService _smsService;
     @Autowired
     private EmailTemplateProcessor _emailTemplateProcessor;
-    @Value("${google-url-shortener-key}")
-    private String _urlShortenerKey;
     @Value("${system.sender}")
     private String _systemSender;
-
-    /**
-     * Create shortened url.
-     *
-     * @param url the url.
-     *
-     * @return the shortened URL.
-     *
-     * @throws IOException if the URL cannot be shortened.
-     */
-    public String createShortenedURL(String url) throws IOException
-    {
-        Urlshortener shortener = new Urlshortener.Builder(new ApacheHttpTransport(), new GsonFactory(), null)
-            .setGoogleClientRequestInitializer(new UrlshortenerRequestInitializer(_urlShortenerKey))
-            .setApplicationName("Leadership Resources")
-            .build();
-        Url toInsert = new Url();
-        toInsert.setLongUrl(url);
-        final Urlshortener.Url.Insert insertOp = shortener.url().insert(toInsert);
-        return insertOp.execute().getId();
-    }
 
     /**
      * Get the system sender.
@@ -214,8 +196,7 @@ public class NotificationService implements ApplicationListener<ContextRefreshed
     }
 
     /**
-     * Send email
-     *
+     *   Send email
      * @param emailTemplate the email template
      * @param context the context
      * @param defaultFromNameSupplier the supplier for the name of the default sender.
@@ -226,15 +207,15 @@ public class NotificationService implements ApplicationListener<ContextRefreshed
         try
         {
             final FileEntityMailDataHandler mdh = _emailTemplateProcessor.process(context, emailTemplate);
-            try (MailMessage mm = new MailMessage(mdh))
+            try(MailMessage mm = new MailMessage(mdh))
             {
-                if (mm.getToRecipients().isEmpty())
+                if(mm.getToRecipients().isEmpty())
                 {
                     final EmailTemplateRecipient recipientAttribute = context.getRecipientAttribute();
-                    if (recipientAttribute != null)
+                    if(recipientAttribute != null)
                         mm.addTo(recipientAttribute.getEmailAddress());
                 }
-                if (mm.getFrom().isEmpty())
+                if(mm.getFrom().isEmpty())
                 {
                     UnparsedAddress from = new UnparsedAddress(_systemSender,
                         defaultFromNameSupplier != null ? defaultFromNameSupplier.get() : null);
@@ -243,7 +224,7 @@ public class NotificationService implements ApplicationListener<ContextRefreshed
                 sendEmail(mm);
             }
         }
-        catch (EmailTemplateException | MailDataHandlerException e)
+        catch(EmailTemplateException | MailDataHandlerException e)
         {
             _logger.error("Unable to send message.", e);
         }
@@ -275,15 +256,28 @@ public class NotificationService implements ApplicationListener<ContextRefreshed
      */
     public void sendSMS(User user, PhoneNumber phoneNumber, String content)
     {
-        // FIXME : make sure SMS messages are delayed if necessary based on user timezone, etc.
+        sendSMS(user, phoneNumber, content, null);
+    }
+
+    /**
+     * Send an SMS message delaying until an appropriate time if necessary.
+     *
+     * @param user the user.
+     * @param phoneNumber the phone number to send too.
+     * @param content the content of the message.
+     * @param delayMillis the delay millis
+     */
+    public void sendSMS(User user, PhoneNumber phoneNumber, String content, @Nullable Long delayMillis)
+    {
+        // TODO : make sure SMS messages are delayed if necessary based on user timezone, etc.
         final Optional<EmailAddress> emailAddress =
             ContactUtil.getEmailAddress(user.getPrincipal().getContact(), ContactDataCategory.values());
-        if (!emailAddress.isPresent())
+        if(!emailAddress.isPresent())
         {
             _logger.error("Users are required to have an email address. Not sending SMS. User.id = " + user.getId());
             return;
         }
-        if (!_emailValidationService.checkForValidDomain(emailAddress.get().getEmail(), false))
+        if(!_emailValidationService.checkForValidDomain(emailAddress.get().getEmail(), false))
         {
             _logger.info("User's email address is being filtered/sanitized. Not sending SMS. User.id = " + user.getId());
             return;
@@ -302,6 +296,51 @@ public class NotificationService implements ApplicationListener<ContextRefreshed
                 rateLimiter.acquire();
                 _smsService.sendSms(phoneNumber, part);
             }
+        }
+    }
+
+    /**
+     * Send email.
+     *
+     * @param emailTemplate the email template
+     * @param context the context
+     * @param defaultFromNameSupplier the supplier for the name of the default sender.
+     * @param delayMillis the delay millis
+     */
+    public void sendEmail(EmailTemplate emailTemplate, EmailTemplateContext context,
+        @Nullable Supplier<String> defaultFromNameSupplier, Long delayMillis)
+    {
+        try
+        {
+            Preconditions.checkArgument(delayMillis >= 0, "Invalid arg: delayAmount. Expecting a number >= 0");
+            final FileEntityMailDataHandler mdh = _emailTemplateProcessor.process(context, emailTemplate);
+            StaticMailRequest smr = new StaticMailRequest(mdh);
+            if(smr.getTo().length == 0)
+            {
+                final EmailTemplateRecipient recipientAttribute = context.getRecipientAttribute();
+                if(recipientAttribute != null)
+                    smr.setTo(new String[]{recipientAttribute.getEmailAddress().getAddress()});
+            }
+            if(StringFactory.isEmptyString(smr.getFrom()))
+            {
+                UnparsedAddress from = new UnparsedAddress(_systemSender,
+                    defaultFromNameSupplier != null ? defaultFromNameSupplier.get() : null);
+                smr.setFrom(from.getAddress());
+            }
+            EmailTemplate et = (EmailTemplate) mdh.getAttribute(EmailTemplate.class);
+            if (et != null)
+            {
+                smr.setMessageName(et.getProgrammaticName());
+            }
+            smr.setScheduledTime(delayMillis == 0
+                ? new Date()
+                : new Date(System.currentTimeMillis() + TimeUnit.MILLISECONDS.toMillis(delayMillis)));
+
+            _scheduledRequestProcessor.save(smr);
+        }
+        catch(MailDataHandlerException | EmailTemplateException e)
+        {
+            _logger.error("An unexpected error occurred while processing the email.", e);
         }
     }
 

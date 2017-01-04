@@ -98,18 +98,18 @@ public class ProfileTypeProvider implements ApplicationListener<ApplicationConte
     }
 
     /**
-     * Get the Company Profile Type Kind.
+     * Get the Client Profile Type Kind.
      *
-     * @return the Company Profile Type Kind
+     * @return the Client Profile Type Kind
      */
     @Bean
     public Label kindCompany()
     {
-        String progId = "profile-type-kind-company";
+        String progId = "profile-type-kind-client";
         Label kind = _typeKindLabelProvider.getLabelOrNew(progId);
         if (_profileDAO.isTransient(kind))
         {
-            kind.setName(LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Company"));
+            kind.setName(LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Client"));
             _typeKindLabelProvider.addLabel(kind);
             kind = _typeKindLabelProvider.getLabel(progId).orElseThrow(() -> new IllegalStateException(
                 "Profile Type Kind could not be found, even after it was created."));
@@ -138,15 +138,15 @@ public class ProfileTypeProvider implements ApplicationListener<ApplicationConte
     }
 
     /**
-     * Get the company profile type.
+     * Get the client profile type.
      *
-     * @return the company profile type
+     * @return the client profile type
      */
     @Bean
     public ProfileType company()
     {
-        return _profileDAO.getProfileTypeOrNew("company",
-            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Company"),
+        return _profileDAO.getProfileTypeOrNew("client",
+            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Client"),
             this::kindCompany);
     }
 

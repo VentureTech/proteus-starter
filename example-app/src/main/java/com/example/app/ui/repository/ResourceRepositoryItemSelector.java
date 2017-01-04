@@ -62,6 +62,7 @@ import net.proteusframework.ui.search.SimpleConstraint;
 
 import static com.example.app.support.AppUtil.nullFirst;
 import static com.example.app.ui.UIText.LABEL_CATEGORY;
+import static com.example.app.ui.UIText.RESOURCE;
 import static com.example.app.ui.repository.ResourceRepositoryItemSelectorLOK.*;
 import static com.example.app.ui.resource.ResourceText.LABEL_AUTHOR;
 import static net.proteusframework.core.locale.TextSources.EMPTY;
@@ -156,7 +157,7 @@ public class ResourceRepositoryItemSelector extends RepositoryItemSelector<Resou
     @Override
     protected TextSource getRepoItemTerm()
     {
-        return _terms.resource();
+        return RESOURCE();
     }
 
     @SuppressWarnings("Duplicates")

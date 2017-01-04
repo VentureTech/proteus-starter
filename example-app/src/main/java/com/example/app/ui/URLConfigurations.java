@@ -52,6 +52,21 @@ public class URLConfigurations
         }
     }
 
+    /**
+     * Defined URL Configurations used by Company UIs
+     *
+     * @author Alan Holt (aholt@venturetech.net)
+     */
+    public static class Company
+    {
+        private Company(){}
+
+        /** URL Config for Editing Company */
+        public static final String EDIT = "Company Edit URL Config";
+        /** URL Config for Viewing a Company */
+        public static final String VIEW = "Company View URL Config";
+    }
+
     private URLConfigurations()
     {
     }

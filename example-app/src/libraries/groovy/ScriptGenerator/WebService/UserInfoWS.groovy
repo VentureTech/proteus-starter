@@ -35,7 +35,7 @@ class UserInfo extends AbstractScriptGenerator
     @Autowired
     UserDAO _userDAO;
     @Autowired
-    CoachingEntityDAO _coachingEntityDAO;
+    CompanyDAO _companyDAO;
 
     @Override
     Set<String> getAllowedMethods(CmsRequest request) { return methods }
@@ -98,7 +98,7 @@ class UserInfo extends AbstractScriptGenerator
             return
         def user = _userDAO.getAssertedCurrentUser()
         def membershipTypes = _planDAO.getPlanMembershipTypesForUserAndCoaching(user,
-            _coachingEntityDAO.getAssertedCoachingEntityForUser(user), true)
+            _companyDAO.getAssertedCoachingEntityForUser(user), true)
         JsonObject toured = new JsonObject()
         JsonArray roles = new JsonArray()
         membershipTypes.each {

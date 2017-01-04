@@ -17,7 +17,6 @@ import com.example.app.model.profile.ProfileDAO;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
-import com.example.app.service.ProfileService;
 import com.example.app.support.AppUtil;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
@@ -87,8 +86,6 @@ import static com.example.app.ui.user.UserViewerComponentLOK.*;
 public class UserViewerComponent extends MIWTPageElementModelContainer
 {
     private final MessageContainer _messages = new MessageContainer(35_000L);
-    @Autowired
-    private ProfileService _profileService;
     @Autowired
     private ProfileDAO _profileDAO;
     @Autowired
@@ -166,8 +163,7 @@ public class UserViewerComponent extends MIWTPageElementModelContainer
         _user = request.getPropertyValue(URLProperties.USER);
         if (_user == null)
             throw new IllegalArgumentException("Unable to determine User.");
-        _adminProfile = _profileService.getAdminProfileForUser(_user)
-            .orElseThrow(() -> new IllegalStateException("User must have an admin profile."));
+        _adminProfile = _uiPreferences.getSelectedCompany();
         User currentUser = _userDAO.getAssertedCurrentUser();
 
         if (!_profileDAO.canOperate(currentUser, _adminProfile, AppUtil.UTC, _mop.viewUser()))

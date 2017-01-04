@@ -133,7 +133,7 @@ public class MembershipOperationConfiguration implements MembershipOperationProv
     public MembershipOperation modifyCompany()
     {
         return _profileDAO.getMembershipOperationOrNew("modifyCompany",
-            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Modify Company"));
+            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Modify Client"));
     }
 
     @Override

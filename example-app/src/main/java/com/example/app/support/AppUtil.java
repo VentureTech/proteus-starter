@@ -11,7 +11,9 @@
 
 package com.example.app.support;
 
+import com.example.app.model.company.Company;
 import com.example.app.model.profile.Membership;
+import com.example.app.model.profile.Profile;
 import com.example.app.model.profile.ProfileType;
 import com.example.app.model.resource.Resource;
 import com.example.app.model.user.User;
@@ -24,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 
@@ -58,6 +61,10 @@ import net.proteusframework.cms.dao.CmsFrontendDAO;
 import net.proteusframework.core.StringFactory;
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.core.html.HTMLElement;
+import net.proteusframework.core.locale.LocaleSource;
+import net.proteusframework.core.locale.LocaleSourceException;
+import net.proteusframework.core.locale.LocalizedObjectKey;
+import net.proteusframework.core.locale.TransientLocalizedObjectKey;
 import net.proteusframework.core.mail.support.MimeTypeUtility;
 import net.proteusframework.core.net.ContentTypes;
 import net.proteusframework.core.spring.ApplicationContextUtils;
@@ -101,6 +108,17 @@ public class AppUtil implements Serializable
     private static final Logger _logger = LogManager.getLogger(AppUtil.class);
     private static final long serialVersionUID = -6831853311031034991L;
     private static final String CLIENT_PROP_DIALOGS_ANCESTRY = "lr-app-util-dialog-ancestor-workaround";
+
+    @SuppressWarnings("ConstantConditions")
+    private static class Holder
+    {
+        final static AppUtil INSTANCE;
+        static
+        {
+            INSTANCE = ApplicationContextUtils.getInstance().getContext().getBean(AppUtil.class);
+        }
+    }
+
     @Autowired
     private transient ClassPathResourceLibraryHelper _classPathResourceLibraryHelper;
     @Autowired
@@ -111,8 +129,63 @@ public class AppUtil implements Serializable
     private transient CmsFrontendDAO _cmsFrontendDAO;
     @Value("${frontend-access-role}")
     private String _frontEndRoleProgId;
+    @Value("${admin-access-role}")
+    private String _adminRoleProgId;
     @Value("${default_site_assignment}")
     private Long _defaultEmailTemplateSite;
+    @Value("${system.sender}")
+    private String _systemSender;
+    @Autowired @Qualifier("localeSource")
+    private LocaleSource _localeSource;
+
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
+    public static AppUtil getInstance()
+    {
+        return Holder.INSTANCE;
+    }
+
+    /**
+     * Gets system sender.
+     *
+     * @return the system sender
+     */
+    public String getSystemSender()
+    {
+        return _systemSender;
+    }
+
+    /**
+     * Copy localized object key.
+     *
+     * @param toCopy the LOK to copy.
+     *
+     * @return the copy as a transient localized object key.
+     */
+    @Nullable
+    @Contract("null->null;!null->!null")
+    public TransientLocalizedObjectKey copyLocalizedObjectKey(@Nullable LocalizedObjectKey toCopy)
+    {
+        if(LocalizedObjectKey.isNull(toCopy) && !(toCopy instanceof TransientLocalizedObjectKey))
+            return null;
+        try
+        {
+            TransientLocalizedObjectKey tlok = toCopy instanceof TransientLocalizedObjectKey
+                ? (TransientLocalizedObjectKey)toCopy
+                : TransientLocalizedObjectKey.getTransientLocalizedObjectKey(_localeSource, toCopy);
+            if (tlok != null)
+                return new TransientLocalizedObjectKey(tlok.getText());
+            else
+                return new TransientLocalizedObjectKey(null);
+        }
+        catch (LocaleSourceException e)
+        {
+            throw new IllegalStateException("Unable to get LOK data.", e);
+        }
+    }
 
     /**
      * Add the given value to the given collection, returning the modified collection
@@ -593,6 +666,34 @@ public class AppUtil implements Serializable
     }
 
     /**
+     * Initialize.
+     *
+     * @param value the value
+     */
+    public static void initialize(Profile value)
+    {
+        Hibernate.initialize(value);
+        Hibernate.initialize(value.getRepository());
+        initialize(value.getProfileType());
+    }
+
+    /**
+     * Initialize.
+     *
+     * @param value the value
+     */
+    public static void initialize(Company value)
+    {
+        initialize((Profile)value);
+        Hibernate.initialize(value.getEmailLogo());
+        Hibernate.initialize(value.getHostname());
+        Hibernate.initialize(value.getImage());
+        initialize(value.getPrimaryLocation());
+        Hibernate.initialize(value.getProfileTerms());
+        value.getLocations().forEach(AppUtil::initialize);
+    }
+
+    /**
      * Use ApplicationContextUtils to get an instance of the given Class with the given Resource Name
      *
      * @param <C> the Class
@@ -615,8 +716,9 @@ public class AppUtil implements Serializable
      *
      * @param value the value.
      */
-    public static void initialize(ProfileType value)
+    public static void initialize(@Nullable ProfileType value)
     {
+        if(value == null) return;
         Hibernate.initialize(value);
         Hibernate.initialize(value.getMembershipTypeSet());
         value.getMembershipTypeSet().forEach(Hibernate::initialize);
@@ -835,6 +937,50 @@ public class AppUtil implements Serializable
         return ofNullable(_roleDAO.getRoleByProgrammaticName(_frontEndRoleProgId))
             .orElseThrow(() -> new IllegalStateException(
                 "Front End Role could not be foundfor programmatic id: " + _frontEndRoleProgId));
+    }
+
+    /**
+     * Get the Role for Admin Access to the application
+     *
+     * @return the admin access role
+     */
+    public Role getAdminAccessRole()
+    {
+        return ofNullable(_roleDAO.getRoleByProgrammaticName(_adminRoleProgId))
+            .orElseThrow(() -> new IllegalStateException(
+                "Admin Role could not be found for programmatic id: " + _adminRoleProgId));
+    }
+
+    /**
+     * User has admin role boolean.
+     *
+     * @param user the user
+     *
+     * @return the boolean
+     */
+    public static boolean userHasAdminRole(User user)
+    {
+        PrincipalDAO principalDAO = AppUtil.autowire(PrincipalDAO.class);
+        AppUtil appUtil = AppUtil.autowire(AppUtil.class);
+        EntityRetriever er = AppUtil.autowire(EntityRetriever.class, EntityRetriever.RESOURCE_NAME);
+
+        return principalDAO.getAllRoles(er.reattachIfNecessary(user).getPrincipal()).contains(appUtil.getAdminAccessRole());
+    }
+
+    /**
+     * User has admin role boolean.
+     *
+     * @param user the user
+     *
+     * @return the boolean
+     */
+    public static boolean userHasAdminRole(Principal user)
+    {
+        PrincipalDAO principalDAO = AppUtil.autowire(PrincipalDAO.class);
+        AppUtil appUtil = AppUtil.autowire(AppUtil.class);
+        EntityRetriever er = AppUtil.autowire(EntityRetriever.class, EntityRetriever.RESOURCE_NAME);
+
+        return principalDAO.getAllRoles(er.reattachIfNecessary(user)).contains(appUtil.getAdminAccessRole());
     }
 
     /**

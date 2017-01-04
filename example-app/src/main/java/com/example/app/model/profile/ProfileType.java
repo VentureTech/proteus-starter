@@ -39,6 +39,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Set;
 
 import net.proteusframework.cms.label.Label;
@@ -84,7 +85,7 @@ public class ProfileType extends AbstractAuditableEntity<Integer> implements Nam
     private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + ".profiletype_id_seq";
     private LocalizedObjectKey _name;
     private LocalizedObjectKey _description;
-    private Set<MembershipType> _membershipTypeSet;
+    private Set<MembershipType> _membershipTypeSet = new HashSet<>();
     private String _programmaticIdentifier;
     private Label _kind;
 

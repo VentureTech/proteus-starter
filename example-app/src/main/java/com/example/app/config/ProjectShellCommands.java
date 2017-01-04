@@ -11,17 +11,17 @@
 
 package com.example.app.config;
 
+import com.example.app.model.company.Company;
+import com.example.app.model.company.CompanyDAO;
 import com.example.app.model.profile.Membership;
 import com.example.app.model.profile.MembershipOperation;
 import com.example.app.model.profile.MembershipType;
-import com.example.app.model.profile.Profile;
 import com.example.app.model.profile.ProfileDAO;
 import com.example.app.model.profile.ProfileType;
 import com.example.app.model.repository.Repository;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
 import com.example.app.service.MembershipOperationProvider;
-import com.example.app.service.ProfileService;
 import com.example.app.service.ProfileTypeKindLabelProvider;
 import com.example.app.service.ResourceCategoryLabelProvider;
 import com.example.app.service.ResourceTagsLabelProvider;
@@ -78,12 +78,12 @@ public class ProjectShellCommands extends AbstractShellCommands
     /** Logger. */
     private static final Logger _logger = LogManager.getLogger(ProjectShellCommands.class);
 
-    @Autowired(required = false)
-    private ProfileService _profileService;
     @Autowired
     private JDBCLocaleSource _jdbcLocaleSource;
     @Autowired
     private ProfileDAO _profileDAO;
+    @Autowired
+    private CompanyDAO _companyDAO;
     @Autowired
     private ShellCommandsUtil _shellCommandsUtil;
     @Autowired
@@ -145,7 +145,7 @@ public class ProjectShellCommands extends AbstractShellCommands
     //    }
 
     /**
-     * Add the given operation to an existing or new membership on the given coaching entity for the given user
+     * Add the given operation to an existing or new membership on the given company for the given user
      *
      * @param username the username
      * @param authDomainName the authentication domain
@@ -153,7 +153,7 @@ public class ProjectShellCommands extends AbstractShellCommands
      * @param profileId the profile programmatic identifier.
      */
     @CliCommand(value = "addOperationForUserOnCoaching", help = "Add the given operation to an existing or new membership on the "
-                                                                + "given coaching entity for the given user")
+                                                                + "given company for the given user")
     public void addMembershipOperationForUserOnCoaching(
         @CliOption(key = "username",
             help = "The username of the Principal to search for the User on", mandatory = true) String username,
@@ -164,7 +164,7 @@ public class ProjectShellCommands extends AbstractShellCommands
     {
         MembershipOperation mop = _profileDAO.getMembershipOperation(operation).orElseThrow(
             () -> new IllegalArgumentException("Given programmatic identifier for Membership Operation was not valid"));
-        Profile profile = _profileService.getProfileByProgrammaticIdentifier(profileId);
+        Company profile = _profileDAO.getProfile(Company.class, Integer.valueOf(profileId));
         if (profile == null)
             throw new IllegalArgumentException("Given programmatic identifier for Profile was not valid");
 
@@ -219,7 +219,7 @@ public class ProjectShellCommands extends AbstractShellCommands
         {
             authDomain = createDomainList(_domainDAO.getAuthenticationDomain(authDomainName));
         }
-        Profile profile = _profileService.getProfileByProgrammaticIdentifier(profileId);
+        Company profile = _profileDAO.getProfile(Company.class, Integer.valueOf(profileId));
         if (profile == null)
             throw new IllegalArgumentException("Given programmatic identifier for Profile was not valid");
 
@@ -233,12 +233,12 @@ public class ProjectShellCommands extends AbstractShellCommands
                 user = new User();
                 user.setPrincipal(principal);
                 user = _userDAO.mergeUser(user);
-                _profileService.setAdminProfileForUser(user, profile);
+                _companyDAO.addUserToCompany(profile, user);
                 _shellCommandsUtil.printLine("User saved with ID: " + user.getId());
             }
             else
             {
-                _profileService.setAdminProfileForUser(user, profile);
+                _companyDAO.addUserToCompany(profile, user);
                 _shellCommandsUtil.printLine("User saved with ID: " + user.getId());
             }
             return user;

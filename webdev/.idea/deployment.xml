@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="LDP Live (Web)" showExcludedInSync="true">
+  <component name="PublishConfigData" serverName="Local Frontend" showExcludedInSync="true">
     <serverData>
       <paths name="LDP Live (Web)">
         <serverdata>
@@ -21,6 +21,14 @@
             <mapping deploy="Design/Entropy/font" local="$PROJECT_DIR$/web/build/design/fonts" web="/Design/Entropy/font" />
             <mapping deploy="Javascript/Entropy/components" local="$PROJECT_DIR$/web/build/javascript/components" web="Javascript/Entropy/components" />
             <mapping deploy="Javascript/Entropy/templates" local="$PROJECT_DIR$/web/build/javascript/templates" web="Javascript/Entropy/templates" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="Local Frontend">
+        <serverdata>
+          <mappings>
+            <mapping deploy="Stylesheets" local="$PROJECT_DIR$/build/stylesheets" web="/" />
+            <mapping deploy="Javascript" local="$PROJECT_DIR$/build/javascript" web="/" />
           </mappings>
         </serverdata>
       </paths>

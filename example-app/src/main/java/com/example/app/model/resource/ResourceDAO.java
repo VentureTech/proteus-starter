@@ -12,7 +12,7 @@
 package com.example.app.model.resource;
 
 import com.example.app.support.AppUtil;
-import com.example.app.support.ImageSaver;
+import com.example.app.support.FileSaver;
 import org.apache.commons.fileupload.FileItem;
 import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +53,7 @@ public class ResourceDAO extends DAOHelper
     private FileSystemDAO _fileSystemDAO;
 
 
-    private ImageSaver<Resource> _resourceImageSaver;
+    private FileSaver<Resource> _resourceImageSaver;
 
     /**
      * Delete the given {@link Resource} from the database.
@@ -130,7 +130,7 @@ public class ResourceDAO extends DAOHelper
     @Nonnull
     public Resource saveResourceImage(@Nonnull Resource resource, @Nullable FileItem image)
     {
-        return getResourceImageSaver().saveImage(resource, image);
+        return getResourceImageSaver().save(resource, image);
     }
 
     /**
@@ -139,11 +139,11 @@ public class ResourceDAO extends DAOHelper
      * @return the Resource Image Saver
      */
     @Nonnull
-    protected ImageSaver<Resource> getResourceImageSaver()
+    protected FileSaver<Resource> getResourceImageSaver()
     {
         if (_resourceImageSaver == null)
         {
-            _resourceImageSaver = new ImageSaver<>((resource, image) -> {
+            _resourceImageSaver = new FileSaver<>((resource, image) -> {
                 resource.setImage(image);
                 return resource;
             }, Resource::getImage, (resource, image) -> {

@@ -13,21 +13,19 @@ package com.example.app.ui.user;
 
 
 import com.example.app.config.UserConfig;
+import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.profile.Membership;
 import com.example.app.model.profile.MembershipType;
 import com.example.app.model.profile.MembershipTypeProvider;
-import com.example.app.model.profile.Profile;
 import com.example.app.model.profile.ProfileDAO;
 import com.example.app.model.user.ContactMethod;
 import com.example.app.model.user.User;
 import com.example.app.model.user.UserDAO;
-import com.example.app.service.ProfileService;
 import com.example.app.support.AppUtil;
 import com.example.app.support.ContactUtil;
-import com.example.app.terminology.ProfileTermProvider;
+import com.example.app.ui.UIPreferences;
 import com.example.app.ui.vtcrop.VTCropPictureEditor;
 import com.example.app.ui.vtcrop.VTCropPictureEditorConfig;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -100,20 +98,18 @@ public class UserValueEditor extends CompositeValueEditor<User>
     @Autowired
     private UserDAO _userDAO;
     @Autowired
-    private ProfileService _profileService;
-    @Autowired
     private ProfileDAO _profileDAO;
     @Autowired
     @Qualifier(UserConfig.PICTURE_EDITOR_CONFIG)
     private VTCropPictureEditorConfig _pictureEditorConfig;
     @Autowired
-    private ProfileTermProvider _terms;
+    private SelectedCompanyTermProvider _terms;
     @Autowired
     private MembershipTypeProvider _mtp;
+    @Autowired
+    private UIPreferences _uiPreferences;
     private boolean _adminMode = true;
     private VTCropPictureEditor _userPictureEditor;
-    private Profile _initialProfile;
-    private ComboBoxValueEditor<Profile> profileEntitySelector;
     private ListComponentValueEditor<MembershipType> _profileEntityMembershipTypeSelector;
     private CheckboxValueEditor<LocalizedObjectKey> _contactMethodSelector;
     private PrincipalValueEditor _principalValueEditor;
@@ -159,43 +155,6 @@ public class UserValueEditor extends CompositeValueEditor<User>
     public ContactMethod commitValuePreferredContactMethod()
     {
         return _contactMethodSelector.commitValue().stream().findFirst().isPresent() ? ContactMethod.PhoneSms : null;
-    }
-
-    /**
-     * Get the Commit Value of the Profile Selector,
-     * or the Initial Profile in the case that there is not a selection
-     *
-     * @return the Commit Value or the Initial Profile.
-     */
-    @Nonnull
-    public Profile commitValueUserProfileOwner()
-    {
-        return Optional.ofNullable(profileEntitySelector.commitValue()).orElse(getInitialProfile());
-    }
-
-    /**
-     * Get the initial Profile.  This will either be the currently assigned Profile, if the already exists in
-     * the database, or it will be the value set by {@link #setInitialProfile(Profile)}.  If neither of those values
-     * are present an {@link IllegalStateException} is thrown.
-     *
-     * @return the initial Profile
-     */
-    @Nonnull
-    public Profile getInitialProfile()
-    {
-        return _profileService.getAdminProfileForUser(getValue())
-            .orElse(Optional.ofNullable(_er.reattachIfNecessary(_initialProfile))
-                .orElseThrow(() -> new IllegalStateException("Profile was null.  You have to set it before using it!")));
-    }
-
-    /**
-     * Set the initial Profile.
-     *
-     * @param initialProfile the initial Profile
-     */
-    public void setInitialProfile(@Nonnull Profile initialProfile)
-    {
-        _initialProfile = initialProfile;
     }
 
     /**
@@ -272,15 +231,11 @@ public class UserValueEditor extends CompositeValueEditor<User>
                 .orElse(null));
 
         TimeZone timeZone = getSession().getTimeZone();
-        profileEntitySelector = new ComboBoxValueEditor<>(
-            _terms.userProfile(),
-            _profileDAO.getProfilesThatUserHasMembershipFor(currentUser, Hibernate.getClass(getInitialProfile()), timeZone),
-            getInitialProfile());
-        profileEntitySelector.setRequiredValueValidator();
 
-        List<MembershipType> initialMemTypes = new ArrayList<>(_profileDAO.getMembershipTypesForProfile(getInitialProfile()));
+        List<MembershipType> initialMemTypes = new ArrayList<>(_profileDAO.getMembershipTypesForProfile(
+            _uiPreferences.getSelectedCompany()));
         _profileEntityMembershipTypeSelector = new ListComponentValueEditor<>(
-            createText(UserValueEditorLOK.LABEL_PROFILE_ROLE_FMT(), _terms.userProfile()),
+            createText(UserValueEditorLOK.LABEL_PROFILE_ROLE_FMT(_terms.company())),
             initialMemTypes,
             null);
         ((ListComponent) _profileEntityMembershipTypeSelector.getValueComponent())
@@ -376,27 +331,6 @@ public class UserValueEditor extends CompositeValueEditor<User>
                 }
             });
 
-        profileEntitySelector.getValueComponent().addActionListener(ev -> {
-            Profile profile;
-            if ((profile = profileEntitySelector.getUIValue()) != null)
-            {
-                List<MembershipType> memTypes = new ArrayList<>(_profileDAO.getMembershipTypesForProfile(profile));
-                //Set the options
-                _profileEntityMembershipTypeSelector.setOptions(memTypes);
-                //Set editable flag
-                _profileEntityMembershipTypeSelector.setEditable(true);
-            }
-            else
-            {
-                _profileEntityMembershipTypeSelector.setValue(null);
-                _profileEntityMembershipTypeSelector.setOptions(Collections.singletonList(null));
-                _profileEntityMembershipTypeSelector.setEditable(false);
-            }
-        });
-
-        profileEntitySelector.setVisible(isAdminMode() && profileEntitySelector.getValueComponent().getModel().getSize() > 1);
-
-        add(profileEntitySelector);
         add(_profileEntityMembershipTypeSelector);
         add(_contactMethodSelector);
         add(_loginLandingPage);
@@ -441,7 +375,6 @@ public class UserValueEditor extends CompositeValueEditor<User>
                     .map(User::getImage)
                     .map(FileEntityFileItem::new)
                     .orElse(null));
-            profileEntitySelector.setValue(getInitialProfile());
 
             if (value != null && value.getPreferredContactMethod() == ContactMethod.PhoneSms)
                 _contactMethodSelector.setValue(Collections.singleton(LABEL_SEND_NOTIFICATION_TO_PHONESMS()));
@@ -478,8 +411,7 @@ public class UserValueEditor extends CompositeValueEditor<User>
         if (isInited())
         {
             _userPictureEditor.setEditable(b);
-            profileEntitySelector.setEditable(b);
-            _profileEntityMembershipTypeSelector.setEditable(profileEntitySelector.getUIValue() != null && b);
+            _profileEntityMembershipTypeSelector.setEditable(b);
             _contactMethodSelector.setEditable(b);
             _loginLandingPage.setEditable(b);
         }
@@ -490,7 +422,6 @@ public class UserValueEditor extends CompositeValueEditor<User>
     {
         boolean valid = super.validateUIValue(notifiable);
         valid = _userPictureEditor.validateUIValue(notifiable) && valid;
-        valid = profileEntitySelector.validateUIValue(notifiable) && valid;
         valid = _profileEntityMembershipTypeSelector.validateUIValue(notifiable) && valid;
         valid = _loginLandingPage.validateUIValue(notifiable) && valid;
         return _contactMethodSelector.validateUIValue(notifiable) && valid;

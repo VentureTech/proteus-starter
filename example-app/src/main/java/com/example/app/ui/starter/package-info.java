@@ -10,6 +10,8 @@
  */
 
 /**
- * Classes related to business specific terms.
+ * UI Code specific to the Starter Site
+ *
+ * @since 1/3/17
  */
-package com.example.app.terminology;
+package com.example.app.ui.starter;

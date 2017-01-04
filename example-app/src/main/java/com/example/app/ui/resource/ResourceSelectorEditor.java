@@ -11,11 +11,11 @@
 
 package com.example.app.ui.resource;
 
+import com.example.app.model.company.SelectedCompanyTermProvider;
 import com.example.app.model.repository.Repository;
 import com.example.app.model.repository.ResourceRepositoryItem;
 import com.example.app.model.resource.Resource;
 import com.example.app.support.ArrayCollector;
-import com.example.app.terminology.ProfileTermProvider;
 import com.example.app.ui.repository.ResourceRepositoryItemSelector;
 import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +54,8 @@ import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.ui.miwt.util.CommonColumnText;
 import net.proteusframework.ui.miwt.validation.ValidatorUtil;
 
-import static com.example.app.ui.UIText.DONE;
-import static com.example.app.ui.UIText.SELECT_FMT;
+import static com.example.app.ui.UIText.*;
 import static com.example.app.ui.resource.ResourceSelectorEditorLOK.ERROR_MESSAGE_AT_LEAST_ONE_RESOURCE_REQUIRED_FMT;
-import static net.proteusframework.core.locale.TextSources.createText;
 
 /**
  * {@link ValueEditor} implementation for selecting a list of ResourceRepositoryItems
@@ -80,7 +78,7 @@ public class ResourceSelectorEditor extends Container implements ValueEditor<Lis
     private final Set<Class<? extends Resource>> _includedResourceTypes = new HashSet<>();
     private final Set<Class<? extends Resource>> _excludedResourceTypes = new HashSet<>();
     @Autowired
-    private ProfileTermProvider _terms;
+    private SelectedCompanyTermProvider _terms;
     @Autowired
     private EntityRetriever _er;
     private List<ResourceRepositoryItem> _value = new ArrayList<>();
@@ -147,7 +145,7 @@ public class ResourceSelectorEditor extends Container implements ValueEditor<Lis
 
         final PushButton addButton = CommonActions.ADD.push();
         addButton.addActionListener(ev -> {
-            Dialog dlg = new Dialog(getApplication(), createText(SELECT_FMT(), _terms.resources()));
+            Dialog dlg = new Dialog(getApplication(), SELECT_FMT(RESOURCES()));
             dlg.addClassName("select-resources-dialog");
 
             PushButton done = new PushButton(DONE());
@@ -210,7 +208,7 @@ public class ResourceSelectorEditor extends Container implements ValueEditor<Lis
                 if (uiVal == null || uiVal.isEmpty())
                 {
                     NotificationImpl error = new NotificationImpl(NotificationType.ERROR,
-                        createText(ERROR_MESSAGE_AT_LEAST_ONE_RESOURCE_REQUIRED_FMT(), _terms.resource()));
+                        ERROR_MESSAGE_AT_LEAST_ONE_RESOURCE_REQUIRED_FMT(RESOURCES()));
                     error.setSource(this);
                     notifiable.sendNotification(error);
                     return false;
