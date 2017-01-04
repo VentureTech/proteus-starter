@@ -20,6 +20,7 @@
     <bean class="com.example.app.config.ShellCommandsUtil"/>
     <bean class="experimental.cms.dsl.shell.SiteDefinitionConverter"/>
     <bean class="experimental.cms.dsl.shell.CmsModelApplication"/>
+    <bean class="experimental.cms.dsl.shell.PlaceholderHelperImpl"/>
 
     <context:component-scan base-package="com.example.app.config.automation.site"/>
 

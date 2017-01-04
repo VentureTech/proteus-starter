@@ -66,6 +66,14 @@ import org.springframework.core.env.Environment
 import java.util.*
 import javax.annotation.Resource
 
+@Qualifier("standalone")
+open class PlaceholderHelperImpl : PlaceholderHelper {
+    @Autowired
+    lateinit var environment: Environment
+
+    override fun resolvePlaceholders(template: String) = environment.resolvePlaceholders(template)!!
+
+}
 
 open class CmsModelApplication() : DAOHelper(), ContentHelper {
 
@@ -689,5 +697,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     override fun saveLibraryConfiguration(libraryConfiguration: LibraryConfiguration<*>) {
         libraryDAO.saveLibraryConfiguration(libraryConfiguration)
     }
+
+    override fun resolvePlaceholders(template: String): String = environment.resolvePlaceholders(template)
 }
 

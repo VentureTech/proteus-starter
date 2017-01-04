@@ -130,7 +130,11 @@ internal class LinkTagConverter(val helper: ContentHelper) : TagListener<TagList
     }
 }
 
-interface ContentHelper {
+interface PlaceholderHelper {
+    fun resolvePlaceholders(template: String): String
+}
+
+interface ContentHelper : PlaceholderHelper {
     companion object {
         val logger = LogManager.getLogger(ContentHelper::class.java)!!
         const val PARSER_FAKE_ROOT = "parser_fake_root"
@@ -207,4 +211,5 @@ interface ContentHelper {
     fun saveLibrary(library: Library<*>)
     fun <LT : ILibraryType<LT>?> getLibraryConfiguration(library: Library<LT>): LibraryConfiguration<LT>?
     fun saveLibraryConfiguration(libraryConfiguration: LibraryConfiguration<*>)
+    override fun resolvePlaceholders(template: String): String
 }
