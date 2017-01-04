@@ -47,6 +47,7 @@ import net.proteusframework.ui.search.PropertyConstraint;
  * @author Alan Holt (aholt@venturetech.net)
  * @since 7/13/16 11:28 AM
  */
+@SuppressWarnings("deprecation")
 @Configurable
 public class LabelDomainLabelManagement extends HistoryContainer
 {
@@ -129,20 +130,16 @@ public class LabelDomainLabelManagement extends HistoryContainer
                     .withHTMLElement(HTMLElement.h2));
             }
         };
-        addLabelAction.prop(Action.DISPLAY_CLASS, "action_add");
+        addLabelAction.prop(Action.DISPLAY_CLASS, "action-add");
         addLabelAction.prop(Action.NAME, getLocaleContext().getLocalizedText(CommonButtonText.ADD));
         labelSearch.addEntityActions(addLabelAction);
 
         labelSearch.addFieldConstraint("name", PropertyConstraint.Operator.like, CommonColumnText.NAME);
 
-        //labelSearch.addColumn("id", CommonColumnText.ID);
-        //labelSearch.addColumn("name", CommonColumnText.NAME);
         LocalizedObjectKeyComparator lokComparator = new LocalizedObjectKeyComparator(getLocaleContext());
         AbstractDataColumn nameCol = new PropertyColumn(Label.class, "name").withColumnName(CommonColumnText.NAME);
         nameCol.setComparator(lokComparator);
         labelSearch.addColumn(nameCol, null);
-        //labelSearch.addColumn("description", CommonColumnText.DESCRIPTION);
-        //labelSearch.addColumn("enabled", CommonColumnText.ENABLED);
 
         AbstractAction editLabelAction = new AbstractAction(){
             @Override
