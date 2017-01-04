@@ -12,6 +12,7 @@
 package experimental.cms.dsl
 
 import com.i2rd.cms.backend.BackendConfig
+import com.i2rd.cms.bean.ScriptingBeanPageElementModelFactory
 import com.i2rd.cms.component.miwt.MIWTPageElementModelFactory
 import com.i2rd.lib.Library
 import net.proteusframework.cms.CmsSite
@@ -183,6 +184,8 @@ interface ContentHelper {
     fun getBackendConfig(): BackendConfig
 
     fun getMIWTPageElementModelFactory(): MIWTPageElementModelFactory
+
+    fun getScriptingBeanPageElementModelFactory(): ScriptingBeanPageElementModelFactory
 
     fun getApplicationFunctions(): List<Component>
 

@@ -57,10 +57,7 @@ interface BoxedContent : ContentContainer {
     val site: Site
     val layout: Layout
 
-    fun indexOf(box: Box, contentId: String): Int {
-        val list = content[box]
-        return list!!.indexOfFirst { it.id == contentId }
-    }
+    fun indexOf(box: Box, contentId: String): Int = content[box]!!.indexOfFirst(createContentIdPredicate(contentId))
 
     fun <T : Content> content(boxId: String, content: T, init: T.() -> Unit={}): T {
         val box = layout.children.filter { it.id == boxId }.first()

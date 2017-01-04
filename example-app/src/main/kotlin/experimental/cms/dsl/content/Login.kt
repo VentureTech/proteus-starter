@@ -33,7 +33,7 @@ class Login(id: String)
     }
 
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
-        val contentElement = LoginBean()
+        val contentElement = existing?:LoginBean()
         val builder = LoginBeanContentBuilder()
         updateBuilder(builder, helper)
         return ContentInstance(contentElement, builder.content)

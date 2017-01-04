@@ -12,9 +12,21 @@
 package experimental.cms.dsl
 
 import com.i2rd.cms.bean.contentmodel.CmsModelDataSet
+import com.i2rd.cms.bean.scripted.ScriptedPageElementFactoryType
+import com.i2rd.cms.generator.ScriptGeneratorType
+import com.i2rd.cms.scripts.impl.ScriptableRedirectType
 import net.proteusframework.cms.component.ContentElement
 import net.proteusframework.cms.component.editor.DefaultDelegatePurpose
 import net.proteusframework.cms.component.editor.DelegatePurpose
+
+enum class ScriptType(val modelName: String) {
+//    FreeMarker(FreeMarkerType.MODEL_NAME),
+    ScriptedGenerator(ScriptGeneratorType.MODEL_NAME),
+    ScriptedContent(ScriptedPageElementFactoryType.MODEL_NAME),
+    LoginRedirect(ScriptableRedirectType.MODEL_NAME)
+}
+
+internal data class Script(val type:ScriptType, val file: String, val dependencies: Set<Script> = emptySet())
 
 internal fun createContentIdPredicate(existingId: String): (Content) -> Boolean = { it.id == existingId }
 
@@ -22,7 +34,6 @@ interface ContentContainer {
     val contentList: MutableList<Content>
     val contentToRemove: MutableList<Content>
     fun Content.remove() = contentToRemove.add(this)
-
 }
 internal fun _getSite(toCheck: Any?): Site {
     return when (toCheck) {

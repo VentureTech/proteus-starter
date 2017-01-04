@@ -22,7 +22,7 @@ class Composite(id: String)
     override val contentPurpose: MutableMap<Content, DelegatePurpose> = mutableMapOf()
     override val defaultPurpose: DelegatePurpose = DefaultDelegatePurpose.NONE
 
-    override fun createInstance(helper: ContentHelper, existing: ContentElement?) = ContentInstance(CompositeBean())
+    override fun createInstance(helper: ContentHelper, existing: ContentElement?) = ContentInstance(existing?:CompositeBean())
 
     override val contentList = mutableListOf<Content>()
     override val contentToRemove = mutableListOf<Content>()

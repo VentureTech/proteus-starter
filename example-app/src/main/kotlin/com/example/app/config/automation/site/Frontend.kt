@@ -62,10 +62,10 @@ open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
                 }
                 content("Header", JavaScript("test-js")){
                     javaScriptContent = """alert("Hey There!");"""
-                }
+                }.remove()
                 content("Header", JavaScript("test-js2")){
-                    javaScriptContent = """alert("Hey There!");"""
-                }
+                    javaScriptContent = """alert("Hey There2!");"""
+                }.remove()
                 content("Header", Menu("Top Menu")) {
                     htmlClass = "top-menu"
                     label("A Menu Item Label") {
@@ -140,6 +140,11 @@ open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
 
             content(Text("Fake Web Service", "Web Service Content")) {
                 path = "/ws/fake-web-service"
+            }
+
+            content(ScriptedGenerator("User Info Web Service")) {
+                path = "/ws/user-info"
+                script("ScriptGenerator/UserInfoWS.groovy")
             }
         }
     }

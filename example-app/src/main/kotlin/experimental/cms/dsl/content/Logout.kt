@@ -41,7 +41,7 @@ class Logout(id: String) : Identifiable(id), Content {
     var logoutExpression = DEFAULT_EXPRESSION
 
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
-        val contentElement = LogoutBean()
+        val contentElement = existing?:LogoutBean()
         var expression = helper.convertXHTML(logoutExpression)
         expression = expression.replace(Logout.PAT_CMSLINK.toRegex(),
             {"getCMSLink(${helper.getInternalLink(it.groupValues[1])})"})
