@@ -26,22 +26,15 @@ class Logout(id: String) : Identifiable(id), Content {
         val PAT_CMSLINK = Pattern.compile("getCMSLink\\(['\"](.+)['\"]\\)")!!
         const val DEFAULT_EXPRESSION = """
 <ul class="menu menu-t1 menubeanh user">
-  <li class="mi mi-inactive mi-parent"><div class="menuitemlabel"><span class="mil">${"$"}{users.current.name}</span></div>
-  <ul class="menu menu-t2 menubeanh">
-    <li class="mi mi-inactive company-users first">
-      <a class="menuitemlabel" href="${"$"}{links.getCMSLink('/client/users')}" title="Company Users">
-        <span class="mil">Company Users</span></a>
-    </li>
-    <li class="mi mi-inactive my-account first">
-      <a class="menuitemlabel" href="${"$"}{links.getCMSLink('/account/my-profile')}" title="My Account">
-        <span class="mil">My Account</span></a>
-    </li>
-    <li class="mi mi-inactive logout-url">
-      <a class="menuitemlabel" href="/csarf/login" title="Logout">
-        <span class="mil">Logout</span></a>
-    </li>
-  </ul></li>
-
+  <li class="mi mi-inactive mi-parent">
+      <div class="menuitemlabel"><span class="mil">${"$"}{users.current.name}</span></div>
+      <ul class="menu menu-t2 menubeanh">
+        <li class="mi mi-inactive logout-url">
+          <a class="menuitemlabel" href="/csarf" title="Logout">
+            <span class="mil">Logout</span></a>
+        </li>
+      </ul>
+  </li>
 </ul>
 """
     }
