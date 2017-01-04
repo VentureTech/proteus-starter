@@ -163,6 +163,10 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
         if (hostnames.isNotEmpty()) {
             site.defaultHostname = hostnames[0]
             cmsBackendDAO.saveSite(site, hostnames)
+            val user = principalDAO.currentPrincipal
+            user!!.authenticationDomains.add(site.domain)
+            principalDAO.savePrincipal(user)
+
         }
         pageList.forEach { getOrCreatePagePass1(site, it) }
         pageList.forEach { getOrCreatePagePass2(site, it) }
