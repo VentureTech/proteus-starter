@@ -30,14 +30,12 @@ import net.proteusframework.internet.http.Link
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import java.net.URI
-import javax.annotation.PostConstruct
 
 @Profile("automation")
 @Component
 open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
 
-    @PostConstruct
-    open fun postConstruct() {
+    init {
         createSite("CapMC Frontend") {
 
             template("Login") {
