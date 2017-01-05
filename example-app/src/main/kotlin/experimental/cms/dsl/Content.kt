@@ -43,6 +43,13 @@ internal fun _getSite(toCheck: Any?): Site {
         else -> throw IllegalStateException("Couldn't determine site")
     }
 }
+internal fun _getPage(toCheck: Any?): Page? {
+    return when (toCheck) {
+        is Page -> toCheck
+        is Content -> _getPage(toCheck.parent)
+        else -> null
+    }
+}
 
 interface DelegateContent : ContentContainer {
     val defaultPurpose: DelegatePurpose
@@ -70,6 +77,10 @@ interface Content : HTMLIdentifier, HTMLClass, ResourceCapable, PathCapable {
 
     fun getSite(): Site {
         return _getSite(parent)
+    }
+
+    fun getPage(): Page? {
+        return _getPage(parent)
     }
 
     /**
