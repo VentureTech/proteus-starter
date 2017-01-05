@@ -121,7 +121,7 @@ open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
 
             page("User Management", "/\${folder.company}/user") {
                 template("Frontend")
-                pagePermission = "CAPMC Backend"
+                permission("CAPMC Backend")
                 authenticationPage("Home")
                 content("Content", ApplicationFunction(ApplicationFunctions.User.MANAGEMENT)) {
                     htmlClass = "user-mgt"
@@ -131,7 +131,7 @@ open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
 
             page("Resource Management", "/config/resource") {
                 template("Frontend")
-                pagePermission = "CAPMC Backend"
+                permission("CAPMC Backend")
                 authenticationPage("Home")
                 content("Content", ApplicationFunction(ApplicationFunctions.ResourceRepositoryItem.MANAGEMENT)) {
                     htmlClass = "resource-mgt"
