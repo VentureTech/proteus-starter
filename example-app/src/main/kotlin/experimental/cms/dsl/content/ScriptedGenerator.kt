@@ -18,16 +18,12 @@ import com.i2rd.cms.generator.ScriptGeneratorType
 import com.i2rd.contentmodel.data.ModelDataDAO
 import com.i2rd.converter.ConverterContext
 import com.i2rd.lib.Library
+import com.i2rd.lib.LibraryConfiguration
 import com.i2rd.lib.LibraryDAO
 import experimental.cms.dsl.*
 import net.proteusframework.cms.PageElementModelImpl
 import net.proteusframework.cms.category.CmsCategory
 import net.proteusframework.cms.component.ContentElement
-import net.proteusframework.cms.component.generator.ScriptGenerator
-import net.proteusframework.core.script.GroovyScriptContext
-import net.proteusframework.core.script.ScriptIdentifier
-import net.proteusframework.core.script.ScriptUtility
-import javax.script.SimpleScriptContext
 
 /**
  * Scripted Generator.
@@ -48,15 +44,8 @@ class ScriptedGenerator(id: String) : Identifiable(id), Content {
         if (library != null) {
             val type = library.type
             val libraryDAO = LibraryDAO.getInstance()
-            val scriptIdentifier = ScriptIdentifier("0", library.id.toString(), library.file.name, library.file.contentType, false)
-            val scriptUtil = ScriptUtility()
-            val scriptContext = if(library.file.name.toLowerCase().endsWith("groovy")) GroovyScriptContext() else
-                SimpleScriptContext()
-            @Suppress("UNCHECKED_CAST")
-            val scriptGenerator = scriptUtil.getScriptedInterface(scriptContext, scriptIdentifier,
-                libraryDAO.getLibraryCharSource(library), type.scriptingInterface, type.scriptingInterfaceVariable) as
-                ScriptGenerator<ScriptingBean>
-            for(param in scriptGenerator.parameters) {
+            val scriptParameters = type.getParameters(LibraryConfiguration(library), libraryDAO, type.createContext())
+            for(param in scriptParameters) {
                 val parameterValue = parameters[param.name] ?: continue
                 val convertedValue = param.converter.convert(ConverterContext(parameterValue, String::class.java))!!
                 builder.params.put(param.name, convertedValue)
