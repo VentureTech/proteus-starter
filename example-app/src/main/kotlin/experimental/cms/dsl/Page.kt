@@ -112,8 +112,10 @@ class Page(id: String, override val site: Site, override var path: String = "", 
     override val content = mutableMapOf<Box, MutableList<Content>>()
     override val contentToRemove = mutableListOf<Content>()
 
-    var pagePermission: String? = null
-    var authenticationPage: Page? = null
+    internal var pagePermission: String? = null
+        private set
+    internal var authenticationPage: Page? = null
+        private set
 
     init {
         if(id.isNotBlank())
