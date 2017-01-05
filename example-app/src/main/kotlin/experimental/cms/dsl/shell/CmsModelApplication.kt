@@ -31,7 +31,6 @@ import com.i2rd.lib.Library
 import com.i2rd.lib.LibraryConfiguration
 import com.i2rd.lib.LibraryDAO
 import experimental.cms.dsl.*
-import experimental.cms.dsl.content.ApplicationFunction
 import net.proteusframework.cms.*
 import net.proteusframework.cms.component.ContentElement
 import net.proteusframework.cms.component.page.PageTemplate
@@ -326,16 +325,6 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
                     logger.info("Creating Cms Content: ${value.id}. Adding To Box: ${box.name}")
                     val contentElement = createContentInstance(value, site)
                     bbl.elements.add(contentElement)
-                    if (value is ApplicationFunction && value.registerLink) {
-                        // FIXME : don't insert duplicate registered links
-                        //                    val appFun = applicationRegistry.getApplicationFunctionByName(value.id)
-                        val registeredLink = RegisteredLink()
-                        registeredLink.siteId = site.id
-                        registeredLink.functionName = value.id
-                        registeredLink.link = LinkUtil.getCMSLink(cmsPage)
-                        registeredLink.functionContext = ""
-                        registeredLinkDAO.saveRegisteredLink(registeredLink)
-                    }
                 } else {
                     createContentInstance(value, site) // Update content if needed
                 }
@@ -736,7 +725,17 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
 
     override fun resolvePlaceholders(template: String): String = environment.resolvePlaceholders(template)
 
-    override fun getEmailTemplate(programmaticName: String) = emailTemplateDAO.getEmailTemplate(programmaticName, currentSite)
+    override fun getEmailTemplate(programmaticName: String): EmailTemplate? =
+        emailTemplateDAO.getEmailTemplate(programmaticName, currentSite)
 
+    override fun getRegisteredLink(functionName: String, functionContext: String): RegisteredLink? {
+        val applicationFunctionByName = applicationRegistry.getApplicationFunctionByName(functionName)
+        val applicationContextProvider = applicationRegistry.getApplicationContextProvider(applicationFunctionByName)
+        val fc = applicationContextProvider.getPossibleContexts(getCmsSite()).filter { it.name == functionContext }.firstOrNull()
+        val registeredLink = registeredLinkDAO.getRegisteredLink(getCmsSite(), applicationFunctionByName, fc)
+        return registeredLink
+    }
+
+    override fun saveRegisteredLink(registeredLink: RegisteredLink) = registeredLinkDAO.saveRegisteredLink(registeredLink)
 }
 

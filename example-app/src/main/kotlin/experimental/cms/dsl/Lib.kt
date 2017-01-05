@@ -25,6 +25,7 @@ import net.proteusframework.core.html.HTMLElement
 import net.proteusframework.core.xml.*
 import net.proteusframework.email.EmailTemplate
 import net.proteusframework.internet.http.Link
+import net.proteusframework.ui.management.link.RegisteredLink
 import net.proteusframework.ui.miwt.component.Component
 import org.apache.logging.log4j.LogManager
 import org.xml.sax.Attributes
@@ -214,4 +215,6 @@ interface ContentHelper : PlaceholderHelper {
     fun saveLibraryConfiguration(libraryConfiguration: LibraryConfiguration<*>)
     override fun resolvePlaceholders(template: String): String
     fun getEmailTemplate(programmaticName: String): EmailTemplate?
+    fun getRegisteredLink(functionName: String, functionContext: String): RegisteredLink?
+    fun saveRegisteredLink(registeredLink: RegisteredLink)
 }
