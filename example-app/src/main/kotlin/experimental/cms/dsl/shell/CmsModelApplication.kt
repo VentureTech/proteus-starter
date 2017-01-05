@@ -60,6 +60,7 @@ import net.proteusframework.ui.management.link.RegisteredLink
 import net.proteusframework.ui.management.link.RegisteredLinkDAO
 import net.proteusframework.ui.miwt.component.Component
 import net.proteusframework.users.model.AuthenticationMethodSecurityLevel
+import net.proteusframework.users.model.Organization
 import net.proteusframework.users.model.dao.PrincipalDAO
 import org.apache.logging.log4j.LogManager
 import org.hibernate.Hibernate
@@ -251,11 +252,14 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             cmsSite.lastModUser = principalDAO.currentPrincipal
             cmsSite.lastModified = Date()
             cmsBackendDAO.saveSite(cmsSite)
+            val client = session.createQuery("FROM Organization WHERE programmaticName = 'venturetech'")
+                .uniqueResult() as Organization
+            cmsBackendDAO.associate(client, cmsSite)
         }
         currentSite = cmsSite
+        currentWebRoot = FileSystemDirectory.getRootDirectory(cmsSite)
         createNDEs(cmsSite, cmsSite, siteModel)
         session.flush()
-        currentWebRoot = FileSystemDirectory.getRootDirectory(cmsSite)
         return cmsSite
     }
 
