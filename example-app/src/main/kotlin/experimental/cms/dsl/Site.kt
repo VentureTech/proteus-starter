@@ -11,6 +11,7 @@
 
 package experimental.cms.dsl
 
+import net.proteusframework.email.EmailConfigType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import java.util.*
@@ -18,11 +19,15 @@ import java.util.*
 
 data class Hostname(val address: String, val welcomePage: Page)
 
-class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer {
+class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer, ResourceCapable {
     private val contentToRemoveImplementation: MutableList<Content> = mutableListOf()
     override val contentToRemove: MutableList<Content>
         get() = contentToRemoveImplementation
     override val contentList: MutableList<Content> get() = content
+    override val cssPaths = mutableListOf<String>()
+    override val javaScriptPaths = mutableListOf<String>()
+
+    val emailTemplates = mutableListOf<EmailTemplate<*>>()
     val hostnames = mutableListOf<Hostname>()
     val templates = mutableListOf<Template>()
     val layouts = mutableListOf<Layout>()
@@ -72,6 +77,12 @@ class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer {
         page.apply(init)
         if (page.path.isBlank()) throw IllegalStateException("Missing path")
         hostnames.add(Hostname(name, page))
+    }
+
+    fun <T: EmailConfigType<*>>
+        emailTemplate(type: Class<T>, name: String, programmaticName: String, init: EmailTemplate<*>.() -> Unit = {}) {
+        val emailTemplate = EmailTemplate<T>(type, name, programmaticName)
+        emailTemplates.add(emailTemplate.apply(init))
     }
 
     private fun resolvePlaceholders(template: String) = parent.placeholderHelper.resolvePlaceholders(template)

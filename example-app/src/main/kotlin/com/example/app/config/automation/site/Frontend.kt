@@ -30,11 +30,14 @@ import net.proteusframework.internet.http.Link
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import java.net.URI
+import javax.annotation.PostConstruct
 
 @Profile("automation")
 @Component
 open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
-    init {
+
+    @PostConstruct
+    open fun postConstruct() {
         createSite("CapMC Frontend") {
 
             template("Login") {
@@ -95,7 +98,7 @@ open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
                 content("Footer", "Copyright Us")
             }
 
-            hostname("capmc.russ1-vdm.vipasuite.com", "Home") {
+            hostname("\${app.name}.\${base.domain}", "Home") {
                 path = "/home"
                 template("Login")
                 content("Content", Login("Please Login")) {
@@ -118,7 +121,7 @@ open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
             }
 
 
-            page("User Management", "/config/user") {
+            page("User Management", "/\${folder.company}/user") {
                 template("Frontend")
                 pagePermission = "CAPMC Backend"
                 authenticationPage("Home")
@@ -148,9 +151,4 @@ open class CAPMCCloud() : SiteDefinition("CapMC Cloud", version = 1) {
             }
         }
     }
-}
-
-fun main(args: Array<String>) {
-    val capmcCloud = CAPMCCloud()
-    println(capmcCloud)
 }
