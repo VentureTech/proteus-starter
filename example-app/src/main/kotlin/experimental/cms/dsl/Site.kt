@@ -15,6 +15,7 @@ import net.proteusframework.email.EmailConfigType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import java.util.*
+import javax.annotation.PostConstruct
 
 
 data class Hostname(val address: String, val welcomePage: Page)
@@ -102,22 +103,31 @@ abstract class SiteDefinition(val definitionName: String, val version: Int) {
     companion object {
         internal val registeredSites = mutableMapOf<SiteDefinition, MutableList<Site>>()
     }
+    data class SiteToConstruct(val id: String, val init: Site.() -> Unit = {})
 
     @Autowired
     @Qualifier("standalone")
     lateinit var placeholderHelper: PlaceholderHelper
+    private val sitesToConstruct = mutableListOf<SiteToConstruct>()
+
+
+        @PostConstruct
+    fun postConstruct() {
+        sitesToConstruct.forEach {
+            val site = Site(it.id)
+            site.parent = this
+            site.apply(it.init)
+            registeredSites.getOrPut(this, { mutableListOf<Site>() }).add(site)
+            for (callback in site.siteConstructedCallbacks) {
+                callback.invoke(site)
+            }
+        }
+        sitesToConstruct.clear()
+    }
 
     @Override
-    fun createSite(id: String, init: Site.() -> Unit = {}): Site {
-        val site = Site(id)
-        site.parent = this
-        site.apply(init)
-        registeredSites.getOrPut(this, { mutableListOf<Site>() }).add(site)
-        for (callback in site.siteConstructedCallbacks) {
-            callback.invoke(site)
-        }
-        return site
-    }
+    fun createSite(id: String, init: Site.() -> Unit = {}) = sitesToConstruct.add(SiteToConstruct(id, init))
+
 
     fun getSites(): List<Site> = registeredSites[this]!!.toList()
 
