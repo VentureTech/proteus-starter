@@ -49,6 +49,10 @@ import net.proteusframework.data.filesystem.DirectoryEntity
 import net.proteusframework.data.filesystem.FileEntity
 import net.proteusframework.data.filesystem.FileSystemDAO
 import net.proteusframework.data.filesystem.http.FileSystemEntityResourceFactory
+import net.proteusframework.email.EmailConfig
+import net.proteusframework.email.EmailConfigType
+import net.proteusframework.email.EmailTemplate
+import net.proteusframework.email.EmailTemplateDAO
 import net.proteusframework.internet.http.Link
 import net.proteusframework.internet.http.resource.html.FactoryNDE
 import net.proteusframework.internet.http.resource.html.NDEType
@@ -117,6 +121,8 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     lateinit var applicationRegistry: ApplicationRegistry
     @Autowired
     lateinit var registeredLinkDAO: RegisteredLinkDAO
+    @Autowired
+    lateinit var emailTemplateDAO: EmailTemplateDAO
 
 
     private val contentElementData = mutableMapOf<ContentElement, CmsModelDataSet>()
@@ -147,8 +153,6 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             throw IllegalArgumentException("Invalid SiteModel. No hostnames")
 
         val site = getOrCreateSite(siteModel)
-        currentSite = site
-        currentWebRoot = FileSystemDirectory.getRootDirectory(site)
         val ctrList = mutableSetOf<Content>()
         ctrList.addAll(siteModel.contentToRemove)
         val pageList = mutableListOf<Page>()
@@ -182,6 +186,9 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
                 principalDAO.savePrincipal(user)
             }
         }
+        siteModel.emailTemplates.forEach { createEmailTemplate(site, it) }
+        if(siteModel.emailTemplates.isNotEmpty()) session.flush()
+
         pageList.forEach { getOrCreatePagePass1(site, it) }
         pageList.forEach { getOrCreatePagePass2(site, it) }
         val hibernateUtil = HibernateUtil.getInstance()
@@ -196,6 +203,32 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
                 updatePageElementPath(contentElementList[0], content)
             }
         }
+    }
+
+    private fun createEmailTemplate(site: CmsSite, emailTemplateModel: experimental.cms.dsl.EmailTemplate<*>) {
+        val emailTemplate = getEmailTemplate(emailTemplateModel.programmaticName)?:EmailTemplate(site)
+        emailTemplate.name = emailTemplateModel.name
+        if(emailTemplate.emailConfig == null) {
+            @Suppress("UNCHECKED_CAST")
+            val etct = emailTemplateDAO.getEmailConfigTypeByType<EmailConfig,EmailConfigType<EmailConfig>>(
+                emailTemplateModel.type as Class<EmailConfigType<EmailConfig>>?)
+            emailTemplate.emailConfig = etct.instantiateEmailConfig()
+        }
+        if(emailTemplate.id == 0L) {
+            emailTemplate.from = emailTemplateModel.from
+            emailTemplate.replyTo = emailTemplateModel.replyTo
+            emailTemplate.to = emailTemplateModel.to
+            emailTemplate.cc = emailTemplateModel.cc
+            emailTemplate.bcc = emailTemplateModel.bcc
+            emailTemplate.subject = emailTemplateModel.subject
+            emailTemplate.isAdvancedEditingMode = true
+            emailTemplate.htmlBody = emailTemplateModel.htmlContent
+            emailTemplate.lastModUser = principalDAO.currentPrincipal
+            emailTemplate.createUser = principalDAO.currentPrincipal
+            emailTemplate.isApproved = true
+            emailTemplateDAO.save(emailTemplate)
+        }
+
     }
 
     private fun addContentChildren(ctrList: MutableSet<Content>, ctr: Content) {
@@ -220,7 +253,10 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             cmsSite.lastModified = Date()
             cmsBackendDAO.saveSite(cmsSite)
         }
+        currentSite = cmsSite
+        createNDEs(cmsSite, cmsSite, siteModel)
         session.flush()
+        currentWebRoot = FileSystemDirectory.getRootDirectory(cmsSite)
         return cmsSite
     }
 
@@ -645,7 +681,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     }
 
     override fun createLibrary(libraryName: String, libraryPath: String, libraryType: String): Library<*>? {
-        val site = currentSite!!
+        val site = getCmsSite()
         val root = libraryDAO.librariesDirectory
         val query = hsh.session.createQuery(
             "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root")
@@ -699,5 +735,8 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     }
 
     override fun resolvePlaceholders(template: String): String = environment.resolvePlaceholders(template)
+
+    override fun getEmailTemplate(programmaticName: String) = emailTemplateDAO.getEmailTemplate(programmaticName, currentSite)
+
 }
 

@@ -23,6 +23,7 @@ import net.proteusframework.core.html.Element
 import net.proteusframework.core.html.EntityUtil
 import net.proteusframework.core.html.HTMLElement
 import net.proteusframework.core.xml.*
+import net.proteusframework.email.EmailTemplate
 import net.proteusframework.internet.http.Link
 import net.proteusframework.ui.miwt.component.Component
 import org.apache.logging.log4j.LogManager
@@ -212,4 +213,5 @@ interface ContentHelper : PlaceholderHelper {
     fun <LT : ILibraryType<LT>?> getLibraryConfiguration(library: Library<LT>): LibraryConfiguration<LT>?
     fun saveLibraryConfiguration(libraryConfiguration: LibraryConfiguration<*>)
     override fun resolvePlaceholders(template: String): String
+    fun getEmailTemplate(programmaticName: String): EmailTemplate?
 }
