@@ -11,6 +11,7 @@
 
 package experimental.cms.dsl
 
+import com.google.common.collect.Multimap
 import com.i2rd.cms.backend.BackendConfig
 import com.i2rd.cms.bean.ScriptingBeanPageElementModelFactory
 import com.i2rd.cms.component.miwt.MIWTPageElementModelFactory
@@ -217,4 +218,5 @@ interface ContentHelper : PlaceholderHelper {
     fun getEmailTemplate(programmaticName: String): EmailTemplate?
     fun getRegisteredLink(functionName: String, functionContext: String): RegisteredLink?
     fun saveRegisteredLink(registeredLink: RegisteredLink)
+    fun <LT:ILibraryType<LT>> setScriptParameters(libraryConfiguration: LibraryConfiguration<LT>, parameters: Multimap<String, Any>)
 }

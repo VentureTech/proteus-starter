@@ -11,6 +11,7 @@
 
 package experimental.cms.dsl.content
 
+import com.google.common.collect.ArrayListMultimap
 import com.i2rd.cms.bean.LoginBean
 import com.i2rd.cms.bean.LoginBeanContentBuilder
 import com.i2rd.cms.scripts.impl.ScriptableRedirectType
@@ -27,6 +28,7 @@ class Login(id: String) : Identifiable(id), Content {
     var resetPasswordText = ""
     var titleText = ""
     private var scriptedRedirect: Script? = null
+    private val scriptedRedirectParameters = ArrayListMultimap.create<String, Any>()
 
     fun landingPage(landingPageId: String) {
         getSite().siteConstructedCallbacks.add({ site ->
@@ -37,6 +39,9 @@ class Login(id: String) : Identifiable(id), Content {
 
     fun scriptedRedirect(file: String) {
         scriptedRedirect = Script(ScriptType.LoginRedirect, file)
+    }
+    fun scriptedRedirectParam(parameterName: String, parameterValue: Any) {
+        scriptedRedirectParameters.put(parameterName, parameterValue)
     }
 
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
@@ -69,8 +74,12 @@ class Login(id: String) : Identifiable(id), Content {
                 if(lc == null) {
                     lc = LibraryConfiguration<ScriptableRedirectType>(library)
                     helper.saveLibraryConfiguration(lc)
-                    builder.scriptInstance = lc.getId()
+                    builder.scriptInstance = lc.id
+                } else {
+                    builder.scriptInstance = lc.id
                 }
+                helper.setScriptParameters(lc, scriptedRedirectParameters)
+                helper.saveLibraryConfiguration(lc)
             }
         }
         else {

@@ -11,6 +11,7 @@
 
 package experimental.cms.dsl.shell
 
+import com.google.common.collect.Multimap
 import com.i2rd.cms.HostnameDestination
 import com.i2rd.cms.SiteSSLOption
 import com.i2rd.cms.backend.BackendConfig
@@ -741,5 +742,10 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     }
 
     override fun saveRegisteredLink(registeredLink: RegisteredLink) = registeredLinkDAO.saveRegisteredLink(registeredLink)
+
+    override fun <LT:ILibraryType<LT>> setScriptParameters(libraryConfiguration: LibraryConfiguration<LT>,
+        parameters: Multimap<String, Any>) {
+        libraryDAO.setParameterValues(libraryConfiguration, null, null, parameters)
+    }
 }
 
