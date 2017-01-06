@@ -11,12 +11,12 @@
 
 package com.example.app.ui;
 
-import com.example.app.model.company.Company;
-import com.example.app.model.company.CompanyDAO;
-import com.example.app.model.terminology.FallbackProfileTermProvider;
-import com.example.app.model.terminology.ProfileTermProvider;
-import com.example.app.model.user.User;
-import com.example.app.model.user.UserDAO;
+import com.example.app.profile.model.company.Company;
+import com.example.app.profile.model.company.CompanyDAO;
+import com.example.app.profile.model.terminology.FallbackProfileTermProvider;
+import com.example.app.profile.model.terminology.ProfileTermProvider;
+import com.example.app.profile.model.user.User;
+import com.example.app.profile.model.user.UserDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,7 +159,6 @@ public class UIPreferences
      *
      * @return the company for current user
      */
-    @Nullable
     public synchronized Company getSelectedCompany()
     {
         if(_selectedCompany == null)

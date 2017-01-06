@@ -11,7 +11,7 @@
 
 package com.example.app.ui.company;
 
-import com.example.app.model.company.Company;
+import com.example.app.profile.model.company.Company;
 import com.example.app.ui.ApplicationFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;

@@ -11,13 +11,13 @@
 
 package com.example.app.ui.resource;
 
-import com.example.app.model.company.SelectedCompanyTermProvider;
-import com.example.app.model.repository.Repository;
-import com.example.app.model.repository.RepositoryDAO;
-import com.example.app.model.repository.ResourceRepositoryItem;
-import com.example.app.model.user.User;
-import com.example.app.model.user.UserDAO;
-import com.example.app.service.MembershipOperationProvider;
+import com.example.app.profile.model.user.User;
+import com.example.app.profile.model.user.UserDAO;
+import com.example.app.profile.service.MembershipOperationProvider;
+import com.example.app.profile.service.SelectedCompanyTermProvider;
+import com.example.app.repository.model.Repository;
+import com.example.app.repository.model.RepositoryDAO;
+import com.example.app.repository.model.ResourceRepositoryItem;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
 import com.example.app.ui.URLConfigurations;

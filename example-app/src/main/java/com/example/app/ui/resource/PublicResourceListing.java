@@ -11,7 +11,7 @@
 
 package com.example.app.ui.resource;
 
-import com.example.app.model.repository.Repository;
+import com.example.app.repository.model.Repository;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
 import org.springframework.beans.factory.annotation.Autowired;

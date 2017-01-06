@@ -11,11 +11,11 @@
 
 package com.example.app.ui.profile;
 
-import com.example.app.model.company.CompanyDAO;
-import com.example.app.model.company.SelectedCompanyTermProvider;
-import com.example.app.model.profile.MembershipType;
-import com.example.app.model.profile.ProfileDAO;
-import com.example.app.model.profile.ProfileType;
+import com.example.app.profile.model.ProfileDAO;
+import com.example.app.profile.model.ProfileType;
+import com.example.app.profile.model.company.CompanyDAO;
+import com.example.app.profile.model.membership.MembershipType;
+import com.example.app.profile.service.SelectedCompanyTermProvider;
 import com.example.app.support.AppUtil;
 import com.example.app.ui.CommonEditorFields;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,11 +58,8 @@ import net.proteusframework.ui.miwt.event.ActionListener;
 import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.ui.miwt.util.CommonColumnText;
 
-import static com.example.app.ui.UIText.MEMBERSHIP;
-import static com.example.app.ui.UIText.MEMBERSHIP_TYPE;
-import static com.example.app.ui.UIText.USERS;
+import static com.example.app.ui.UIText.*;
 import static com.example.app.ui.profile.ProfileTypeMembershipTypeManagementLOK.*;
-import static net.proteusframework.core.locale.TextSources.createText;
 
 /**
  * Membership management for a ProfileType.

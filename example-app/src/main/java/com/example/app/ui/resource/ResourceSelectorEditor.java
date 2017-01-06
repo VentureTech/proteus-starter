@@ -11,10 +11,10 @@
 
 package com.example.app.ui.resource;
 
-import com.example.app.model.company.SelectedCompanyTermProvider;
-import com.example.app.model.repository.Repository;
-import com.example.app.model.repository.ResourceRepositoryItem;
-import com.example.app.model.resource.Resource;
+import com.example.app.profile.service.SelectedCompanyTermProvider;
+import com.example.app.repository.model.Repository;
+import com.example.app.repository.model.ResourceRepositoryItem;
+import com.example.app.resource.model.Resource;
 import com.example.app.support.ArrayCollector;
 import com.example.app.ui.repository.ResourceRepositoryItemSelector;
 import org.apache.logging.log4j.Level;

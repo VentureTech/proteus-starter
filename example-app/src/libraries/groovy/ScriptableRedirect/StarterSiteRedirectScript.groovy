@@ -11,8 +11,8 @@
 
 package ScriptableRedirect
 
-import com.example.app.model.starter.StarterSiteDAO
-import com.example.app.model.user.UserDAO
+import com.example.app.profile.model.user.UserDAO
+import com.example.app.starter.model.StarterSiteDAO
 import com.example.app.ui.ApplicationFunctions
 import com.example.app.ui.URLProperties
 import com.google.common.collect.ImmutableMap
@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import javax.script.ScriptContext
 
 import static net.proteusframework.core.locale.TextSources.createText
+
 /**
  * Redirect to Starter Site Setup if no Companies exist.
  * @author Alan Holt (aholt@venturetech.net)

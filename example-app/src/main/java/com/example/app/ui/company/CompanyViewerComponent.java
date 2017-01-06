@@ -11,9 +11,9 @@
 
 package com.example.app.ui.company;
 
-import com.example.app.model.company.Company;
-import com.example.app.model.company.SelectedCompanyTermProvider;
-import com.example.app.model.profile.MembershipTypeInfo;
+import com.example.app.profile.model.company.Company;
+import com.example.app.profile.model.membership.MembershipTypeInfo;
+import com.example.app.profile.service.SelectedCompanyTermProvider;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
 import com.example.app.ui.UIPreferences;

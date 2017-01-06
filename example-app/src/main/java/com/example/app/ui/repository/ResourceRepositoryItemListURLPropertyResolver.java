@@ -12,8 +12,8 @@
 package com.example.app.ui.repository;
 
 
-import com.example.app.model.repository.RepositoryDAO;
-import com.example.app.model.repository.ResourceRepositoryItem;
+import com.example.app.repository.model.RepositoryDAO;
+import com.example.app.repository.model.ResourceRepositoryItem;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;

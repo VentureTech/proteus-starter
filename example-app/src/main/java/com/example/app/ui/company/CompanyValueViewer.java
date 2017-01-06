@@ -11,8 +11,8 @@
 
 package com.example.app.ui.company;
 
-import com.example.app.model.client.Location;
-import com.example.app.model.company.Company;
+import com.example.app.profile.model.company.Company;
+import com.example.app.profile.model.location.Location;
 import com.example.app.support.AppUtil;
 import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;

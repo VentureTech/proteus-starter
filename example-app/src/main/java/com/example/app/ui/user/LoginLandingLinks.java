@@ -11,12 +11,12 @@
 
 package com.example.app.ui.user;
 
-import com.example.app.model.profile.Membership;
-import com.example.app.model.profile.MembershipOperation;
-import com.example.app.model.profile.ProfileDAO;
-import com.example.app.model.terminology.DefaultProfileTermProvider;
-import com.example.app.model.user.User;
-import com.example.app.service.MembershipOperationProvider;
+import com.example.app.profile.model.ProfileDAO;
+import com.example.app.profile.model.membership.Membership;
+import com.example.app.profile.model.membership.MembershipOperation;
+import com.example.app.profile.model.user.User;
+import com.example.app.profile.service.DefaultProfileTermProvider;
+import com.example.app.profile.service.MembershipOperationProvider;
 import com.example.app.support.AppUtil;
 import com.example.app.ui.ApplicationFunctions;
 import org.springframework.beans.factory.annotation.Autowired;

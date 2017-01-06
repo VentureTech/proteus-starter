@@ -17,8 +17,8 @@ import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.WeekDay;
 import net.fortuna.ical4j.model.WeekDayList;
 
-import com.example.app.model.schedule.ICal4jSchedule;
-import com.example.app.model.schedule.WeekOfMonth;
+import com.example.app.schedule.model.ICal4jSchedule;
+import com.example.app.schedule.model.WeekOfMonth;
 import com.example.app.support.AppUtil;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;

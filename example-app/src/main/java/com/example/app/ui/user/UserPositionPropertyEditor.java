@@ -12,9 +12,9 @@
 package com.example.app.ui.user;
 
 
-import com.example.app.model.user.User;
-import com.example.app.model.user.UserDAO;
-import com.example.app.model.user.UserPosition;
+import com.example.app.profile.model.user.User;
+import com.example.app.profile.model.user.UserDAO;
+import com.example.app.profile.model.user.UserPosition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 

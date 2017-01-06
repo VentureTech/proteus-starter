@@ -11,10 +11,10 @@
 
 package com.example.app.ui.user;
 
-import com.example.app.model.company.SelectedCompanyTermProvider;
-import com.example.app.model.user.User;
-import com.example.app.model.user.UserDAO;
-import com.example.app.model.user.UserPosition;
+import com.example.app.profile.model.user.User;
+import com.example.app.profile.model.user.UserDAO;
+import com.example.app.profile.model.user.UserPosition;
+import com.example.app.profile.service.SelectedCompanyTermProvider;
 import com.example.app.support.AppUtil;
 import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;

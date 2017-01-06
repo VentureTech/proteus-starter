@@ -11,8 +11,8 @@
 
 package com.example.app.ui.repository;
 
-import com.example.app.model.repository.Repository;
-import com.example.app.model.repository.RepositoryItem;
+import com.example.app.repository.model.Repository;
+import com.example.app.repository.model.RepositoryItem;
 import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 

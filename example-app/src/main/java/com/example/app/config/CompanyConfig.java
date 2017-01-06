@@ -11,7 +11,7 @@
 
 package com.example.app.config;
 
-import com.example.app.model.company.Company;
+import com.example.app.profile.model.company.Company;
 import com.example.app.ui.vtcrop.VTCropPictureEditorConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

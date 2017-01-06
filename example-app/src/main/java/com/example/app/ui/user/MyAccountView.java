@@ -11,7 +11,7 @@
 
 package com.example.app.ui.user;
 
-import com.example.app.model.user.UserDAO;
+import com.example.app.profile.model.user.UserDAO;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -11,10 +11,10 @@
 
 package com.example.app.ui.user;
 
-import com.example.app.model.company.Company;
-import com.example.app.model.profile.ProfileDAO;
-import com.example.app.model.user.User;
-import com.example.app.service.MembershipOperationProvider;
+import com.example.app.profile.model.ProfileDAO;
+import com.example.app.profile.model.company.Company;
+import com.example.app.profile.model.user.User;
+import com.example.app.profile.service.MembershipOperationProvider;
 import com.example.app.support.AppUtil;
 import com.example.app.ui.ApplicationFunctionPermissionCheck;
 import com.example.app.ui.ApplicationFunctions;

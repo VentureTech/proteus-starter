@@ -11,15 +11,14 @@
 
 package com.example.app.ui.repository;
 
-import com.example.app.model.company.SelectedCompanyTermProvider;
-import com.example.app.model.profile.MembershipOperation;
-import com.example.app.model.repository.Repository;
-import com.example.app.model.repository.RepositoryDAO;
-import com.example.app.model.repository.RepositoryItem;
-import com.example.app.model.terminology.ProfileTermProvider;
-import com.example.app.model.user.UserDAO;
-import com.example.app.service.MembershipOperationProvider;
-
+import com.example.app.profile.model.membership.MembershipOperation;
+import com.example.app.profile.model.terminology.ProfileTermProvider;
+import com.example.app.profile.model.user.UserDAO;
+import com.example.app.profile.service.MembershipOperationProvider;
+import com.example.app.profile.service.SelectedCompanyTermProvider;
+import com.example.app.repository.model.Repository;
+import com.example.app.repository.model.RepositoryDAO;
+import com.example.app.repository.model.RepositoryItem;
 import com.example.app.ui.SelectActionColumn;
 import com.google.common.base.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +56,6 @@ import net.proteusframework.ui.search.SearchUIOperationHandler;
 import static com.example.app.ui.UIText.*;
 import static com.example.app.ui.repository.RepositoryItemSelector.RepositoryItemSelectorMode.LONG;
 import static com.example.app.ui.repository.RepositoryItemSelector.RepositoryItemSelectorMode.SHORT;
-import static net.proteusframework.core.locale.TextSources.createText;
 
 /**
  * UI for selecting a RepositoryItem.  Implementations of this UI should be

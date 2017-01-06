@@ -12,12 +12,12 @@
 package com.example.app.ui;
 
 
-import com.example.app.model.company.Company;
-import com.example.app.model.profile.Profile;
-import com.example.app.model.repository.Repository;
-import com.example.app.model.repository.RepositoryItem;
-import com.example.app.model.resource.ResourceType;
-import com.example.app.model.user.User;
+import com.example.app.profile.model.Profile;
+import com.example.app.profile.model.company.Company;
+import com.example.app.profile.model.user.User;
+import com.example.app.repository.model.Repository;
+import com.example.app.repository.model.RepositoryItem;
+import com.example.app.resource.model.ResourceType;
 
 import net.proteusframework.ui.management.URLProperty;
 

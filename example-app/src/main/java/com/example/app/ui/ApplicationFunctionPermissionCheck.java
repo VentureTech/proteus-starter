@@ -11,8 +11,8 @@
 
 package com.example.app.ui;
 
-import com.example.app.model.user.User;
-import com.example.app.model.user.UserDAO;
+import com.example.app.profile.model.user.User;
+import com.example.app.profile.model.user.UserDAO;
 import com.example.app.ui.company.CompanyManagement;
 import com.example.app.ui.company.CompanyUIPermissionCheck;
 

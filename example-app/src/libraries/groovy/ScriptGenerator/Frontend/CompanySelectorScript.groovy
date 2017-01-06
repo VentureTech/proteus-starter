@@ -11,11 +11,11 @@
 
 package ScriptGenerator.Frontend
 
-import com.example.app.model.company.Company
-import com.example.app.model.company.CompanyDAO
-import com.example.app.model.profile.ProfileDAO
-import com.example.app.model.user.User
-import com.example.app.model.user.UserDAO
+import com.example.app.profile.model.ProfileDAO
+import com.example.app.profile.model.company.Company
+import com.example.app.profile.model.company.CompanyDAO
+import com.example.app.profile.model.user.User
+import com.example.app.profile.model.user.UserDAO
 import com.example.app.ui.UIPreferences
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode

@@ -11,10 +11,10 @@
 
 package com.example.app.ui.resource;
 
-import com.example.app.model.repository.Repository;
-import com.example.app.model.repository.ResourceRepositoryItem;
-import com.example.app.model.resource.Resource;
-import com.example.app.model.resource.ResourceType;
+import com.example.app.repository.model.Repository;
+import com.example.app.repository.model.ResourceRepositoryItem;
+import com.example.app.resource.model.Resource;
+import com.example.app.resource.model.ResourceType;
 import com.example.app.ui.CommonEditorFields;
 import com.example.app.ui.vtcrop.VTCropPictureEditor;
 import org.apache.logging.log4j.Level;

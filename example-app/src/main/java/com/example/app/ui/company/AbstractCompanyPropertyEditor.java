@@ -11,14 +11,14 @@
 
 package com.example.app.ui.company;
 
-import com.example.app.model.company.Company;
-import com.example.app.model.company.CompanyDAO;
-import com.example.app.model.company.SelectedCompanyTermProvider;
-import com.example.app.model.profile.ProfileDAO;
-import com.example.app.model.profile.ProfileType;
-import com.example.app.model.user.UserDAO;
-import com.example.app.service.ResourceCategoryLabelProvider;
-import com.example.app.service.ResourceTagsLabelProvider;
+import com.example.app.profile.model.ProfileDAO;
+import com.example.app.profile.model.ProfileType;
+import com.example.app.profile.model.company.Company;
+import com.example.app.profile.model.company.CompanyDAO;
+import com.example.app.profile.model.user.UserDAO;
+import com.example.app.profile.service.SelectedCompanyTermProvider;
+import com.example.app.resource.service.ResourceCategoryLabelProvider;
+import com.example.app.resource.service.ResourceTagsLabelProvider;
 import com.example.app.support.AppUtil;
 import com.example.app.ui.ApplicationFunctions;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -11,10 +11,10 @@
 
 package com.example.app.ui.starter;
 
-import com.example.app.model.company.Company;
-import com.example.app.model.company.CompanyStatus;
-import com.example.app.model.starter.StarterSiteDAO;
-import com.example.app.model.user.User;
+import com.example.app.profile.model.company.Company;
+import com.example.app.profile.model.company.CompanyStatus;
+import com.example.app.profile.model.user.User;
+import com.example.app.starter.model.StarterSiteDAO;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
 import com.example.app.ui.URLConfigurations;
