@@ -19,6 +19,9 @@ import net.proteusframework.cms.component.ContentElement
 import net.proteusframework.cms.component.editor.DefaultDelegatePurpose
 import net.proteusframework.cms.component.editor.DelegatePurpose
 
+/**
+ * Script Type Enum.
+ */
 enum class ScriptType(val modelName: String) {
 //    FreeMarker(FreeMarkerType.MODEL_NAME),
     ScriptedGenerator(ScriptGeneratorType.MODEL_NAME),
@@ -31,8 +34,14 @@ internal data class Script(val type:ScriptType, val file: String, val dependenci
 internal fun createContentIdPredicate(existingId: String): (Content) -> Boolean = { it.id == existingId }
 
 interface ContentContainer {
+    /** Internal Use. */
     val contentList: MutableList<Content>
+    /** Internal Use. */
     val contentToRemove: MutableList<Content>
+
+    /**
+     * Remove Content.
+     */
     fun Content.remove() = contentToRemove.add(this)
 }
 internal fun _getSite(toCheck: Any?): Site {
@@ -52,15 +61,32 @@ internal fun _getPage(toCheck: Any?): Page? {
 }
 
 interface DelegateContent : ContentContainer {
-    val defaultPurpose: DelegatePurpose
+    /**
+     * Internal Use.
+     * @see content
+     */
     val contentPurpose: MutableMap<Content, DelegatePurpose>
+    /** Internal Use. */
     var parent: Any?
+
+    /**
+     * Add delegate content.
+     * @param content the Content to add.
+     * @param purpose optional purpose. Default to NONE. This is Content Container specifc.
+     * @param init the initialization block.
+     */
     fun <T : Content> content(content: T, purpose: DelegatePurpose = DefaultDelegatePurpose.NONE, init: T.() -> Unit={}): T {
         contentList.add(content)
         contentPurpose.put(content, purpose)
         content.parent = this
         return content.apply(init)
     }
+
+    /**
+     * Add delegate content.
+     * @param existingContentId an existnig Content's identifier.
+     * @param purpose optional purpose. Default to NONE. This is Content Container specifc.
+     */
     fun content(existingContentId: String, purpose: DelegatePurpose = DefaultDelegatePurpose.NONE): Content {
         val contentById = _getSite(parent).getContentById(existingContentId)
         contentList.add(contentById)

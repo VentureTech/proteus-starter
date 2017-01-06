@@ -134,8 +134,8 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     var currentSite: CmsSite? = null
     lateinit var currentWebRoot: DirectoryEntity
 
-    fun applyDefinition(siteDefinition: SiteDefinition) {
-        siteDefinition.getSites().forEach { siteModel ->
+    fun applyDefinition(appDefinition: AppDefinition) {
+        appDefinition.getSites().forEach { siteModel ->
             cleanup()
             doInTransaction {
                 applySiteModel(siteModel)
@@ -389,7 +389,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
                 if (existingDelegate == null) {
                     logger.info("Creating Cms Content: ${child.id}. Adding To Content: ${content.id}")
                     val delegate = createContentInstance(child, site)
-                    val delegateElement = DelegateElement(delegate, content.contentPurpose[child] ?: content.defaultPurpose)
+                    val delegateElement = DelegateElement(delegate, content.contentPurpose[child]!!)
                     ceDelegates.add(delegateElement)
                 } else {
                     createContentInstance(child, site) // Check to see if the delegate has been modified
