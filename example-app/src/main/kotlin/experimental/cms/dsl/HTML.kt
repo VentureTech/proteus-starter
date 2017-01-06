@@ -12,9 +12,11 @@
 package experimental.cms.dsl
 
 interface HTMLIdentifier {
+    /** HTML id attribute value. */
     var htmlId: String
 }
 interface HTMLClass {
+    /** HTML class attribute value. */
     var htmlClass: String
 }
 

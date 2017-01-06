@@ -37,8 +37,19 @@ import java.io.StringWriter
 internal fun cleanPath(path: String): String = trimSlashes(path.replace('*', '/')).replace(Regex("""/+"""), "/")
 
 interface PathCapable {
+    /**
+     * The path like "/admin/user-mgt". Wildcard paths end with a "*" like "/admin/user/edit/&#x2a;"
+    */
     var path: String
+
+    /**
+     * Test if the path is a wildcard path.
+     */
     fun isWildcard(): Boolean = path.endsWith("*")
+
+    /**
+     * Get a sanitized path that can be set on a [net.proteusframework.cms.PageElementPath]
+     */
     fun getCleanPath(): String = cleanPath(path)
 }
 
@@ -63,8 +74,9 @@ open class Identifiable(val id: String) {
 }
 
 open class IdentifiableParent<C>(id: String) : Identifiable(id) {
-    val children = mutableListOf<C>()
-    fun add(child: C): C = child.apply { children.add(this) }
+    internal val children = mutableListOf<C>()
+    internal fun add(child: C): C = child.apply { children.add(this) }
+
     override fun toString(): String {
         return "IdentifiableParent(id='$id', children=$children)"
     }

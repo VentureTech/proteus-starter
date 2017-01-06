@@ -12,7 +12,7 @@
 package experimental.cms.dsl.shell
 
 import com.i2rd.cms.util.AbstractShellCommands
-import experimental.cms.dsl.SiteDefinition
+import experimental.cms.dsl.AppDefinition
 import net.proteusframework.core.hibernate.HibernateSessionHelper
 import net.proteusframework.core.lang.InternationalizedException
 import net.proteusframework.core.text.FriendlyDateFormat
@@ -31,7 +31,7 @@ open class CmsDSLShellCommands : AbstractShellCommands() {
 
 
     @Autowired(required = false)
-    lateinit var siteDefinitionList: List<SiteDefinition>
+    lateinit var _appDefinitionList: List<AppDefinition>
     @Autowired
     lateinit var modelApplication: CmsModelApplication
 
@@ -43,9 +43,9 @@ open class CmsDSLShellCommands : AbstractShellCommands() {
     @CliCommand(value = "experimental cms dsl list")
     fun list(): Unit {
         val fmt = FriendlyDateFormat()
-        val sdMap = mutableMapOf<String, SiteDefinition>()
+        val sdMap = mutableMapOf<String, AppDefinition>()
         try {
-            siteDefinitionList.forEach { sdMap.put(it.definitionName, it) }
+            _appDefinitionList.forEach { sdMap.put(it.definitionName, it) }
         } catch(e: UninitializedPropertyAccessException) {
             shellLogger.fine("There are no site definitions")
         }
@@ -75,7 +75,7 @@ open class CmsDSLShellCommands : AbstractShellCommands() {
 
     @Suppress("IMPLICIT_CAST_TO_ANY")
     @CliCommand(value = "experimental cms dsl apply")
-    fun apply(@CliOption(key = arrayOf("definition"), mandatory = true) siteDefinition: SiteDefinition) {
+    fun apply(@CliOption(key = arrayOf("definition"), mandatory = true) appDefinition: AppDefinition) {
         if (principalDAO.currentPrincipal == null) {
             shellLogger.warning("Please login first")
             return
@@ -86,7 +86,7 @@ open class CmsDSLShellCommands : AbstractShellCommands() {
         }
 
         try {
-            modelApplication.applyDefinition(siteDefinition)
+            modelApplication.applyDefinition(appDefinition)
         } catch(e: InternationalizedException) {
             sendNotification(e.createNotification())
             cleanupSession()
@@ -99,17 +99,17 @@ open class CmsDSLShellCommands : AbstractShellCommands() {
         cleanupSession()
         transaction {
             val now = DateTime.now()
-            val result = SiteDefinitionRecord.select(SiteDefinitionRecord.name eq siteDefinition.definitionName).limit(1)
+            val result = SiteDefinitionRecord.select(SiteDefinitionRecord.name eq appDefinition.definitionName).limit(1)
             if (result.empty()) {
                 SiteDefinitionRecord.insert {
-                    it[name] = siteDefinition.definitionName
-                    it[version] = siteDefinition.version
+                    it[name] = appDefinition.definitionName
+                    it[version] = appDefinition.version
                     it[created] = now
                     it[modified] = now
                 }
             } else {
                 SiteDefinitionRecord.update({ SiteDefinitionRecord.id eq result.iterator().next()[SiteDefinitionRecord.id] }) {
-                    it[version] = siteDefinition.version
+                    it[version] = appDefinition.version
                     it[modified] = now
                 }
             }
