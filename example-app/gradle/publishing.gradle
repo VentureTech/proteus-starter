@@ -11,6 +11,10 @@ publishing {
                 type "javadoc"
                 conf "runtime"
             }
+            artifact(librariesZip) {
+                type "libraries"
+                conf "runtime"
+            }
         }
         mavenPub(MavenPublication) {
             from components.java
@@ -20,6 +24,9 @@ publishing {
             }
             artifact(javadocJar) {
                 classifier "javadoc"
+            }
+            artifact(librariesZip) {
+                classifier "libraries"
             }
         }
     }

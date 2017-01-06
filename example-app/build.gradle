@@ -68,7 +68,6 @@ task wrapper(type: Wrapper) {
 }
 
 
-
 //noinspection GroovyAssignabilityCheck
 configurations.all {
     exclude group: 'org.eclipse.birt.runtime.3_7_1', module: 'org.apache.commons.codec'
