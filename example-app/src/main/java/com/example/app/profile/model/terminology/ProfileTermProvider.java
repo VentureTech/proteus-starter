@@ -35,4 +35,32 @@ public interface ProfileTermProvider extends Serializable
      * @return the term.
      */
     TextSource companies();
+
+    /**
+     * Return the term.
+     *
+     * @return the term.
+     */
+    TextSource client();
+
+    /**
+     * Return the term.
+     *
+     * @return the term.
+     */
+    TextSource clients();
+
+    /**
+     * Return the term.
+     *
+     * @return the term.
+     */
+    TextSource location();
+
+    /**
+     * Return the term.
+     *
+     * @return the term.
+     */
+    TextSource locations();
 }

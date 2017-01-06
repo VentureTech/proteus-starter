@@ -57,20 +57,52 @@ public class ProfileTerms extends AbstractEntity<Integer> implements ProfileTerm
     public static final String ID_COLUMN = "profileterms_id";
     private static final String GENERATOR = PROJECT_SCHEMA + '.' + ID_COLUMN + "_seq";
 
-    private LocalizedObjectKey coachingEntity;
+    private LocalizedObjectKey company;
 
-    private LocalizedObjectKey coachingEntities;
+    private LocalizedObjectKey companies;
+
+    private LocalizedObjectKey client;
+
+    private LocalizedObjectKey clients;
+
+    private LocalizedObjectKey location;
+
+    private LocalizedObjectKey locations;
 
     @Override
     public TextSource company()
     {
-        return coachingEntity;
+        return company;
     }
 
     @Override
     public TextSource companies()
     {
-        return coachingEntities;
+        return companies;
+    }
+
+    @Override
+    public TextSource client()
+    {
+        return client;
+    }
+
+    @Override
+    public TextSource clients()
+    {
+        return clients;
+    }
+
+    @Override
+    public TextSource location()
+    {
+        return location;
+    }
+
+    @Override
+    public TextSource locations()
+    {
+        return locations;
     }
 
     @Id
@@ -90,9 +122,9 @@ public class ProfileTerms extends AbstractEntity<Integer> implements ProfileTerm
      *
      * @return the company
      */
-    public LocalizedObjectKey getCoachingEntity()
+    public LocalizedObjectKey getCompany()
     {
-        return coachingEntity;
+        return company;
     }
 
     /**
@@ -100,9 +132,9 @@ public class ProfileTerms extends AbstractEntity<Integer> implements ProfileTerm
      *
      * @param pCoachingEntity the company
      */
-    public void setCoachingEntity(LocalizedObjectKey pCoachingEntity)
+    public void setCompany(LocalizedObjectKey pCoachingEntity)
     {
-        coachingEntity = pCoachingEntity;
+        company = pCoachingEntity;
     }
 
     /**
@@ -110,9 +142,9 @@ public class ProfileTerms extends AbstractEntity<Integer> implements ProfileTerm
      *
      * @return the company
      */
-    public LocalizedObjectKey getCoachingEntities()
+    public LocalizedObjectKey getCompanies()
     {
-        return coachingEntities;
+        return companies;
     }
 
     /**
@@ -120,8 +152,88 @@ public class ProfileTerms extends AbstractEntity<Integer> implements ProfileTerm
      *
      * @param pCoachingEntities the coaching entities
      */
-    public void setCoachingEntities(LocalizedObjectKey pCoachingEntities)
+    public void setCompanies(LocalizedObjectKey pCoachingEntities)
     {
-        coachingEntities = pCoachingEntities;
+        companies = pCoachingEntities;
+    }
+
+    /**
+     * Gets client.
+     *
+     * @return the client
+     */
+    public LocalizedObjectKey getClient()
+    {
+        return client;
+    }
+
+    /**
+     * Sets client.
+     *
+     * @param pClient the pclient
+     */
+    public void setClient(LocalizedObjectKey pClient)
+    {
+        client = pClient;
+    }
+
+    /**
+     * Gets clients.
+     *
+     * @return the clients
+     */
+    public LocalizedObjectKey getClients()
+    {
+        return clients;
+    }
+
+    /**
+     * Sets clients.
+     *
+     * @param pClients the clients
+     */
+    public void setClients(LocalizedObjectKey pClients)
+    {
+        clients = pClients;
+    }
+
+    /**
+     * Gets location.
+     *
+     * @return the location
+     */
+    public LocalizedObjectKey getLocation()
+    {
+        return location;
+    }
+
+    /**
+     * Sets location.
+     *
+     * @param pLocation the location
+     */
+    public void setLocation(LocalizedObjectKey pLocation)
+    {
+        location = pLocation;
+    }
+
+    /**
+     * Gets locations.
+     *
+     * @return the locations
+     */
+    public LocalizedObjectKey getLocations()
+    {
+        return locations;
+    }
+
+    /**
+     * Sets locations.
+     *
+     * @param pLocations the locations
+     */
+    public void setLocations(LocalizedObjectKey pLocations)
+    {
+        locations = pLocations;
     }
 }

@@ -51,7 +51,6 @@
             l10n = @L10N("You do not have the correct roles to view this {0}")),
         @I18N(symbol = "Info", l10n = @L10N("Info")),
         @I18N(symbol = "Last Updated", l10n = @L10N("Last Updated")),
-        @I18N(symbol = "Location", l10n = @L10N("Location")),
         @I18N(symbol = "Never", l10n = @L10N("Never")),
         @I18N(symbol = "Positions", l10n = @L10N("Positions")),
         @I18N(symbol = "Redo", l10n = @L10N("Redo")),

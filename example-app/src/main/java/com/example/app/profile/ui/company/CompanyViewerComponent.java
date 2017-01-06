@@ -12,11 +12,15 @@
 package com.example.app.profile.ui.company;
 
 import com.example.app.profile.model.company.Company;
+import com.example.app.profile.model.company.CompanyDAO;
 import com.example.app.profile.model.membership.MembershipTypeInfo;
+import com.example.app.profile.model.terminology.ProfileTerms;
 import com.example.app.profile.service.SelectedCompanyTermProvider;
 import com.example.app.profile.ui.ApplicationFunctions;
 import com.example.app.profile.ui.URLConfigurations;
 import com.example.app.profile.ui.membership.ProfileTypeMembershipTypeManagement;
+import com.example.app.profile.ui.terminology.ProfileTermsEditor;
+import com.example.app.profile.ui.terminology.ProfileTermsViewer;
 import com.example.app.support.ui.Application;
 import com.example.app.support.ui.UIPreferences;
 import com.example.app.support.ui.text.LabelDomainLabelManagement;
@@ -41,11 +45,16 @@ import net.proteusframework.ui.management.ParsedRequest;
 import net.proteusframework.ui.management.URLConfigDef;
 import net.proteusframework.ui.management.URLProperty;
 import net.proteusframework.ui.management.nav.NavigationAction;
+import net.proteusframework.ui.miwt.ReflectiveAction;
+import net.proteusframework.ui.miwt.component.Component;
 import net.proteusframework.ui.miwt.component.Container;
 import net.proteusframework.ui.miwt.component.Label;
 import net.proteusframework.ui.miwt.component.PushButton;
 import net.proteusframework.ui.miwt.component.TabItemDisplay;
 import net.proteusframework.ui.miwt.component.composite.TabbedContainerImpl;
+import net.proteusframework.ui.miwt.component.composite.editor.PropertyEditor;
+import net.proteusframework.ui.miwt.component.composite.editor.PropertyViewer;
+import net.proteusframework.ui.miwt.event.ActionListener;
 import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
 
@@ -64,6 +73,7 @@ import static com.example.app.profile.ui.company.CompanyViewerComponentLOK.*;
     symbolPrefix = "com.example.app.profile.ui.company.CompanyViewerComponent",
     i18n = {
         @I18N(symbol = "Component Name", l10n = @L10N("Company Viewer")),
+        @I18N(symbol = "Tab Terminology", l10n = @L10N("Terminology")),
         @I18N(symbol = "Tab Resource Tags and Categories", l10n = @L10N("{0} Tags & Categories")),
         @I18N(symbol = "Label Categories", l10n = @L10N("Categories")),
         @I18N(symbol = "Label Tags", l10n = @L10N("Tags"))
@@ -89,6 +99,7 @@ public class CompanyViewerComponent extends MIWTPageElementModelContainer
     @Autowired private UIPreferences _uiPreferences;
     @Autowired private SelectedCompanyTermProvider _terms;
     @Autowired private CompanyUIPermissionCheck _permissionCheck;
+    @Autowired private CompanyDAO _companyDAO;
 
     private Company _company;
 
@@ -130,6 +141,8 @@ public class CompanyViewerComponent extends MIWTPageElementModelContainer
 
         TabItemDisplay infoTID = new TabItemDisplay(INFO());
         infoTID.addClassName("company-info");
+        TabItemDisplay termTID = new TabItemDisplay(TAB_TERMINOLOGY());
+        termTID.addClassName("terminology");
         TabItemDisplay rolesTID = new TabItemDisplay()
         {
             @Override
@@ -184,6 +197,7 @@ public class CompanyViewerComponent extends MIWTPageElementModelContainer
 
         TabbedContainerImpl tabs = new TabbedContainerImpl();
         tabs.addTab(infoTID, propertyViewer);
+        tabs.addTab(termTID, createTerminologyUI());
         tabs.addTab(rolesTID, roleMgt);
         tabs.addTab(resourceTagsCatsTID, tagsCatsManagement);
         tabs.setSelectedIndex(_uiPreferences.getStoredInteger(getSelectedTabProp()).orElse(0));
@@ -195,6 +209,47 @@ public class CompanyViewerComponent extends MIWTPageElementModelContainer
             .withHTMLElement(HTMLElement.h1)));
         add(of("actions nav-actions", new PushButton(backAction)));
         add(tabs);
+    }
+
+    private Component createTerminologyUI()
+    {
+        Container con = new Container();
+        con.addClassName("terminology-con");
+        PropertyViewer pv = new PropertyViewer(new ProfileTermsViewer(getCompany(), getCompany().getProfileTerms()));
+        con.add(pv);
+        ReflectiveAction editAction = CommonActions.EDIT.defaultAction();
+        pv.setPersistenceActions(editAction);
+        editAction.setActionListener(ev -> {
+            con.removeAllComponents();
+            PropertyEditor<ProfileTerms> pe = new PropertyEditor<>();
+            ReflectiveAction saveAction = CommonActions.SAVE.defaultAction();
+            ReflectiveAction cancelAction = CommonActions.CANCEL.defaultAction();
+            pe.setPersistenceActions(saveAction, cancelAction);
+            ProfileTermsEditor editor = new ProfileTermsEditor(getCompany());
+            editor.setValue(getCompany().getProfileTerms());
+            pe.setValueEditor(editor);
+            con.add(pe);
+
+            ActionListener cancelListener = ev1 -> {
+                con.removeAllComponents();
+                PropertyViewer pv2 = new PropertyViewer(new ProfileTermsViewer(getCompany(), getCompany().getProfileTerms()));
+                con.add(pv2);
+                pv2.setPersistenceActions(editAction);
+            };
+            cancelAction.setActionListener(cancelListener);
+
+            saveAction.setActionListener(ev1 -> {
+                if(pe.persist(input -> {
+                    assert input != null;
+                    _companyDAO.mergeProfileTerms(input);
+                    return true;
+                }))
+                {
+                    cancelListener.actionPerformed(ev1);
+                }
+            });
+        });
+        return con;
     }
 
     @SuppressWarnings("unused") //Used by ApplicationFunction
