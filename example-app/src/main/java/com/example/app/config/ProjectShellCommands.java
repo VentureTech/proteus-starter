@@ -11,21 +11,21 @@
 
 package com.example.app.config;
 
-import com.example.app.model.company.Company;
-import com.example.app.model.company.CompanyDAO;
-import com.example.app.model.profile.Membership;
-import com.example.app.model.profile.MembershipOperation;
-import com.example.app.model.profile.MembershipType;
-import com.example.app.model.profile.ProfileDAO;
-import com.example.app.model.profile.ProfileType;
-import com.example.app.model.repository.Repository;
-import com.example.app.model.user.User;
-import com.example.app.model.user.UserDAO;
-import com.example.app.service.MembershipOperationProvider;
-import com.example.app.service.ProfileTypeKindLabelProvider;
-import com.example.app.service.ResourceCategoryLabelProvider;
-import com.example.app.service.ResourceTagsLabelProvider;
-import com.example.app.support.AppUtil;
+import com.example.app.profile.model.ProfileDAO;
+import com.example.app.profile.model.ProfileType;
+import com.example.app.profile.model.company.Company;
+import com.example.app.profile.model.company.CompanyDAO;
+import com.example.app.profile.model.membership.Membership;
+import com.example.app.profile.model.membership.MembershipOperation;
+import com.example.app.profile.model.membership.MembershipType;
+import com.example.app.profile.model.user.User;
+import com.example.app.profile.model.user.UserDAO;
+import com.example.app.profile.service.MembershipOperationProvider;
+import com.example.app.profile.service.ProfileTypeKindLabelProvider;
+import com.example.app.repository.model.Repository;
+import com.example.app.resource.service.ResourceCategoryLabelProvider;
+import com.example.app.resource.service.ResourceTagsLabelProvider;
+import com.example.app.support.service.AppUtil;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

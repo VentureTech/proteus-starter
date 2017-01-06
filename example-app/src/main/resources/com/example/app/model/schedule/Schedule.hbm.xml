@@ -16,10 +16,10 @@
 
 <hibernate-mapping>
     <typedef class="org.hibernate.type.EnumType" name="temporalDirectionType">
-        <param name="enumClass">com.example.app.model.schedule.TemporalDirection</param>
+        <param name="enumClass">com.example.app.schedule.model.TemporalDirection</param>
         <param name="type">12<!-- Types.VARCHAR --></param>
     </typedef>
-    <class name="com.example.app.model.schedule.Schedule" abstract="true" schema="app" batch-size="15">
+    <class name="com.example.app.schedule.model.Schedule" abstract="true" schema="app" batch-size="15">
         <!--<cache usage="nonstrict-read-write" region="I NEED A REGION"/>-->
 
         <id name="id" column="schedule_id" type="integer" unsaved-value="0">
@@ -41,7 +41,7 @@
         <many-to-one name="lastModUser" cascade="none" column="lastmoduser" lazy="no-proxy"/>
 
 
-        <subclass name="com.example.app.model.schedule.ICal4jSchedule" discriminator-value="ical4j"  batch-size="15">
+        <subclass name="com.example.app.schedule.model.ICal4jSchedule" discriminator-value="ical4j" batch-size="15">
             <join schema="app" table="ical4jschedule">
                 <key column="ICal4jSchedule_id"/>
                 <property name="eventProgrammaticIdentifier"/>
@@ -51,14 +51,14 @@
             </join>
         </subclass>
 
-        <subclass name="com.example.app.model.schedule.RelativePeriodSchedule" discriminator-value="relativeperiod"
+        <subclass name="com.example.app.schedule.model.RelativePeriodSchedule" discriminator-value="relativeperiod"
                   batch-size="15">
             <join schema="app" table="relativeperiodschedule">
                 <key column="RelativePeriodSchedule_id"/>
                 <property name="eventProgrammaticIdentifier"/>
                 <property name="repeat"/>
                 <property name="period">
-                    <type name="com.example.app.hibernate.PeriodUserType"/>
+                    <type name="com.example.app.schedule.hibernate.PeriodUserType"/>
                 </property>
                 <property name="time"/>
                 <property name="temporalDirection" type="temporalDirectionType"/>

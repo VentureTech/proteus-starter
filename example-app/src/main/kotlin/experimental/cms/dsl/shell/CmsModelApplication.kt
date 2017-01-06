@@ -149,6 +149,8 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     private val pageModelToCmsPage = mutableMapOf<Page, net.proteusframework.cms.component.page.Page>()
     private val layoutToBoxInformation = mutableMapOf<Layout, BoxInformation>()
     private val pagePaths = mutableMapOf<String, PageElementPath>()
+    private val libraries = mutableMapOf<String, Library<*>>()
+    private val libraryConfigurations = mutableMapOf<Library<*>, LibraryConfiguration<*>>()
     var currentSite: CmsSite? = null
     lateinit var currentWebRoot: DirectoryEntity
 
@@ -369,7 +371,12 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     private fun getOrCreateHostnames(siteModel: Site, site: CmsSite): List<CmsHostname> {
         val list = mutableListOf<CmsHostname>()
         for ((hnAddress, welcomePage) in siteModel.hostnames) {
-            val address = environment.resolveRequiredPlaceholders(hnAddress)
+            val address = environment.resolveRequiredPlaceholders(hnAddress).let d@{
+                    val pat1 = "_| ".toRegex()
+                    val pat2 = "[^a-zA-Z\\-0-9.]".toRegex()
+
+                    return@d it.replace(pat1, "-").replace(pat2, "").toLowerCase()
+                }
             var cmsHostname = cmsFrontendDAO.getSiteHostname(address)
             if (cmsHostname == null) {
                 logger.info("Creating CmsHostname: $address")
@@ -790,33 +797,36 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     }
 
     override fun createLibrary(libraryName: String, libraryPath: String, libraryType: String): Library<*>? {
-        val site = getCmsSite()
-        val root = libraryDAO.librariesDirectory
-        val query = hsh.session.createQuery(
-            "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root")
-            .setParameter("root", root)
-            .setParameter("path", "%" + libraryPath)
-        @Suppress("UNCHECKED_CAST")
-        val results: List<FileEntity> = query.list() as List<FileEntity>
-        if (results.size > 1) {
-            throw IllegalArgumentException("Multiple files match file link: $libraryPath for site: ${site.id}")
-        } else if (results.isNotEmpty()) {
-            val file = results[0]
-            val libraryList = libraryDAO.getLibraries(site, file)
-            if (libraryList.size > 1)
-                throw IllegalArgumentException("Multiple libraries match file link: $libraryPath for site: ${site.id}")
-            var library = libraryList.firstOrNull()
-            if (library == null) {
-                val type = libraryDAO.libraryTypes.filter { it.getModelName() == libraryType }.first()
-                library = type.createLibrary()
-                library.getAssignments().add(site)
-                library.setFile(file)
-                library.setName(TransientLocalizedObjectKey(mapOf(Locale.ENGLISH to libraryName)))
-                libraryDAO.saveLibrary(library)
+        if(libraries[libraryPath] == null) {
+            val site = getCmsSite()
+            val root = libraryDAO.librariesDirectory
+            val query = hsh.session.createQuery(
+                "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root")
+                .setParameter("root", root)
+                .setParameter("path", "%" + libraryPath)
+            @Suppress("UNCHECKED_CAST")
+            val results: List<FileEntity> = query.list() as List<FileEntity>
+            if (results.size > 1) {
+                throw IllegalArgumentException("Multiple files match file link: $libraryPath for site: ${site.id}")
+            } else if (results.isNotEmpty()) {
+                val file = results[0]
+                val libraryList = libraryDAO.getLibraries(site, file)
+                if (libraryList.size > 1)
+                    throw IllegalArgumentException("Multiple libraries match file link: $libraryPath for site: ${site.id}")
+                var library = libraryList.firstOrNull()
+                if (library == null) {
+                    val type = libraryDAO.libraryTypes.filter { it.getModelName() == libraryType }.first()
+                    library = type.createLibrary()
+                    library.getAssignments().add(site)
+                    library.setFile(file)
+                    library.setName(TransientLocalizedObjectKey(mapOf(Locale.ENGLISH to libraryName)))
+                    libraryDAO.saveLibrary(library)
+                    libraries.put(libraryPath, library)
+                }
+                return library
             }
-            return library
         }
-        return null
+        return libraries[libraryPath]
     }
 
     override fun saveLibrary(library: Library<*>) {
@@ -834,13 +844,15 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
         } else if (results.isNotEmpty()) {
             return results[0]
         } else {
-            return null
+            @Suppress("UNCHECKED_CAST")
+            return libraryConfigurations[library] as LibraryConfiguration<LT>?
         }
 
     }
 
     override fun saveLibraryConfiguration(libraryConfiguration: LibraryConfiguration<*>) {
         libraryDAO.saveLibraryConfiguration(libraryConfiguration)
+        libraryConfigurations.put(libraryConfiguration.getLibrary(), libraryConfiguration)
     }
 
     override fun resolvePlaceholders(template: String): String = environment.resolvePlaceholders(template)

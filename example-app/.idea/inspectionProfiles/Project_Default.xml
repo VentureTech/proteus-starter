@@ -1,7 +1,6 @@
 <component name="InspectionProjectProfileManager">
-  <profile version="1.0" is_locked="false">
+  <profile version="1.0">
     <option name="myName" value="Project Default" />
-    <option name="myLocal" value="false" />
     <inspection_tool class="AbstractMethodCallInConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="AndroidDomInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="AndroidElementNotAllowed" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -418,6 +417,7 @@
       <option name="processLiterals" value="true" />
       <option name="processComments" value="true" />
     </inspection_tool>
+    <inspection_tool class="SpringAutowiredFieldsWarningInspection" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="SpringJavaAutowiringInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="SqlResolveInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="StringConcatenationInLoops" enabled="true" level="ERROR" enabled_by_default="true">

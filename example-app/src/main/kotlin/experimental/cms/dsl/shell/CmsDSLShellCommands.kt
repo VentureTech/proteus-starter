@@ -59,6 +59,7 @@ open class CmsDSLShellCommands : AbstractShellCommands() {
                 val result = SiteDefinitionRecord
                     .slice(SiteDefinitionRecord.version, SiteDefinitionRecord.modified)
                     .select(SiteDefinitionRecord.name eq sd.definitionName)
+                    .orderBy(SiteDefinitionRecord.version, isAsc = false)
                     .limit(1)
                 if (result.empty()) {
                     println("${sd.definitionName}(${sd.version}): Never Applied")

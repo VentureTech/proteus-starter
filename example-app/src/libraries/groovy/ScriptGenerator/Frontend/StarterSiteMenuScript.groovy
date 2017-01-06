@@ -11,11 +11,11 @@
 
 package ScriptGenerator.Frontend
 
-import com.example.app.model.company.SelectedCompanyTermProvider
-import com.example.app.ui.UIText
-import com.example.app.ui.company.CompanyUIPermissionCheck
-import com.example.app.ui.user.MyAccountPermissionCheck
-import com.example.app.ui.user.UserManagementPermissionCheck
+import com.example.app.profile.service.SelectedCompanyTermProvider
+import com.example.app.profile.ui.UIText
+import com.example.app.profile.ui.company.CompanyUIPermissionCheck
+import com.example.app.profile.ui.user.MyAccountPermissionCheck
+import com.example.app.profile.ui.user.UserManagementPermissionCheck
 import com.i2rd.cms.generator.MenuBeanGenerator
 import groovy.transform.CompileStatic
 import net.proteusframework.cms.component.generator.AbstractScriptGenerator
