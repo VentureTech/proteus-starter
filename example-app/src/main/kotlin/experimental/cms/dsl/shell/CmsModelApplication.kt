@@ -43,7 +43,9 @@ import net.proteusframework.cms.support.HTMLPageElementUtil.populateBeanBoxLists
 import net.proteusframework.core.StringFactory.convertToProgrammaticName2
 import net.proteusframework.core.hibernate.HibernateSessionHelper
 import net.proteusframework.core.hibernate.dao.DAOHelper
+import net.proteusframework.core.locale.LocaleSource
 import net.proteusframework.core.locale.TransientLocalizedObjectKey
+import net.proteusframework.core.locale.TransientLocalizedObjectKey.getTransientLocalizedObjectKey
 import net.proteusframework.core.net.ContentTypes
 import net.proteusframework.data.filesystem.DirectoryEntity
 import net.proteusframework.data.filesystem.FileEntity
@@ -61,7 +63,9 @@ import net.proteusframework.ui.management.link.RegisteredLink
 import net.proteusframework.ui.management.link.RegisteredLinkDAO
 import net.proteusframework.ui.miwt.component.Component
 import net.proteusframework.users.model.AuthenticationMethodSecurityLevel
+import net.proteusframework.users.model.Org2Role
 import net.proteusframework.users.model.Organization
+import net.proteusframework.users.model.Role
 import net.proteusframework.users.model.dao.PrincipalDAO
 import org.apache.logging.log4j.LogManager
 import org.hibernate.Hibernate
@@ -124,7 +128,9 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     lateinit var registeredLinkDAO: RegisteredLinkDAO
     @Autowired
     lateinit var emailTemplateDAO: EmailTemplateDAO
-
+    @Autowired
+    @Qualifier("localeSource")
+    lateinit var localeSource: LocaleSource
 
     private val contentElementData = mutableMapOf<ContentElement, CmsModelDataSet>()
     private val pagePermissionCache = mutableMapOf<String, PagePermission>()
@@ -262,6 +268,44 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
         createNDEs(cmsSite, cmsSite, siteModel)
         session.flush()
         return cmsSite
+    }
+
+    private fun createRoles(siteModel: Site, site: CmsSite) {
+        if(siteModel.roles.isEmpty()) return
+        val client = session.createQuery("FROM Org2Site WHERE site = :site")
+            .setEntity("site", site)
+            .uniqueResult() as Organization
+        val query = session.createQuery("FROM Role WHERE programmaticName = :programmaticName")
+        for(role in siteModel.roles) {
+            var userRole = query.setParameter("programmaticName", role.programmaticName)
+                .uniqueResult() as Role?
+            if(userRole == null) {
+                userRole = Role()
+                userRole.programmaticName = role.programmaticName
+                userRole.createTime = Date()
+                userRole.createUser = principalDAO.currentPrincipal
+                session.save(userRole)
+                val org2Role = Org2Role()
+                org2Role.organization = client
+                org2Role.role = userRole
+                session.save(org2Role)
+            }
+            userRole.lastModTime = Date()
+            userRole.lastModUser = principalDAO.currentPrincipal
+            userRole.sessionTimeout = role.sessionTimeout
+            val name = getTransientLocalizedObjectKey(localeSource, userRole.name)?:
+                TransientLocalizedObjectKey(mutableMapOf())
+            name.text[site.primaryLocale] = role.name
+            val description = getTransientLocalizedObjectKey(localeSource, userRole.description)?:
+                TransientLocalizedObjectKey(mutableMapOf())
+            description.text[site.primaryLocale] = role.description
+            if(name.isModification(localeSource, true))
+                userRole.name = name
+            if(description.isModification(localeSource, true))
+                userRole.description = description
+            session.saveOrUpdate(userRole)
+        }
+        session.flush()
     }
 
     private fun getOrCreateHostnames(siteModel: Site, site: CmsSite): List<CmsHostname> {
