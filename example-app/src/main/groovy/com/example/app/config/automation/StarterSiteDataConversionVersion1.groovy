@@ -30,6 +30,28 @@ class StarterSiteDataConversionVersion1
     private static final String IDENTIFIER = "starter-site"
 
     /**
+     * Add Client and Location to ProfileTerms
+     * 2017.01.06 at 22:12 UTC
+     * @return Bean.
+     */
+    @TaskQualifier(TaskQualifier.Type.data_conversion)
+    @Bean
+    DataConversion dataConversion_201701062212()
+    {
+        def ddl = [
+            $/alter table app.profileterms add column client int8/$,
+            $/alter table app.profileterms add column clients int8/$,
+            $/alter table app.profileterms add column location int8/$,
+            $/alter table app.profileterms add column locations int8/$,
+            $/alter table audit.profileterms_AUD add column client int8/$,
+            $/alter table audit.profileterms_AUD add column clients int8/$,
+            $/alter table audit.profileterms_AUD add column location int8/$,
+            $/alter table audit.profileterms_AUD add column locations int8/$,
+        ]
+        new SQLDataConversion(IDENTIFIER, "Add Client and Location to ProfileTerms", 201701062212, false, null, ddl, null, null)
+    }
+
+    /**
      * initial data conversion
      * 2016.12.30 at 19:07 UTC
      * @return Bean.
@@ -84,8 +106,8 @@ startDate timestamp, createuser_id int8, lastmoduser_id int8, user_id int4 not n
 repeat boolean, recurrencerule varchar(255), temporaldirection varchar(255), primary key (ICal4jSchedule_id))/$,
             $/create table app.membership_operations (membership_id int4 not null, membershipOperation_id int4 not null)/$,
             $/create table app.membershiptype_operations (membershiptype_id int4 not null, membershipOperation_id int4 not null)/$,
-            $/create table app.profileterms (profileterms_id int4 not null, coachingentities int8, 
-coachingentity int8, primary key (profileterms_id))/$,
+            $/create table app.profileterms (profileterms_id int4 not null, companies int8, 
+company int8, primary key (profileterms_id))/$,
             $/create table app.relativeperiodschedule (RelativePeriodSchedule_id int4 not null, 
 eventprogrammaticidentifier varchar(255), repeat boolean, period varchar(255), time time, 
 temporaldirection varchar(255), primary key (RelativePeriodSchedule_id))/$,
@@ -148,7 +170,7 @@ membershipOperation_id int4 not null, revtype int2, primary key (REV, membership
             $/create table audit.membershiptype_operations_AUD (REV int4 not null, membershiptype_id int4 not null, 
 membershipOperation_id int4 not null, revtype int2, primary key (REV, membershiptype_id, membershipOperation_id))/$,
             $/create table audit.profileterms_AUD (profileterms_id int4 not null, REV int4 not null, revtype int2, 
-coachingentities int8, coachingentity int8, primary key (profileterms_id, REV))/$,
+companies int8, company int8, primary key (profileterms_id, REV))/$,
             $/create table audit.relativeperiodschedule_AUD (RelativePeriodSchedule_id int4 not null, REV int4 not null, 
 eventprogrammaticidentifier varchar(255), repeat boolean, period varchar(255), time time, 
 temporaldirection int4, primary key (RelativePeriodSchedule_id, REV))/$,

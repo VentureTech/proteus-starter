@@ -25,6 +25,8 @@ import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
 import net.proteusframework.core.spring.ApplicationContextUtils;
 
+import static com.example.app.profile.service.DefaultProfileTermProviderLOK.*;
+
 
 /**
  * Term provider for profile API referenced in a UI.
@@ -36,8 +38,12 @@ import net.proteusframework.core.spring.ApplicationContextUtils;
 @I18NFile(
     symbolPrefix = "com.example.app.profile.service.DefaultProfileTermProvider",
     i18n = {
-        @I18N(symbol = "company", l10n = @L10N("Development Provider")),
-        @I18N(symbol = "companies", l10n = @L10N("Development Providers"))
+        @I18N(symbol = "company", l10n = @L10N("Company")),
+        @I18N(symbol = "companies", l10n = @L10N("Companies")),
+        @I18N(symbol = "client", l10n = @L10N("Client")),
+        @I18N(symbol = "clients", l10n = @L10N("Clients")),
+        @I18N(symbol = "location", l10n = @L10N("Location")),
+        @I18N(symbol = "locations", l10n = @L10N("Locations"))
     }
 )
 public class DefaultProfileTermProvider implements ProfileTermProvider
@@ -47,13 +53,37 @@ public class DefaultProfileTermProvider implements ProfileTermProvider
     @Override
     public TextSource company()
     {
-        return DefaultProfileTermProviderLOK.COMPANY();
+        return COMPANY();
     }
 
     @Override
     public TextSource companies()
     {
-        return DefaultProfileTermProviderLOK.COMPANIES();
+        return COMPANIES();
+    }
+
+    @Override
+    public TextSource client()
+    {
+        return CLIENT();
+    }
+
+    @Override
+    public TextSource clients()
+    {
+        return CLIENTS();
+    }
+
+    @Override
+    public TextSource location()
+    {
+        return LOCATION();
+    }
+
+    @Override
+    public TextSource locations()
+    {
+        return LOCATIONS();
     }
 
     private Object readResolve() throws ObjectStreamException

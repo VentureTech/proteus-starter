@@ -47,6 +47,30 @@ public class SelectedCompanyTermProvider implements ProfileTermProvider
         return getDelegate().companies();
     }
 
+    @Override
+    public TextSource client()
+    {
+        return getDelegate().client();
+    }
+
+    @Override
+    public TextSource clients()
+    {
+        return getDelegate().clients();
+    }
+
+    @Override
+    public TextSource location()
+    {
+        return getDelegate().location();
+    }
+
+    @Override
+    public TextSource locations()
+    {
+        return getDelegate().locations();
+    }
+
     private ProfileTermProvider getDelegate()
     {
         return _uiPreferences.getSelectedCompanyTermProvider();
