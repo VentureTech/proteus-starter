@@ -21,7 +21,7 @@ package com.example.app.config.automation.site/*
  */
 
 import com.example.app.config.ProjectInformation
-import com.example.app.ui.ApplicationFunctions
+import com.example.app.profile.ui.ApplicationFunctions
 import experimental.cms.dsl.AppDefinition
 import experimental.cms.dsl.content.*
 import net.proteusframework.cms.component.page.PageProperties.Type.page
@@ -139,7 +139,7 @@ open class CAPMCCloud : AppDefinition("CapMC Cloud", 1, "$appName Application", 
         template("Frontend")
         permission("CAPMC Backend")
         authenticationPage("Home")
-        content("Content", ApplicationFunction(ApplicationFunctions.ResourceRepositoryItem.MANAGEMENT)) {
+        content("Content", ApplicationFunction(ApplicationFunctions.Company.Resource.MANAGEMENT)) {
             htmlClass = "resource-mgt"
             css("entropy/page/page--resource-mgt.css")
         }
