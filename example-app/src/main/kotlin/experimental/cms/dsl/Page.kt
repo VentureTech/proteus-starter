@@ -13,6 +13,12 @@ package experimental.cms.dsl
 
 import net.proteusframework.cms.component.page.PageProperties
 import net.proteusframework.cms.component.page.layout.BoxDescriptor
+import net.proteusframework.cms.permission.PagePermission
+import net.proteusframework.core.StringFactory.convertToProgrammaticName2
+import net.proteusframework.users.model.AuthenticationMethodSecurityLevel
+import net.proteusframework.users.model.AuthenticationMethodSecurityLevel.SHARED_IDENTIFIER
+import net.proteusframework.users.model.AuthenticationMethodSecurityLevel.SHARED_SECRET
+import net.proteusframework.users.model.CredentialPolicyLevel
 
 /**
  * Box model
@@ -161,7 +167,7 @@ class Page(id: String, override val site: Site, override var path: String = "", 
      * Internal Use.
      * @see permission
      */
-    internal var pagePermission: String? = null
+    internal var pagePermission: Permission? = null
         private set
     /**
      * Internal Use.
@@ -195,10 +201,22 @@ class Page(id: String, override val site: Site, override var path: String = "", 
 
     /**
      * Set the required page permission required to access this page.
-     * @param permission the permission name.
+     * @param name the permission name.
+     * @param addToRole optional programmatic name of Role to add this permission to.
+     * @param policyLevel password policy level.
+     * @param minAuthenticationMethodSecurityLevel minimum authentication security level
+     * @param maxAuthenticationMethodSecurityLevel maximum authentication security level
      */
-    fun permission(permission: String) {
-        pagePermission = permission
+    fun permission(name: String,
+        addToRole: String = "",
+        policyLevel: CredentialPolicyLevel = CredentialPolicyLevel.LOW,
+        minAuthenticationMethodSecurityLevel: AuthenticationMethodSecurityLevel = SHARED_IDENTIFIER,
+        maxAuthenticationMethodSecurityLevel: AuthenticationMethodSecurityLevel = SHARED_SECRET) {
+        pagePermission = Permission(PagePermission::class.java, name, convertToProgrammaticName2(name)!!,
+            addToRole = addToRole,
+            policyLevel = policyLevel,
+            minAuthenticationMethodSecurityLevel = minAuthenticationMethodSecurityLevel,
+            maxAuthenticationMethodSecurityLevel =  maxAuthenticationMethodSecurityLevel)
     }
 
     /**

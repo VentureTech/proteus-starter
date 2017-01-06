@@ -40,7 +40,6 @@ import net.proteusframework.cms.dao.CmsFrontendDAO
 import net.proteusframework.cms.dao.PageElementPathDAO
 import net.proteusframework.cms.permission.PagePermission
 import net.proteusframework.cms.support.HTMLPageElementUtil.populateBeanBoxLists
-import net.proteusframework.core.StringFactory.convertToProgrammaticName2
 import net.proteusframework.core.hibernate.HibernateSessionHelper
 import net.proteusframework.core.hibernate.dao.DAOHelper
 import net.proteusframework.core.locale.LocaleSource
@@ -62,7 +61,6 @@ import net.proteusframework.ui.management.ApplicationRegistry
 import net.proteusframework.ui.management.link.RegisteredLink
 import net.proteusframework.ui.management.link.RegisteredLinkDAO
 import net.proteusframework.ui.miwt.component.Component
-import net.proteusframework.users.model.AuthenticationMethodSecurityLevel
 import net.proteusframework.users.model.Org2Role
 import net.proteusframework.users.model.Organization
 import net.proteusframework.users.model.Role
@@ -134,6 +132,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
 
     private val contentElementData = mutableMapOf<ContentElement, CmsModelDataSet>()
     private val pagePermissionCache = mutableMapOf<String, PagePermission>()
+    private val roleCache = mutableMapOf<String, Role>()
     private val pageModelToCmsPage = mutableMapOf<Page, net.proteusframework.cms.component.page.Page>()
     private val layoutToBoxInformation = mutableMapOf<Layout, BoxInformation>()
     private val pagePaths = mutableMapOf<String, PageElementPath>()
@@ -304,6 +303,8 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             if(description.isModification(localeSource, true))
                 userRole.description = description
             session.saveOrUpdate(userRole)
+
+            roleCache[role.programmaticName]=userRole
         }
         session.flush()
     }
@@ -380,17 +381,30 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             }
             save(site, bbl, key, page)
         }
-        if (!page.pagePermission.isNullOrBlank()) {
-            val programmaticName: String = convertToProgrammaticName2(page.pagePermission)!!
+        page.pagePermission?.let {
+            val programmaticName = it.programmaticName
             var permission = pagePermissionCache[programmaticName] ?:
                 siteDefinitionDAO.getPagePermissionByProgrammaticName(site, programmaticName)
             if (permission == null) {
                 permission = PagePermission(programmaticName)
                 permission.siteId = site.id
-                permission.displayName = TransientLocalizedObjectKey(mutableMapOf(Locale.ENGLISH to page.pagePermission))
-                permission.minimumSecurityLevel = AuthenticationMethodSecurityLevel.SHARED_SECRET
+                permission.displayName = TransientLocalizedObjectKey(mutableMapOf(Locale.ENGLISH to it.name))
+                permission.minimumSecurityLevel = it.minAuthenticationMethodSecurityLevel
+                permission.maximumSecurityLevel = it.maxAuthenticationMethodSecurityLevel
+                permission.credentialPolicyLevel = it.policyLevel
                 session.save(permission)
                 pagePermissionCache.put(programmaticName, permission)
+            }
+            if(it.addToRole.isNotBlank()) {
+                val userRole = roleCache[it.addToRole] ?:
+                    session.createQuery("FROM Role WHERE programmaticName = " + ":programmaticName")
+                    .setParameter("programmaticName", it.addToRole)
+                    .uniqueResult() as Role? ?: throw IllegalArgumentException("Role does not exist: ${it.addToRole}")
+                if(!userRole.permissions.contains(permission)) {
+                    userRole.permissions.add(permission)
+                    session.saveOrUpdate(userRole)
+                }
+
             }
             cmsPage.authorization = permission
             cmsPage.touch()
