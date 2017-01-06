@@ -258,3 +258,5 @@ class FileDataSource(val jfile: java.io.File): FileSystemEntityDataSource {
     override fun getInputStream(): InputStream = jfile.inputStream()
 
 }
+
+data class AppFunctionPage(val appFunctionName: String, val path: String, val htmlClassName: String)
