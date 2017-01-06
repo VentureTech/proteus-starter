@@ -11,8 +11,8 @@
 
 package com.example.app.resource.model;
 
-import com.example.app.support.AppUtil;
-import com.example.app.support.FileSaver;
+import com.example.app.support.service.AppUtil;
+import com.example.app.support.service.FileSaver;
 import org.apache.commons.fileupload.FileItem;
 import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;

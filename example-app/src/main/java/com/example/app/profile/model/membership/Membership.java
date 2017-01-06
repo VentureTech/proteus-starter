@@ -15,11 +15,10 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
-import com.example.app.model.AbstractAuditableEntity;
-import com.example.app.model.profile.MembershipLOK;
 import com.example.app.profile.model.Profile;
 import com.example.app.profile.model.ProfileType;
 import com.example.app.profile.model.user.User;
+import com.example.app.support.model.AbstractAuditableEntity;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;

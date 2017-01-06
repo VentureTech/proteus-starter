@@ -97,7 +97,7 @@ import net.proteusframework.users.model.Principal;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static com.example.app.communication.ui.EmailTemplateConfigurationUILOK.*;
-import static com.example.app.ui.UIText.PROFILE;
+import static com.example.app.profile.ui.UIText.PROFILE;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.regex.Pattern.compile;

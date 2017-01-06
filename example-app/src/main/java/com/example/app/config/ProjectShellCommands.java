@@ -25,7 +25,7 @@ import com.example.app.profile.service.ProfileTypeKindLabelProvider;
 import com.example.app.repository.model.Repository;
 import com.example.app.resource.service.ResourceCategoryLabelProvider;
 import com.example.app.resource.service.ResourceTagsLabelProvider;
-import com.example.app.support.AppUtil;
+import com.example.app.support.service.AppUtil;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

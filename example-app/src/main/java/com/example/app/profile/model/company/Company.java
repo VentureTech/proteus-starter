@@ -17,7 +17,7 @@ import com.example.app.profile.model.Profile;
 import com.example.app.profile.model.location.Location;
 import com.example.app.profile.model.terminology.ProfileTerms;
 import com.example.app.profile.model.user.User;
-import com.example.app.support.StandaloneLabelDomainProvider;
+import com.example.app.support.service.StandaloneLabelDomainProvider;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;

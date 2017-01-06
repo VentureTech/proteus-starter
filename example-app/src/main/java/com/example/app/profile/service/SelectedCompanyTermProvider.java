@@ -12,7 +12,7 @@
 package com.example.app.profile.service;
 
 import com.example.app.profile.model.terminology.ProfileTermProvider;
-import com.example.app.ui.UIPreferences;
+import com.example.app.support.ui.UIPreferences;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;

@@ -11,7 +11,7 @@
 
 package com.example.app.profile.model.membership;
 
-import com.example.app.support.AppUtil;
+import com.example.app.support.service.AppUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

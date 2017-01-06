@@ -11,7 +11,7 @@
 
 package com.example.app.profile.model.terminology;
 
-import com.example.app.model.AbstractEntity;
+import com.example.app.support.model.AbstractEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.envers.Audited;
 

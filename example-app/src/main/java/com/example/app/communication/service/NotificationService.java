@@ -14,7 +14,7 @@ package com.example.app.communication.service;
 
 import com.example.app.profile.model.Profile;
 import com.example.app.profile.model.user.User;
-import com.example.app.support.ContactUtil;
+import com.example.app.support.service.ContactUtil;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.RateLimiter;
 import com.ibm.icu.text.BreakIterator;
