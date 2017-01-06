@@ -11,8 +11,8 @@
 
 package com.example.app.ui.resource;
 
-import com.example.app.model.repository.ResourceRepositoryItem;
-import com.example.app.model.resource.Resource;
+import com.example.app.repository.model.ResourceRepositoryItem;
+import com.example.app.resource.model.Resource;
 import com.google.common.base.Preconditions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

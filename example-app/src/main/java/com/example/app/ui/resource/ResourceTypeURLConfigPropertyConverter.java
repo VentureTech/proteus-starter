@@ -11,8 +11,8 @@
 
 package com.example.app.ui.resource;
 
-import com.example.app.model.resource.ResourceType;
-import com.example.app.service.ResourceTypeService;
+import com.example.app.resource.model.ResourceType;
+import com.example.app.resource.service.ResourceTypeService;
 
 import javax.annotation.Nullable;
 import java.util.Optional;

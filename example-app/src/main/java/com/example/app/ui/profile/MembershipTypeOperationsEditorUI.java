@@ -12,11 +12,9 @@
 package com.example.app.ui.profile;
 
 
-import com.example.app.model.company.SelectedCompanyTermProvider;
-import com.example.app.model.profile.MembershipOperation;
-import com.example.app.model.profile.MembershipType;
+import com.example.app.profile.model.membership.MembershipOperation;
+import com.example.app.profile.model.membership.MembershipType;
 import org.hibernate.Hibernate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Nonnull;

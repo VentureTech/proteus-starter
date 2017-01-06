@@ -11,12 +11,12 @@
 
 package com.example.app.support;
 
-import com.example.app.model.company.Company;
-import com.example.app.model.profile.Membership;
-import com.example.app.model.profile.Profile;
-import com.example.app.model.profile.ProfileType;
-import com.example.app.model.resource.Resource;
-import com.example.app.model.user.User;
+import com.example.app.profile.model.Profile;
+import com.example.app.profile.model.ProfileType;
+import com.example.app.profile.model.company.Company;
+import com.example.app.profile.model.membership.Membership;
+import com.example.app.profile.model.user.User;
+import com.example.app.resource.model.Resource;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

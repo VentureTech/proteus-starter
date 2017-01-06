@@ -11,8 +11,8 @@
 
 package com.example.app.ui.user;
 
-import com.example.app.model.user.User;
-import com.example.app.model.user.UserPosition;
+import com.example.app.profile.model.user.User;
+import com.example.app.profile.model.user.UserPosition;
 import com.example.app.support.AppUtil;
 import com.google.common.base.Preconditions;
 import org.apache.logging.log4j.Level;

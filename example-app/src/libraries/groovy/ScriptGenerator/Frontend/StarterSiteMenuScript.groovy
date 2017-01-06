@@ -11,7 +11,7 @@
 
 package ScriptGenerator.Frontend
 
-import com.example.app.model.company.SelectedCompanyTermProvider
+import com.example.app.profile.service.SelectedCompanyTermProvider
 import com.example.app.ui.UIText
 import com.example.app.ui.company.CompanyUIPermissionCheck
 import com.example.app.ui.user.MyAccountPermissionCheck

@@ -11,12 +11,12 @@
 
 package com.example.app.ui.repository;
 
-import com.example.app.model.repository.Repository;
-import com.example.app.model.repository.RepositoryItemStatus;
-import com.example.app.model.repository.ResourceRepositoryItem;
-import com.example.app.model.resource.Resource;
-import com.example.app.service.ResourceCategoryLabelProvider;
-import com.example.app.service.ResourceTagsLabelProvider;
+import com.example.app.repository.model.Repository;
+import com.example.app.repository.model.RepositoryItemStatus;
+import com.example.app.repository.model.ResourceRepositoryItem;
+import com.example.app.resource.model.Resource;
+import com.example.app.resource.service.ResourceCategoryLabelProvider;
+import com.example.app.resource.service.ResourceTagsLabelProvider;
 import com.example.app.support.EntityIdCollector;
 import com.google.common.base.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;

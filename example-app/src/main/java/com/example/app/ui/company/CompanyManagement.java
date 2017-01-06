@@ -11,10 +11,10 @@
 
 package com.example.app.ui.company;
 
-import com.example.app.model.client.Location;
-import com.example.app.model.company.Company;
-import com.example.app.model.company.CompanyDAO;
-import com.example.app.model.company.SelectedCompanyTermProvider;
+import com.example.app.profile.model.company.Company;
+import com.example.app.profile.model.company.CompanyDAO;
+import com.example.app.profile.model.location.Location;
+import com.example.app.profile.service.SelectedCompanyTermProvider;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
 import com.example.app.ui.URLProperties;
@@ -66,8 +66,8 @@ import net.proteusframework.ui.search.SearchUIOperationHandler;
 import net.proteusframework.ui.search.SimpleConstraint;
 import net.proteusframework.users.model.PhoneNumber;
 
-import static com.example.app.model.company.CompanyStatus.Active;
-import static com.example.app.model.company.CompanyStatus.Inactive;
+import static com.example.app.profile.model.company.CompanyStatus.Active;
+import static com.example.app.profile.model.company.CompanyStatus.Inactive;
 import static com.example.app.ui.UIText.*;
 import static com.example.app.ui.company.CompanyManagementLOK.*;
 import static com.example.app.ui.company.CompanyValueEditorLOK.LABEL_WEBSITE;

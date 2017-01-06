@@ -11,7 +11,7 @@
 
 package com.example.app.ui.user;
 
-import com.example.app.model.user.ContactMethod;
+import com.example.app.profile.model.user.ContactMethod;
 
 import javax.annotation.Nonnull;
 

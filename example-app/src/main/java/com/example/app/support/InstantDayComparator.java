@@ -11,15 +11,15 @@
 
 package com.example.app.support;
 
-import com.example.app.model.schedule.TemporalDirection;
+import com.example.app.schedule.model.TemporalDirection;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 
-import static com.example.app.model.schedule.TemporalDirection.FUTURE;
-import static com.example.app.model.schedule.TemporalDirection.PAST;
+import static com.example.app.schedule.model.TemporalDirection.FUTURE;
+import static com.example.app.schedule.model.TemporalDirection.PAST;
 
 /**
  * Comparator for Instant that truncates the compared Instant instances to the nearest Day before comparing

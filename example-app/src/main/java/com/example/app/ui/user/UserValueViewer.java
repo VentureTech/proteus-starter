@@ -12,15 +12,15 @@
 package com.example.app.ui.user;
 
 
-import com.example.app.model.company.SelectedCompanyTermProvider;
-import com.example.app.model.profile.Membership;
-import com.example.app.model.profile.MembershipTypeProvider;
-import com.example.app.model.profile.Profile;
-import com.example.app.model.profile.ProfileDAO;
-import com.example.app.model.user.ContactMethod;
-import com.example.app.model.user.User;
-import com.example.app.model.user.UserDAO;
-import com.example.app.service.MembershipOperationProvider;
+import com.example.app.profile.model.Profile;
+import com.example.app.profile.model.ProfileDAO;
+import com.example.app.profile.model.membership.Membership;
+import com.example.app.profile.model.membership.MembershipTypeProvider;
+import com.example.app.profile.model.user.ContactMethod;
+import com.example.app.profile.model.user.User;
+import com.example.app.profile.model.user.UserDAO;
+import com.example.app.profile.service.MembershipOperationProvider;
+import com.example.app.profile.service.SelectedCompanyTermProvider;
 import com.example.app.support.AppUtil;
 import com.example.app.support.ContactUtil;
 import com.example.app.ui.UIPreferences;

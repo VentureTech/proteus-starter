@@ -11,14 +11,14 @@
 
 package com.example.app.ui.resource;
 
-import com.example.app.model.company.SelectedCompanyTermProvider;
-import com.example.app.model.repository.Repository;
-import com.example.app.model.repository.RepositoryDAO;
-import com.example.app.model.repository.RepositoryItemStatus;
-import com.example.app.model.repository.ResourceRepositoryItem;
-import com.example.app.model.resource.Resource;
-import com.example.app.service.ResourceCategoryLabelProvider;
-import com.example.app.service.ResourceTagsLabelProvider;
+import com.example.app.profile.service.SelectedCompanyTermProvider;
+import com.example.app.repository.model.Repository;
+import com.example.app.repository.model.RepositoryDAO;
+import com.example.app.repository.model.RepositoryItemStatus;
+import com.example.app.repository.model.ResourceRepositoryItem;
+import com.example.app.resource.model.Resource;
+import com.example.app.resource.service.ResourceCategoryLabelProvider;
+import com.example.app.resource.service.ResourceTagsLabelProvider;
 import com.example.app.ui.SelectActionColumn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;

@@ -12,8 +12,8 @@
 package com.example.app.ui.user;
 
 
-import com.example.app.model.user.User;
-import com.example.app.model.user.UserDAO;
+import com.example.app.profile.model.user.User;
+import com.example.app.profile.model.user.UserDAO;
 import com.example.app.support.ContactUtil;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;

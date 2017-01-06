@@ -11,18 +11,18 @@
 
 package com.example.app.ui.resource;
 
-import com.example.app.model.company.SelectedCompanyTermProvider;
-import com.example.app.model.repository.Repository;
-import com.example.app.model.repository.RepositoryItem;
-import com.example.app.model.repository.RepositoryItemRelation;
-import com.example.app.model.repository.RepositoryItemRelationType;
-import com.example.app.model.repository.RepositoryItemStatus;
-import com.example.app.model.repository.ResourceRepositoryItem;
-import com.example.app.model.resource.Resource;
-import com.example.app.model.resource.ResourceVisibility;
-import com.example.app.model.user.UserDAO;
-import com.example.app.service.MembershipOperationProvider;
-import com.example.app.service.ResourceCategoryLabelProvider;
+import com.example.app.profile.model.user.UserDAO;
+import com.example.app.profile.service.MembershipOperationProvider;
+import com.example.app.profile.service.SelectedCompanyTermProvider;
+import com.example.app.repository.model.Repository;
+import com.example.app.repository.model.RepositoryItem;
+import com.example.app.repository.model.RepositoryItemRelation;
+import com.example.app.repository.model.RepositoryItemRelationType;
+import com.example.app.repository.model.RepositoryItemStatus;
+import com.example.app.repository.model.ResourceRepositoryItem;
+import com.example.app.resource.model.Resource;
+import com.example.app.resource.model.ResourceVisibility;
+import com.example.app.resource.service.ResourceCategoryLabelProvider;
 import com.example.app.support.AppUtil;
 import com.example.app.support.EntityIdCollector;
 import com.example.app.support.InstantDayComparator;

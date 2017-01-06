@@ -11,9 +11,9 @@
 
 package com.example.app.ui.resource;
 
-import com.example.app.model.resource.Resource;
-import com.example.app.model.resource.ResourceType;
-import com.example.app.model.resource.URIResource;
+import com.example.app.resource.model.Resource;
+import com.example.app.resource.model.ResourceType;
+import com.example.app.resource.model.URIResource;
 import org.jetbrains.annotations.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;

@@ -11,9 +11,9 @@
 
 package com.example.app.ui.user;
 
-import com.example.app.model.user.ContactMethod;
-import com.example.app.model.user.User;
-import com.example.app.service.NotificationService;
+import com.example.app.communication.service.NotificationService;
+import com.example.app.profile.model.user.ContactMethod;
+import com.example.app.profile.model.user.User;
 import com.example.app.support.ContactUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

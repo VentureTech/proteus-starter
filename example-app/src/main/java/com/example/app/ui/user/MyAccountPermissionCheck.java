@@ -11,7 +11,7 @@
 
 package com.example.app.ui.user;
 
-import com.example.app.model.user.User;
+import com.example.app.profile.model.user.User;
 import com.example.app.ui.ApplicationFunctionPermissionCheck;
 import com.example.app.ui.ApplicationFunctions;
 import org.springframework.stereotype.Service;

@@ -11,19 +11,19 @@
 
 package com.example.app.ui.resource;
 
-import com.example.app.model.company.SelectedCompanyTermProvider;
-import com.example.app.model.profile.Profile;
-import com.example.app.model.profile.ProfileDAO;
-import com.example.app.model.repository.Repository;
-import com.example.app.model.repository.RepositoryDAO;
-import com.example.app.model.repository.RepositoryItemRelation;
-import com.example.app.model.repository.RepositoryItemRelationType;
-import com.example.app.model.repository.ResourceRepositoryItem;
-import com.example.app.model.resource.ResourceDAO;
-import com.example.app.model.resource.ResourceType;
-import com.example.app.model.user.User;
-import com.example.app.model.user.UserDAO;
-import com.example.app.service.MembershipOperationProvider;
+import com.example.app.profile.model.Profile;
+import com.example.app.profile.model.ProfileDAO;
+import com.example.app.profile.model.user.User;
+import com.example.app.profile.model.user.UserDAO;
+import com.example.app.profile.service.MembershipOperationProvider;
+import com.example.app.profile.service.SelectedCompanyTermProvider;
+import com.example.app.repository.model.Repository;
+import com.example.app.repository.model.RepositoryDAO;
+import com.example.app.repository.model.RepositoryItemRelation;
+import com.example.app.repository.model.RepositoryItemRelationType;
+import com.example.app.repository.model.ResourceRepositoryItem;
+import com.example.app.resource.model.ResourceDAO;
+import com.example.app.resource.model.ResourceType;
 import com.example.app.ui.Application;
 import com.example.app.ui.ApplicationFunctions;
 import com.example.app.ui.URLConfigurations;

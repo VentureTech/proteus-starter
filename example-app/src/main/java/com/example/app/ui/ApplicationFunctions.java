@@ -68,7 +68,7 @@ public final class ApplicationFunctions
     }
 
     /**
-     * Static class defining Application Functions for {@link com.example.app.model.company.Company}
+     * Static class defining Application Functions for {@link com.example.app.profile.model.company.Company}
      *
      * @author Alan Holt (aholt@venturetech.net)
      */

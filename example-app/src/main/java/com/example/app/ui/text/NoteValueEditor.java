@@ -12,7 +12,7 @@
 package com.example.app.ui.text;
 
 
-import com.example.app.model.text.Note;
+import com.example.app.note.model.Note;
 
 import net.proteusframework.core.locale.TextSource;
 import net.proteusframework.core.locale.TextSources;

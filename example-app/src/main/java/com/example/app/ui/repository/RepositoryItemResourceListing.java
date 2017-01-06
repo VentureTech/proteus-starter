@@ -12,11 +12,11 @@
 package com.example.app.ui.repository;
 
 
-import com.example.app.model.company.SelectedCompanyTermProvider;
-import com.example.app.model.repository.RepositoryDAO;
-import com.example.app.model.repository.RepositoryItem;
-import com.example.app.model.repository.ResourceRepositoryItem;
-import com.example.app.model.resource.Resource;
+import com.example.app.profile.service.SelectedCompanyTermProvider;
+import com.example.app.repository.model.RepositoryDAO;
+import com.example.app.repository.model.RepositoryItem;
+import com.example.app.repository.model.ResourceRepositoryItem;
+import com.example.app.resource.model.Resource;
 import com.example.app.support.AppUtil;
 import com.example.app.ui.resource.ResourceRepositoryItemValueViewer;
 import com.example.app.ui.resource.ResourceSelector;

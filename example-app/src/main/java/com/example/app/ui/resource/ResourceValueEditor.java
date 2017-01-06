@@ -12,11 +12,11 @@
 package com.example.app.ui.resource;
 
 import com.example.app.config.ResourceConfig;
-import com.example.app.model.resource.Resource;
-import com.example.app.model.resource.ResourceType;
-import com.example.app.model.resource.ResourceVisibility;
-import com.example.app.service.ResourceCategoryLabelProvider;
-import com.example.app.service.ResourceTagsLabelProvider;
+import com.example.app.resource.model.Resource;
+import com.example.app.resource.model.ResourceType;
+import com.example.app.resource.model.ResourceVisibility;
+import com.example.app.resource.service.ResourceCategoryLabelProvider;
+import com.example.app.resource.service.ResourceTagsLabelProvider;
 import com.example.app.support.AppUtil;
 import com.example.app.ui.vtcrop.VTCropPictureEditor;
 import com.example.app.ui.vtcrop.VTCropPictureEditorConfig;
@@ -52,7 +52,7 @@ import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.ValueEditor;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
 
-import static com.example.app.model.resource.Resource.*;
+import static com.example.app.resource.model.Resource.*;
 import static com.example.app.ui.resource.ResourceText.LABEL_AUTHOR;
 import static com.example.app.ui.resource.ResourceValueEditorLOK.*;
 import static com.i2rd.miwt.util.CSSUtil.CSS_INSTRUCTIONS;

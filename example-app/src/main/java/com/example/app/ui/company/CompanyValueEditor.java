@@ -12,9 +12,9 @@
 package com.example.app.ui.company;
 
 import com.example.app.config.CompanyConfig;
-import com.example.app.model.client.Location;
-import com.example.app.model.company.Company;
-import com.example.app.model.company.SelectedCompanyTermProvider;
+import com.example.app.profile.model.company.Company;
+import com.example.app.profile.model.location.Location;
+import com.example.app.profile.service.SelectedCompanyTermProvider;
 import com.example.app.support.AppUtil;
 import com.example.app.ui.CommonEditorFields;
 import com.example.app.ui.UIHelper;
@@ -50,7 +50,7 @@ import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.URLEditor;
 
 import static com.example.app.ui.UIText.INSTRUCTIONS_PICTURE_EDITOR_FMT;
-import static com.example.app.ui.company.AbstractCompanyPropertyEditor.*;
+import static com.example.app.ui.company.AbstractCompanyPropertyEditor.EditMode;
 import static com.example.app.ui.company.CompanyValueEditorLOK.*;
 import static com.i2rd.miwt.util.CSSUtil.CSS_INSTRUCTIONS;
 import static net.proteusframework.core.StringFactory.stringToURL;
