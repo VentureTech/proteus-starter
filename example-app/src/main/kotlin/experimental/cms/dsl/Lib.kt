@@ -95,7 +95,7 @@ internal class LinkTagConverter(val helper: ContentHelper) : TagListener<TagList
     }
 
     override fun startElement(uri: String?, localName: String?, qName: String?, attributes: Attributes): Boolean {
-        val ename = getElementName(uri, localName, qName)
+        val ename = getElementName(localName, qName)
         val convertedAttributes = mutableMapOf<String, String>()
         for (att in ATTS) {
             val value = attributes.getValue(uri, att)
@@ -122,7 +122,7 @@ internal class LinkTagConverter(val helper: ContentHelper) : TagListener<TagList
 
 
     override fun endElement(uri: String?, localName: String?, qName: String?, empty: Boolean, closedStartElement: Boolean) {
-        val ename = getElementName(uri, localName, qName)
+        val ename = getElementName(localName, qName)
         if (isVoidElement(ename))
             return
         writer.append("</").append(ename).append(">")
@@ -136,7 +136,7 @@ internal class LinkTagConverter(val helper: ContentHelper) : TagListener<TagList
         return true
     }
 
-    private fun getElementName(uri: String?, localName: String?, qName: String?): String {
+    private fun getElementName(localName: String?, qName: String?): String {
         return (if (localName.isNullOrBlank()) qName!! else localName!!).toLowerCase()
     }
 
