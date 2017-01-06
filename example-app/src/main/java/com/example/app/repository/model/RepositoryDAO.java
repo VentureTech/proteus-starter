@@ -18,7 +18,7 @@ import com.example.app.profile.model.ProfileDAO;
 import com.example.app.profile.model.membership.MembershipOperation;
 import com.example.app.profile.model.user.User;
 import com.example.app.resource.model.Resource;
-import com.example.app.support.AppUtil;
+import com.example.app.support.service.AppUtil;
 import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;

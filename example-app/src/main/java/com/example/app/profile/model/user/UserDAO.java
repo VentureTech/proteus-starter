@@ -12,8 +12,8 @@
 package com.example.app.profile.model.user;
 
 import com.example.app.config.ProjectCacheRegions;
-import com.example.app.support.AppUtil;
-import com.example.app.support.FileSaver;
+import com.example.app.support.service.AppUtil;
+import com.example.app.support.service.FileSaver;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,7 +54,7 @@ import net.proteusframework.users.model.PrincipalStatus;
 import net.proteusframework.users.model.dao.AuthenticationDomainList;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
-import static com.example.app.support.AppUtil.getExtensionWithDot;
+import static com.example.app.support.service.AppUtil.getExtensionWithDot;
 import static net.proteusframework.core.StringFactory.isEmptyString;
 
 /**

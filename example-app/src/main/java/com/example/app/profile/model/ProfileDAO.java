@@ -17,7 +17,7 @@ import com.example.app.profile.model.membership.MembershipOperation;
 import com.example.app.profile.model.membership.MembershipType;
 import com.example.app.profile.model.membership.MembershipTypeInfo;
 import com.example.app.profile.model.user.User;
-import com.example.app.support.AppUtil;
+import com.example.app.support.service.AppUtil;
 import com.google.common.base.Preconditions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -68,8 +68,8 @@ import static com.example.app.profile.model.membership.Membership.OPERATIONS_PRO
 import static com.example.app.profile.model.membership.Membership.USER_PROP;
 import static com.example.app.profile.model.membership.MembershipOperation.PROGRAMMATIC_IDENTIFIER_COLUMN_PROP;
 import static com.example.app.profile.model.user.User.PRINCIPAL_PROP;
-import static com.example.app.support.AppUtil.convertForPersistence;
-import static com.example.app.support.AppUtil.getZonedDateTimeForComparison;
+import static com.example.app.support.service.AppUtil.convertForPersistence;
+import static com.example.app.support.service.AppUtil.getZonedDateTimeForComparison;
 import static net.proteusframework.ui.search.PropertyConstraint.Operator.*;
 import static net.proteusframework.ui.search.QLBuilder.JoinType.INNER;
 

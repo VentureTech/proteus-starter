@@ -13,7 +13,7 @@ package com.example.app.profile.model.company;
 
 import com.example.app.profile.model.location.Location;
 import com.example.app.profile.service.DefaultProfileTermProvider;
-import com.example.app.support.AppUtil;
+import com.example.app.support.service.AppUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

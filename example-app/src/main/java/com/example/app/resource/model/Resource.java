@@ -13,8 +13,8 @@ package com.example.app.resource.model;
 
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
-import com.example.app.model.AbstractAuditableEntity;
-import com.example.app.model.SoftDeleteEntity;
+import com.example.app.support.model.AbstractAuditableEntity;
+import com.example.app.support.model.SoftDeleteEntity;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;

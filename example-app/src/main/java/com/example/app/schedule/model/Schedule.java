@@ -11,7 +11,7 @@
 
 package com.example.app.schedule.model;
 
-import com.example.app.model.AbstractAuditableEntity;
+import com.example.app.support.model.AbstractAuditableEntity;
 import org.hibernate.envers.Audited;
 
 import java.time.Instant;

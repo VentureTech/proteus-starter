@@ -11,6 +11,7 @@
 
 package com.example.app.support;
 
+import com.example.app.support.service.ArrayCollector;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
