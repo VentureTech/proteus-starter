@@ -30,6 +30,7 @@ class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer, Resourc
     override val cssPaths = mutableListOf<String>()
     override val javaScriptPaths = mutableListOf<String>()
 
+    internal val roles = mutableListOf<Role>()
     internal val emailTemplates = mutableListOf<EmailTemplate<*>>()
     internal val hostnames = mutableListOf<Hostname>()
     internal val templates = mutableListOf<Template>()
@@ -49,7 +50,18 @@ class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer, Resourc
     }
 
     /**
-     * Add content to the Site. This is usually used for web services or dynamic content.
+     * Add a user role to the site.
+     * @param name the name of the role.
+     * @param programmaticName the programmatic name. This is used to reference the role.
+     * @param description optional description.
+     * @param sessionTimeout session timeout for this role in hours.
+     */
+    fun role(name: String, programmaticName: String, description: String = "", sessionTimeout: Int = 0) {
+        roles.add(Role(programmaticName, name, description, sessionTimeout * 60 * 60 /* Convert to seconds */))
+    }
+
+    /**
+     * Add content to the site. This is usually used for web services or dynamic content.
      * @param content the Content (e.g. [experimental.cms.dsl.content.ScriptedGenerator]).
      * @param init initialization block.
      */
