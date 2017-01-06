@@ -27,6 +27,15 @@ task sourceJar(type: Jar) {
     include 'com/example/**'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
+
+
+task librariesZip(type: Zip) {
+    classifier = 'libraries'
+    from(new File('src/libraries/groovy'))
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+
 javadoc {
     def year = new SimpleDateFormat('yyyy').format(new Date())
     def docVersion = version.originalVersion
