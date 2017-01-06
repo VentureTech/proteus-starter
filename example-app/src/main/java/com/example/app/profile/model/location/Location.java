@@ -53,7 +53,6 @@ import static net.proteusframework.core.locale.annotation.I18NFile.Visibility.PU
     symbolPrefix = "com.example.app.profile.model.location.Location",
     classVisibility = PUBLIC,
     i18n = {
-        @I18N(symbol = "Client Prop Name", l10n = @L10N("Company")),
         @I18N(symbol = "Location Name Prop Name", l10n = @L10N("Location")),
         @I18N(symbol = "Email Address Prop Name", l10n = @L10N("Main Contact Email Address")),
         @I18N(symbol = "Address Prop Name", l10n = @L10N("Address")),

@@ -66,6 +66,34 @@ public class FallbackProfileTermProvider implements ProfileTermProvider
             ? _defaultProfileTermProvider.companies() : getProfileTermProvider().companies();
     }
 
+    @Override
+    public TextSource client()
+    {
+        return isBlank(Optional.ofNullable(getProfileTermProvider()).map(ProfileTermProvider::client).orElse(null))
+            ? _defaultProfileTermProvider.client() : getProfileTermProvider().client();
+    }
+
+    @Override
+    public TextSource clients()
+    {
+        return isBlank(Optional.ofNullable(getProfileTermProvider()).map(ProfileTermProvider::clients).orElse(null))
+            ? _defaultProfileTermProvider.clients() : getProfileTermProvider().clients();
+    }
+
+    @Override
+    public TextSource location()
+    {
+        return isBlank(Optional.ofNullable(getProfileTermProvider()).map(ProfileTermProvider::location).orElse(null))
+            ? _defaultProfileTermProvider.location() : getProfileTermProvider().location();
+    }
+
+    @Override
+    public TextSource locations()
+    {
+        return isBlank(Optional.ofNullable(getProfileTermProvider()).map(ProfileTermProvider::locations).orElse(null))
+            ? _defaultProfileTermProvider.locations() : getProfileTermProvider().locations();
+    }
+
     /**
      * Gets profile term provider.
      *
