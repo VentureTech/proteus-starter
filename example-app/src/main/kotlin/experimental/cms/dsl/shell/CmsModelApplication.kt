@@ -12,6 +12,7 @@
 package experimental.cms.dsl.shell
 
 import com.google.common.collect.Multimap
+import com.google.common.io.BaseEncoding
 import com.i2rd.cms.HostnameDestination
 import com.i2rd.cms.SiteSSLOption
 import com.i2rd.cms.backend.BackendConfig
@@ -78,6 +79,7 @@ import org.hibernate.Hibernate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.env.Environment
+import java.io.File
 import java.util.*
 import javax.annotation.Resource
 
@@ -94,6 +96,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
 
     companion object {
         val logger = LogManager.getLogger(CmsModelApplication::class.java)!!
+        const val ARTIFACTORY_HOST = "repo.venturetech.net"
     }
 
     @Autowired
@@ -224,6 +227,16 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     }
 
     private fun uploadResources(siteModel: Site) {
+        var username=""
+        var password=""
+        val home = System.getenv()["HOME"]
+        val gradlePropertiesFile = File("$home/.gradle/gradle.properties")
+        if(gradlePropertiesFile.canRead()) {
+            val properties = Properties()
+            gradlePropertiesFile.inputStream().use { properties.load(it) }
+            username = properties["repo_venturetech_username"] as String
+            password = properties["repo_venturetech_password"] as String
+        }
         val messages = mutableListOf<Message>()
         for((dir, url) in mapOf(currentWebRoot to siteModel.webResources,
             libraryDAO.librariesDirectory to siteModel.libraryResources)) {
@@ -231,7 +244,13 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             val tempFile = createTempFile(suffix = ".zip")
             tempFile.deleteOnExit()
             logger.info("Downloading $url")
-            url.openStream().use { ins ->
+            val connection = url.openConnection()
+            if(url.host == ARTIFACTORY_HOST && username.isNotBlank()) {
+                val userPass = BaseEncoding.base64().encode("$username:$password".toByteArray())
+                val basic = "Basic $userPass"
+                connection.setRequestProperty("Authorization", basic)
+            }
+            connection.inputStream.use { ins ->
                 tempFile.outputStream().use { outs ->
                     StreamUtils.copyStream(ins, outs)
                 }
