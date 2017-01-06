@@ -31,11 +31,16 @@ import net.proteusframework.internet.http.Link
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import java.net.URI
+import java.net.URL
 
 private val appName = ProjectInformation.getName()
+
 @Profile("automation")
 @Component
 open class CAPMCCloud : AppDefinition("CapMC Cloud", 1, "$appName Application", init = {
+    libraryResources(URL("https://repo.venturetech.net/artifactory/vt-snapshot-local/" +
+        "com/example/example-app/1.2-SNAPSHOT/example-app-1.2-SNAPSHOT-libraries.zip"))
+
     template("Login") {
         layout("Header, Main, Footer") {
             box("Header") {
@@ -146,7 +151,7 @@ open class CAPMCCloud : AppDefinition("CapMC Cloud", 1, "$appName Application", 
 
     content(ScriptedGenerator("User Info Web Service")) {
         path = "/ws/user-info"
-        org.apache.ecs.xhtml.script("ScriptGenerator/UserInfoWS.groovy")
+        script("ScriptGenerator/UserInfoWS.groovy")
     }
 })
 
