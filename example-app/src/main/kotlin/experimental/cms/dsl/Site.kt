@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
+import java.net.URL
 import java.util.*
 import javax.annotation.PostConstruct
 
@@ -30,6 +31,8 @@ class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer, Resourc
     override val cssPaths = mutableListOf<String>()
     override val javaScriptPaths = mutableListOf<String>()
 
+    internal var webResources: URL? = null
+    internal var libraryResources: URL? = null
     internal val roles = mutableListOf<Role>()
     internal val emailTemplates = mutableListOf<EmailTemplate<*>>()
     internal val hostnames = mutableListOf<Hostname>()
@@ -47,6 +50,30 @@ class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer, Resourc
         return children.flatMap { it.contentList }.filter(predicate).firstOrNull() ?:
             templates.flatMap { it.contentList }.filter(predicate).firstOrNull() ?:
             content.filter(predicate).first()
+    }
+
+    /**
+     * Add a URL to a Zip file of Web Resources.
+     *
+     * If specified, this file will be unzipped and uploaded to the Site's Web docroot.
+     *
+     * @param url the URL
+     */
+    fun webResources(url: URL) {
+        if(!url.path.endsWith(".zip")) throw IllegalArgumentException("Invalid URL: $url")
+        webResources = url
+    }
+
+    /**
+     * Add a URL to a Zip file of Library Resources.
+     *
+     * If specified, this file will be unzipped and uploaded to the Libraries docroot.
+     *
+     * @param url the URL
+     */
+    fun libraryResources(url: URL) {
+        if(!url.path.endsWith(".zip")) throw IllegalArgumentException("Invalid URL: $url")
+        libraryResources = url
     }
 
     /**

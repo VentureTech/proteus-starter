@@ -12,6 +12,8 @@
 package experimental.cms.dsl
 
 import com.google.common.collect.Multimap
+import com.google.common.io.ByteSource
+import com.google.common.io.Files
 import com.i2rd.cms.backend.BackendConfig
 import com.i2rd.cms.bean.ScriptingBeanPageElementModelFactory
 import com.i2rd.cms.component.miwt.MIWTPageElementModelFactory
@@ -23,16 +25,16 @@ import net.proteusframework.core.StringFactory.trimSlashes
 import net.proteusframework.core.html.Element
 import net.proteusframework.core.html.EntityUtil
 import net.proteusframework.core.html.HTMLElement
+import net.proteusframework.core.mail.support.MimeTypeUtility
 import net.proteusframework.core.xml.*
+import net.proteusframework.data.filesystem.FileSystemEntityDataSource
 import net.proteusframework.email.EmailTemplate
 import net.proteusframework.internet.http.Link
 import net.proteusframework.ui.management.link.RegisteredLink
 import net.proteusframework.ui.miwt.component.Component
 import org.apache.logging.log4j.LogManager
 import org.xml.sax.Attributes
-import java.io.IOException
-import java.io.PrintWriter
-import java.io.StringWriter
+import java.io.*
 
 internal fun cleanPath(path: String): String = trimSlashes(path.replace('*', '/')).replace(Regex("""/+"""), "/")
 
@@ -231,4 +233,28 @@ interface ContentHelper : PlaceholderHelper {
     fun getRegisteredLink(functionName: String, functionContext: String): RegisteredLink?
     fun saveRegisteredLink(registeredLink: RegisteredLink)
     fun <LT:ILibraryType<LT>> setScriptParameters(libraryConfiguration: LibraryConfiguration<LT>, parameters: Multimap<String, Any>)
+}
+
+
+class FileDataSource(val jfile: java.io.File): FileSystemEntityDataSource {
+    override fun getLength(): Long = jfile.length()
+
+    override fun getFile(): File? = jfile
+
+    override fun asByteSource(): ByteSource = Files.asByteSource(jfile)
+
+    override fun getName(): String = jfile.name
+
+    override fun getContentType(): String = MimeTypeUtility.getInstance().getContentType(jfile)
+
+    override fun getMetaData(): MutableMap<String, Serializable> = mutableMapOf()
+
+    override fun getOutputStream(): OutputStream = jfile.outputStream()
+
+    override fun getLastModifiedTime(): Long = jfile.lastModified()
+
+    override fun close() {}
+
+    override fun getInputStream(): InputStream = jfile.inputStream()
+
 }
