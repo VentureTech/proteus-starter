@@ -35,6 +35,7 @@ import com.i2rd.lib.ILibraryType
 import com.i2rd.lib.Library
 import com.i2rd.lib.LibraryConfiguration
 import com.i2rd.lib.LibraryDAO
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import experimental.cms.dsl.*
 import net.proteusframework.cms.*
 import net.proteusframework.cms.component.ContentElement
@@ -228,6 +229,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
         }
     }
 
+    @SuppressFBWarnings("DE_MIGHT_IGNORE")
     private fun uploadResources(siteModel: Site) {
         var username=""
         var password=""
@@ -261,7 +263,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             val upload = UploadRequest(dir, dataSource, FileSystemEntityCreateMode.overwrite,
                 EnumSet.of(ZipFileOption.preserve_directories, ZipFileOption.unzip))
             fileManagerDAO.createFiles(dir, listOf(upload), messages)
-            tempFile.delete()
+            if(!tempFile.delete()) logger.info("Unable to delete ${tempFile.absolutePath}")
         }
         val localeContext = LocaleContext(Locale.ENGLISH)
         localeContext.localeSource = localeSource
