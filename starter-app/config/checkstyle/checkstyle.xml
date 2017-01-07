@@ -108,6 +108,7 @@
         <module name="JavadocVariable">
             <property name="scope" value="public"/>
             <property name="severity" value="error"/>
+            <property name="tokens" value="VARIABLE_DEF"/>
         </module>
         <module name="RedundantModifier">
             <property name="tokens" value="INTERFACE_DEF, VARIABLE_DEF, ANNOTATION_FIELD_DEF"/>

@@ -10,6 +10,12 @@
   -->
 
 <FindBugsFilter>
+    <Match>
+        <Source name="~.*\.groovy" />
+    </Match>
+    <Match>
+        <Source name="~.*\.l10n\.xml" />
+    </Match>
 
     <Match>
         <!-- We currently don't rely on serialization working, so we'll ignore the error for now -->

@@ -11,6 +11,7 @@
 
 package com.example.app.config.automation;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -20,7 +21,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +31,8 @@ import net.proteusframework.core.automation.SQLDataConversion;
 import net.proteusframework.core.automation.SQLStatement;
 import net.proteusframework.core.automation.TaskArgument;
 import net.proteusframework.core.automation.TaskQualifier;
+
+import static java.util.Collections.singletonList;
 
 // You can also put your code in the groovy source folder so you can more easily create
 //  mult-line string literals. Don't duplicate the package-info.java though - only create one
@@ -49,7 +51,7 @@ public class DemoDataConversionVersion1
 {
     // !!! PLEASE PUT THE LATEST conversion at the top so it is easy to determine the next version #
     /** Data Conversion Identifier. */
-    private static final String IDENTIFIER = "starter-app";
+    private static final String IDENTIFIER = "starter-app-demo";
 
 
     /**
@@ -81,7 +83,7 @@ public class DemoDataConversionVersion1
             "alter table UserProfile add constraint FK_l51qbba4pla782w3b862hhxl7 foreign key (site_id) references site", null));
         ddl.add(new SQLStatement("create sequence userprofile_seq", null));
 
-        return SQLDataConversion.createSchemaUpdate("starter-app", "User Profile Entity", 3, false, ddl);
+        return SQLDataConversion.createSchemaUpdate(IDENTIFIER, "User Profile Entity", 3, false, ddl);
     }
 
 
@@ -105,9 +107,9 @@ public class DemoDataConversionVersion1
         Arrays.sort(signs);
 
         final List<SQLStatement> preDDL =
-            Collections.singletonList(new SQLStatement("CREATE TABLE Example_FOO(id serial, val text, primary key (id))", null));
+            singletonList(new SQLStatement("CREATE TABLE Example_FOO(id serial, val text, primary key (id))", null));
         final List<SQLStatement> postDDL =
-            Collections.singletonList(new SQLStatement("DROP TABLE Example_FOO;", null));
+            singletonList(new SQLStatement("DROP TABLE Example_FOO;", null));
         return new AbstractDataConversion(IDENTIFIER, "Example Numero Dos", 2, true, null, preDDL, postDDL)
         {
             @Override
@@ -120,16 +122,17 @@ public class DemoDataConversionVersion1
             }
 
             @Override
-            public List<? extends SQLStatement> execute(TaskArgument[] arguments)
+            public List<? extends SQLStatement> execute(TaskArgument... arguments)
                 throws SQLException, IllegalArgumentException
             {
                 final SQLStatement stmt = new SQLStatement("INSERT INTO Example_Foo (val) VALUES (?)",
                     "Insert Sign");
                 final Map<String, TaskArgument> argumentMapping = getArgumentMapping(arguments);
                 stmt.setString(1, argumentMapping.get(WHAT_S_YOUR_ZODIAC_SIGN).getArgument().toString());
-                return Collections.singletonList(stmt);
+                return singletonList(stmt);
             }
 
+            @NotNull
             @Override
             public Map<TaskArgument, String> validateArguments(TaskArgument... arguments)
             {
@@ -144,7 +147,7 @@ public class DemoDataConversionVersion1
             @Override
             public List<? extends SQLStatement> getValidationStatements()
             {
-                return Collections.singletonList(new SQLStatement("SELECT COUNT(*) FROM Example_FOO", null));
+                return singletonList(new SQLStatement("SELECT COUNT(*) FROM Example_FOO", null));
             }
 
             @Override
@@ -172,7 +175,7 @@ public class DemoDataConversionVersion1
     public DataConversion example1DataConversion()
     {
         return new SQLDataConversion(IDENTIFIER, "Example of a data conversion", 1,
-            Arrays.asList(
+            singletonList(
                 new SQLStatement("SELECT 1", "This data conversion is just an example. It does not do anything.")
             )
         );

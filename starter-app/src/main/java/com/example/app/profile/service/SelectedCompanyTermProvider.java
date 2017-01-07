@@ -36,6 +36,7 @@ public class SelectedCompanyTermProvider implements ProfileTermProvider
     private UIPreferences _uiPreferences;
 
 
+    @Override
     public TextSource company()
     {
         return getDelegate().company();
