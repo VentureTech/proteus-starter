@@ -68,7 +68,7 @@ import static net.proteusframework.users.model.dao.AuthenticationDomainList.crea
 import static net.proteusframework.users.model.dao.AuthenticationDomainList.emptyDomainList;
 
 /**
- * Shell commands for ldp project
+ * Shell commands for project
  *
  * @author Alan Holt (aholt@venturetech.net)
  * @since 11/23/15 9:54 AM
@@ -99,51 +99,6 @@ public class ProjectShellCommands extends AbstractShellCommands
     @Autowired
     private MembershipOperationProvider _mop;
 
-    //Wrote this to test the ProfileData model.  Commented it out for future reference.
-    //    /**
-    //     *   Blah
-    //     *
-    //     */
-    //    @CliCommand(value = "testProfileData")
-    //    public void testProfileData()
-    //    {
-    //        QLBuilder profileBuilder = new QLBuilderImpl(Profile.class, "profile");
-    //        Profile profile = (Profile)profileBuilder.getQueryResolver().list().get(0);
-    //        String name = "testing";
-    //        String category = "test";
-    //        JsonObject data = new JsonObject();
-    //        data.add("testBool", new JsonPrimitive(true));
-    //        data.add("testNum", new JsonPrimitive(1));
-    //        data.add("testStr", new JsonPrimitive("test-string"));
-    //        JsonArray testArray = new JsonArray();
-    //        testArray.add(new JsonPrimitive("test-1"));
-    //        testArray.add(new JsonPrimitive("test-2"));
-    //        data.add("testArr", testArray);
-    //
-    //        ProfileData pData = new ProfileData();
-    //        pData.setProfile(profile);
-    //        pData.setName(name);
-    //        pData.setCategory(category);
-    //        pData.setData(data);
-    //
-    //        _profileDAO.saveProfileData(pData);
-    //
-    //        QLBuilder profileDataBuilder = new QLBuilderImpl(ProfileData.class, "pData");
-    //        profileDataBuilder.appendCriteria(ProfileData.PROFILE_PROP, PropertyConstraint.Operator.eq, profile);
-    //        ProfileData retrieved = (ProfileData)profileDataBuilder.getQueryResolver().list().get(0);
-    //
-    //        Assert.assertEquals(retrieved.getProfile().getId(), profile.getId());
-    //        Assert.assertEquals(retrieved.getName(), name);
-    //        Assert.assertEquals(retrieved.getCategory(), category);
-    //        Assert.assertEquals(retrieved.getData().get("testBool").getAsBoolean(), true);
-    //        Assert.assertEquals(retrieved.getData().get("testNum").getAsInt(), 1);
-    //        Assert.assertEquals(retrieved.getData().get("testStr").getAsString(), "test-string");
-    //        Assert.assertEquals(retrieved.getData().get("testArr").getAsJsonArray().get(0).getAsString(), "test-1");
-    //        Assert.assertEquals(retrieved.getData().get("testArr").getAsJsonArray().get(1).getAsString(), "test-2");
-    //
-    //        _profileDAO.deleteProfileData(retrieved);
-    //    }
-
     /**
      * Add the given operation to an existing or new membership on the given company for the given user
      *
@@ -152,9 +107,9 @@ public class ProjectShellCommands extends AbstractShellCommands
      * @param operation the operation
      * @param profileId the profile programmatic identifier.
      */
-    @CliCommand(value = "addOperationForUserOnCoaching", help = "Add the given operation to an existing or new membership on the "
-                                                                + "given company for the given user")
-    public void addMembershipOperationForUserOnCoaching(
+    @CliCommand(value = "add operation for company user",
+        help = "Add the given operation to an existing or new membership on the given company for the given user")
+    public void addMembershipOperationForCompanyUser(
         @CliOption(key = "username",
             help = "The username of the Principal to search for the User on", mandatory = true) String username,
         @CliOption(key = "authdomain", help = "The authentication domain to search in") String authDomainName,
@@ -205,7 +160,7 @@ public class ProjectShellCommands extends AbstractShellCommands
      * @return the created or retrieved User, or null if a Principal could not be found
      */
     @Nullable
-    @CliCommand(value = "createUserForPrincipal", help = "Create a User for the given Principal username")
+    @CliCommand(value = "create user for principal", help = "Create a User for the given Principal username")
     public User createUserForPrincipal(
         @CliOption(key = "username",
             help = "The username of the Principal to create the User for", mandatory = true) String username,
@@ -257,14 +212,14 @@ public class ProjectShellCommands extends AbstractShellCommands
      *      "programmaticIdentifier": "testProfileType",
      *      "name": "testProfileType",
      *      "description": "a test profile type",
-     *      "kind": "Coaching"
+     *      "kind": "Company"
      *    }
      *   </pre>
      *
      * @throws LocaleSourceException if creation of name or description localized object keys fails
      * @throws IOException if the shell screws up
      */
-    @CliCommand(value = "createOrModifyProfileType",
+    @CliCommand(value = "create or update profiletype",
         help = "Create or modify a ProfileType by providing required data via json string.")
     public void addModifyProfileType(
         @CliOption(key = "data", help = "The profile type data, in json.  This can be left blank to use the interactive shell")
@@ -294,7 +249,7 @@ public class ProjectShellCommands extends AbstractShellCommands
      * @throws LocaleSourceException if creation of Industry localized oject keys fails
      * @throws IOException if the shell screws up
      */
-    @CliCommand(value = "addResourceCategory", help = "Add a Resource Category to the Resource Categories label domain.")
+    @CliCommand(value = "add resource category", help = "Add a Resource Category to the Resource Categories label domain.")
     public void addResourceCategory(
         @CliOption(key = "data", help = "The category data, in json. This can be left blank to use the interactive shell")
             String categoryData) throws IOException, LocaleSourceException
@@ -317,7 +272,7 @@ public class ProjectShellCommands extends AbstractShellCommands
      * @throws LocaleSourceException if creation of Industry localized oject keys fails
      * @throws IOException if the shell screws up
      */
-    @CliCommand(value = "addResourceType", help = "Add a Resource Type to the Resource Types label domain.")
+    @CliCommand(value = "add resource type", help = "Add a Resource Type to the Resource Types label domain.")
     public void addResourceType(
         @CliOption(key = "data", help = "The type data, in json. This can be left blank to use the interactive shell")
             String typeData) throws IOException, LocaleSourceException
@@ -346,7 +301,7 @@ public class ProjectShellCommands extends AbstractShellCommands
      *
      * @throws IOException if the shell screws up
      */
-    //    @CliCommand(value = "refreshDatabase", help = "Drops the app and audit schemas, and clears out the automation log so
+    //    @CliCommand(value = "refresh database", help = "Drops the app and audit schemas, and clears out the automation log so
     // that all"
     //        + " data conversions for the project can be re-ran, then re-runs all project data conversions.")
     public void refreshDatabase() throws IOException

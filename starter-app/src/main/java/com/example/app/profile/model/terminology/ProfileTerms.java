@@ -150,11 +150,11 @@ public class ProfileTerms extends AbstractEntity<Integer> implements ProfileTerm
     /**
      * Sets company.
      *
-     * @param pCoachingEntities the coaching entities
+     * @param pCompanies the companies
      */
-    public void setCompanies(LocalizedObjectKey pCoachingEntities)
+    public void setCompanies(LocalizedObjectKey pCompanies)
     {
-        companies = pCoachingEntities;
+        companies = pCompanies;
     }
 
     /**

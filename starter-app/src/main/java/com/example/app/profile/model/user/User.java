@@ -128,7 +128,7 @@ public class User extends AbstractAuditableEntity<Integer> implements NamedObjec
     private PhoneNumber _smsPhone;
     /** preferred contact method */
     private ContactMethod _preferredContactMethod;
-    /** coaching entities for this user */
+    /** companies for this user */
     private List<Company> _companies = new ArrayList<>();
 
     /**
@@ -380,9 +380,9 @@ public class User extends AbstractAuditableEntity<Integer> implements NamedObjec
     }
 
     /**
-     * Gets coaching entities.
+     * Gets companies.
      *
-     * @return the coaching entities
+     * @return the companies
      */
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = Company.USERS_PROP)
     public List<Company> getCompanies()
@@ -391,9 +391,9 @@ public class User extends AbstractAuditableEntity<Integer> implements NamedObjec
     }
 
     /**
-     * Sets coaching entities.
+     * Sets companies.
      *
-     * @param companies the coaching entities
+     * @param companies the companies
      */
     public void setCompanies(List<Company> companies)
     {
