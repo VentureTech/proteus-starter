@@ -114,17 +114,17 @@ public class CompanyDAO extends DAOHelper implements Serializable
         if(_webImageSaver == null)
         {
             _webImageSaver = new FileSaver<>(
-                (coaching, image) -> {
-                    coaching.setImage(image);
-                    return coaching;
+                (company, image) -> {
+                    company.setImage(image);
+                    return company;
                 },
                 Company::getImage,
-                (coaching, image) -> {
+                (company, image) -> {
                     final DirectoryEntity dir = FileSystemDirectory.Pictures.getDirectory2(
                         _cmsFrontendDAO.getOperationalSite());
-                    return _fileSystemDAO.mkdirs(dir, null, "CoachingPictures", coaching.getId().toString());
+                    return _fileSystemDAO.mkdirs(dir, null, "CompanyPictures", company.getId().toString());
                 },
-                (coaching, image) -> "web-logo" + AppUtil.getExtensionWithDot(image),
+                (company, image) -> "web-logo" + AppUtil.getExtensionWithDot(image),
                 this::saveCompany);
         }
         return _webImageSaver;
@@ -141,17 +141,17 @@ public class CompanyDAO extends DAOHelper implements Serializable
         if(_emailLogoSaver == null)
         {
             _emailLogoSaver = new FileSaver<>(
-                (coaching, image) -> {
-                    coaching.setEmailLogo(image);
-                    return coaching;
+                (company, image) -> {
+                    company.setEmailLogo(image);
+                    return company;
                 },
                 Company::getEmailLogo,
-                (coaching, image) -> {
+                (company, image) -> {
                     final DirectoryEntity dir = FileSystemDirectory.Pictures.getDirectory2(
                         _cmsFrontendDAO.getOperationalSite());
-                    return _fileSystemDAO.mkdirs(dir, null, "CoachingPictures", coaching.getId().toString());
+                    return _fileSystemDAO.mkdirs(dir, null, "CompanyPictures", company.getId().toString());
                 },
-                (coaching, image) -> "email-logo" + AppUtil.getExtensionWithDot(image),
+                (company, image) -> "email-logo" + AppUtil.getExtensionWithDot(image),
                 this::saveCompany);
         }
         return _emailLogoSaver;
@@ -228,31 +228,31 @@ public class CompanyDAO extends DAOHelper implements Serializable
     }
 
     /**
-     * Save coaching image company.
+     * Save company image.
      *
-     * @param coaching the coaching
+     * @param company the company
      * @param image the image
      *
      * @return the company
      */
     @Nonnull
-    public Company saveCompanyImage(@Nonnull Company coaching, @Nullable FileItem image)
+    public Company saveCompanyImage(@Nonnull Company company, @Nullable FileItem image)
     {
-        return getWebLogoImageSaver().save(coaching, image);
+        return getWebLogoImageSaver().save(company, image);
     }
 
     /**
-     * Save coaching image company.
+     * Save company image.
      *
-     * @param coaching the coaching
+     * @param company the company
      * @param image the image
      *
      * @return the company
      */
     @Nonnull
-    public Company saveCompanyEmailLogo(@Nonnull Company coaching, @Nullable FileItem image)
+    public Company saveCompanyEmailLogo(@Nonnull Company company, @Nullable FileItem image)
     {
-        return getEmailLogoImageSaver().save(coaching, image);
+        return getEmailLogoImageSaver().save(company, image);
     }
 
     /**
@@ -308,7 +308,7 @@ public class CompanyDAO extends DAOHelper implements Serializable
     public ProfileType createCompanyProfileType(@Nullable String progId)
     {
         ProfileType pt = new ProfileType();
-        TransientLocalizedObjectKey tlok = new TransientLocalizedObjectKey(singletonMap(Locale.ENGLISH, "Coaching PT"));
+        TransientLocalizedObjectKey tlok = new TransientLocalizedObjectKey(singletonMap(Locale.ENGLISH, "Company PT"));
 
         pt.setName(tlok);
         pt.setProgrammaticIdentifier(isEmptyString(progId) ? GloballyUniqueStringGenerator.getUniqueString() : progId);
@@ -320,7 +320,7 @@ public class CompanyDAO extends DAOHelper implements Serializable
     }
 
     /**
-     * New coached profile type profile type.
+     * New client profile type.
      *
      * @param progId the prog id
      *
@@ -329,7 +329,7 @@ public class CompanyDAO extends DAOHelper implements Serializable
     public ProfileType createClientProfileType(@Nullable String progId)
     {
         ProfileType pt = new ProfileType();
-        TransientLocalizedObjectKey tlok = new TransientLocalizedObjectKey(singletonMap(Locale.ENGLISH, "Coached PT"));
+        TransientLocalizedObjectKey tlok = new TransientLocalizedObjectKey(singletonMap(Locale.ENGLISH, "Client PT"));
 
         pt.setName(tlok);
         pt.setProgrammaticIdentifier(isEmptyString(progId) ? GloballyUniqueStringGenerator.getUniqueString() : progId);
@@ -433,12 +433,12 @@ public class CompanyDAO extends DAOHelper implements Serializable
     }
 
     /**
-     * Get a list of all active CoachingEntities that the given User has a Membership for
+     * Get a list of all active Companies that the given User has a Membership for
      *
      * @param user the user to search for
      * @param timeZone the current TimeZone
      *
-     * @return a list of CoachingEntities that the given User has a Membership for
+     * @return a list of Companies that the given User has a Membership for
      */
     @SuppressWarnings("unchecked")
     @Nonnull
@@ -451,9 +451,9 @@ public class CompanyDAO extends DAOHelper implements Serializable
     }
 
     /**
-     * Gets active coaching entities.
+     * Gets active companies.
      *
-     * @return the active coaching entities
+     * @return the active companies
      */
     @SuppressWarnings("unchecked")
     public List<Company> getActiveCompanies()
@@ -466,12 +466,12 @@ public class CompanyDAO extends DAOHelper implements Serializable
     }
 
     /**
-     * Gets active coaching entities for a user.
+     * Gets active companies for a user.
      * This is all {@link User#getCompanies()} less any
-     * CoachingEntities whose hostname authentication domain is not
+     * Companies whose hostname authentication domain is not
      * present on the {@link User#getPrincipal()}.
      * @param user the user.
-     * @return the active coaching entities for the user.
+     * @return the active companies for the user.
      */
     @SuppressWarnings("unchecked")
     public List<Company> getActiveCompanies(User user)
@@ -489,12 +489,12 @@ public class CompanyDAO extends DAOHelper implements Serializable
     }
 
     /**
-     * Gets active coaching entities for a user.
+     * Gets active companies for a user.
      * This is all {@link User#getCompanies()} less any
-     * CoachingEntities whose hostname authentication domain is not
+     * Companies whose hostname authentication domain is not
      * present on the {@link User#getPrincipal()}.
      * @param user the user.
-     * @return the active coaching entities for the user.
+     * @return the active companies for the user.
      */
     @SuppressWarnings("unchecked")
     public List<Company> getActiveCompanies(Principal user)
@@ -568,9 +568,9 @@ public class CompanyDAO extends DAOHelper implements Serializable
     public boolean isValidCompanyForCurrentUser(@Nonnull Company coaching)
     {
         final User currentUser = _userDAO.getAssertedCurrentUser();
-        final List<Company> coachingEntities = getCompaniesThatUserHasMembershipFor(currentUser, AppUtil.UTC);
+        final List<Company> companies = getCompaniesThatUserHasMembershipFor(currentUser, AppUtil.UTC);
         return currentUser.getCompanies().contains(coaching)
-               || coachingEntities.contains(coaching)
+               || companies.contains(coaching)
                || AppUtil.userHasAdminRole(currentUser);
     }
 

@@ -50,8 +50,7 @@ import net.proteusframework.cms.label.LabelDomainProvider;
 import net.proteusframework.data.filesystem.FileEntity;
 
 /**
- * An entity that represents a person or organization within the leadership development platform that facilitates coaching and
- * manages plans.
+ * An entity that represents an organization.
  *
  * @author Alan Holt (aholt@venturetech.net)
  * @since 11 /23/15 8:52 AM

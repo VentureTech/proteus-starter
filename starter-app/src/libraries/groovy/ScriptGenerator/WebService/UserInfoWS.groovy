@@ -97,8 +97,8 @@ class UserInfo extends AbstractScriptGenerator
         if(!request.getMethod().equalsIgnoreCase('get'))
             return
         def user = _userDAO.getAssertedCurrentUser()
-        def membershipTypes = _planDAO.getPlanMembershipTypesForUserAndCoaching(user,
-            _companyDAO.getAssertedCoachingEntityForUser(user), true)
+        def membershipTypes = _planDAO.getPlanMembershipTypesForUserAndCompany(user,
+            _companyDAO.getAssertedCompanyEntityForUser(user), true)
         JsonObject toured = new JsonObject()
         JsonArray roles = new JsonArray()
         membershipTypes.each {
