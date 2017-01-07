@@ -8,10 +8,10 @@ The web development (*/proteus-starter/webdev*) project is an Intellij IDEA or W
 
 
 
-Example App
+Starter App
 -----------
 
-The example app (*/proteus-starter/starter-app*) is a gradle project with dependencies on the Proteus Framework that you can download [here](https://github.com/VentureTech/proteus-starter/releases/). The project is preconfigured for use with Intellij IDEA version 2016+. Standard settings are provided for Intellij IDEA.
+The starter app (*/proteus-starter/starter-app*) is a gradle project with dependencies on the Proteus Framework that you can download [here](https://github.com/VentureTech/proteus-starter/releases/). The project is preconfigured for use with Intellij IDEA version 2016+. Standard settings are provided for Intellij IDEA.
 
 <strong>Use</strong>
 
