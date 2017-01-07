@@ -23,13 +23,6 @@ private val appName = ProjectInformation.getName()
 @Profile("automation")
 @Component
 open class ProfileBasicResourcesDSL : AppDefinition("Profile Basic - Resources", 1, "${appName} Frontend", {
-    layout("Header, Main, Footer") {
-
-    }
-
-    template("Frontend") {
-        layout("Header, Main, Footer")
-    }
 
     for((appFunction, path, htmlClassName) in listOf(
         AppFunctionPage(Resource.MANAGEMENT, "/resource/manage", "resource-management"),
