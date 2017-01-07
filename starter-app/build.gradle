@@ -90,8 +90,13 @@ task createDependencyFile() {
         }
     }
 }
-// IF this gets annoying, try `artifactoryPublish.doLast({createDependencyFile.execute()})`
-compileJava.doLast({createDependencyFile.execute()})
+if(isIDEA)
+{
+    afterEvaluate {
+        createDependencyFile.execute()
+    }
+}
+artifactoryPublish.doFirst({createDependencyFile.execute()})
 
 //noinspection GroovyAssignabilityCheck
 configurations.all {
