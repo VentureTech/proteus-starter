@@ -42,7 +42,6 @@ import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.ValueEditor;
 import net.proteusframework.ui.miwt.resource.CKEditorConfig;
 import net.proteusframework.ui.miwt.util.ComponentTreeIterator;
-import net.proteusframework.ui.miwt.validation.RequiredValueValidator;
 import net.proteusframework.ui.miwt.validation.ValidURLValidator;
 import net.proteusframework.users.model.Address;
 import net.proteusframework.users.model.Name;
@@ -143,14 +142,11 @@ public class UserProfileEditor extends Container
         // but that requires a bit more consideration
         //// related to how the violation is handled and presented to the user.
         _nameGiven = new TextEditor(TextSources.createText("First"), name.getFirst());
-        _nameGiven.addClassName("required");
+        _nameGiven.setRequiredValueValidator();
         _nameFamily = new TextEditor(TextSources.createText("Last"), name.getLast());
-        _nameFamily.addClassName("required");
+        _nameFamily.setRequiredValueValidator();
         _nameSuffix = new TextEditor(TextSources.createText("Suffix"), name.getSuffix());
-        _nameGiven.setValueValidator(new RequiredValueValidator()
-            .withErrorMessage(CommonValidationText.ARG0_IS_REQUIRED, "First Name"));
-        _nameFamily.setValueValidator(new RequiredValueValidator()
-            .withErrorMessage(CommonValidationText.ARG0_IS_REQUIRED, "Last Name"));
+
         // You could use fieldset / legend elements. They are better for accessibility
         /// but they can be difficult to style consistently across different browsers
         /// and browser versions. If you do use a legend make sure the

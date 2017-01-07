@@ -64,10 +64,9 @@ task autoDeploy(type: com.proteusframework.build.DeployTask) {
     secret ="${findProperty('aws_secret')?:'MISSING_SECRET'}"
 }
 
-
 task wrapper(type: Wrapper) {
     group 'Build Setup'
-    gradleVersion = '2.14'
+    gradleVersion = '3.3'
 }
 task createDependencyFile() {
     group = 'Build'

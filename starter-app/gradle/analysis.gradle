@@ -6,7 +6,6 @@
         enabled = false
     }
 }
-
 checkstyle {
     toolVersion = "${version_checkstyle}"
 }
@@ -21,6 +20,11 @@ findbugsMain {
     reports {
         xml.enabled = true
         html.enabled = false
+    }
+    classes = classes.filter {
+        def skip = it.path.endsWith('.xml') || it.path.endsWith('.kotlin_module')
+//        if(skip) println(it.path)
+        !skip
     }
 }
 

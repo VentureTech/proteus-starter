@@ -42,10 +42,13 @@
           <root url="file://$MODULE_DIR$/../../src/main/resources" />
           <root url="file://$MODULE_DIR$/../../.apt_generated" />
           <root url="file://$MODULE_DIR$/../../src/demo/resources" />
+          <root url="file://$MODULE_DIR$/../../src/libraries/kotlin" />
+          <root url="file://$MODULE_DIR$/../../src/main/kotlin" />
           <root url="file://$MODULE_DIR$/../../src/demo/java" />
           <root url="file://$MODULE_DIR$/../../src/main/groovy" />
           <root url="file://$MODULE_DIR$/../../src/demo/groovy" />
           <root url="file://$MODULE_DIR$/../../src/libraries/groovy" />
+          <root url="file://$MODULE_DIR$/../../src/demo/kotlin" />
           <root url="file://$MODULE_DIR$/../../src/main/java" />
         </sourceRoots>
       </configuration>
