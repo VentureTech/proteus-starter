@@ -1,3 +1,5 @@
+artifactoryPublish.doFirst({createDependencyFile.execute()})
+
 publishing {
     publications {
         ivyPub(IvyPublication) {

@@ -1,5 +1,4 @@
 import com.proteusframework.build.GitInfo
-import org.ajoberstar.grgit.Grgit
 
 buildscript {
     ext.kotlin_version = '1.0.6'
@@ -42,7 +41,8 @@ repositories {
     }
     maven {
         url "https://dl.bintray.com/kotlin/exposed"
-}   }
+    }
+}
 GitInfo.populateProject(project)
 
 apply plugin: 'kotlin'
@@ -68,34 +68,8 @@ task wrapper(type: Wrapper) {
     group 'Build Setup'
     gradleVersion = '3.3'
 }
-task createDependencyFile() {
-    group = 'Build'
-    doFirst {
-        def dependencyFile = file("dependencies.txt")
-        def pw = dependencyFile.newPrintWriter()
-        configurations.all.collect {it.resolvedConfiguration.getResolvedArtifacts()}.flatten().collect {it.moduleVersion.id}.unique().
-            sort(false){"${it.group}:${it.name}"}forEach{
-            pw.println(it)
-            }
-        pw.close()
-        try{
-            def root = file('../.git').exists() ? file('..') : file('.')
-            def grgit = Grgit.open(root)
-            def path = root == project.rootDir ? dependencyFile.name : "${project.rootDir.name}/${dependencyFile.name}"
-            grgit.commit(message: 'Updating dependencies.txt', paths: [path] as Set)
 
-        }catch(ignore){
-            if(!ignore.message.toLowerCase().contains("no changes"))
-                ignore.printStackTrace()
-        }
-    }
-}
-if(isIDEA) {
-    afterEvaluate {
-        createDependencyFile.execute()
-    }
-}
-artifactoryPublish.doFirst({createDependencyFile.execute()})
+
 
 //noinspection GroovyAssignabilityCheck
 configurations.all {
