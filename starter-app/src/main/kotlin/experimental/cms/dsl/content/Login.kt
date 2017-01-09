@@ -32,7 +32,7 @@ class Login(id: String) : Identifiable(id), Content {
 
     fun landingPage(landingPageId: String) {
         getSite().siteConstructedCallbacks.add({ site ->
-            val page = site.children.filter { it.id == landingPageId }.first()
+            val page = site._getExistingPage(landingPageId)
             landingPage = page
         })
     }

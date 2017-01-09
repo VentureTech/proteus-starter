@@ -32,9 +32,43 @@ import net.proteusframework.email.EmailTemplate
 import net.proteusframework.internet.http.Link
 import net.proteusframework.ui.management.link.RegisteredLink
 import net.proteusframework.ui.miwt.component.Component
+import net.proteusframework.users.model.dao.PrincipalDAO
 import org.apache.logging.log4j.LogManager
 import org.xml.sax.Attributes
 import java.io.*
+import java.util.*
+
+
+internal fun populateLayoutBoxes(site: CmsSite, layout: Layout,
+    cmsLayout: net.proteusframework.cms.component.page.layout.Layout) {
+    for (box in layout.children) {
+        val cmsBox = createCmsBox(box, site)
+        cmsLayout.boxes.add(cmsBox)
+        populateLayoutBoxes(site, box, cmsBox)
+    }
+}
+
+internal fun populateLayoutBoxes(site: CmsSite, parent: Box, cmsParent: net.proteusframework.cms.component.page.layout.Box) {
+    for (child in parent.children) {
+        val cmsBox = createCmsBox(child, site)
+        cmsParent.children.add(cmsBox)
+        populateLayoutBoxes(site, child, cmsBox)
+    }
+}
+
+internal fun createCmsBox(box: Box,
+    site: CmsSite): net.proteusframework.cms.component.page.layout.Box {
+    val cmsBox = net.proteusframework.cms.component.page.layout.Box()
+    cmsBox.site = site
+    cmsBox.name = box.id
+    cmsBox.boxDescriptor = box.boxType
+    cmsBox.defaultContentArea = box.defaultContentArea
+    cmsBox.cssName = box.htmlId
+    cmsBox.styleClass = box.htmlClass
+    cmsBox.lastModUser = PrincipalDAO.getInstance().currentPrincipal
+    cmsBox.lastModified = Date()
+    return cmsBox
+}
 
 internal fun cleanPath(path: String): String = trimSlashes(path.replace('*', '/')).replace(Regex("""/+"""), "/")
 

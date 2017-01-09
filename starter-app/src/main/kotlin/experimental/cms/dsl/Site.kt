@@ -11,7 +11,10 @@
 
 package experimental.cms.dsl
 
+import com.i2rd.cms.dao.CmsSiteDefinitionDAO
+import net.proteusframework.core.spring.ApplicationContextUtils
 import net.proteusframework.email.EmailConfigType
+import org.apache.logging.log4j.LogManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Profile
@@ -23,7 +26,17 @@ import javax.annotation.PostConstruct
 
 internal data class Hostname(val address: String, val welcomePage: Page)
 
-class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer, ResourceCapable {
+class Site(id: String, val appDefinition: AppDefinition) : IdentifiableParent<Page>(id), ContentContainer, ResourceCapable {
+
+    companion object{
+        val logger = LogManager.getLogger(Site::class.java)!!
+    }
+
+    private var siteDefinitionDAO: CmsSiteDefinitionDAO = appDefinition.siteDefinitionDAO
+    private var dependency: AppDefinition? = null
+        get() = getAppDefinitionDependency(appDefinition)
+
+
     private val contentToRemoveImplementation: MutableList<Content> = mutableListOf()
     override val contentToRemove: MutableList<Content>
         get() = contentToRemoveImplementation
@@ -45,11 +58,107 @@ class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer, Resourc
     internal lateinit var parent: AppDefinition
     internal val siteConstructedCallbacks = mutableListOf<(Site) -> Unit>()
 
+
     internal fun getContentById(existingId: String): Content {
+        // Need ContentElement.class => Content::class mapping
+//        val content = siteDefinitionDAO.getSiteByDescription(id)?.let {siteDefinitionDAO.getContentElementByName(it, existingId)}
+//        if(content != null) return CreateContent(existingId)
         val predicate = createContentIdPredicate(existingId)
         return children.flatMap { it.contentList }.filter(predicate).firstOrNull() ?:
             templates.flatMap { it.contentList }.filter(predicate).firstOrNull() ?:
-            content.filter(predicate).first()
+            content.filter(predicate).firstOrNull()?:throw IllegalStateException("Content '$existingId' does not exist")
+    }
+
+    internal fun _getExistingLayout(existingId: String): Layout {
+        val existingLayout = layouts.filter({ it.id == existingId }).firstOrNull()?:let{
+            val layout = siteDefinitionDAO.getSiteByDescription(id)?.let {
+                siteDefinitionDAO.getLayoutByName(it, existingId)
+            }
+            if (layout != null) _createExistingLayout(layout) else null
+        }
+        return existingLayout?:let {
+            val dep = dependency
+            if(dep != null) {
+                for(depSite in dep.getSites()) {
+                    try{
+                        return@let depSite._getExistingLayout(existingId)
+                    }catch (ignore: IllegalStateException) {
+                        logger.debug("Unable to find layout in site: $depSite.id", ignore)
+                    }
+                }
+            }
+            throw IllegalStateException("Layout '$existingId' does not exist")
+        }
+    }
+
+    private  fun _createExistingLayout(layout: net.proteusframework.cms.component.page.layout.Layout)  : Layout {
+        val existingLayout = Layout(layout.name, this)
+        for(cmsBox in layout.boxes)
+            _populateModelBoxes(existingLayout, cmsBox)
+        return existingLayout
+    }
+
+    private fun _populateModelBoxes(layout: Layout, cmsBox: net.proteusframework.cms.component.page.layout.Box) {
+        val box = Box(cmsBox.name, cmsBox.boxDescriptor, cmsBox.defaultContentArea, cmsBox.cssName, cmsBox.styleClass)
+        layout.add(box)
+        for(cmsChildBox in cmsBox.children) {
+            _populateModelBoxes(box, cmsChildBox)
+        }
+    }
+    private fun _populateModelBoxes(parent: Box, cmsBox: net.proteusframework.cms.component.page.layout.Box) {
+        val box = Box(cmsBox.name, cmsBox.boxDescriptor, cmsBox.defaultContentArea, cmsBox.cssName, cmsBox.styleClass)
+        parent.add(box)
+        for(cmsChildBox in cmsBox.children) {
+            _populateModelBoxes(box, cmsChildBox)
+        }
+    }
+
+    internal fun _getExistingTemplate(existingId: String): Template {
+        val existingTemplate = templates.filter({ it.id == existingId }).firstOrNull()?:let{
+            val template = siteDefinitionDAO.getSiteByDescription(id)?.let {
+                siteDefinitionDAO.getPageTemplateByName(it, existingId)
+            }
+            if (template != null) Template(existingId, this, _createExistingLayout(template.layout)) else null
+        }
+        return existingTemplate?:let {
+            val dep = dependency
+            if(dep != null) {
+                for(depSite in dep.getSites()) {
+                    try{
+                        return@let depSite._getExistingTemplate(existingId)
+                    }catch (ignore: IllegalStateException) {
+                        logger.debug("Unable to find template in site: $depSite.id", ignore)
+                    }
+                }
+            }
+            throw IllegalStateException("Template '$existingId' does not exist")
+        }
+    }
+
+    internal fun _getExistingPage(existingId: String): Page {
+        val existingPage = children.filter { it.id == existingId }.firstOrNull()?:let {
+            val page = siteDefinitionDAO.getSiteByDescription(id)?.let {
+                siteDefinitionDAO.getPageByName(it, existingId)
+            }
+            if(page != null)
+                Page(existingId, this, page.primaryPath, Template(page.pageTemplate.name, this,
+                    _createExistingLayout(page.pageTemplate.layout)))
+            else
+                null
+        }
+        return existingPage?:let {
+            val dep = dependency
+            if(dep != null) {
+                for(depSite in dep.getSites()) {
+                    try{
+                        return@let depSite._getExistingPage(existingId)
+                    }catch (ignore: IllegalStateException) {
+                        logger.debug("Unable to find page in site: $depSite.id", ignore)
+                    }
+                }
+            }
+            throw IllegalStateException("Page '$existingId' does not exist")
+        }
     }
 
     /**
@@ -93,7 +202,9 @@ class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer, Resourc
      * @param init initialization block.
      */
     fun <T : Content> content(content: T, init: T.() -> Unit = {}): T {
-        this.content.add(content)
+        siteConstructedCallbacks.add({ site ->
+            this.content.add(content)
+        })
         content.parent = this
         content.apply(init)
         if(content.path.isNotBlank())
@@ -107,7 +218,9 @@ class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer, Resourc
      */
     fun content(existingContentId: String): Content {
         val contentById = getContentById(existingContentId)
-        this.content.add(contentById)
+        siteConstructedCallbacks.add({ site ->
+            this.content.add(contentById)
+        })
         return contentById
     }
 
@@ -116,8 +229,11 @@ class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer, Resourc
      * @param id the identifier. Something like "User Management".
      * @param path the page path. Page paths can contain spring environment variables like "\${folder.company}/users".
      */
-    fun page(id: String, path: String, init: Page.() -> Unit) =
-        Page(id = id, site = this, path = resolvePlaceholders(path)).apply(init)
+    fun page(id: String, path: String, init: Page.() -> Unit) {
+        siteConstructedCallbacks.add({site ->
+            Page(id = id, site = this, path = resolvePlaceholders(path)).apply(init)
+        })
+    }
 
     /**
      * Remove a defined Page.
@@ -145,8 +261,10 @@ class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer, Resourc
      * @param existingWelcomePageId a reference to an existing page to use as the welcome / home page.
      */
     fun hostname(address: String, existingWelcomePageId: String) {
-        val page = children.filter { it.id == existingWelcomePageId }.first()
-        hostnames.add(Hostname(address, page))
+        siteConstructedCallbacks.add({site ->
+            val page = _getExistingPage(existingWelcomePageId)
+            hostnames.add(Hostname(address, page))
+        })
     }
 
     /**
@@ -159,7 +277,9 @@ class Site(id: String) : IdentifiableParent<Page>(id), ContentContainer, Resourc
         val page = children.filter { it.id == welcomePageId }.firstOrNull() ?: Page(welcomePageId, this)
         page.apply(init)
         if (page.path.isBlank()) throw IllegalStateException("Missing path")
-        hostnames.add(Hostname(address, page))
+        siteConstructedCallbacks.add({ site ->
+            hostnames.add(Hostname(address, page))
+        })
     }
 
     /**
@@ -206,7 +326,8 @@ private fun appDefinitionExample() {
  *
  * @sample appDefinitionExample
  */
-abstract class AppDefinition(val definitionName: String, val version: Int, val siteId: String, val init: Site.() -> Unit){
+abstract class AppDefinition(val definitionName: String, val version: Int, siteId: String, var dependency: String? = null,
+    val init: Site.() -> Unit){
 
     companion object {
         internal val registeredSites = mutableMapOf<AppDefinition, MutableList<Site>>()
@@ -214,11 +335,14 @@ abstract class AppDefinition(val definitionName: String, val version: Int, val s
 
     data class SiteToConstruct(val id: String, val init: Site.() -> Unit = {})
 
-    constructor(definitionName: String, version: Int): this(definitionName, version, "", {})
+    constructor(definitionName: String, version: Int): this(definitionName, version, "", null, {})
 
     @Autowired
     @Qualifier("standalone")
     lateinit var placeholderHelper: PlaceholderHelper
+    @Autowired
+    lateinit var siteDefinitionDAO: CmsSiteDefinitionDAO
+
     private val sitesToConstruct = mutableListOf<SiteToConstruct>()
 
 
@@ -230,12 +354,18 @@ abstract class AppDefinition(val definitionName: String, val version: Int, val s
     @PostConstruct
     fun postConstruct() {
         sitesToConstruct.forEach {
-            val site = Site(it.id)
+            val site = Site(it.id, this)
             site.parent = this
             site.apply(it.init)
             registeredSites.getOrPut(this, { mutableListOf<Site>() }).add(site)
-            for (callback in site.siteConstructedCallbacks) {
+
+            val traverseCallbacks = site.siteConstructedCallbacks.toMutableList()
+            while(!traverseCallbacks.isEmpty()) {
+                site.siteConstructedCallbacks.clear()
+                val callback = traverseCallbacks.removeAt(0)
                 callback.invoke(site)
+                // Invoking callback can add more site constructed callbacks
+                traverseCallbacks.addAll(site.siteConstructedCallbacks)
             }
         }
         sitesToConstruct.clear()
@@ -253,4 +383,7 @@ abstract class AppDefinition(val definitionName: String, val version: Int, val s
 
 }
 
-
+internal fun getAppDefinitionDependency(appDefinition: AppDefinition) = if (appDefinition.dependency.isNullOrBlank())
+    null else ApplicationContextUtils.getInstance().context?.getBeansOfType(AppDefinition::class.java)?.values?.filter {
+        it.definitionName == appDefinition.dependency
+    }?.firstOrNull()

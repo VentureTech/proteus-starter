@@ -11,6 +11,7 @@
 
 package experimental.cms.dsl.shell
 
+import com.i2rd.cms.dao.CmsSiteDefinitionDAO
 import com.i2rd.cms.util.AbstractShellCommands
 import experimental.cms.dsl.AppDefinition
 import net.proteusframework.core.hibernate.HibernateSessionHelper
@@ -22,16 +23,32 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.ApplicationContext
+import org.springframework.context.ApplicationContextAware
 import org.springframework.shell.core.annotation.CliCommand
 import org.springframework.shell.core.annotation.CliOption
 import java.util.Date
 import javax.annotation.PostConstruct
 
-open class CmsDSLShellCommands : AbstractShellCommands() {
+open class CmsDSLShellCommands : AbstractShellCommands(), ApplicationContextAware{
+
+    @Autowired
+    lateinit var siteDefinitionDAO: CmsSiteDefinitionDAO
+    val _appDefinitionList = mutableListOf<AppDefinition>()
+    private lateinit var _applicationContext: ApplicationContext
+
+    override fun setApplicationContext(applicationContext: ApplicationContext) {
+        _applicationContext = applicationContext
+    }
+
+    private fun getAppDefinitionList(): List<AppDefinition> {
+        if(_appDefinitionList.isEmpty()) {
+            _appDefinitionList.addAll(_applicationContext.getBeansOfType(AppDefinition::class.java).values)
+        }
+        return _appDefinitionList
+    }
 
 
-    @Autowired(required = false)
-    lateinit var _appDefinitionList: List<AppDefinition>
     @Autowired
     lateinit var modelApplication: CmsModelApplication
 
@@ -45,7 +62,7 @@ open class CmsDSLShellCommands : AbstractShellCommands() {
         val fmt = FriendlyDateFormat()
         val sdMap = mutableMapOf<String, AppDefinition>()
         try {
-            _appDefinitionList.forEach { sdMap.put(it.definitionName, it) }
+            getAppDefinitionList().forEach { sdMap.put(it.definitionName, it) }
         } catch(e: UninitializedPropertyAccessException) {
             shellLogger.fine("There are no site definitions")
         }

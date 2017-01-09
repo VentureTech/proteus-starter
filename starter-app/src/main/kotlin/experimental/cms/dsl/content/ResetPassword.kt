@@ -31,7 +31,7 @@ class ResetPassword(id: String): Identifiable(id), Content {
 
     fun loginPage(existingPageId: String) {
         getSite().siteConstructedCallbacks.add({site ->
-            val page = site.children.filter { it.id == existingPageId }.first()
+            val page = site._getExistingPage(existingPageId)
             loginPage = page
         })
     }

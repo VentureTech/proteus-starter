@@ -20,10 +20,11 @@ import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
 private val appName = ProjectInformation.getName()
+
 @Profile("automation")
 @Component
-open class ProfileBasicResourcesDSL : AppDefinition("Profile Basic - Resources", 1, "${appName} Frontend", {
-
+open class ProfileBasicResourcesDSL :
+    AppDefinition("Profile Basic - Resources", version = 1, siteId = "$appName Frontend", dependency = "Profile Basic", init = {
     for((appFunction, path, htmlClassName) in listOf(
         AppFunctionPage(Resource.MANAGEMENT, "/resource/manage", "resource-management"),
         AppFunctionPage(Resource.EDIT, "/resource/edit/*", "resource-editor"),

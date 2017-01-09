@@ -11,9 +11,11 @@
 
 package experimental.cms.dsl.shell
 
+import com.i2rd.hibernate.util.HibernateRunnable
 import experimental.cms.dsl.AppDefinition
 import org.apache.logging.log4j.LogManager
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.ApplicationContext
+import org.springframework.context.ApplicationContextAware
 import org.springframework.shell.core.Completion
 import org.springframework.shell.core.Converter
 import org.springframework.shell.core.MethodTarget
@@ -22,20 +24,35 @@ import org.springframework.shell.core.MethodTarget
  * Shell converter for SiteDefinition
  * @author Russ Tennant (russ@venturtech.net)
  */
-open class SiteDefinitionConverter : Converter<AppDefinition> {
+open class SiteDefinitionConverter : Converter<AppDefinition>, ApplicationContextAware {
+
     companion object {
         val logger = LogManager.getLogger(SiteDefinitionConverter::class.java)!!
     }
-    @Autowired(required = false)
-    lateinit var _appDefinitionList: List<AppDefinition>
+
+    val _appDefinitionList = mutableListOf<AppDefinition>()
+    private lateinit var _applicationContext: ApplicationContext
+
+    override fun setApplicationContext(applicationContext: ApplicationContext) {
+        _applicationContext = applicationContext
+    }
+
+    private fun getAppDefinitionList(): List<AppDefinition> {
+        if(_appDefinitionList.isEmpty()) {
+            HibernateRunnable({
+                _appDefinitionList.addAll(_applicationContext.getBeansOfType(AppDefinition::class.java).values)
+            }).run()
+        }
+        return _appDefinitionList
+    }
 
     override fun supports(type: Class<*>?, optionContext: String?): Boolean = AppDefinition::class.java.isAssignableFrom(type)
 
     override fun getAllPossibleValues(completions: MutableList<Completion>?, targetType: Class<*>?, existingData: String?,
         optionContext: String?, target: MethodTarget?): Boolean {
         try {
-            val list = if(existingData!=null) _appDefinitionList.filter { sd -> sd.definitionName.contains(existingData, true)}
-                else _appDefinitionList
+            val list = if(existingData!=null) getAppDefinitionList().filter { sd -> sd.definitionName.contains(existingData, true)}
+                else getAppDefinitionList()
             list.sortedBy { it.definitionName }.forEach { completions?.add(Completion(it.definitionName)) }
         }
         catch (e: UninitializedPropertyAccessException){
@@ -47,7 +64,7 @@ open class SiteDefinitionConverter : Converter<AppDefinition> {
     override fun convertFromText(value: String?, targetType: Class<*>?, optionContext: String?): AppDefinition {
         if (!value.isNullOrBlank()) {
             try {
-                val definition = _appDefinitionList.filter { sd -> sd.definitionName == value }.firstOrNull()
+                val definition = getAppDefinitionList().filter { sd -> sd.definitionName == value }.firstOrNull()
                 if(definition != null)
                     return definition
             }

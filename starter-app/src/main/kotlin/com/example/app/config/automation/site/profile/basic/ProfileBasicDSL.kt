@@ -27,9 +27,10 @@ import org.springframework.stereotype.Component
 import java.net.URL
 
 private val appName = ProjectInformation.getName()
+
 @Profile("automation")
 @Component
-open class ProfileBasicDSL : AppDefinition("Profile Basic", 1, "${appName} Frontend", {
+open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId = "$appName Frontend", init = {
     libraryResources(URL("https://repo.venturetech.net/artifactory/vt-snapshot-local/" +
         "com/example/starter-app/1.2-SNAPSHOT/starter-app-1.2-SNAPSHOT-libraries.zip"))
 

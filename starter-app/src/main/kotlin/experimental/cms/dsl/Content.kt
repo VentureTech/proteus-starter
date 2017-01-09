@@ -43,6 +43,7 @@ interface ContentContainer {
      * Remove Content.
      */
     fun Content.remove() = contentToRemove.add(this)
+    fun typeName(): String = javaClass.simpleName
 }
 internal fun _getSite(toCheck: Any?): Site {
     return when (toCheck) {

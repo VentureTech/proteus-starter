@@ -159,7 +159,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
         appDefinition.getSites().forEach { siteModel ->
             cleanup()
             doInTransaction {
-                applySiteModel(siteModel)
+                applySiteModel(appDefinition, siteModel)
             }
         }
     }
@@ -169,12 +169,10 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
         layoutToBoxInformation.clear()
     }
 
-    private fun applySiteModel(siteModel: Site) {
+    private fun applySiteModel(appDefinition: AppDefinition, siteModel: Site) {
         logger.info("Applying Site Model: ${siteModel.id}")
-        if (siteModel.hostnames.isEmpty())
-            throw IllegalArgumentException("Invalid SiteModel. No hostnames")
 
-        val site = getOrCreateSite(siteModel)
+        val site = getOrCreateSite(appDefinition, siteModel)
         createRoles(siteModel, site)
         uploadResources(siteModel)
         val ctrList = mutableSetOf<Content>()
@@ -200,16 +198,8 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
                 cmsBackendDAO.trashPage(page)
             }
         }
-        val hostnames = getOrCreateHostnames(siteModel, site)
-        if (hostnames.isNotEmpty()) {
-            site.defaultHostname = hostnames[0]
-            cmsBackendDAO.saveSite(site, hostnames)
-            val user = principalDAO.currentPrincipal!!
-            if (!user.authenticationDomains.contains(site.domain)) {
-                user.authenticationDomains.add(site.domain)
-                principalDAO.savePrincipal(user)
-            }
-        }
+        getOrCreateHostnames(siteModel, site)
+
         siteModel.emailTemplates.forEach { createEmailTemplate(site, it) }
         if(siteModel.emailTemplates.isNotEmpty()) session.flush()
 
@@ -307,9 +297,20 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     }
 
 
-    private fun getOrCreateSite(siteModel: Site): CmsSite {
+    private fun getOrCreateSite(appDefinition: AppDefinition, siteModel: Site): CmsSite {
         var cmsSite = siteDefinitionDAO.getSiteByDescription(siteModel.id)
+        if (cmsSite == null && appDefinition.dependency != null) {
+            cmsSite = getAppDefinitionDependency(appDefinition)?.let {depDef ->
+                return@let depDef.getSites().firstOrNull({site -> site.id == siteModel.id})?.let {
+                    val depSite = getOrCreateSite(depDef, it)
+                    getOrCreateHostnames(it, depSite)
+                    return@let depSite
+                }
+            }
+        }
         if (cmsSite == null) {
+            if (siteModel.hostnames.isEmpty())
+                throw IllegalArgumentException("Invalid SiteModel. No hostnames")
             logger.info("Creating Cms Site: ${siteModel.id}")
             cmsSite = CmsSite()
             cmsSite.siteDescription = siteModel.id
@@ -394,6 +395,15 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
                 throw IllegalArgumentException("Hostname, $address, exists on other site.")
             list.add(cmsHostname)
         }
+        if (list.isNotEmpty()) {
+            site.defaultHostname = list[0]
+            cmsBackendDAO.saveSite(site, list)
+            val user = principalDAO.currentPrincipal!!
+            if (!user.authenticationDomains.contains(site.domain)) {
+                user.authenticationDomains.add(site.domain)
+                principalDAO.savePrincipal(user)
+            }
+        }
         return list
     }
 
@@ -471,6 +481,12 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
                     session.saveOrUpdate(userRole)
                 }
 
+            }
+            page.title?.let {
+                val title = getTransientLocalizedObjectKey(localeSource, cmsPage.persistedTitleKey)?:
+                    TransientLocalizedObjectKey(mutableMapOf())
+                title.text[site.primaryLocale] = page.title
+                cmsPage.persistedTitleKey = title
             }
             cmsPage.authorization = permission
             cmsPage.touch()
@@ -681,37 +697,6 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
         }
 
         return cmsLayout
-    }
-
-    private fun populateLayoutBoxes(site: CmsSite, layout: Layout,
-        cmsLayout: net.proteusframework.cms.component.page.layout.Layout) {
-        for (box in layout.children) {
-            val cmsBox = createCmsBox(box, site)
-            cmsLayout.boxes.add(cmsBox)
-            populateLayoutBoxes(site, box, cmsBox)
-        }
-    }
-
-    private fun populateLayoutBoxes(site: CmsSite, parent: Box, cmsParent: net.proteusframework.cms.component.page.layout.Box) {
-        for (child in parent.children) {
-            val cmsBox = createCmsBox(child, site)
-            cmsParent.children.add(cmsBox)
-            populateLayoutBoxes(site, child, cmsBox)
-        }
-    }
-
-    private fun createCmsBox(box: Box,
-        site: CmsSite): net.proteusframework.cms.component.page.layout.Box {
-        val cmsBox = net.proteusframework.cms.component.page.layout.Box()
-        cmsBox.site = site
-        cmsBox.name = box.id
-        cmsBox.boxDescriptor = box.boxType
-        cmsBox.defaultContentArea = box.defaultContentArea
-        cmsBox.cssName = box.htmlId
-        cmsBox.styleClass = box.htmlClass
-        cmsBox.lastModUser = principalDAO.currentPrincipal
-        cmsBox.lastModified = Date()
-        return cmsBox
     }
 
     private fun createNDEs(site: CmsSite, siteElement: Any, resources: ResourceCapable) {

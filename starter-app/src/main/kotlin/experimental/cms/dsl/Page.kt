@@ -93,10 +93,12 @@ interface BoxedContent : ContentContainer {
      * @param init the initialization block.
      */
     fun <T : Content> content(boxId: String, content: T, init: T.() -> Unit={}): T {
-        val box = layout.children.filter { it.id == boxId }.first()
-        this.content.getOrPut(box, {mutableListOf<Content>()}).add(content)
-        content.parent = this
-        content.apply(init)
+        site.siteConstructedCallbacks.add({site ->
+            val box = layout.children.filter { it.id == boxId }.first()
+            this.content.getOrPut(box, {mutableListOf<Content>()}).add(content)
+            content.parent = this
+            content.apply(init)
+        })
         return content
     }
 
@@ -105,11 +107,12 @@ interface BoxedContent : ContentContainer {
      * @param boxId the box identifier.
      * @param existingContentId the existing content's identifier.
      */
-    fun content(boxId: String, existingContentId: String): Content {
-        val box = layout.children.filter { it.id == boxId }.first()
-        val contentElement = site.getContentById(existingContentId)
-        this.content.getOrPut(box, { mutableListOf<Content>() }).add(contentElement)
-        return contentElement
+    fun content(boxId: String, existingContentId: String): Unit {
+        site.siteConstructedCallbacks.add({ site ->
+            val box = layout.children.filter { it.id == boxId }.first()
+            val contentElement = site.getContentById(existingContentId)
+            this.content.getOrPut(box, { mutableListOf<Content>() }).add(contentElement)
+        })
     }
 
 }
@@ -163,6 +166,7 @@ class Page(id: String, override val site: Site, override var path: String = "", 
     override val content = mutableMapOf<Box, MutableList<Content>>()
     override val contentToRemove = mutableListOf<Content>()
 
+    var title: String? = null
     /**
      * Internal Use.
      * @see permission
@@ -196,7 +200,9 @@ class Page(id: String, override val site: Site, override var path: String = "", 
      * @param existingId the existing template's identifier.
      */
     fun template(existingId: String): Unit {
-        template = site.templates.filter({ it.id == existingId }).first()
+        site.siteConstructedCallbacks.add({site->
+            template = site._getExistingTemplate(existingId)
+        })
     }
 
     /**
@@ -225,8 +231,7 @@ class Page(id: String, override val site: Site, override var path: String = "", 
      */
     fun authenticationPage(authenticationPageId: String) {
         site.siteConstructedCallbacks.add({ site ->
-            val page = site.children.filter { it.id == authenticationPageId }.first()
-            authenticationPage = page
+            authenticationPage = site._getExistingPage(authenticationPageId)
         })
     }
 
