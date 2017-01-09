@@ -18,7 +18,6 @@ import com.example.app.config.ProjectConfig;
 import com.example.app.profile.model.Profile;
 import com.example.app.profile.model.ProfileType;
 import com.example.app.profile.model.user.User;
-import com.example.app.support.model.AbstractAuditableEntity;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
@@ -59,6 +58,7 @@ import net.proteusframework.core.locale.TextSource;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
+import net.proteusframework.users.model.AbstractAuditableEntity;
 import net.proteusframework.users.model.dao.PrincipalContactUtil;
 
 import static net.proteusframework.core.locale.TextSources.createText;

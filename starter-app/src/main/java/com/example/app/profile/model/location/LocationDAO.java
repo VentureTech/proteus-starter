@@ -14,7 +14,6 @@ package com.example.app.profile.model.location;
 import com.example.app.profile.model.ProfileTypeProvider;
 import com.example.app.profile.model.client.Client;
 import com.example.app.profile.model.client.ClientStatus;
-import com.example.app.support.model.SoftDeleteEntity;
 import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -28,6 +27,7 @@ import java.util.Collection;
 import java.util.List;
 
 import net.proteusframework.core.hibernate.dao.DAOHelper;
+import net.proteusframework.core.hibernate.model.SoftDeleteEntity;
 import net.proteusframework.core.spring.ApplicationContextUtils;
 
 /**

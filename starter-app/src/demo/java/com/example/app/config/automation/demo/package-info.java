@@ -10,8 +10,6 @@
  */
 
 /**
- * Supporting Model Classes
- *
- * @since 1/6/17
+ * Demo data conversions.
  */
-package com.example.app.support.model;
+package com.example.app.config.automation.demo;

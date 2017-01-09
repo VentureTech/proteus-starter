@@ -13,8 +13,6 @@ package com.example.app.resource.model;
 
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
-import com.example.app.support.model.AbstractAuditableEntity;
-import com.example.app.support.model.SoftDeleteEntity;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -44,10 +42,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.proteusframework.cms.label.Label;
+import net.proteusframework.core.hibernate.model.SoftDeleteEntity;
 import net.proteusframework.core.locale.LocalizedObjectKey;
 import net.proteusframework.core.locale.NamedObject;
 import net.proteusframework.data.filesystem.FileEntity;
 import net.proteusframework.users.audit.FullyAuditable;
+import net.proteusframework.users.model.AbstractAuditableEntity;
 
 import static javax.persistence.FetchType.LAZY;
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;

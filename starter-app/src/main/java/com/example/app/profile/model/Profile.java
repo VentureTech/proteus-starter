@@ -16,7 +16,7 @@ import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
 import com.example.app.profile.model.membership.Membership;
 import com.example.app.repository.model.Repository;
-import com.example.app.support.model.AbstractAuditableEntity;
+import net.proteusframework.users.model.AbstractAuditableEntity;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;

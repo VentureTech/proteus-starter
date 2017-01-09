@@ -9,7 +9,7 @@
  * into with I2RD.
  */
 
-package com.example.app.config.automation;
+package com.example.app.config.automation.demo;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;

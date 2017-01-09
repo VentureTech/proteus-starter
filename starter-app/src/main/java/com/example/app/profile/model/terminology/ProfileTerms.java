@@ -11,7 +11,6 @@
 
 package com.example.app.profile.model.terminology;
 
-import com.example.app.support.model.AbstractEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.envers.Audited;
 
@@ -26,6 +25,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import net.proteusframework.core.hibernate.model.AbstractEntity;
 import net.proteusframework.core.locale.LocalizedObjectKey;
 import net.proteusframework.core.locale.TextSource;
 
