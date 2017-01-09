@@ -6,7 +6,7 @@
         <option name="weaveOnly" value="true" />
         <option name="aspectPath">
           <projectLibrary>
-            <option name="name" value="Gradle: org.springframework:spring-aspects:4.0.9.RELEASE" />
+            <option name="name" value="Gradle: org.springframework:spring-aspects:4.3.2.RELEASE" />
           </projectLibrary>
         </option>
       </configuration>
@@ -31,6 +31,81 @@
           <unit-entry name="intellijSessionFactory" value="com.i2rd.hibernate.I2RDNamingStrategy" />
         </naming-strategy-map>
         <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/../../src/main/resources/intellij/hibernate.spring.xml" />
+      </configuration>
+    </facet>
+    <facet type="kotlin-language" name="Kotlin">
+      <configuration version="1">
+        <option name="compilerInfo">
+          <KotlinCompilerInfo>
+            <option name="compilerSettings">
+              <CompilerSettings>
+                <option name="additionalArguments" value="-version" />
+                <option name="copyJsLibraryFiles" value="true" />
+                <option name="outputDirectoryForJsLibraryFiles" value="lib" />
+              </CompilerSettings>
+            </option>
+            <option name="k2jsCompilerArguments">
+              <K2JSCompilerArguments>
+                <option name="outputFile" />
+                <option name="noStdlib" value="false" />
+                <option name="libraryFiles" />
+                <option name="sourceMap" value="false" />
+                <option name="metaInfo" value="false" />
+                <option name="kjsm" value="false" />
+                <option name="target" />
+                <option name="moduleKind" value="plain" />
+                <option name="main" />
+                <option name="outputPrefix" />
+                <option name="outputPostfix" />
+                <option name="languageVersion" />
+                <option name="apiVersion" />
+                <option name="suppressWarnings" value="false" />
+                <option name="verbose" value="false" />
+                <option name="version" value="false" />
+                <option name="help" value="false" />
+                <option name="extraHelp" value="false" />
+                <option name="noInline" value="false" />
+                <option name="repeat" />
+                <option name="pluginClasspaths" />
+                <option name="pluginOptions" />
+                <option name="freeArgs">
+                  <list />
+                </option>
+                <option name="unknownExtraFlags">
+                  <list />
+                </option>
+              </K2JSCompilerArguments>
+            </option>
+            <option name="_commonCompilerArguments">
+              <DummyImpl>
+                <option name="languageVersion" />
+                <option name="apiVersion" />
+                <option name="suppressWarnings" value="false" />
+                <option name="verbose" value="false" />
+                <option name="version" value="false" />
+                <option name="help" value="false" />
+                <option name="extraHelp" value="false" />
+                <option name="noInline" value="false" />
+                <option name="repeat" />
+                <option name="pluginClasspaths" />
+                <option name="pluginOptions" />
+                <option name="freeArgs">
+                  <list />
+                </option>
+                <option name="unknownExtraFlags">
+                  <list />
+                </option>
+              </DummyImpl>
+            </option>
+          </KotlinCompilerInfo>
+        </option>
+        <option name="versionInfo">
+          <KotlinVersionInfo>
+            <option name="apiLevel" value="1.0" />
+            <option name="languageLevel" value="1.0" />
+            <option name="targetPlatformName" value="JVM 1.6" />
+          </KotlinVersionInfo>
+        </option>
       </configuration>
     </facet>
     <facet type="web" name="Web Gradle : starter-app-1.2-SNAPSHOT.war">

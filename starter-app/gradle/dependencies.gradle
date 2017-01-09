@@ -1,3 +1,7 @@
+sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+}
+
 def demoExists = project.file('src/demo').exists()
 if(demoExists){
     sourceSets {

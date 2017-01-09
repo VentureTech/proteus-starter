@@ -23,7 +23,6 @@ findbugsMain {
     }
     classes = classes.filter {
         def skip = it.path.endsWith('.xml') || it.path.endsWith('.kotlin_module')
-//        if(skip) println(it.path)
         !skip
     }
 }

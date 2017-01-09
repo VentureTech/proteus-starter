@@ -90,8 +90,7 @@ task createDependencyFile() {
         }
     }
 }
-if(isIDEA)
-{
+if(isIDEA) {
     afterEvaluate {
         createDependencyFile.execute()
     }
