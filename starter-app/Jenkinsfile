@@ -156,9 +156,9 @@ node {
 }
 
 node {
+    def jdkHome = tool 'JDK 8'
+    unstash 'StarterAppFiles'
     stage('JavaDoc') {
-        def jdkHome = tool 'JDK 8'
-        unstash 'StarterAppFiles'
         dir('starter-app') {
             withEnv(["JAVA_HOME=$jdkHome"]) {
                 // Run the build
