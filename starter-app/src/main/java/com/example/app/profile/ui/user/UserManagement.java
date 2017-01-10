@@ -434,7 +434,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
 
             QLBuilder profileQB = _companyDAO.getCompanyQLBuilder();
             profileQB.appendCriteria("id", Operator.eq, userProfileId);
-            // FIXME : you may need to update this based on your mapping of AdminProfile <-> user
+            // NOTE : you may need to update this based on your mapping of AdminProfile <-> user
             final JoinedQLBuilder userQB = profileQB.createJoin(JoinType.INNER, "users", UserDAO.ALIAS);
             profileQB.setProjection(userQB.getAlias());
             return userQB;

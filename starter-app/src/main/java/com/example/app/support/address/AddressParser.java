@@ -225,13 +225,13 @@ import static com.example.app.support.address.AddressComponent.NUMBER;
 import static com.example.app.support.address.AddressRegexLibrary.*;
 //CHECKSTYLE:OFF
 
-//TODO: support theses
+//: support theses
 //123 Avenue of art, philadelphia pa 12345
 //PO box 123, abc city, ca 24656
 //123 Route 29 South, new jersey, 12323  
 
 /**
- * TODO javadocs me
+ * Address parser
  *
  * @author jliang
  */
@@ -245,7 +245,7 @@ public class AddressParser
     private static final Pattern CLEANUP = Pattern.compile("^\\W+|\\W+$|[\\s\\p{Punct}&&[^\\)\\(#&,:;@'`-]]");
     private static final Pattern STREET_TYPES = Pattern.compile(RegexLibrary.STREET_DESIGNATOR);
     private static final Pattern STATES = Pattern.compile(RegexLibrary.US_STATES);
-    //TODO: document this craziness
+    //: document this craziness
     private static final Pattern STREET_DESIGNATOR_CHECK = Pattern.compile("\\b(?i:(?:" + RegexLibrary.STREET_DESIGNATOR + "))\\b");
     //code used to replace hashcodes so they don't get removed by the address parser
     private static final String HASHCODE_VALUE = "48914631374";

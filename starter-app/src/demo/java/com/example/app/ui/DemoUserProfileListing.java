@@ -101,7 +101,7 @@ public class DemoUserProfileListing extends MIWTPageElementModelContainer implem
         options.addEntityAction(addAction);
 
         options.addSearchSupplier(searchSupplier);
-        options.setHistory(new HistoryImpl()); // TODO : remove the need to do this.
+        options.setHistory(new HistoryImpl());
         SearchUIImpl searchUI = new SearchUIImpl(options);
         add(searchUI);
     }

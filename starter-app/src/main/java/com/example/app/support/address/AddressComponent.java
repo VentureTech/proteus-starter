@@ -206,7 +206,7 @@ package com.example.app.support.address;
 //CHECKSTYLE:OFF
 
 /**
- * TODO javadocs me
+ * Address components
  *
  * @author jliang
  */

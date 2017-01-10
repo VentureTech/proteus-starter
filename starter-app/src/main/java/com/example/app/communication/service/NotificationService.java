@@ -125,7 +125,6 @@ public class NotificationService implements ApplicationListener<ContextRefreshed
     public void sendEmail(Profile plan, EmailTemplate emailTemplate, EmailTemplateContext context,
         @Nullable Supplier<String> defaultFromNameSupplier)
     {
-        // FUTURE : delay, send at the right time of the day for user
         try
         {
             final FileEntityMailDataHandler mdh = _emailTemplateProcessor.process(context, emailTemplate);
@@ -170,7 +169,7 @@ public class NotificationService implements ApplicationListener<ContextRefreshed
                 mm.setSubject('{' + contextName + "} " + mm.getSubject());
             }
             final TrackedEmail trackedEmail = _mailConfig.mailProviderHandler().sendMessage(mm.getMessage());
-            // FIXME : you should associate the tracked email to the interaction responsible for triggering it.
+            // NOTE : you should associate the tracked email to the interaction responsible for triggering it.
         }
         catch (MessagingException e)
         {
@@ -263,7 +262,7 @@ public class NotificationService implements ApplicationListener<ContextRefreshed
      */
     public void sendSMS(User user, PhoneNumber phoneNumber, String content, @Nullable Long delayMillis)
     {
-        // TODO : make sure SMS messages are delayed if necessary based on user timezone, etc.
+        // FUTURE : make sure SMS messages are delayed if necessary based on user timezone, etc.
         final Optional<EmailAddress> emailAddress =
             ContactUtil.getEmailAddress(user.getPrincipal().getContact(), ContactDataCategory.values());
         if(!emailAddress.isPresent())

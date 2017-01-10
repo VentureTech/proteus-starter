@@ -218,10 +218,10 @@ import static com.example.app.support.address.Data.*;
 import static com.example.app.support.address.RegexLibrary.TXT_NUM_0_19;
 import static com.example.app.support.address.Utils.nvl;
 
-//TODO might want to consider synonym resolutions for common city names
+// might want to consider synonym resolutions for common city names
 
 /**
- * TODO javadocs me
+ * Address Sanitizer
  *
  * @author jliang
  */
@@ -375,7 +375,7 @@ public class AddressStandardizer
         return line2;
     }
 
-    //TODO: document this craziness
+    // document this craziness
     private static String saintAbbrExpansion(String city)
     {
         String exp = null;
