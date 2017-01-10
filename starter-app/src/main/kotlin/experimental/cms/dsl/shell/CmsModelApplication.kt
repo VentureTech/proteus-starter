@@ -300,11 +300,11 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     private fun getOrCreateSite(appDefinition: AppDefinition, siteModel: Site): CmsSite {
         var cmsSite = siteDefinitionDAO.getSiteByDescription(siteModel.id)
         if (cmsSite == null && appDefinition.dependency != null) {
-            cmsSite = getAppDefinitionDependency(appDefinition)?.let {depDef ->
-                return@let depDef.getSites().firstOrNull({site -> site.id == siteModel.id})?.let {
+            cmsSite = getAppDefinitionDependency(appDefinition)?.let depDef@{depDef ->
+                return@depDef depDef.getSites().firstOrNull({site -> site.id == siteModel.id})?.let site@{
                     val depSite = getOrCreateSite(depDef, it)
                     getOrCreateHostnames(it, depSite)
-                    return@let depSite
+                    return@site depSite
                 }
             }
         }
