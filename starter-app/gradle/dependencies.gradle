@@ -1,7 +1,11 @@
 import org.ajoberstar.grgit.Grgit
 
 sourceSets {
-    main.java.srcDirs += 'src/main/kotlin'
+    main {
+        java {
+            srcDirs += 'src/main/kotlin'
+        }
+    }
 }
 
 def demoExists = project.file('src/demo').exists()
@@ -129,9 +133,9 @@ task createDependencyFile() {
     doFirst {
         def dependencyFile = file("dependencies.txt")
         def pw = dependencyFile.newPrintWriter()
-        configurations.all.collect {it.resolvedConfiguration.getResolvedArtifacts()}.flatten().collect {it.moduleVersion.id}.unique().
-            sort(false){"${it.group}:${it.name}"}forEach{
-            pw.println(it)
+        configurations.all.collect {it.resolvedConfiguration.getResolvedArtifacts()}.flatten().collect {it.moduleVersion.id}.
+            unique().sort(false){"${it.group}:${it.name}"}forEach{
+                pw.println(it)
             }
         pw.close()
         try{
