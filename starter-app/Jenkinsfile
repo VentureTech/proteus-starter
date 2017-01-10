@@ -74,6 +74,8 @@ node({
             withEnv(["JAVA_HOME=$jdkHome"]) {
                 // Run the build
                 ansiColor('css') {
+                    sh 'rm -rf .apt_generated'
+                    sh 'rm -rf .apt_generated_tests'
                     sh "./gradlew clean assemble $gradleOptions"
                 }
             }
@@ -206,6 +208,10 @@ if (currentBuild.result == 'SUCCESS')
         stage('Publish') {
             timeout(time: 4, unit: 'HOURS') {
                 //noinspection LongLine
+                slackSend color: 'good',
+                    message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be published to the artifactory repo" +
+                        ".\n(<${env.JOB_URL}|Open>)"
+                //noinspection LongLine
                 def params = input id: 'Publish', message: 'Publish Artifacts To Repo Server', ok: 'Publish Artifacts',
                         parameters: [[$class: 'StringParameterDefinition', defaultValue: 'rtennant', description: 'Username to ' +
                             'publish artifacts', name: 'publish_venturetech_username'],
@@ -214,10 +220,6 @@ if (currentBuild.result == 'SUCCESS')
                 node {
                     def jdkHome = tool 'JDK 8'
                     unstash 'StarterAppFiles'
-                    //noinspection LongLine
-                    slackSend color: 'good',
-                        message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be published to the artifactory repo" +
-                            ".\n(<${env.JOB_URL}|Open>)"
 
 
                     dir('starter-app') {
@@ -244,14 +246,14 @@ if (currentBuild.result == 'SUCCESS')
             stage('Deploy') {
                 timeout(time: 1, unit: 'HOURS') {
                     //noinspection LongLine
+                    slackSend color: 'good',
+                        message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be deployed to QA for testing.\n" +
+                            "(<${env.JOB_URL}|Open>)"
+                    //noinspection LongLine
                     input id: 'Deploy', message: 'Deploy build to QA Server?', ok: 'Deploy'
                     node {
                         def jdkHome = tool 'JDK 8'
                         unstash 'StarterAppFiles'
-                        //noinspection LongLine
-                        slackSend color: 'good',
-                            message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be deployed to QA for testing.\n" +
-                                "(<${env.JOB_URL}|Open>)"
 
                         dir('starter-app') {
                             withEnv(["JAVA_HOME=$jdkHome"]) {
@@ -269,7 +271,7 @@ if (currentBuild.result == 'SUCCESS')
                             }
                         }
                         slackSend color: 'good',
-                            message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} has been deployed to QA for testing."
+                            message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} is being deployed to QA for testing."
                     }
                 }
             }
