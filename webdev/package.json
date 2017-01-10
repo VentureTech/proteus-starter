@@ -1,6 +1,6 @@
 {
-  "name": "Example-App-Web-Development",
-  "repository": "git@github.com:VentureTech/proteus-examples.git",
+  "name": "Starter-App-Web-Development",
+  "repository": "git@github.com:VentureTech/proteus-starter.git",
   "version": "0.0.1",
   "devDependencies": {
     "del": "^2.2.0",
