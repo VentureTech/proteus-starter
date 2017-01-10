@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.i2rd.unit.test.TestGroups;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -25,7 +27,7 @@ import static org.junit.Assert.assertTrue;
 public class AddressParserTest
 {
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testParseAddress()
     {
         String addr1 = "123 Avenue of art, philadelphia pa 12345";
@@ -43,7 +45,7 @@ public class AddressParserTest
         assertEquals("rd", addressComponents.get(AddressComponent.TYPE));
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testParseAddress2()
     {
         String addr1 = " 14625 County Road 672, Wimauma, FL 33598";
@@ -58,7 +60,7 @@ public class AddressParserTest
         //      assertEquals("123", addressComponents.get(AddressComponent.NUMBER));
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSaintNameExpansion()
     {
         String addr1 = "St. louis Missouri";
@@ -72,7 +74,7 @@ public class AddressParserTest
         assertEquals("MO", m.get(AddressComponent.STATE));
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testOrdinalNormalization()
     {
         String addr1 = "Mozilla Corporation, 1981 second street building K Mountain View CA 94043-0801";
@@ -84,7 +86,7 @@ public class AddressParserTest
         assertEquals("BLDG K", m.get(AddressComponent.LINE2));
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testDesignatorConfusingCitiesParsing()
     {
         String addr1 = "123 main street St. louis Missouri";
@@ -115,7 +117,7 @@ public class AddressParserTest
 
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testStringMatches()
     {
 
@@ -126,7 +128,7 @@ public class AddressParserTest
 
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress1()
     {
 
@@ -153,7 +155,7 @@ public class AddressParserTest
         assertEquals("Unit: 903", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress2()
     {
 
@@ -181,7 +183,7 @@ public class AddressParserTest
         assertEquals("Unit: SW 1/4", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress3()
     {
 
@@ -209,7 +211,7 @@ public class AddressParserTest
         assertEquals("Unit: 66", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress4()
     {
 
@@ -237,7 +239,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress5()
     {
 
@@ -265,7 +267,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress6()
     {
 
@@ -293,7 +295,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress7()
     {
 
@@ -321,7 +323,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress8()
     {
 
@@ -349,7 +351,7 @@ public class AddressParserTest
         assertEquals("B200", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress9()
     {
 
@@ -377,7 +379,7 @@ public class AddressParserTest
         assertEquals("3B", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress10()
     {
 
@@ -405,7 +407,7 @@ public class AddressParserTest
         assertEquals("314D-6", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress11()
     {
 
@@ -433,7 +435,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress12()
     {
 
@@ -461,7 +463,7 @@ public class AddressParserTest
         assertEquals("5028", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress13()
     {
 
@@ -489,7 +491,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress14()
     {
 
@@ -517,7 +519,7 @@ public class AddressParserTest
         assertEquals("Unit: 317B-4", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress15()
     {
         // property_id = '139165' -- Pueblo
@@ -545,7 +547,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress16()
     {
         // property_id = 'S379299' -- Summit
@@ -573,7 +575,7 @@ public class AddressParserTest
         assertEquals("Unit: 1736", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress17()
     {
         // test I'm making up based on last test + Street Dir
@@ -601,7 +603,7 @@ public class AddressParserTest
         assertEquals("Unit: 1736", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress18()
     {
         // property_id = 'S379756' -- Summit
@@ -629,7 +631,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress19()
     {
         // property_id = '127833' -- Pueblo
@@ -657,7 +659,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress20()
     {
         // property_id = '115480' -- Pueblo
@@ -685,7 +687,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress21()
     {
         // property_id = '668197' -- CREN
@@ -713,7 +715,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress22()
     {
         // property_id = '668197' (but with added street direction) -- CREN
@@ -741,7 +743,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress23()
     {
         // Test to make sure that we treat North Street as the street name
@@ -769,7 +771,7 @@ public class AddressParserTest
         assertEquals("21", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress24()
     {
         // CREN -- 668174
@@ -797,7 +799,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress25()
     {
         // CREN -- 668088
@@ -825,7 +827,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress26()
     {
         // Pueblo -- 135690
@@ -855,7 +857,7 @@ public class AddressParserTest
     }
 
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress27()
     {
         // Summit -- S377601
@@ -883,7 +885,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress28()
     {
         // Summit -- S378305
@@ -911,7 +913,7 @@ public class AddressParserTest
         assertEquals("Unit: F,G,H", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress29()
     {
         // Summit -- S376848
@@ -939,7 +941,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress30()
     {
         // Pueblo -- 136701
@@ -967,7 +969,7 @@ public class AddressParserTest
         assertEquals("11131/2", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress31()
     {
         // Cren -- 615574
@@ -995,7 +997,7 @@ public class AddressParserTest
         assertEquals("Building 10", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress32()
     {
         // Cren -- 635402
@@ -1023,7 +1025,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress33()
     {
         // Cren -- 635402
@@ -1051,7 +1053,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress34()
     {
         // Cren -- 667459
@@ -1079,7 +1081,7 @@ public class AddressParserTest
         assertEquals("#B1-104", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress35()
     {
         // Cren -- 667459
@@ -1107,7 +1109,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress36()
     {
         // Cren -- 914488
@@ -1135,7 +1137,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress37()
     {
         // Summit -- S376251
@@ -1163,7 +1165,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress38()
     {
         // Cren -- 914488 With added Unit Number
@@ -1193,7 +1195,7 @@ public class AddressParserTest
 
     // Removed test 39 because it was going to be hard to make it work with the new code
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress40()
     {
         // Summit -- S378174 "9379 9 Ushy Unit: 105
@@ -1221,7 +1223,7 @@ public class AddressParserTest
         assertEquals("Unit: 105", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress41()
     {
         // Vail -- V315554 "77 Castle Peak Gate"
@@ -1249,7 +1251,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress42()
     {
         // Vail -- V315554 With added unit number
@@ -1277,7 +1279,7 @@ public class AddressParserTest
         assertEquals("17", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress43()
     {
         // Vail -- V315554 Modified with added unit number
@@ -1305,7 +1307,7 @@ public class AddressParserTest
         assertEquals("Unit#17", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress44()
     {
         // Vail -- V315554 Modified with added unit number
@@ -1333,7 +1335,7 @@ public class AddressParserTest
         assertEquals("Unit #17", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress45()
     {
         // Vail -- V315554 Modified with added unit number
@@ -1361,7 +1363,7 @@ public class AddressParserTest
         assertEquals("A", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress46()
     {
         // Vail -- V315554 Modified with added unit number and modified street name with duplicate words
@@ -1389,7 +1391,7 @@ public class AddressParserTest
         assertEquals("A", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress47()
     {
         // Summit -- S379335
@@ -1417,7 +1419,7 @@ public class AddressParserTest
         assertEquals("Unit: 5020", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress48()
     {
         // Summit -- S369956
@@ -1445,7 +1447,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress49()
     {
         // Summit -- S372737
@@ -1473,7 +1475,7 @@ public class AddressParserTest
         assertEquals("A", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress50()
     {
         // Summit -- S373605
@@ -1501,7 +1503,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress51()
     {
         // Summit -- S373605
@@ -1529,7 +1531,7 @@ public class AddressParserTest
         assertEquals(null, unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress52()
     {
         // CREN -- 656656
@@ -1557,7 +1559,7 @@ public class AddressParserTest
         assertEquals("#572/573", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress53()
     {
         // CREN -- 655990
@@ -1585,7 +1587,7 @@ public class AddressParserTest
         assertEquals("#321 & 323", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress54()
     {
         // CREN -- 656468
@@ -1613,7 +1615,7 @@ public class AddressParserTest
         assertEquals("#558", unitNumber);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress55()
     {
         String address = "123 Route 29 South, Trenton, new jersey, 12323";
@@ -1641,7 +1643,7 @@ public class AddressParserTest
         assertEquals("12323", zip);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitAddress56()
     {
         String address = "123 Avenue of art, philadelphia pa 12345";

@@ -16,6 +16,8 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
+import com.i2rd.unit.test.TestGroups;
+
 import static com.example.app.communication.service.NotificationService.splitContent;
 import static org.testng.Assert.assertEquals;
 
@@ -31,7 +33,7 @@ public class NotificationServiceTest
         "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
         + "12345678901234567890123456789012345678901234567890123456789012345678901234567890";
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitContent() throws Exception
     {
         List<String> parts = splitContent(CHARS_160);
@@ -49,7 +51,7 @@ public class NotificationServiceTest
         assertEquals(parts.get(2).length(), 14);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitContent2() throws Exception
     {
         @Language("HTML")
@@ -61,7 +63,7 @@ public class NotificationServiceTest
         assertEquals(parts.size(), 2);
     }
 
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSplitContent3() throws Exception
     {
         @Language("HTML")

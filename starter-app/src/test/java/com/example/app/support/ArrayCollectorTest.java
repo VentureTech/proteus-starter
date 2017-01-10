@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.i2rd.unit.test.BaseTest;
+import com.i2rd.unit.test.TestGroups;
 
 /**
  * Unit tests for {@link ArrayCollector}
@@ -117,7 +118,7 @@ public class ArrayCollectorTest extends BaseTest
         };
     }
 
-    @Test(groups = "unit", dataProvider = "str-arr-DP")
+    @Test(groups = TestGroups.UNIT, dataProvider = "str-arr-DP")
     public void testArrayCollectorCollectsToStringArray(List<String> strings)
     {
         String[] arr = strings.stream().collect(new ArrayCollector<>(String.class));
@@ -129,7 +130,7 @@ public class ArrayCollectorTest extends BaseTest
         }
     }
 
-    @Test(groups = "unit", dataProvider = "tcc-arr-DP")
+    @Test(groups = TestGroups.UNIT, dataProvider = "tcc-arr-DP")
     public void testArrayCollectorCollectsToCustomClassArray(List<TestCustomClass> tccs)
     {
         TestCustomClass[] arr = tccs.stream().collect(new ArrayCollector<>(TestCustomClass.class));

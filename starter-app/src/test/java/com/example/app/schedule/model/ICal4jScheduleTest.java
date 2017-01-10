@@ -24,6 +24,8 @@ import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAmount;
 import java.util.List;
 
+import com.i2rd.unit.test.TestGroups;
+
 import static java.time.ZoneOffset.UTC;
 import static org.testng.Assert.*;
 
@@ -50,7 +52,7 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testScheduleLastDayOfMonth() throws Exception
     {
         Instant startTime = Instant.EPOCH;
@@ -74,7 +76,7 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testScheduleDoWDoM() throws Exception
     {
         Instant startTime = Instant.EPOCH;
@@ -98,7 +100,7 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSchedulePast() throws Exception
     {
         Duration twoDays = Duration.ofDays(2);
@@ -130,7 +132,7 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSchedulePast2() throws Exception
     {
         Period eighteenMonths = Period.ofMonths(18);
@@ -151,7 +153,7 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testScheduleRepeatMonth() throws Exception
     {
         TemporalAmount twelveHours = Duration.ofHours(12);
@@ -176,7 +178,7 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testScheduleRepeatMonthSomeWeekdays() throws Exception
     {
         Instant startTime = Instant.EPOCH;
@@ -198,7 +200,7 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testScheduleRepeatMonthNoWeekdays() throws Exception
     {
         Instant startTime = Instant.EPOCH;
@@ -221,7 +223,7 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testScheduleRepeatMonthSomeWeekdays2() throws Exception
     {
         Instant startTime = Instant.EPOCH;
@@ -243,7 +245,7 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testScheduleRepeatYear() throws Exception
     {
         Instant startTime = Instant.EPOCH;
@@ -264,7 +266,7 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testScheduleRepeatYearWeek() throws Exception
     {
         Instant startTime = Instant.EPOCH;

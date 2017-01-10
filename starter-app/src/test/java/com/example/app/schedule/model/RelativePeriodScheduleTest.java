@@ -18,6 +18,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.Period;
 
+import com.i2rd.unit.test.TestGroups;
+
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -34,7 +36,7 @@ public class RelativePeriodScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testSchedule() throws Exception
     {
         Instant startTime = Instant.EPOCH;
@@ -60,7 +62,7 @@ public class RelativePeriodScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testScheduleRepeat() throws Exception
     {
         Instant startTime = Instant.EPOCH;
@@ -88,7 +90,7 @@ public class RelativePeriodScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testScheduleRepeatPast() throws Exception
     {
         Instant startTime = Instant.EPOCH;
@@ -117,7 +119,7 @@ public class RelativePeriodScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = "unit")
+    @Test(groups = TestGroups.UNIT)
     public void testScheduleTime() throws Exception
     {
         Instant startTime = Instant.EPOCH;
