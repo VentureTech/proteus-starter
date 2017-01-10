@@ -66,7 +66,6 @@ node({
                     sh "./gradlew clean assemble $gradleOptions"
                 }
             }
-            step([$class: 'ClaimPublisher'])
             archiveArtifacts(allowEmptyArchive: true, artifacts: '**/build/gradle/libs/*', defaultExcludes: false,
                 fingerprint: true, onlyIfSuccessful: true)
             step([$class        : 'WarningsPublisher', canComputeNew: true, canResolveRelativePaths: false,
