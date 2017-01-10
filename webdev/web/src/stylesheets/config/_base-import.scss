@@ -1,4 +1,16 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,300,500');
 @import "base-vars";
-@import "../../../../bower_components/bootstrap/scss/bootstrap-flex";
-//@import "../../../../bower_components/breakpoint-sass/stylesheets/breakpoint";
+//@import "../../../../bower_components/bootstrap/scss/bootstrap";
+// Instead, import core
+@import "../../../../bower_components/bootstrap/scss/mixins";
+@import "../../../../bower_components/bootstrap/scss/custom";
+@import "../../../../bower_components/bootstrap/scss/normalize";
+@import "../../../../bower_components/bootstrap/scss/print";
+@import "../../../../bower_components/bootstrap/scss/reboot";
+@import "../../../../bower_components/bootstrap/scss/type";
+//@import "../../../../bower_components/bootstrap/scss/images";
+@import "../../../../bower_components/bootstrap/scss/code";
+//@import "../../../../bower_components/bootstrap/scss/bootstrap-grid";
+//@import "../../../../bower_components/bootstrap/scss/tables";
+//@import "../../../../bower_components/bootstrap/scss/forms";
+@import "../../../../bower_components/bootstrap/scss/buttons";

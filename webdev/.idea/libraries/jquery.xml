@@ -2,8 +2,6 @@
   <library name="jquery" type="javaScript">
     <CLASSES />
     <JAVADOC />
-    <SOURCES>
-      <root url="file://$PROJECT_DIR$/bower_components/jquery/dist/jquery.js" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

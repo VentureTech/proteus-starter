@@ -134,7 +134,7 @@
 	}
 
 	.btn {
-		@include button-size($btn-padding-y, $btn-padding-x, $font-size-root, $border-radius-lg);
+		@include button-size($btn-padding-y, $btn-padding-x, $font-size-base, $border-radius-lg);
 		@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-primary-border);
 
 		&.submit_button {

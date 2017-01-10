@@ -1,7 +1,6 @@
 @import "../config/base-vars";
 @import "../../../../bower_components/bootstrap/scss/mixins";
 @import "../../../../bower_components/bootstrap/scss/mixins/gradients";
-@import "../../../../bower_components/bootstrap/scss/mixins/progress";
 
 body div.miwt-ajax-progress {
 	background-color: $color-white;
@@ -21,7 +20,6 @@ body div.miwt-ajax-progress {
 .miwt-ajax-progress .progress-con:not(.progress-indeterminate) {
 	progress {
 		border:0;
-		@include progress-variant($progress-bar-info-bg);
 		@include gradient-striped();
 
 		appearance: none;
