@@ -9,7 +9,7 @@
  * into with I2RD.
  */
 
-def repoUser, repoPassword, gradleOptions, version, isSnapshot;
+def repoUser, repoPassword, gradleOptions, version, isSnapshot = false;
 def atUser=''
 
 try
@@ -183,7 +183,7 @@ node {
             step([$class : 'AnalysisPublisher', canComputeNew: true, defaultEncoding: '',
                   healthy: '', pmdActivated: false, unHealthy: ''])
 
-            //            step([$class: 'GitHubCommitStatusSetter', errorHandlers: [[$class: 'ShallowAnyErrorHandler']]])
+            //step([$class: 'GitHubCommitStatusSetter', errorHandlers: [[$class: 'ShallowAnyErrorHandler']]])
 
         }
     }
@@ -197,12 +197,14 @@ node {
             }
         }
     }
+}
 
-    if (currentBuild.result == 'SUCCESS')
+if (currentBuild.result == 'SUCCESS')
+{
+    try
     {
-        try
-        {
-            timeout(time: 4, unit: 'HOURS') {
+        timeout(time: 4, unit: 'HOURS') {
+            node {
                 stage('Publish') {
                     //noinspection LongLine
                     slackSend color: 'good',
@@ -212,10 +214,11 @@ node {
 
                     //noinspection LongLine
                     def params = input id: 'Publish', message: 'Publish Artifacts To Repo Server', ok: 'Publish Artifacts',
-                        parameters: [[$class: 'StringParameterDefinition', defaultValue: 'rtennant', description: 'Username to ' +
-                            'publish artifacts', name: 'publish_venturetech_username'], [$class: 'PasswordParameterDefinition',
+                        parameters: [[$class         : 'StringParameterDefinition', defaultValue: 'rtennant', description: 'Username to ' +
+
+                            'publish artifacts', name: 'publish_venturetech_username'], [$class      : 'PasswordParameterDefinition',
                                                                                          defaultValue: '', description: 'Password' +
-                            ' publish artifacts', name: 'publish_venturetech_password']]
+                            ' publish artifacts', name                                               : 'publish_venturetech_password']]
                     dir('starter-app') {
                         withEnv(["JAVA_HOME=$jdkHome", "GRADLE_OPTS=-Xmx2024m -Xms512m"]) {
                             // Run the build
@@ -223,16 +226,20 @@ node {
                                 //noinspection LongLine
                                 echo "Publishing artifacts"
                                 //noinspection LongLine
-                                def additionalArgs = $/artifactoryPublish -Ppublish_venturetech_username=${params.publish_venturetech_username} -Ppublish_venturetech_password=${params.publish_venturetech_password}/$
+                                def additionalArgs = $/artifactoryPublish -Ppublish_venturetech_username=${
+                                    params.publish_venturetech_username
+                                } -Ppublish_venturetech_password=${params.publish_venturetech_password}/$
                                 sh "./gradlew $gradleOptions $additionalArgs"
                             }
                         }
                     }
                 }
             }
-            if (isSnapshot)
-            {
-                timeout(time: 1, unit: 'HOURS') {
+        }
+        if (isSnapshot)
+        {
+            timeout(time: 1, unit: 'HOURS') {
+                node {
                     stage('Deploy') {
                         //noinspection LongLine
                         slackSend color: 'good',
@@ -243,9 +250,9 @@ node {
                         input id: 'Deploy', message: 'Deploy build to QA Server?', ok: 'Deploy'
                         dir('starter-app') {
                             withEnv(["JAVA_HOME=$jdkHome"]) {
-                                withCredentials(
-                                    [[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'aws_id', credentialsId:
-                                        'proteus-sys-jenkins-integration', secretKeyVariable: 'aws_secret']]) {
+                                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+                                                  accessKeyVariable: 'aws_id', credentialsId:
+                                                      'proteus-sys-jenkins-integration', secretKeyVariable: 'aws_secret']]) {
                                     // Run the build
                                     wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
                                         //noinspection LongLine
@@ -260,10 +267,10 @@ node {
                 }
             }
         }
-        catch (error) {
-            echo "$error"
-            //Skipping publish task
-        }
+    }
+    catch (error) {
+        echo "$error"
+        //Skipping publish task
     }
 }
 
