@@ -8,6 +8,7 @@ crashlytics.properties
 crashlytics-build.properties
 
 .env
+/artifact/
 build/
 node_modules/
 npm-debug.log
