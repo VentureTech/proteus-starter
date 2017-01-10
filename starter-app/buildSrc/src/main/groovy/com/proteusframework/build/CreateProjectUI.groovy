@@ -20,6 +20,7 @@ import javax.swing.border.EmptyBorder
 import javax.swing.border.TitledBorder
 import java.awt.*
 import java.util.concurrent.CompletableFuture
+import java.util.function.Supplier
 import java.util.regex.Pattern
 
 import static groovy.io.FileVisitResult.CONTINUE
@@ -92,10 +93,28 @@ class CreateProjectUI
                             id: 'create_project_btn',
                             text: 'Create Project',
                             actionPerformed: {ev ->
-                                if (validate() && createProject(ev)) {
-                                    _future.complete(model)
+                                if (validate()) {
                                     swing.create_project_btn.setVisible(false)
-                                    swing.close_btn.setText('Close')
+                                    swing.close_btn.setVisible(false)
+                                    swing.progress_bar.setVisible(true)
+                                    def createProjectFuture = CompletableFuture.supplyAsync({createProject(ev)} as
+                                        Supplier <Boolean>)
+                                    createProjectFuture.whenComplete({Boolean result, Throwable exception ->
+                                        swing.close_btn.setVisible(true)
+                                        swing.progress_bar.setVisible(false)
+                                        if(result != null && result)
+                                        {
+                                            SwingUtilities.invokeLater({
+                                                _future.complete(model)
+                                                swing.close_btn.setText('Close')
+                                            })
+                                        } else {
+                                            SwingUtilities.invokeLater({
+                                                swing.create_project_btn.setVisible(true)
+                                            })
+                                        }
+                                    })
+
                                 }
                             }
                         )
@@ -106,6 +125,13 @@ class CreateProjectUI
                                 _future.complete(model)
                                 swing.ui.dispose()
                             }
+                        )
+                        progressBar(
+                            id: 'progress_bar',
+                            minimum: 0,
+                            maximum: 100,
+                            visible: false,
+                            indeterminate: true
                         )
                     }
                 }
@@ -260,7 +286,7 @@ derby.log
                 }
             }
 
-            def skipDirs = ['.git', '.apt_generated', '.apt_generated_tests', 'demo', 'libraries'] as Set
+            def skipDirs = ['.git', '.apt_generated', '.apt_generated_tests', 'demo'] as Set
             def skipFiles = ['CreateProjectUI.groovy'] as Set
             baseDir.traverse(
                 [preDir    : {if (skipDirs.contains(it.name)) return SKIP_SUBTREE}], {f ->
@@ -330,6 +356,26 @@ derby.log
                     include '**/*'
                 }
             })
+            new File(webdevBaseDir, '.gitignore').text = '''
+# User-specific stuff:
+.idea/workspace.xml
+.idea/tasks.xml
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+
+
+build/
+node_modules/
+npm-debug.log
+bower_components/
+
+# Sass template
+.sass-cache
+*.css.map
+'''
             webdevBaseDir.traverse(
                 [preDir    : {if (skipDirs.contains(it.name)) return SKIP_SUBTREE}], {f ->
                 if(f.isFile()) {
