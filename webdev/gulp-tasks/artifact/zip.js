@@ -11,5 +11,7 @@ gulp.task('clean:zip', function() {
 });
 
 gulp.task('zip', ['build', 'clean:zip'], function() {
-
+    return gulp.src('./build/**/*')
+        .pipe(gzip(`${projectInfo.name}-${projectInfo.version}.zip`))
+        .pipe(gulp.dest('./artifact'));
 });
