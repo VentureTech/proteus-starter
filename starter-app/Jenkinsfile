@@ -180,10 +180,12 @@ node {
         }
     }
     stage('Libraries') {
-        withEnv(["JAVA_HOME=$jdkHome"]) {
-            // Run the build
-            wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
-                sh "./gradlew assemble -x jar -x war $gradleOptions -Pcompile_libraries=true"
+        dir('starter-app') {
+            withEnv(["JAVA_HOME=$jdkHome"]) {
+                // Run the build
+                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
+                    sh "./gradlew assemble -x jar -x war $gradleOptions -Pcompile_libraries=true"
+                }
             }
         }
     }
