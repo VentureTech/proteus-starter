@@ -67,7 +67,7 @@ node({
         echo "Building $appName $appVersion"
         version = "${appVersion}.${currentBuild.number}${isSnapshot ? '-SNAPSHOT' : ''}"
         //noinspection LongLine
-        gradleOptions= $/-Prepo_venturetech_username=$repoUser -Prepo_venturetech_password=$repoPassword --no-daemon -Papp_version=${version}/$
+        gradleOptions= $/-Prepo_venturetech_username=$repoUser -Prepo_venturetech_password=$repoPassword -Papp_version=${version}/$
         currentBuild.displayName = "v${version}"
         stage("Build") {
             gradleProps = null;
