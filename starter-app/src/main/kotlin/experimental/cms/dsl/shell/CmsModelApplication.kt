@@ -93,7 +93,7 @@ open class PlaceholderHelperImpl : PlaceholderHelper {
 
 }
 
-open class CmsModelApplication() : DAOHelper(), ContentHelper {
+open class CmsModelApplication : DAOHelper(), ContentHelper {
 
     companion object {
         val logger = LogManager.getLogger(CmsModelApplication::class.java)!!
@@ -482,10 +482,10 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
                 }
 
             }
-            page.title?.let {
+            page.title.let {
                 val title = getTransientLocalizedObjectKey(localeSource, cmsPage.persistedTitleKey)?:
                     TransientLocalizedObjectKey(mutableMapOf())
-                title.text[site.primaryLocale] = page.title
+                title.text[site.primaryLocale] = it
                 cmsPage.persistedTitleKey = title
             }
             cmsPage.authorization = permission
@@ -567,7 +567,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     private fun createPageElementPath(pageElement: PageElement, pathInfo: PathCapable): PageElementPath {
         val cleanPath = pathInfo.getCleanPath()
         if (pagePaths.containsKey(cleanPath))
-            return pagePaths.get(cleanPath)!!
+            return pagePaths[cleanPath]!!
         logger.info("Creating path: $cleanPath")
         val pep = pagePathDAO.createPageElementPathMapping(pageElement, cleanPath, pathInfo.isWildcard())
         pagePaths.put(pep.path, pep)
@@ -645,7 +645,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
             val idx1: Int = boxedContentModel.indexOf(boxModel, e1.name)
             val idx2: Int = boxedContentModel.indexOf(boxModel, e2.name)
             idx1 - idx2
-        });
+        })
         session.flush()
     }
 
@@ -743,7 +743,7 @@ open class CmsModelApplication() : DAOHelper(), ContentHelper {
     override fun getInternalLink(link: String): String {
         val path = cleanPath(link)
         if (pagePaths.containsKey(path)) {
-            return LinkUtil.getCMSLink(pagePaths.get(path)!!.pageElement).uriAsString
+            return LinkUtil.getCMSLink(pagePaths[path]!!.pageElement).uriAsString
         }
         val site = currentSite!!
         val exactPath = pagePathDAO.getPageElementPathForExactPath(path, site)

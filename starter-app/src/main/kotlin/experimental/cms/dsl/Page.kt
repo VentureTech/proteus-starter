@@ -160,13 +160,15 @@ class Template(id: String, override val site: Site, override var layout: Layout 
 /** Page Model. */
 class Page(id: String, override val site: Site, override var path: String = "", var template: Template = Template("", site))
     : Identifiable(id), ResourceCapable, BoxedContent, PathCapable {
+
     override val layout: Layout get() = template.layout
     override val cssPaths = mutableListOf<String>()
     override val javaScriptPaths = mutableListOf<String>()
     override val content = mutableMapOf<Box, MutableList<Content>>()
     override val contentToRemove = mutableListOf<Content>()
 
-    var title: String? = null
+    var title: String = id
+
     /**
      * Internal Use.
      * @see permission
