@@ -237,7 +237,7 @@ if (currentBuild.result == 'SUCCESS')
                         }
                     }
                     slackSend color: 'good',
-                        message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} has been published to the artifactory."
+                        message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} has been published to artifactory."
                 }
             }
         }
