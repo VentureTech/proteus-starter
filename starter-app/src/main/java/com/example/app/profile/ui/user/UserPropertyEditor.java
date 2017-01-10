@@ -20,7 +20,6 @@ import com.example.app.profile.model.membership.MembershipType;
 import com.example.app.profile.model.user.User;
 import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.service.MembershipOperationProvider;
-import com.example.app.profile.service.SelectedCompanyTermProvider;
 import com.example.app.profile.ui.ApplicationFunctions;
 import com.example.app.profile.ui.URLConfigurations;
 import com.example.app.profile.ui.URLProperties;
@@ -122,27 +121,18 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
     private static final Logger _logger = LogManager.getLogger(UserPropertyEditor.class);
     boolean _newUser;
     private final List<Notification> _notifications = new ArrayList<>();
-    @Autowired
-    @Qualifier(HibernateSessionHelper.RESOURCE_NAME)
-    private HibernateSessionHelper _sessionHelper;
-    @Autowired
-    private UserDAO _userDAO;
-    @Autowired
-    private PrincipalDAO _principalDAO;
-    @Autowired
-    private ProfileDAO _profileDAO;
-    @Autowired
-    private MembershipOperationProvider _mop;
-    @Autowired
-    private EntityRetriever _er;
-    @Autowired
-    private AppUtil _appUtil;
-    @Autowired
-    private SelectedCompanyTermProvider _terms;
-    @Autowired
-    private UIPreferences _uiPreferences;
-    @Autowired
-    private CompanyDAO _companyDAO;
+
+    @Autowired @Qualifier(HibernateSessionHelper.RESOURCE_NAME) private HibernateSessionHelper _sessionHelper;
+    @Autowired private UserDAO _userDAO;
+    @Autowired private PrincipalDAO _principalDAO;
+    @Autowired private ProfileDAO _profileDAO;
+    @Autowired private MembershipOperationProvider _mop;
+    @Autowired private EntityRetriever _er;
+    @Autowired private AppUtil _appUtil;
+    @Autowired private UIPreferences _uiPreferences;
+    @Autowired private CompanyDAO _companyDAO;
+    @Autowired private UserManagementPermissionCheck _permissionCheck;
+
     private User _saved;
 
     /**
@@ -164,14 +154,17 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
         User value = request.getPropertyValue(URLProperties.USER);
         _newUser = value == null || value.getId() == null || value.getId() < 1;
         getValueEditor().setAuthDomains(_userDAO.getAuthenticationDomainsToSaveOnUserPrincipal(value));
+
+        final String invalidPermissionsMessage = "Invalid Permissions To View Page";
+        _permissionCheck.checkPermissionsForCurrent(Event.getRequest(), invalidPermissionsMessage);
+
         Company profile = _uiPreferences.getSelectedCompany();
         User currentUser = _userDAO.getAssertedCurrentUser();
+
         final TimeZone timeZone = Event.getRequest().getTimeZone();
-        if (!_profileDAO.canOperate(currentUser, profile, timeZone, _mop.viewUser())
-            || !_profileDAO.canOperate(currentUser, profile, timeZone, _mop.modifyUser()))
+        if (!_profileDAO.canOperate(currentUser, profile, timeZone, _mop.modifyUser()))
         {
-            getValueEditor().setEditable(false);
-            _notifications.add(error(ERROR_INSUFFICIENT_PERMISSIONS_FMT(USER())));
+            throw new IllegalArgumentException(invalidPermissionsMessage);
         }
         else
         {

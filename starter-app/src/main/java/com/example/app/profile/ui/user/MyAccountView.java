@@ -33,6 +33,7 @@ import net.proteusframework.ui.management.nav.NavigationAction;
 import net.proteusframework.ui.miwt.Action;
 import net.proteusframework.ui.miwt.ReflectiveAction;
 import net.proteusframework.ui.miwt.component.composite.MessageContainer;
+import net.proteusframework.ui.miwt.event.Event;
 import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.ui.miwt.util.RendererEditorState;
 
@@ -119,7 +120,7 @@ public class MyAccountView extends MIWTPageElementModelPropertyViewer
         //Used by ApplicationFunction
     void configure(ParsedRequest request)
     {
-        _permissionCheck.checkPermissionsForCurrent("You don't have a User account in the system.");
+        _permissionCheck.checkPermissionsForCurrent(Event.getRequest(), "You don't have a User account in the system.");
         UserValueViewer valueViewer = new UserValueViewer();
         valueViewer.setUser(_userDAO.getAssertedCurrentUser());
         valueViewer.setNotifiable(_messages);

@@ -16,9 +16,11 @@ import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.ui.company.CompanyManagement;
 import com.example.app.profile.ui.company.CompanyUIPermissionCheck;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.proteusframework.core.spring.ApplicationContextUtils;
+import net.proteusframework.internet.http.Request;
 import net.proteusframework.users.model.Principal;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
@@ -39,51 +41,57 @@ public interface ApplicationFunctionPermissionCheck
     /**
      * Check if the given User has the required permissions to view or access the Application Function
      *
+     * @param request the Request
      * @param user the user
      *
      * @return the boolean
      */
-    default boolean checkPermissions(@Nullable User user)
+    default boolean checkPermissions(@Nonnull Request request, @Nullable User user)
     {
         if(user == null) return false;
-        return checkPermissions(user.getPrincipal());
+        return checkPermissions(request, user.getPrincipal());
     }
 
     /**
      * Check if the given Principal has the required permissions to view or access the Application Function
      *
+     * @param request the Request
      * @param principal the principal
      *
      * @return the boolean
      */
-    boolean checkPermissions(@Nullable Principal principal);
+    boolean checkPermissions(@Nonnull Request request, @Nullable Principal principal);
 
     /**
      * Check if the current User or Principal has the required permissions to view or access the Application Function
      *
+     * @param request the Request
      * @return the boolean
      */
-    default boolean checkPermissionsForCurrent()
+    default boolean checkPermissionsForCurrent(@Nonnull Request request)
     {
         @SuppressWarnings("ConstantConditions")
         UserDAO userDAO = ApplicationContextUtils.getInstance().getContext().getBean(UserDAO.class);
         PrincipalDAO principalDAO = PrincipalDAO.getInstance();
         User currentUser = userDAO.getCurrentUser();
-        return currentUser != null ? checkPermissions(currentUser) : checkPermissions(principalDAO.getCurrentPrincipal());
+        return currentUser != null
+            ? checkPermissions(request, currentUser)
+            : checkPermissions(request, principalDAO.getCurrentPrincipal());
     }
 
     /**
      * Check if the current User or Principal has the required permissions to view or access the Application Function
      * <br><br>
-     * Unlike {@link #checkPermissionsForCurrent()}, this method will throw an {@link IllegalArgumentException}
+     * Unlike {@link #checkPermissionsForCurrent(Request)}, this method will throw an {@link IllegalArgumentException}
      * if the current user lacks required permission.  The given error message will be the message set on the thrown Exception.
      *
+     * @param request the Request
      * @param errorMessage the error message
      * @throws IllegalArgumentException if current user lacks permission.
      */
-    default void checkPermissionsForCurrent(String errorMessage) throws IllegalArgumentException
+    default void checkPermissionsForCurrent(@Nonnull Request request, String errorMessage) throws IllegalArgumentException
     {
-        if(!checkPermissionsForCurrent())
+        if(!checkPermissionsForCurrent(request))
         {
             throw new IllegalArgumentException(errorMessage);
         }

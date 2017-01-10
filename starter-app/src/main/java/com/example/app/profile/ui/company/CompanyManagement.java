@@ -334,6 +334,6 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
     @SuppressWarnings("unused") //Used by ApplicationFunction
     void configure(ParsedRequest parsedRequest)
     {
-        _permissionCheck.checkPermissionsForCurrent("You do not have the correct role to view this page");
+        _permissionCheck.checkPermissionsForCurrent(Event.getRequest(), "You do not have the correct role to view this page");
     }
 }

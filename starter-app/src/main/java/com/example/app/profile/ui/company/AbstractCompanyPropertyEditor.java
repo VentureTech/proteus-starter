@@ -54,6 +54,7 @@ import net.proteusframework.ui.miwt.component.Label;
 import net.proteusframework.ui.miwt.component.PushButton;
 import net.proteusframework.ui.miwt.component.composite.editor.PropertyEditor;
 import net.proteusframework.ui.miwt.event.ActionEvent;
+import net.proteusframework.ui.miwt.event.Event;
 import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
 
@@ -391,7 +392,7 @@ public abstract class AbstractCompanyPropertyEditor extends MIWTPageElementModel
     @SuppressWarnings("unused") //Used by ApplicationFunction
     protected void configure(ParsedRequest request)
     {
-        _permissionCheck.checkPermissionsForCurrent("You do not have the correct role to view this page");
+        _permissionCheck.checkPermissionsForCurrent(Event.getRequest(), "You do not have the correct role to view this page");
 
         final Company val = request.getPropertyValue(COMPANY);
         if(val == null)

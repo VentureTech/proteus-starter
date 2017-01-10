@@ -55,6 +55,7 @@ import net.proteusframework.ui.miwt.component.composite.TabbedContainerImpl;
 import net.proteusframework.ui.miwt.component.composite.editor.PropertyEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.PropertyViewer;
 import net.proteusframework.ui.miwt.event.ActionListener;
+import net.proteusframework.ui.miwt.event.Event;
 import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
 
@@ -255,7 +256,7 @@ public class CompanyViewerComponent extends MIWTPageElementModelContainer
     @SuppressWarnings("unused") //Used by ApplicationFunction
     void configure(ParsedRequest request)
     {
-        _permissionCheck.checkPermissionsForCurrent("You do not have the correct role to view this page");
+        _permissionCheck.checkPermissionsForCurrent(Event.getRequest(), "You do not have the correct role to view this page");
 
         _company = request.getPropertyValue(COMPANY);
 

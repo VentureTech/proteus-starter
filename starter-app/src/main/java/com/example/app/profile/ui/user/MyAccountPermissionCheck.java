@@ -16,8 +16,10 @@ import com.example.app.profile.ui.ApplicationFunctions;
 import com.example.app.support.service.ApplicationFunctionPermissionCheck;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.proteusframework.internet.http.Request;
 import net.proteusframework.users.model.Principal;
 
 /**
@@ -30,13 +32,13 @@ import net.proteusframework.users.model.Principal;
 public class MyAccountPermissionCheck implements ApplicationFunctionPermissionCheck
 {
     @Override
-    public boolean checkPermissions(@Nullable User user)
+    public boolean checkPermissions(@Nonnull Request request, @Nullable User user)
     {
         return user != null;
     }
 
     @Override
-    public boolean checkPermissions(@Nullable Principal principal)
+    public boolean checkPermissions(@Nonnull Request request, @Nullable Principal principal)
     {
         return false; //We always just use the User.
     }

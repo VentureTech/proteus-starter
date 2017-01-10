@@ -39,6 +39,7 @@ import net.proteusframework.ui.management.ApplicationFunction;
 import net.proteusframework.ui.management.ParsedRequest;
 import net.proteusframework.ui.management.nav.NavigationAction;
 import net.proteusframework.ui.miwt.component.composite.editor.ValueEditor;
+import net.proteusframework.ui.miwt.event.Event;
 import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.users.model.ContactDataCategory;
 import net.proteusframework.users.model.EmailAddress;
@@ -99,7 +100,7 @@ public class MyAccountEdit extends MIWTPageElementModelPropertyEditor<User>
         //Used by ApplicationFunction
     void configure(ParsedRequest request)
     {
-        _permissionCheck.checkPermissionsForCurrent("You don't have a User account in the system.");
+        _permissionCheck.checkPermissionsForCurrent(Event.getRequest(), "You don't have a User account in the system.");
         User currentUser = _userDAO.getAssertedCurrentUser();
         getValueEditor().setAuthDomains(_userDAO.getAuthenticationDomainsToSaveOnUserPrincipal(currentUser));
         getValueEditor().setAdminMode(false);
