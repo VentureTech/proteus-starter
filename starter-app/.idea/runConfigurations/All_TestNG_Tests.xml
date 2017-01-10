@@ -10,7 +10,7 @@
     <option name="METHOD_NAME" value="" />
     <option name="GROUP_NAME" value="unit" />
     <option name="TEST_OBJECT" value="GROUP" />
-    <option name="VM_PARAMETERS" value="-ea" />
+    <option name="VM_PARAMETERS" value="-ea -Duser.timezone=Etc/UTC" />
     <option name="PARAMETERS" value="" />
     <option name="WORKING_DIRECTORY" value="file://$MODULE_DIR$" />
     <option name="OUTPUT_DIRECTORY" value="" />
