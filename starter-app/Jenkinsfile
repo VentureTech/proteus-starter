@@ -203,8 +203,14 @@ if (currentBuild.result == 'SUCCESS')
 {
     try
     {
-        timeout(time: 4, unit: 'HOURS') {
-            stage('Publish') {
+        stage('Publish') {
+            timeout(time: 4, unit: 'HOURS') {
+                //noinspection LongLine
+                def params = input id: 'Publish', message: 'Publish Artifacts To Repo Server', ok: 'Publish Artifacts',
+                        parameters: [[$class: 'StringParameterDefinition', defaultValue: 'rtennant', description: 'Username to ' +
+                            'publish artifacts', name: 'publish_venturetech_username'],
+                             [$class: 'PasswordParameterDefinition', defaultValue: '', description:  'Password' +
+                                 ' publish artifacts', name: 'publish_venturetech_password']]
                 node {
                     def jdkHome = tool 'JDK 8'
                     unstash 'StarterAppFiles'
@@ -214,13 +220,6 @@ if (currentBuild.result == 'SUCCESS')
                             ".\n(<${env.JOB_URL}|Open>)"
 
 
-                    //noinspection LongLine
-                    def params = input id: 'Publish', message: 'Publish Artifacts To Repo Server', ok: 'Publish Artifacts',
-                        parameters: [[$class         : 'StringParameterDefinition', defaultValue: 'rtennant', description: 'Username to ' +
-
-                            'publish artifacts', name: 'publish_venturetech_username'], [$class      : 'PasswordParameterDefinition',
-                                                                                         defaultValue: '', description: 'Password' +
-                            ' publish artifacts', name                                               : 'publish_venturetech_password']]
                     dir('starter-app') {
                         withEnv(["JAVA_HOME=$jdkHome", "GRADLE_OPTS=-Xmx2024m -Xms512m"]) {
                             // Run the build
@@ -240,8 +239,10 @@ if (currentBuild.result == 'SUCCESS')
         }
         if (isSnapshot)
         {
-            timeout(time: 1, unit: 'HOURS') {
-                stage('Deploy') {
+            stage('Deploy') {
+                timeout(time: 1, unit: 'HOURS') {
+                    //noinspection LongLine
+                    input id: 'Deploy', message: 'Deploy build to QA Server?', ok: 'Deploy'
                     node {
                         def jdkHome = tool 'JDK 8'
                         unstash 'StarterAppFiles'
@@ -250,8 +251,6 @@ if (currentBuild.result == 'SUCCESS')
                             message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be deployed to QA for testing.\n" +
                                 "(<${env.JOB_URL}|Open>)"
 
-                        //noinspection LongLine
-                        input id: 'Deploy', message: 'Deploy build to QA Server?', ok: 'Deploy'
                         dir('starter-app') {
                             withEnv(["JAVA_HOME=$jdkHome"]) {
                                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
