@@ -191,7 +191,7 @@ node {
         dir('starter-app') {
             withEnv(["JAVA_HOME=$jdkHome"]) {
                 // Run the build
-                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
+                ansiColor('css') {
                     sh "./gradlew assemble -x jar -x war $gradleOptions -Pcompile_libraries=true"
                 }
             }
@@ -223,7 +223,7 @@ if (currentBuild.result == 'SUCCESS')
                     dir('starter-app') {
                         withEnv(["JAVA_HOME=$jdkHome", "GRADLE_OPTS=-Xmx2024m -Xms512m"]) {
                             // Run the build
-                            wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
+                            ansiColor('css') {
                                 //noinspection LongLine
                                 echo "Publishing artifacts"
                                 //noinspection LongLine
@@ -234,6 +234,8 @@ if (currentBuild.result == 'SUCCESS')
                             }
                         }
                     }
+                    slackSend color: 'good',
+                        message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} has been published to the artifactory."
                 }
             }
         }
@@ -257,7 +259,7 @@ if (currentBuild.result == 'SUCCESS')
                                                   accessKeyVariable: 'aws_id', credentialsId:
                                                       'proteus-sys-jenkins-integration', secretKeyVariable: 'aws_secret']]) {
                                     // Run the build
-                                    wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
+                                    ansiColor('css') {
                                         //noinspection LongLine
                                         echo "Deploying artifacts"
                                         def additionalArgs = "autoDeploy -Paws_id=${env.aws_id} -Paws_secret=${env.aws_secret}"
@@ -266,6 +268,8 @@ if (currentBuild.result == 'SUCCESS')
                                 }
                             }
                         }
+                        slackSend color: 'good',
+                            message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} has been deployed to QA for testing."
                     }
                 }
             }
