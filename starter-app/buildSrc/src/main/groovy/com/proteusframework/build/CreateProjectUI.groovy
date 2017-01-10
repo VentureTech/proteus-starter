@@ -381,6 +381,8 @@ bower_components/
                 if(f.isFile()) {
                     def content = f.getText('UTF-8')
                     def updatedContent = content.replaceAll('webdev', "${model.appName}-webdev")
+                        .replaceAll('starter-app-webdev', "${model.appName}-webdev")
+                        .replaceAll('com.example', model.appGroup)
                         .replaceAll(Pattern.quote('<mapping directory="$PROJECT_DIR$/.." vcs="Git" />'),
                             '<mapping directory="\\$PROJECT_DIR\\$" vcs="Git" />')
                     if (updatedContent != content)
