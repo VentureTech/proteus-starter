@@ -22,8 +22,10 @@ import com.example.app.support.ui.UIPreferences;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.proteusframework.internet.http.Request;
 import net.proteusframework.users.model.Principal;
 
 /**
@@ -40,7 +42,7 @@ public class UserManagementPermissionCheck implements ApplicationFunctionPermiss
     @Autowired private MembershipOperationProvider _mop;
 
     @Override
-    public boolean checkPermissions(@Nullable User user)
+    public boolean checkPermissions(@Nonnull Request request, @Nullable User user)
     {
         if(user == null) return false;
         Company selectedCompany = _uiPreferences.getSelectedCompany();
@@ -48,7 +50,7 @@ public class UserManagementPermissionCheck implements ApplicationFunctionPermiss
     }
 
     @Override
-    public boolean checkPermissions(@Nullable Principal principal)
+    public boolean checkPermissions(@Nonnull Request request, @Nullable Principal principal)
     {
         return false; //We always just use the User.
     }

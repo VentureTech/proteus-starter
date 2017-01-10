@@ -1,3 +1,4 @@
+require('dotenv').config();
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var sass = require('gulp-sass');
@@ -25,7 +26,7 @@ gulp.task('styles', function (callback) {
     runSequence('styles:clean', ['styles:build', 'styles:vendor'], callback);
 });
 gulp.task('styles:build', function() {
-    return gulp.src('./web/src/stylesheets/**/*.scss')
+    return gulp.src('./web/src/**/stylesheets/**/*.scss')
         .pipe(clip())
         .pipe(sass({
             outputStyle: 'expanded'
@@ -34,10 +35,10 @@ gulp.task('styles:build', function() {
             browsers: ['> 1%', 'last 2 versions', 'ie > 9'],
             cascade: false
         }))
-        .pipe(gulp.dest('./build/stylesheets'))
+        .pipe(gulp.dest('./build'))
         .pipe(minifyCss())
         .pipe(rename({ suffix: '.min' }))
-        .pipe(gulp.dest('./build/stylesheets'))
+        .pipe(gulp.dest('./build'))
         ;
 });
 gulp.task('styles:vendor', function() {
@@ -60,11 +61,11 @@ gulp.task('javascript', function(callback){
     runSequence('javascript:clean', ['javascript:build', 'javascript:vendor'], callback);
 });
 gulp.task('javascript:build', function() {
-    return gulp.src(['./web/src/javascript/**/*.js', '!./web/src/javascript/components/*.js'])
+    return gulp.src(['./web/src/**/javascript/**/*.js', '!./web/src/**/javascript/components/*.js'])
         .pipe(clip())
         .pipe(include())
             .on('error', console.log)
-        .pipe(gulp.dest('./build/javascript'))
+        .pipe(gulp.dest('./build'))
         .pipe(sourcemaps.init({ debug: true }))
         .pipe(uglify())
         .pipe(rename({ suffix: '.min' }))
@@ -77,7 +78,7 @@ gulp.task('javascript:build', function() {
             }
         }))
 		.pipe(flatten({includeParents: 2}))
-        .pipe(gulp.dest('./build/javascript'))
+        .pipe(gulp.dest('./build'))
         ;
 });
 gulp.task('javascript:vendor', function() {
@@ -114,8 +115,8 @@ gulp.task('design', function (callback) {
     runSequence('design:clean', ['design:build'], callback);
 });
 gulp.task('design:build', function() {
-    return gulp.src('./web/src/design/**/*')
-        .pipe(gulp.dest('./build/design'));
+    return gulp.src('./web/src/**/design/**/*')
+        .pipe(gulp.dest('./build'));
 });
 gulp.task('design:clean', function(callback) {
     del(['./build/design']).then(function(data) {
@@ -127,7 +128,7 @@ gulp.task('favicons', function (callback) {
     runSequence('favicons:clean', ['favicons:build'], callback);
 });
 gulp.task('favicons:build', function() {
-    return gulp.src("./web/src/favicons/logo.png")
+    return gulp.src("./web/src/**/favicons/logo.png")
         .pipe(favicons({
             appName: "My App",
             appDescription: "This is my application",

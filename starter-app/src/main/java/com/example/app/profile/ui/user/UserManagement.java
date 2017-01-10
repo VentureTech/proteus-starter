@@ -63,6 +63,7 @@ import net.proteusframework.ui.miwt.component.Dialog;
 import net.proteusframework.ui.miwt.component.composite.CustomCellRenderer;
 import net.proteusframework.ui.miwt.data.SimpleListModel;
 import net.proteusframework.ui.miwt.event.ActionListener;
+import net.proteusframework.ui.miwt.event.Event;
 import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
 import net.proteusframework.ui.miwt.util.CommonColumnText;
@@ -513,6 +514,6 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
         _currentUser = _userDAO.getAssertedCurrentUser();
         _userProfile = _uiPreferences.getSelectedCompany();
 
-        _permissionCheck.checkPermissionsForCurrent("Invalid Permissions To View Page");
+        _permissionCheck.checkPermissionsForCurrent(Event.getRequest(), "Invalid Permissions To View Page");
     }
 }

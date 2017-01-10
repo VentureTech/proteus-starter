@@ -16,8 +16,10 @@ import com.example.app.support.service.AppUtil;
 import com.example.app.support.service.ApplicationFunctionPermissionCheck;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.proteusframework.internet.http.Request;
 import net.proteusframework.users.model.Principal;
 
 /**
@@ -30,7 +32,7 @@ import net.proteusframework.users.model.Principal;
 public class CompanyUIPermissionCheck implements ApplicationFunctionPermissionCheck
 {
     @Override
-    public boolean checkPermissions(@Nullable Principal principal)
+    public boolean checkPermissions(@Nonnull Request request, @Nullable Principal principal)
     {
         if(principal == null) return false;
         return AppUtil.userHasAdminRole(principal);

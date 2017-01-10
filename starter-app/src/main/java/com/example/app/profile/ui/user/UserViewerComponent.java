@@ -49,6 +49,7 @@ import net.proteusframework.ui.miwt.component.composite.MessageContainer;
 import net.proteusframework.ui.miwt.component.composite.TabbedContainerImpl;
 import net.proteusframework.ui.miwt.component.event.ComponentAdapter;
 import net.proteusframework.ui.miwt.component.event.ComponentEvent;
+import net.proteusframework.ui.miwt.event.Event;
 import net.proteusframework.ui.miwt.util.CommonActions;
 
 import static com.example.app.profile.ui.user.UserViewerComponentLOK.*;
@@ -87,14 +88,13 @@ import static com.example.app.profile.ui.user.UserViewerComponentLOK.*;
 public class UserViewerComponent extends MIWTPageElementModelContainer
 {
     private final MessageContainer _messages = new MessageContainer(35_000L);
-    @Autowired
-    private ProfileDAO _profileDAO;
-    @Autowired
-    private MembershipOperationProvider _mop;
-    @Autowired
-    private UserDAO _userDAO;
-    @Autowired
-    private UIPreferences _uiPreferences;
+
+    @Autowired private ProfileDAO _profileDAO;
+    @Autowired private MembershipOperationProvider _mop;
+    @Autowired private UserDAO _userDAO;
+    @Autowired private UIPreferences _uiPreferences;
+    @Autowired private UserManagementPermissionCheck _permissionCheck;
+
     private User _user;
     private Profile _adminProfile;
 
@@ -165,9 +165,7 @@ public class UserViewerComponent extends MIWTPageElementModelContainer
         if (_user == null)
             throw new IllegalArgumentException("Unable to determine User.");
         _adminProfile = _uiPreferences.getSelectedCompany();
-        User currentUser = _userDAO.getAssertedCurrentUser();
 
-        if (!_profileDAO.canOperate(currentUser, _adminProfile, AppUtil.UTC, _mop.viewUser()))
-            throw new IllegalArgumentException("Invalid Permissions To View Page");
+        _permissionCheck.checkPermissionsForCurrent(Event.getRequest(), "Invalid Permissions To View Page");
     }
 }

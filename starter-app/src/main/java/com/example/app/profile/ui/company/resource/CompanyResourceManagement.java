@@ -67,6 +67,7 @@ import net.proteusframework.ui.miwt.component.PushButton;
 import net.proteusframework.ui.miwt.component.Table;
 import net.proteusframework.ui.miwt.component.TableCellRenderer;
 import net.proteusframework.ui.miwt.component.composite.CustomCellRenderer;
+import net.proteusframework.ui.miwt.event.Event;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
 import net.proteusframework.ui.miwt.util.CommonColumnText;
 import net.proteusframework.ui.search.AbstractPropertyConstraint;
@@ -144,22 +145,15 @@ public class CompanyResourceManagement extends MIWTPageElementModelHistoryContai
         }
     }
 
-    @Autowired
-    private UserDAO _userDAO;
-    @Autowired
-    private RepositoryDAO _repositoryDAO;
-    @Autowired
-    private ProfileDAO _profileDAO;
-    @Autowired
-    private MembershipOperationProvider _mop;
-    @Autowired
-    private ResourceTypeService _rts;
-    @Autowired
-    private ResourceCategoryLabelProvider _rtlp;
-    @Autowired
-    private ResourceTagsLabelProvider _rclp;
-    @Autowired
-    private UIPreferences _uiPreferences;
+    @Autowired private UserDAO _userDAO;
+    @Autowired private RepositoryDAO _repositoryDAO;
+    @Autowired private ProfileDAO _profileDAO;
+    @Autowired private MembershipOperationProvider _mop;
+    @Autowired private ResourceTypeService _rts;
+    @Autowired private ResourceCategoryLabelProvider _rtlp;
+    @Autowired private ResourceTagsLabelProvider _rclp;
+    @Autowired private UIPreferences _uiPreferences;
+    @Autowired private CompanyResourcePermissionCheck _permissionCheck;
 
     private User _currentUser;
     private Profile _adminProfile;
@@ -495,7 +489,7 @@ public class CompanyResourceManagement extends MIWTPageElementModelHistoryContai
         _currentUser = _userDAO.getAssertedCurrentUser();
         _adminProfile = _uiPreferences.getSelectedCompany();
 
-        if (!_profileDAO.canOperate(_currentUser, _adminProfile, AppUtil.UTC, _mop.viewRepositoryResources()))
+        if (_permissionCheck.checkPermissions(Event.getRequest(), _currentUser))
             throw new IllegalArgumentException("Invalid Permissions To View Page");
     }
 }

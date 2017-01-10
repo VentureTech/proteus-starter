@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 
 import net.proteusframework.ui.management.nav.NavigationAction;
 import net.proteusframework.ui.miwt.component.composite.editor.PropertyViewer;
+import net.proteusframework.ui.miwt.event.Event;
 import net.proteusframework.ui.miwt.util.CommonActions;
 
 /**
@@ -80,7 +81,7 @@ public class CompanyPropertyViewer extends PropertyViewer
      */
     public CompanyPropertyViewer configure(Company value)
     {
-        _permissionCheck.checkPermissionsForCurrent("You do not have the correct role to view this page");
+        _permissionCheck.checkPermissionsForCurrent(Event.getRequest(), "You do not have the correct role to view this page");
 
         if(value == null)
         {

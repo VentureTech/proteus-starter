@@ -1,7 +1,7 @@
 @import "../config/base-vars";
-@import "../../../../bower_components/bootstrap/scss/variables";
-@import "../../../../bower_components/bootstrap/scss/mixins";
-@import "../../../../bower_components/bootstrap/scss/buttons";
+@import "../../../../../bower_components/bootstrap/scss/variables";
+@import "../../../../../bower_components/bootstrap/scss/mixins";
+@import "../../../../../bower_components/bootstrap/scss/buttons";
 
 #main-content {
 	min-height: calc(100vh - 87px); //window height - footer
