@@ -1,5 +1,6 @@
 
 test {
+//    onlyIf({true})
     useTestNG() {
         if(project.hasProperty("testGroups"))
             includeGroups project.getProperty("testGroups")
@@ -27,16 +28,16 @@ test {
         listeners << 'org.testng.reporters.XMLReporter'
     }
 }
-junitPlatform {
-    // For https://github.com/junit-team/junit5/issues/479
-    platformVersion = "1.0.0-M2"
-
-//    filters {
-        engines {
-            include 'spek'
-        }
-//    }
-}
+//junitPlatform {
+//    // For https://github.com/junit-team/junit5/issues/479
+//    platformVersion = "1.0.0-M2"
+//
+////    filters {
+//        engines {
+//            include 'spek'
+//        }
+////    }
+//}
 
 //
 //task browserTest(type: Test) {
