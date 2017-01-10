@@ -204,8 +204,10 @@ if (currentBuild.result == 'SUCCESS')
     try
     {
         timeout(time: 4, unit: 'HOURS') {
-            node {
-                stage('Publish') {
+            stage('Publish') {
+                node {
+                    def jdkHome = tool 'JDK 8'
+                    unstash 'StarterAppFiles'
                     //noinspection LongLine
                     slackSend color: 'good',
                         message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be published to the artifactory repo" +
@@ -239,8 +241,10 @@ if (currentBuild.result == 'SUCCESS')
         if (isSnapshot)
         {
             timeout(time: 1, unit: 'HOURS') {
-                node {
-                    stage('Deploy') {
+                stage('Deploy') {
+                    node {
+                        def jdkHome = tool 'JDK 8'
+                        unstash 'StarterAppFiles'
                         //noinspection LongLine
                         slackSend color: 'good',
                             message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be deployed to QA for testing.\n" +
