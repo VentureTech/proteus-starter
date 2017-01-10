@@ -11,8 +11,8 @@
 
 package com.example.app.ui;
 
-import com.example.app.model.UserProfile;
-import com.example.app.model.UserProfileDAO;
+import com.example.app.model.DemoUserProfile;
+import com.example.app.model.DemoUserProfileDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -39,7 +39,7 @@ import net.proteusframework.ui.search.SearchUIOperation;
 import net.proteusframework.ui.search.SearchUIOperationContext;
 import net.proteusframework.ui.search.SearchUIOperationHandler;
 
-import static com.example.app.ui.UserProfileApplicationFunctions.*;
+import static com.example.app.ui.DemoUserProfileApplicationFunctions.*;
 import static com.example.app.ui.UserProfileListingLOK.COMPONENT_NAME;
 
 /**
@@ -56,12 +56,12 @@ import static com.example.app.ui.UserProfileListingLOK.COMPONENT_NAME;
 @ApplicationFunction(applicationName = APPLICATION_NAME, name = USER_PROFILE_LISTING,
     description = "Management UI For UserProfiles"
 )
-public class UserProfileListing extends MIWTPageElementModelContainer implements SearchUIOperationHandler
+public class DemoUserProfileListing extends MIWTPageElementModelContainer implements SearchUIOperationHandler
 {
 
     /** DAO. */
     @Autowired
-    private UserProfileDAO _userProfileDAO;
+    private DemoUserProfileDAO _demoUserProfileDAO;
     /** Service. */
     @Autowired
     private ClassPathResourceLibraryHelper _classPathResourceLibraryHelper;
@@ -69,7 +69,7 @@ public class UserProfileListing extends MIWTPageElementModelContainer implements
     /**
      * Instantiates a new User profile listing.
      */
-    public UserProfileListing()
+    public DemoUserProfileListing()
     {
         addClassName("user-profile-search");
         setName(COMPONENT_NAME());
@@ -90,7 +90,7 @@ public class UserProfileListing extends MIWTPageElementModelContainer implements
     public void init()
     {
         super.init();
-        final SearchSupplierImpl searchSupplier = UserProfileApp.createSearchSupplier();
+        final SearchSupplierImpl searchSupplier = DemoUserProfileApp.createSearchSupplier();
         searchSupplier.setSearchUIOperationHandler(this);
         SearchUIImpl.Options options = new SearchUIImpl.Options("User Profile");
         options.setSearchOnPageLoad(true);
@@ -147,7 +147,7 @@ public class UserProfileListing extends MIWTPageElementModelContainer implements
             }
             case delete:
             {
-                _userProfileDAO.deleteUserProfile(context.<UserProfile>getData());
+                _demoUserProfileDAO.deleteUserProfile(context.<DemoUserProfile>getData());
                 context.getSearchUI().doAction(SearchUIAction.search);
                 break;
             }

@@ -11,7 +11,7 @@
 
 package com.example.app.ui;
 
-import com.example.app.model.UserProfile;
+import com.example.app.model.DemoUserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -28,7 +28,7 @@ import net.proteusframework.ui.management.ParsedRequest;
 import net.proteusframework.ui.management.nav.NavigationAction;
 import net.proteusframework.ui.miwt.util.CommonActions;
 
-import static com.example.app.ui.UserProfileApplicationFunctions.*;
+import static com.example.app.ui.DemoUserProfileApplicationFunctions.*;
 import static com.example.app.ui.UserProfilePropertyViewerLOK.COMPONENT_NAME;
 
 /**
@@ -48,7 +48,7 @@ import static com.example.app.ui.UserProfilePropertyViewerLOK.COMPONENT_NAME;
     description = "Viewer For UserProfiles",
     urlConfigName = USER_PROFILE_URL_CONFIG
 )
-public class UserProfilePropertyViewer extends MIWTPageElementModelPropertyViewer
+public class DemoUserProfilePropertyViewer extends MIWTPageElementModelPropertyViewer
 {
     /** Service. */
     @Autowired
@@ -57,7 +57,7 @@ public class UserProfilePropertyViewer extends MIWTPageElementModelPropertyViewe
     /**
      * Instantiates a new User profile property viewer.
      */
-    public UserProfilePropertyViewer()
+    public DemoUserProfilePropertyViewer()
     {
         addClassName("user-profile-viewer");
         setName(COMPONENT_NAME());
@@ -96,9 +96,9 @@ public class UserProfilePropertyViewer extends MIWTPageElementModelPropertyViewe
      */
     void configure(ParsedRequest parsedRequest)
     {
-        final UserProfile profile = parsedRequest.getPropertyValue(URL_PROP_PROFILE);
+        final DemoUserProfile profile = parsedRequest.getPropertyValue(URL_PROP_PROFILE);
         if (profile != null)
-            setValueViewer(new UserProfileViewer(profile));
+            setValueViewer(new DemoUserProfileViewer(profile));
         else
             setValueViewer(null);
     }

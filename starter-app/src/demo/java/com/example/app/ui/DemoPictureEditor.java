@@ -43,10 +43,10 @@ import net.proteusframework.ui.miwt.component.composite.editor.AbstractSimpleVal
  * @author Russ Tennant (russ@i2rd.com)
  */
 @Configurable
-public class PictureEditor extends AbstractSimpleValueEditor<FileEntity>
+public class DemoPictureEditor extends AbstractSimpleValueEditor<FileEntity>
 {
     /** Logger. */
-    private static final Logger _logger = LogManager.getLogger(PictureEditor.class);
+    private static final Logger _logger = LogManager.getLogger(DemoPictureEditor.class);
 
     /** File Field. */
     private final FileField _fileField = new FileField();
@@ -67,7 +67,7 @@ public class PictureEditor extends AbstractSimpleValueEditor<FileEntity>
     /**
      * Create an instance.
      */
-    public PictureEditor()
+    public DemoPictureEditor()
     {
         super();
         addClassName("prop");

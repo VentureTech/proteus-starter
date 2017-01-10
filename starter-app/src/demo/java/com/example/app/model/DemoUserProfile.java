@@ -42,12 +42,12 @@ import net.proteusframework.users.model.Name;
  * @author Russ Tennant (russ@i2rd.com)
  */
 @Entity
-public class UserProfile implements TimeAuditable
+public class DemoUserProfile implements TimeAuditable
 {
     /** Sequence name. */
-    private static final String SEQ = "userprofile_seq";
+    private static final String SEQ = "demouserprofile_seq";
     /** identifier name. */
-    private static final String USERPROFILE_ID = "userprofile_id";
+    private static final String USERPROFILE_ID = "demouserprofile_id";
     /** Identifier. */
     private long _id;
     /** Name - we'll use some of the properties of this class. */
@@ -80,7 +80,7 @@ public class UserProfile implements TimeAuditable
     /**
      * Create a new User Profile.
      */
-    public UserProfile()
+    public DemoUserProfile()
     {
         super();
     }
@@ -90,7 +90,7 @@ public class UserProfile implements TimeAuditable
      *
      * @param toCopy profile to copy.
      */
-    public UserProfile(UserProfile toCopy)
+    public DemoUserProfile(DemoUserProfile toCopy)
     {
         super();
         setName(new Name(toCopy.getName()));
@@ -407,9 +407,9 @@ public class UserProfile implements TimeAuditable
     public boolean equals(Object o)
     {
         if (this == o) return true;
-        if (!(o instanceof UserProfile)) return false;
+        if (!(o instanceof DemoUserProfile)) return false;
 
-        UserProfile that = (UserProfile) o;
+        DemoUserProfile that = (DemoUserProfile) o;
 
         if (getId() != null)
             return getId().equals(that.getId());

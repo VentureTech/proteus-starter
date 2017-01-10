@@ -65,25 +65,28 @@ public class DemoDataConversionVersion1
     {
         List<SQLStatement> ddl = new ArrayList<>();
         ddl.add(new SQLStatement(
-            "create table UserProfile (userprofile_id int8 not null, aboutmeprose varchar(4000), aboutmevideolink varchar(255), "
+            "create table DemoUserProfile (demouserprofile_id int8 not null, aboutmeprose varchar(4000), aboutmevideolink varchar"
+            + "(255), "
                 + "createtime timestamp, emailaddress varchar(255), facebooklink varchar(255), lastmodtime timestamp, "
                 + "linkedinlink varchar(255), phonenumber varchar(255), twitterlink varchar(255), name_id int8, picture_id int8, "
                 + "postaladdress_id int8, site_id int8, primary key (userprofile_id))",
             null));
         ddl.add(new SQLStatement(
-            "alter table UserProfile add constraint FK_mrdqdc1atkriccxn00383la4u foreign key (name_id) references personname",
+            "alter table DemoUserProfile add constraint FK_mrdqdc1atkriccxn00383la4u foreign key (name_id) references personname",
             null));
         ddl.add(new SQLStatement(
-            "alter table UserProfile add constraint FK_njox9f67ws67qbuo2x8mv6qyu foreign key (picture_id) references "
+            "alter table DemoUserProfile add constraint FK_njox9f67ws67qbuo2x8mv6qyu foreign key (picture_id) references "
                 + "FileSystemEntity", null ));
         ddl.add(new SQLStatement(
-            "alter table UserProfile add constraint FK_3s1hv4k1gnvfe6j2fqtsjcj4f foreign key (postaladdress_id) references address",
+            "alter table DemoUserProfile add constraint FK_3s1hv4k1gnvfe6j2fqtsjcj4f foreign key (postaladdress_id) references "
+            + "address",
             null));
         ddl.add(new SQLStatement(
-            "alter table UserProfile add constraint FK_l51qbba4pla782w3b862hhxl7 foreign key (site_id) references site", null));
-        ddl.add(new SQLStatement("create sequence userprofile_seq", null));
+            "alter table DemoUserProfile add constraint FK_l51qbba4pla782w3b862hhxl7 foreign key (site_id) references site",
+            null));
+        ddl.add(new SQLStatement("create sequence demouserprofile_seq", null));
 
-        return SQLDataConversion.createSchemaUpdate(IDENTIFIER, "User Profile Entity", 3, false, ddl);
+        return SQLDataConversion.createSchemaUpdate(IDENTIFIER, "Demo User Profile Entity", 3, false, ddl);
     }
 
 

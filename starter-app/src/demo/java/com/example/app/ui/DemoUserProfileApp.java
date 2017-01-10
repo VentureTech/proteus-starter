@@ -11,8 +11,8 @@
 
 package com.example.app.ui;
 
-import com.example.app.model.UserProfile;
-import com.example.app.model.UserProfileDAO;
+import com.example.app.model.DemoUserProfile;
+import com.example.app.model.DemoUserProfileDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,14 +101,14 @@ import static net.proteusframework.ui.search.SearchUIImpl.Options;
     }
 )
 @Configurable
-public class UserProfileApp extends SearchUIApp
+public class DemoUserProfileApp extends SearchUIApp
 {
     /** Logger. */
-    private static final Logger _logger = LogManager.getLogger(UserProfileApp.class);
+    private static final Logger _logger = LogManager.getLogger(DemoUserProfileApp.class);
 
     /** Data Access Object. */
     @Autowired
-    private UserProfileDAO _userProfileDAO;
+    private DemoUserProfileDAO _demoUserProfileDAO;
     /** Site Loader. */
     @Autowired
     private SiteLoader _siteLoader;
@@ -117,7 +117,7 @@ public class UserProfileApp extends SearchUIApp
     /**
      * Create an instance of the application for spring.
      */
-    public UserProfileApp()
+    public DemoUserProfileApp()
     {
         super(null);
     }
@@ -127,7 +127,7 @@ public class UserProfileApp extends SearchUIApp
      *
      * @param session the session.
      */
-    public UserProfileApp(MIWTSession session)
+    public DemoUserProfileApp(MIWTSession session)
     {
         super(session);
         // Set the default application name used in toString() and some other circumstances.
@@ -216,26 +216,26 @@ public class UserProfileApp extends SearchUIApp
      */
     void addUserProfile()
     {
-        final UserProfile userProfile = new UserProfile();
-        userProfile.setSite((CmsSite) _siteLoader.getOperationalSite());
-        setupEditor(userProfile);
+        final DemoUserProfile demoUserProfile = new DemoUserProfile();
+        demoUserProfile.setSite((CmsSite) _siteLoader.getOperationalSite());
+        setupEditor(demoUserProfile);
     }
 
     /**
      * Setup the editor by creating the View and wiring in the necessary
      * controls for persistence with our DAO.
      *
-     * @param userProfile the user profile.
+     * @param demoUserProfile the user profile.
      */
-    void setupEditor(final UserProfile userProfile)
+    void setupEditor(final DemoUserProfile demoUserProfile)
     {
-        getActiveSearchUI().getWorkspace().addUITask(new AbstractUITask("upe#" + userProfile.getId())
+        getActiveSearchUI().getWorkspace().addUITask(new AbstractUITask("upe#" + demoUserProfile.getId())
         {
             @Override
             public TextSource getLabel()
             {
                 return createText("User Profile - " + _getName(
-                    EntityRetriever.getInstance().reattachIfNecessary(userProfile)
+                    EntityRetriever.getInstance().reattachIfNecessary(demoUserProfile)
                 ));
             }
 
@@ -245,9 +245,9 @@ public class UserProfileApp extends SearchUIApp
 
                 ReflectiveAction saveAction = CommonActions.SAVE.defaultAction();
                 ReflectiveAction cancelAction = CommonActions.CANCEL.defaultAction();
-                PropertyEditor<UserProfile> propertyEditor = new PropertyEditor<>();
+                PropertyEditor<DemoUserProfile> propertyEditor = new PropertyEditor<>();
                 propertyEditor.setTitle(new Label(createText("User Profile")).withHTMLElement(HTMLElement.h2));
-                propertyEditor.setValueEditor(new UserProfileEditor());
+                propertyEditor.setValueEditor(new DemoUserProfileEditor());
                 propertyEditor.setPersistenceActions(saveAction, cancelAction);
 
                 // We are creating the action logic after creating the UI components
@@ -261,7 +261,7 @@ public class UserProfileApp extends SearchUIApp
                     /// proceeding.
 
                     propertyEditor.close();
-                    setupViewer(EntityRetriever.getInstance().reattachIfNecessary(userProfile));
+                    setupViewer(EntityRetriever.getInstance().reattachIfNecessary(demoUserProfile));
                 });
 
                 saveAction.setActionListener(event -> {
@@ -278,9 +278,9 @@ public class UserProfileApp extends SearchUIApp
                             {
                                 // Editor indicated data is valid, commit the UI
                                 /// data to the UserProfile and attempt to save it.
-                                final UserProfile commitValue = propertyEditor.commitValue();
+                                final DemoUserProfile commitValue = propertyEditor.commitValue();
                                 assert commitValue != null;
-                                _userProfileDAO.saveUserProfile(commitValue);
+                                _demoUserProfileDAO.saveUserProfile(commitValue);
                                 success = true;
                             }
                             else success=true;
@@ -311,18 +311,18 @@ public class UserProfileApp extends SearchUIApp
      * Setup the viewer by wiring in the necessary controls to switch to
      * the editor View.
      *
-     * @param userProfile the user profile.
+     * @param demoUserProfile the user profile.
      */
-    void setupViewer(final UserProfile userProfile)
+    void setupViewer(final DemoUserProfile demoUserProfile)
     {
         // This is very similar to setupEditor - just a little less complex.
-        getActiveSearchUI().getWorkspace().addUITask(new AbstractUITask("up#" + userProfile.getId())
+        getActiveSearchUI().getWorkspace().addUITask(new AbstractUITask("up#" + demoUserProfile.getId())
         {
             @Override
             public TextSource getLabel()
             {
                 return createText("User Profile - " + _getName(
-                    EntityRetriever.getInstance().reattachIfNecessary(userProfile)
+                    EntityRetriever.getInstance().reattachIfNecessary(demoUserProfile)
                 ));
             }
 
@@ -330,7 +330,7 @@ public class UserProfileApp extends SearchUIApp
             public Component createTaskUI(LocaleContext localeContext)
             {
                 final Container viewerWrapper = Container.of(HTMLElement.div, "property-wrapper");
-                UserProfileViewer viewer = new UserProfileViewer(userProfile);
+                DemoUserProfileViewer viewer = new DemoUserProfileViewer(demoUserProfile);
 
                 // We are only putting actions at the top of this UI - no bottom actions -
                 /// because the viewer UI is much shorter than the editor UI and is likely
@@ -344,7 +344,7 @@ public class UserProfileApp extends SearchUIApp
 
                 editBtn.addActionListener(event -> {
                     viewerWrapper.close();
-                    setupEditor(EntityRetriever.getInstance().reattachIfNecessary(userProfile));
+                    setupEditor(EntityRetriever.getInstance().reattachIfNecessary(demoUserProfile));
                 });
                 return viewerWrapper;
             }
@@ -393,9 +393,9 @@ public class UserProfileApp extends SearchUIApp
                 .withName("name")
                 .withTableColumn(new FixedValueColumn().withColumnName(CommonColumnText.NAME))
                 .withTableCellRenderer(new CustomCellRenderer("", input -> {
-                    UserProfile userProfile = (UserProfile) input;
-                    if (userProfile == null || userProfile.getName() == null) return null;
-                    return _getName(userProfile);
+                    DemoUserProfile demoUserProfile = (DemoUserProfile) input;
+                    if (demoUserProfile == null || demoUserProfile.getName() == null) return null;
+                    return _getName(demoUserProfile);
                 }))
                 .withOrderBy(new QLOrderByImpl()
                 {
@@ -412,9 +412,9 @@ public class UserProfileApp extends SearchUIApp
                 .withName("emailAddress")
                 .withTableColumn(new FixedValueColumn().withColumnName(CommonColumnText.EMAIL))
                 .withTableCellRenderer(new CustomCellRenderer("", input -> {
-                    UserProfile userProfile = (UserProfile) input;
-                    if (userProfile == null || userProfile.getEmailAddress() == null) return null;
-                    return userProfile.getEmailAddress();
+                    DemoUserProfile demoUserProfile = (DemoUserProfile) input;
+                    if (demoUserProfile == null || demoUserProfile.getEmailAddress() == null) return null;
+                    return demoUserProfile.getEmailAddress();
                 }))
                 .withOrderBy(new QLOrderByImpl("emailAddress"))
         );
@@ -434,7 +434,7 @@ public class UserProfileApp extends SearchUIApp
         SearchSupplierImpl searchSupplier = new SearchSupplierImpl();
         searchSupplier.setName(UserProfileAppLOK.SEARCHSUPPLIER_NAME());
         searchSupplier.setDescription(UserProfileAppLOK.SEARCHSUPPLIER_DESCRIPTION());
-        searchSupplier.setBuilderSupplier(() -> new QLBuilderImpl(UserProfile.class, "userProfile"));
+        searchSupplier.setBuilderSupplier(() -> new QLBuilderImpl(DemoUserProfile.class, "userProfile"));
         searchSupplier.setSearchModel(searchModel);
 
 
@@ -444,12 +444,12 @@ public class UserProfileApp extends SearchUIApp
 
     /**
      * Get the name.
-     * @param userProfile the user profile.
+     * @param demoUserProfile the user profile.
      * @return  the name or an empty string.
      */
-    private static String _getName(UserProfile userProfile)
+    private static String _getName(DemoUserProfile demoUserProfile)
     {
-        final Name name = userProfile.getName();
+        final Name name = demoUserProfile.getName();
         if(name != null)
         {
             final boolean lastNameExists = !isEmptyString(name.getLast());
@@ -478,20 +478,20 @@ public class UserProfileApp extends SearchUIApp
         {
             case new_instance:
             case lead_selection:
-                UserProfile userProfile = context.getData();
-                if(userProfile != null)
-                    _userProfileDAO.deleteUserProfile(userProfile);
+                DemoUserProfile demoUserProfile = context.getData();
+                if(demoUserProfile != null)
+                    _demoUserProfileDAO.deleteUserProfile(demoUserProfile);
                 break;
             case selection:
                 final QLBuilder selectionQLBuilder = searchUI.getSelectionQLBuilder();
                 if(selectionQLBuilder == null)
-                    _userProfileDAO.deleteUserProfiles(searchUI.getSelection());
+                    _demoUserProfileDAO.deleteUserProfiles(searchUI.getSelection());
                 else
-                    _userProfileDAO.deleteUserProfiles(selectionQLBuilder);
+                    _demoUserProfileDAO.deleteUserProfiles(selectionQLBuilder);
                 break;
             case search:
                 final QLBuilder currentSearchQLBuilder = searchUI.getCurrentSearchQLBuilder();
-                _userProfileDAO.deleteUserProfiles(currentSearchQLBuilder);
+                _demoUserProfileDAO.deleteUserProfiles(currentSearchQLBuilder);
                 _logger.warn("Not viewing all profiles that match search.");
                 break;
             default:break;
@@ -509,9 +509,9 @@ public class UserProfileApp extends SearchUIApp
 
             case new_instance:
             case lead_selection:
-                UserProfile userProfile = context.getData();
-                if(userProfile != null)
-                    setupEditor(userProfile);
+                DemoUserProfile demoUserProfile = context.getData();
+                if(demoUserProfile != null)
+                    setupEditor(demoUserProfile);
                 else
                     _logger.warn("No data for " + context);
                 break;
@@ -535,9 +535,9 @@ public class UserProfileApp extends SearchUIApp
         {
             case new_instance:
             case lead_selection:
-                UserProfile userProfile = context.getData();
-                if(userProfile != null)
-                    setupViewer(userProfile);
+                DemoUserProfile demoUserProfile = context.getData();
+                if(demoUserProfile != null)
+                    setupViewer(demoUserProfile);
                 else
                     _logger.warn("No data for " + context);
                 break;

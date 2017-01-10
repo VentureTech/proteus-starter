@@ -16,7 +16,7 @@ package com.example.app.ui;
  *
  * @author Russ Tennant (russ@i2rd.com)
  */
-public final class UserProfileApplicationFunctions
+public final class DemoUserProfileApplicationFunctions
 {
 
     /** APPLICATION_NAME. */
@@ -43,7 +43,7 @@ public final class UserProfileApplicationFunctions
     /**
      * Instantiates a new User profile application functions.
      */
-    private UserProfileApplicationFunctions()
+    private DemoUserProfileApplicationFunctions()
     {
     }
 }

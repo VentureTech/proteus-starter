@@ -11,8 +11,8 @@
 
 package com.example.app.ui;
 
-import com.example.app.model.UserProfile;
-import com.example.app.model.UserProfileDAO;
+import com.example.app.model.DemoUserProfile;
+import com.example.app.model.DemoUserProfileDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -31,7 +31,7 @@ import net.proteusframework.ui.management.URLProperty;
 import net.proteusframework.ui.management.nav.NavigationAction;
 import net.proteusframework.ui.miwt.util.CommonActions;
 
-import static com.example.app.ui.UserProfileApplicationFunctions.*;
+import static com.example.app.ui.DemoUserProfileApplicationFunctions.*;
 import static com.example.app.ui.UserProfilePropertyEditorLOK.COMPONENT_NAME;
 
 /**
@@ -51,15 +51,15 @@ import static com.example.app.ui.UserProfilePropertyEditorLOK.COMPONENT_NAME;
     description = "Editor For UserProfiles",
     urlConfigDef = @URLConfigDef(
         name = USER_PROFILE_URL_CONFIG,
-        properties = {@URLProperty(name = URL_PROP_PROFILE, type = UserProfile.class)},
+        properties = {@URLProperty(name = URL_PROP_PROFILE, type = DemoUserProfile.class)},
         pathInfoPattern = "/{profile}"
     )
 )
-public class UserProfilePropertyEditor extends MIWTPageElementModelPropertyEditor<UserProfile>
+public class DemoUserProfilePropertyEditor extends MIWTPageElementModelPropertyEditor<DemoUserProfile>
 {
     /** DAO. */
     @Autowired
-    private UserProfileDAO _userProfileDAO;
+    private DemoUserProfileDAO _demoUserProfileDAO;
     /** Service. */
     @Autowired
     private ClassPathResourceLibraryHelper _classPathResourceLibraryHelper;
@@ -67,9 +67,9 @@ public class UserProfilePropertyEditor extends MIWTPageElementModelPropertyEdito
     /**
      * Instantiates a new User profile property editor.
      */
-    public UserProfilePropertyEditor()
+    public DemoUserProfilePropertyEditor()
     {
-        super(new UserProfileEditor());
+        super(new DemoUserProfileEditor());
         addClassName("user-profile-editor");
         setName(COMPONENT_NAME());
         addCategory(CmsCategory.UserManagement);
@@ -93,7 +93,7 @@ public class UserProfilePropertyEditor extends MIWTPageElementModelPropertyEdito
         saveAction.onCondition(input ->
                 persist(userProfile -> {
                     assert userProfile != null;
-                    _userProfileDAO.saveUserProfile(userProfile);
+                    _demoUserProfileDAO.saveUserProfile(userProfile);
                     return Boolean.TRUE;
                 })
         );

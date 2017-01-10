@@ -11,8 +11,8 @@
 
 package com.example.app.ui;
 
-import com.example.app.model.UserProfile;
-import com.example.app.model.UserProfileDAO;
+import com.example.app.model.DemoUserProfile;
+import com.example.app.model.DemoUserProfileDAO;
 import com.google.common.base.Preconditions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,16 +65,16 @@ import static net.proteusframework.core.locale.TextSources.createText;
  * @author Russ Tennant (russ@venturetech.net)
  */
 @Configurable
-public class UserProfileViewer extends Container
+public class DemoUserProfileViewer extends Container
 {
     /** Logger. */
-    private static final Logger _logger = LogManager.getLogger(UserProfileViewer.class);
+    private static final Logger _logger = LogManager.getLogger(DemoUserProfileViewer.class);
     /** Profile. */
-    private final UserProfile _userProfile;
+    private final DemoUserProfile _demoUserProfile;
 
     /** DAO. */
     @Autowired
-    private UserProfileDAO _userProfileDAO;
+    private DemoUserProfileDAO _demoUserProfileDAO;
 
     /**
      * Get the about me.
@@ -137,11 +137,11 @@ public class UserProfileViewer extends Container
      *
      * @param profile the profile.
      */
-    public UserProfileViewer(UserProfile profile)
+    public DemoUserProfileViewer(DemoUserProfile profile)
     {
         super();
         Preconditions.checkNotNull(profile);
-        _userProfile = profile;
+        _demoUserProfile = profile;
     }
 
     @Override
@@ -169,9 +169,9 @@ public class UserProfileViewer extends Container
         /// Hibernate/JPA entities are a great example of this pattern. You always need to re-attach
         /// entities before using them, so we should always call getUserProfile() in the context
         /// of handling an event. Note: our getUserProfile() method re-attaches the entity.
-        UserProfile userProfile = getUserProfile();
+        DemoUserProfile demoUserProfile = getDemoUserProfile();
 
-        Name name = userProfile.getName();
+        Name name = demoUserProfile.getName();
         // You can use a Field for displaying non-internationalized content.
         /// It is desirable to do this since you don't need to create a LocalizedText.
         /// However, you cannot change the HTMLElement of a Field at this time,
@@ -188,7 +188,7 @@ public class UserProfileViewer extends Container
         if (isEmptyString(nameSuffix.getText())) nameSuffix.setVisible(false);
 
         // Address
-        Address address = userProfile.getPostalAddress();
+        Address address = demoUserProfile.getPostalAddress();
         // Address lines are always on their own line so we make sure they are enclosed by a block element like a DIV..
         final Label addressLine1 = new Label();
         addressLine1.withHTMLElement(HTMLElement.div).addClassName("prop").addClassName("address-line");
@@ -216,21 +216,21 @@ public class UserProfileViewer extends Container
         postalCode.addClassName("prop").addClassName("postal_code");
 
         // Other Contact
-        final Field phoneNumber = new Field(userProfile.getPhoneNumber(), false);
-        final Field emailAddress = new Field(userProfile.getEmailAddress(), false);
+        final Field phoneNumber = new Field(demoUserProfile.getPhoneNumber(), false);
+        final Field emailAddress = new Field(demoUserProfile.getEmailAddress(), false);
 
         // Social Contact
-        final URILink twitterLink = userProfile.getTwitterLink() != null
-            ? new URILink(_userProfileDAO.toURI(userProfile.getTwitterLink(), null)) : null;
-        final URILink facebookLink = userProfile.getFacebookLink() != null
-            ? new URILink(_userProfileDAO.toURI(userProfile.getFacebookLink(), null)) : null;
-        final URILink linkedInLink = userProfile.getLinkedInLink() != null
-            ? new URILink(_userProfileDAO.toURI(userProfile.getLinkedInLink(), null)) : null;
+        final URILink twitterLink = demoUserProfile.getTwitterLink() != null
+            ? new URILink(_demoUserProfileDAO.toURI(demoUserProfile.getTwitterLink(), null)) : null;
+        final URILink facebookLink = demoUserProfile.getFacebookLink() != null
+            ? new URILink(_demoUserProfileDAO.toURI(demoUserProfile.getFacebookLink(), null)) : null;
+        final URILink linkedInLink = demoUserProfile.getLinkedInLink() != null
+            ? new URILink(_demoUserProfileDAO.toURI(demoUserProfile.getLinkedInLink(), null)) : null;
 
         // We are going to output HTML received from the outside, so we need to sanitize it first for security reasons.
         /// Sometimes you'll do this sanitation prior to persisting the data. It depends on whether or not you need to
         /// keep the original unsanitized HTML around.
-        String processedHTML = userProfile.getAboutMeProse();
+        String processedHTML = demoUserProfile.getAboutMeProse();
         if (!isEmptyString(processedHTML))
         {
             // Process the HTML converting links as necessary (adding JSESSIONID(s)
@@ -258,7 +258,7 @@ public class UserProfileViewer extends Container
         }
         final HTMLComponent aboutMeProse = new HTMLComponent(processedHTML);
         Component aboutMeVideo = null;
-        URL videoLink = userProfile.getAboutMeVideoLink();
+        URL videoLink = demoUserProfile.getAboutMeVideoLink();
         if (videoLink != null)
         {
             // There are several ways to link to media (Youtube video URL, Vimeo video URL, Flickr URL,
@@ -267,7 +267,7 @@ public class UserProfileViewer extends Container
             /// You can embed it. See http://oembed.com/ for a common protocol for doing this.
             /// If the link is to the media itself, you can create a player for it.
             /// Below is an example of creating a link to the video as well as a player.
-            final URI videoLinkURI = _userProfileDAO.toURI(videoLink, null);
+            final URI videoLinkURI = _demoUserProfileDAO.toURI(videoLink, null);
             URILink videoLinkComponent = new URILink(videoLinkURI, createText("My Video"));
             videoLinkComponent.setTarget("_blank");
             aboutMeVideo = getAboutMe(videoLink, videoLinkURI, videoLinkComponent);
@@ -279,7 +279,7 @@ public class UserProfileViewer extends Container
             }
         }
         ImageComponent picture = null;
-        final FileEntity userProfilePicture = userProfile.getPicture();
+        final FileEntity userProfilePicture = demoUserProfile.getPicture();
         if (userProfilePicture != null)
         {
             picture = new ImageComponent(new Image(userProfilePicture));
@@ -452,10 +452,10 @@ public class UserProfileViewer extends Container
      *
      * @return the attached profile.
      */
-    UserProfile getUserProfile()
+    DemoUserProfile getDemoUserProfile()
     {
         // Since we aren't actually persisting anything, this doesn't do anything other than return _userProfile
         /// It's just meant to demonstrate how to do it when you are using entities persisted in data store.
-        return EntityRetriever.getInstance().reattachIfNecessary(_userProfile);
+        return EntityRetriever.getInstance().reattachIfNecessary(_demoUserProfile);
     }
 }
