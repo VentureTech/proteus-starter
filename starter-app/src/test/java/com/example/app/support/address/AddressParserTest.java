@@ -20,8 +20,8 @@ import java.util.regex.Pattern;
 
 import com.i2rd.unit.test.TestGroups;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 
 public class AddressParserTest
