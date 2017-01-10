@@ -39,7 +39,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,7 +47,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.i2rd.cms.util.AbstractShellCommands;
-import com.i2rd.hibernate.task.HibernateSpringShellCommands;
 
 import net.proteusframework.cms.label.Label;
 import net.proteusframework.cms.label.LabelDomainProvider;
@@ -296,62 +294,6 @@ public class ProjectShellCommands extends AbstractShellCommands
         _shellCommandsUtil.setShellLogger(shellLogger);
     }
 
-    /**
-     * Refreshes the database by dropping the app and audit tables, as well as hibernate_sequence
-     *
-     * @throws IOException if the shell screws up
-     */
-    //    @CliCommand(value = "refresh database", help = "Drops the app and audit schemas, and clears out the automation log so
-    // that all"
-    //        + " data conversions for the project can be re-ran, then re-runs all project data conversions.")
-    public void refreshDatabase() throws IOException
-    {
-        Boolean confirm = _shellCommandsUtil.getConfirmation(
-            "Are you sure you want to drop all application data, and all audit data?");
-        if (confirm)
-        {
-            confirm = _shellCommandsUtil.getConfirmation("Are you REALLY sure?  This cannot be undone.");
-            if (confirm)
-            {
-                hibernateSessionHelper.beginTransaction();
-                boolean success = false;
-                try
-                {
-                    String schemaDrop = "drop schema %s cascade";
-                    hibernateSessionHelper.getSession().createSQLQuery(
-                        String.format(schemaDrop, ProjectConfig.PROJECT_SCHEMA))
-                        .executeUpdate();
-                    hibernateSessionHelper.getSession().createSQLQuery(
-                        String.format(schemaDrop, ProjectConfig.ENVERS_SCHEMA))
-                        .executeUpdate();
-                    hibernateSessionHelper.getSession().createSQLQuery(
-                        "DROP SEQUENCE hibernate_sequence")
-                        .executeUpdate();
-                    hibernateSessionHelper.getSession().createSQLQuery(
-                        String.format("delete from automation_task_log where identifier='%s'", ProjectConfig.DC_IDENTIFIER))
-                        .executeUpdate();
-                    success = true;
-                }
-                finally
-                {
-                    if (success)
-                    {
-                        hibernateSessionHelper.commitTransaction();
-                        HibernateSpringShellCommands hssc = new HibernateSpringShellCommands();
-                        try
-                        {
-                            hssc.runDataConversions(false, ProjectConfig.DC_IDENTIFIER, -1, "ldp-shell", null, false);
-                        }
-                        catch (SQLException e)
-                        {
-                            _logger.error("An error occurred automatically re-running data conversions.", e);
-                        }
-                    }
-                    else hibernateSessionHelper.recoverableRollbackTransaction();
-                }
-            }
-        }
-    }
 }
 
 class MembershipTypeData

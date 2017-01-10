@@ -68,8 +68,6 @@ public class ProjectConfig implements ApplicationListener<ContextRefreshedEvent>
     public static final String DISCRIMINATOR_COLUMN = "disc_type";
     /** The database schema for envers audit tables */
     public static final String ENVERS_SCHEMA = "audit";
-    /** Data conversion identifier. */
-    public static final String DC_IDENTIFIER = "starter-app";
     /** Logger. */
     private static final Logger _logger = LogManager.getLogger(ProjectConfig.class);
     /*

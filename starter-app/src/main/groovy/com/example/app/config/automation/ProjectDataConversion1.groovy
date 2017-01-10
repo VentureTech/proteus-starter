@@ -11,16 +11,9 @@
 
 package com.example.app.config.automation
 
-import com.example.app.config.ProjectConfig
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
-import net.proteusframework.core.automation.DataConversion
-import net.proteusframework.core.automation.TaskQualifier
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Lazy
-
-import static net.proteusframework.core.automation.SQLDataConversion.createSchemaUpdate
-
 
 /**
  * Version 1 data conversions.
@@ -34,7 +27,7 @@ import static net.proteusframework.core.automation.SQLDataConversion.createSchem
 class ProjectDataConversion1
 {
     /** IDENTIFIER constant for LDP data conversions */
-    private static final String IDENTIFIER = ProjectConfig.DC_IDENTIFIER;
+    private static final String IDENTIFIER = 'starter-app'
 
     /**
      * Data conversion #1
