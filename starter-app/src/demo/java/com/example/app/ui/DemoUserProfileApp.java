@@ -361,7 +361,7 @@ public class DemoUserProfileApp extends SearchUIApp
     {
         SearchModelImpl searchModel = new SearchModelImpl();
         searchModel.setName("UserProfile Search");
-        searchModel.setDisplayName(UserProfileAppLOK.SEARCHSUPPLIER_NAME());
+        searchModel.setDisplayName(DemoUserProfileAppLOK.SEARCHSUPPLIER_NAME());
         searchModel.getConstraints().add(new SimpleConstraint("keyword")
             {
                 @Override
@@ -432,8 +432,8 @@ public class DemoUserProfileApp extends SearchUIApp
         searchModel.getResultColumns().add(actionColumn);
 
         SearchSupplierImpl searchSupplier = new SearchSupplierImpl();
-        searchSupplier.setName(UserProfileAppLOK.SEARCHSUPPLIER_NAME());
-        searchSupplier.setDescription(UserProfileAppLOK.SEARCHSUPPLIER_DESCRIPTION());
+        searchSupplier.setName(DemoUserProfileAppLOK.SEARCHSUPPLIER_NAME());
+        searchSupplier.setDescription(DemoUserProfileAppLOK.SEARCHSUPPLIER_DESCRIPTION());
         searchSupplier.setBuilderSupplier(() -> new QLBuilderImpl(DemoUserProfile.class, "userProfile"));
         searchSupplier.setSearchModel(searchModel);
 

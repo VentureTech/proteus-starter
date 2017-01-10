@@ -29,7 +29,7 @@ import net.proteusframework.ui.management.nav.NavigationAction;
 import net.proteusframework.ui.miwt.util.CommonActions;
 
 import static com.example.app.ui.DemoUserProfileApplicationFunctions.*;
-import static com.example.app.ui.UserProfilePropertyViewerLOK.COMPONENT_NAME;
+import static com.example.app.ui.DemoUserProfilePropertyViewerLOK.COMPONENT_NAME;
 
 /**
  * PropertyViewer for UserProfile.

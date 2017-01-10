@@ -40,7 +40,7 @@ import net.proteusframework.ui.search.SearchUIOperationContext;
 import net.proteusframework.ui.search.SearchUIOperationHandler;
 
 import static com.example.app.ui.DemoUserProfileApplicationFunctions.*;
-import static com.example.app.ui.UserProfileListingLOK.COMPONENT_NAME;
+import static com.example.app.ui.DemoUserProfileListingLOK.COMPONENT_NAME;
 
 /**
  * User profile listing UI.
