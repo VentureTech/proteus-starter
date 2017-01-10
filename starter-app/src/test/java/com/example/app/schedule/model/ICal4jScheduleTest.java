@@ -19,15 +19,13 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Period;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAmount;
 import java.util.List;
 
-import com.i2rd.unit.test.TestGroups;
-
 import static java.time.ZoneOffset.UTC;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 
 /**
  * Tests.
@@ -52,7 +50,7 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = TestGroups.UNIT)
+    @Test(groups = "unit")
     public void testScheduleLastDayOfMonth() throws Exception
     {
         Instant startTime = Instant.EPOCH;
@@ -76,7 +74,7 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = TestGroups.UNIT)
+    @Test(groups = "unit")
     public void testScheduleDoWDoM() throws Exception
     {
         Instant startTime = Instant.EPOCH;
@@ -100,10 +98,9 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = TestGroups.UNIT)
+    @Test(groups = "unit")
     public void testSchedulePast() throws Exception
     {
-        Duration twoDays = Duration.ofDays(2);
         Instant startTime = Instant.EPOCH;
         Duration duration = Duration.ofDays(1);
         ICal4jSchedule schedule = new ICal4jSchedule();
@@ -113,18 +110,19 @@ public class ICal4jScheduleTest
         schedule.setRecurrenceRule(rrule);
         ScheduleContext scheduleContext = new ScheduleContext(duration, startTime);
         List<Instant> instantList = schedule.schedule(scheduleContext);
-        assertTrue(instantList.isEmpty());
-        duration = Duration.ofDays(3);
+        assertEquals(instantList.size(), 1);
+        duration = Duration.ofDays(4);
         scheduleContext = new ScheduleContext(duration, startTime);
         instantList = schedule.schedule(scheduleContext);
-        assertEquals(instantList.size(), 1);
-        assertEquals(instantList.get(0), Instant.EPOCH.minus(Duration.ofDays(1)));
+        assertEquals(instantList.size(), 2);
+        assertEquals(instantList.get(0), Instant.EPOCH.minus(Duration.ofDays(4)));
+        assertEquals(instantList.get(1), Instant.EPOCH.minus(Duration.ofDays(1)));
 
         duration = Duration.ofDays(30);
         scheduleContext = new ScheduleContext(duration, startTime);
         instantList = schedule.schedule(scheduleContext);
         assertEquals(instantList.size(), 10);
-        assertEquals(instantList.get(9), Instant.EPOCH.minus(Duration.ofDays(1)));
+        assertEquals(instantList.get(9), Instant.EPOCH.minus(Duration.ofDays(3)));
     }
 
     /**
@@ -132,7 +130,7 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = TestGroups.UNIT)
+    @Test(groups = "unit")
     public void testSchedulePast2() throws Exception
     {
         Period eighteenMonths = Period.ofMonths(18);
@@ -153,7 +151,7 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = TestGroups.UNIT)
+    @Test(groups = "unit")
     public void testScheduleRepeatMonth() throws Exception
     {
         TemporalAmount twelveHours = Duration.ofHours(12);
@@ -162,14 +160,14 @@ public class ICal4jScheduleTest
         TemporalAmount duration = Period.ofYears(1);
         ICal4jSchedule schedule = new ICal4jSchedule();
         schedule.setRepeat(true);
-        String rrule = "FREQ=MONTHLY;BYSETPOS=-1;BYHOUR=12";
+        String rrule = "FREQ=MONTHLY;BYMONTHDAY=-1;BYHOUR=12";
         schedule.setRecurrenceRule(rrule);
         ScheduleContext scheduleContext = new ScheduleContext(duration, startTime);
         assertEquals(schedule.schedule(scheduleContext).size(), 12);
         assertEquals(schedule.schedule(scheduleContext).get(0),
             Instant.EPOCH.plus(twelveHours).plus(thirtyDays));
         assertEquals(schedule.schedule(scheduleContext).get(11),
-            LocalDateTime.of(1970, Month.DECEMBER, 31, 12, 0).toInstant(ZoneOffset.UTC));
+            LocalDateTime.of(1970, Month.DECEMBER, 31, 12, 0).toInstant(UTC));
     }
 
 
@@ -178,7 +176,7 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = TestGroups.UNIT)
+    @Test(groups = "unit")
     public void testScheduleRepeatMonthSomeWeekdays() throws Exception
     {
         Instant startTime = Instant.EPOCH;
@@ -190,9 +188,9 @@ public class ICal4jScheduleTest
         ScheduleContext scheduleContext = new ScheduleContext(duration, startTime);
         assertEquals(schedule.schedule(scheduleContext).size(), 261);
         assertEquals(schedule.schedule(scheduleContext).get(2),
-            LocalDateTime.of(1970, Month.JANUARY, 5, 3, 30).toInstant(ZoneOffset.UTC));
+            LocalDateTime.of(1970, Month.JANUARY, 5, 3, 30).toInstant(UTC));
         assertEquals(schedule.schedule(scheduleContext).get(260),
-            LocalDateTime.of(1970, Month.DECEMBER, 31, 3, 30).toInstant(ZoneOffset.UTC));
+            LocalDateTime.of(1970, Month.DECEMBER, 31, 3, 30).toInstant(UTC));
     }
 
     /**
@@ -200,22 +198,22 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = TestGroups.UNIT)
+    @Test(groups = "unit")
     public void testScheduleRepeatMonthNoWeekdays() throws Exception
     {
         Instant startTime = Instant.EPOCH;
         TemporalAmount duration = Period.ofYears(1);
         ICal4jSchedule schedule = new ICal4jSchedule();
         schedule.setRepeat(true);
-        String rrule = "FREQ=MONTHLY;BYHOUR=3;BYMINUTE=30";
+        String rrule = "FREQ=MONTHLY;BYMONTHDAY=-1;BYHOUR=3;BYMINUTE=30";
         schedule.setRecurrenceRule(rrule);
         ScheduleContext scheduleContext = new ScheduleContext(duration, startTime);
         final List<Instant> instantList = schedule.schedule(scheduleContext);
         assertEquals(instantList.size(), 12);
         assertEquals(instantList.get(0),
-            LocalDateTime.of(1970, Month.JANUARY, 31, 3, 30).toInstant(ZoneOffset.UTC));
+            LocalDateTime.of(1970, Month.JANUARY, 31, 3, 30).toInstant(UTC));
         assertEquals(instantList.get(11),
-            LocalDateTime.of(1970, Month.DECEMBER, 31, 3, 30).toInstant(ZoneOffset.UTC));
+            LocalDateTime.of(1970, Month.DECEMBER, 31, 3, 30).toInstant(UTC));
     }
 
     /**
@@ -223,7 +221,7 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = TestGroups.UNIT)
+    @Test(groups = "unit")
     public void testScheduleRepeatMonthSomeWeekdays2() throws Exception
     {
         Instant startTime = Instant.EPOCH;
@@ -233,11 +231,11 @@ public class ICal4jScheduleTest
         String rrule = "FREQ=MONTHLY;INTERVAL=2;BYDAY=MO,TU,WE,TH,FR;BYHOUR=3;BYMINUTE=30";
         schedule.setRecurrenceRule(rrule);
         ScheduleContext scheduleContext = new ScheduleContext(duration, startTime);
-        assertEquals(schedule.schedule(scheduleContext).size(), 130);
+        assertEquals(schedule.schedule(scheduleContext).size(), 131);
         assertEquals(schedule.schedule(scheduleContext).get(2),
-            LocalDateTime.of(1970, Month.FEBRUARY, 4, 3, 30).toInstant(ZoneOffset.UTC));
-        assertEquals(schedule.schedule(scheduleContext).get(125),
-            LocalDateTime.of(1970, Month.DECEMBER, 25, 3, 30).toInstant(ZoneOffset.UTC));
+            LocalDateTime.of(1970, Month.JANUARY, 5, 3, 30).toInstant(UTC));
+        assertEquals(schedule.schedule(scheduleContext).get(126),
+            LocalDateTime.of(1970, Month.NOVEMBER, 24, 3, 30).toInstant(UTC));
     }
 
     /**
@@ -245,7 +243,7 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = TestGroups.UNIT)
+    @Test(groups = "unit")
     public void testScheduleRepeatYear() throws Exception
     {
         Instant startTime = Instant.EPOCH;
@@ -258,7 +256,7 @@ public class ICal4jScheduleTest
         final List<Instant> instantList = schedule.schedule(scheduleContext);
         assertEquals(instantList.size(), 1);
         assertEquals(instantList.get(0),
-            LocalDateTime.of(1970, Month.JANUARY, 20, 12, 0).toInstant(ZoneOffset.UTC));
+            LocalDateTime.of(1970, Month.JANUARY, 20, 12, 0).toInstant(UTC));
     }
 
     /**
@@ -266,7 +264,7 @@ public class ICal4jScheduleTest
      *
      * @throws Exception the exception
      */
-    @Test(groups = TestGroups.UNIT)
+    @Test(groups = "unit")
     public void testScheduleRepeatYearWeek() throws Exception
     {
         Instant startTime = Instant.EPOCH;
@@ -279,8 +277,8 @@ public class ICal4jScheduleTest
         final List<Instant> instantList = schedule.schedule(scheduleContext);
         assertEquals(instantList.size(), 5);
         assertEquals(instantList.get(0),
-            LocalDateTime.of(1970, Month.FEBRUARY, 2, 12, 0).toInstant(ZoneOffset.UTC));
+            LocalDateTime.of(1970, Month.FEBRUARY, 2, 12, 0).toInstant(UTC));
         assertEquals(instantList.get(4),
-            LocalDateTime.of(1970, Month.FEBRUARY, 27, 12, 0).toInstant(ZoneOffset.UTC));
+            LocalDateTime.of(1970, Month.FEBRUARY, 27, 12, 0).toInstant(UTC));
     }
 }

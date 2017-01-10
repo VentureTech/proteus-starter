@@ -1,7 +1,7 @@
 @import "../config/base-vars";
-@import "../../../../bower_components/bootstrap/scss/modal";
-@import "../../../../bower_components/bootstrap/scss/mixins";
-@import "../../../../bower_components/bootstrap/scss/mixins/buttons";
+@import "../../../../../bower_components/bootstrap/scss/modal";
+@import "../../../../../bower_components/bootstrap/scss/mixins";
+@import "../../../../../bower_components/bootstrap/scss/mixins/buttons";
 
 div.window.dialog /*specificity*/ {
 	padding: 0;

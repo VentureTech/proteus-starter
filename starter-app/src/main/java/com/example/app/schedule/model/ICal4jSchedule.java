@@ -130,7 +130,7 @@ public class ICal4jSchedule extends Schedule
         final TemporalAmount duration = scheduleContext.getDuration();
         LocalDateTime endTimeInclusive = LocalDateTime.from(getTemporalDirection() == TemporalDirection.FUTURE
             ? startTime.plus(duration)
-            : startTime.minus(duration));
+            : startTime.minus(duration)).atOffset(UTC).toLocalDateTime();
         if (getTemporalDirection() == TemporalDirection.PAST)
         {
             LocalDateTime swap = startTime;
@@ -152,12 +152,16 @@ public class ICal4jSchedule extends Schedule
         List<Instant> instantList = new ArrayList<>();
 
         final Date until = new Date(endTimeInclusive.toInstant(UTC).toEpochMilli());
-        if (isRepeat())
+        if(isRepeat())
             recur.setUntil(until);
         else
             recur.setCount(1);
         final Date start = new Date(startTime.toInstant(UTC).toEpochMilli());
-        final DateList dateList = recur.getDates(start, new Period(new DateTime(start), new DateTime(until)), Value.DATE_TIME);
+        DateTime periodStart = new DateTime(start);
+        periodStart.setUtc(true);
+        DateTime periodEnd = new DateTime(until);
+        periodEnd.setUtc(true);
+        final DateList dateList = recur.getDates(start, new Period(periodStart, periodEnd), Value.DATE_TIME);
         DateFormat parser = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
         parser.setTimeZone(AppUtil.UTC);
         for (Object dateObject : dateList)
@@ -166,7 +170,7 @@ public class ICal4jSchedule extends Schedule
             {
                 final java.util.Date date = parser.parse(dateObject.toString());
                 instantList.add(date.toInstant());
-                if (!isRepeat())
+                if(!isRepeat())
                     break;
             }
             catch (ParseException e)
