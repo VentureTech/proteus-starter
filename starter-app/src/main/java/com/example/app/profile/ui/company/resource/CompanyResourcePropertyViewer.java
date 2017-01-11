@@ -11,11 +11,11 @@
 
 package com.example.app.profile.ui.company.resource;
 
+import com.example.app.profile.model.repository.ResourceRepositoryItem;
 import com.example.app.profile.ui.ApplicationFunctions;
 import com.example.app.profile.ui.URLConfigurations;
+import com.example.app.profile.ui.URLProperties;
 import com.example.app.profile.ui.resource.AbstractProfileResourcePropertyViewer;
-import com.example.app.repository.model.ResourceRepositoryItem;
-import com.example.app.repository.ui.URLProperties;
 import com.example.app.support.ui.Application;
 
 import net.proteusframework.cms.category.CmsCategory;

@@ -78,7 +78,7 @@ import static net.proteusframework.core.locale.TextSources.createText;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.MEMBER_DATA)
 @Audited
 @I18NFile(
-    symbolPrefix = "com.lrlabs.model.profile.Membership",
+    symbolPrefix = "com.example.app.profile.model.membership.Membership",
     i18n = {
         @I18N(symbol = "Name", l10n = @L10N("{0} ({1})")),
         @I18N(symbol = "Description", l10n = @L10N("{0} assigned as {1} in {2} ({3})"))

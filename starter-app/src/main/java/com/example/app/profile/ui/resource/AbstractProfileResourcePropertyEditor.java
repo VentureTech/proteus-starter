@@ -13,17 +13,18 @@ package com.example.app.profile.ui.resource;
 
 import com.example.app.profile.model.Profile;
 import com.example.app.profile.model.ProfileDAO;
+import com.example.app.profile.model.repository.Repository;
+import com.example.app.profile.model.repository.RepositoryDAO;
+import com.example.app.profile.model.repository.RepositoryItemRelation;
+import com.example.app.profile.model.repository.RepositoryItemRelationType;
+import com.example.app.profile.model.repository.ResourceRepositoryItem;
+import com.example.app.profile.model.resource.ResourceDAO;
+import com.example.app.profile.model.resource.ResourceType;
 import com.example.app.profile.model.user.User;
 import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.service.MembershipOperationProvider;
-import com.example.app.repository.model.Repository;
-import com.example.app.repository.model.RepositoryDAO;
-import com.example.app.repository.model.RepositoryItemRelation;
-import com.example.app.repository.model.RepositoryItemRelationType;
-import com.example.app.repository.model.ResourceRepositoryItem;
-import com.example.app.repository.ui.ResourceRepositoryItemValueEditor;
-import com.example.app.resource.model.ResourceDAO;
-import com.example.app.resource.model.ResourceType;
+import com.example.app.profile.ui.URLProperties;
+import com.example.app.profile.ui.repository.ResourceRepositoryItemValueEditor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Nullable;
@@ -200,7 +201,7 @@ public abstract class AbstractProfileResourcePropertyEditor extends MIWTPageElem
             public Map<String, Object> resolve(PropertyValueResolverParameter parameter)
             {
                 Map<String, Object> map = super.resolve(parameter);
-                map.put(com.example.app.repository.ui.URLProperties.REPOSITORY_ITEM, getSaved());
+                map.put(URLProperties.REPOSITORY_ITEM, getSaved());
                 return map;
             }
         });

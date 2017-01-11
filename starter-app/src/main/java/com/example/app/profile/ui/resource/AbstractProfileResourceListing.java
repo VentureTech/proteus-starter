@@ -11,18 +11,18 @@
 
 package com.example.app.profile.ui.resource;
 
+import com.example.app.profile.model.repository.Repository;
+import com.example.app.profile.model.repository.RepositoryItem;
+import com.example.app.profile.model.repository.RepositoryItemRelation;
+import com.example.app.profile.model.repository.RepositoryItemRelationType;
+import com.example.app.profile.model.repository.RepositoryItemStatus;
+import com.example.app.profile.model.repository.ResourceRepositoryItem;
+import com.example.app.profile.model.resource.Resource;
+import com.example.app.profile.model.resource.ResourceVisibility;
 import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.service.MembershipOperationProvider;
-import com.example.app.repository.model.Repository;
-import com.example.app.repository.model.RepositoryItem;
-import com.example.app.repository.model.RepositoryItemRelation;
-import com.example.app.repository.model.RepositoryItemRelationType;
-import com.example.app.repository.model.RepositoryItemStatus;
-import com.example.app.repository.model.ResourceRepositoryItem;
-import com.example.app.repository.ui.ResourceRepositoryItemValueViewer;
-import com.example.app.resource.model.Resource;
-import com.example.app.resource.model.ResourceVisibility;
-import com.example.app.resource.service.ResourceCategoryLabelProvider;
+import com.example.app.profile.service.resource.ResourceCategoryLabelProvider;
+import com.example.app.profile.ui.repository.ResourceRepositoryItemValueViewer;
 import com.example.app.support.service.AppUtil;
 import com.example.app.support.service.EntityIdCollector;
 import com.example.app.support.service.InstantDayComparator;

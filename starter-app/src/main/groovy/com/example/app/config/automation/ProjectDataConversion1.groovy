@@ -14,12 +14,13 @@ package com.example.app.config.automation
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Lazy
+import org.springframework.context.annotation.Profile
 
 /**
  * Version 1 data conversions.
  * @author Russ Tennant (russ@i2rd.com)
  */
-//@Profile({"automation", "com.example.app.1"})
+@Profile(["automation", "com.example.app.demo.1"])
 @Configuration
 @Lazy
 @SuppressFBWarnings(['SE_NO_SERIALVERSIONID', 'LI_LAZY_INIT_STATIC', 'MS_SHOULD_BE_FINAL'])

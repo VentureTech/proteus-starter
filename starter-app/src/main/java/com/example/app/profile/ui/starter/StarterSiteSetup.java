@@ -13,7 +13,7 @@ package com.example.app.profile.ui.starter;
 
 import com.example.app.profile.model.company.Company;
 import com.example.app.profile.model.company.CompanyStatus;
-import com.example.app.profile.model.starter.StarterSiteDAO;
+import com.example.app.profile.model.setup.SiteSetupDAO;
 import com.example.app.profile.model.user.User;
 import com.example.app.profile.ui.ApplicationFunctions;
 import com.example.app.profile.ui.URLConfigurations;
@@ -60,7 +60,7 @@ import static com.example.app.profile.ui.starter.StarterSiteSetupLOK.COMPONENT_N
 )
 public class StarterSiteSetup extends AbstractCompanyPropertyEditor
 {
-    @Autowired private StarterSiteDAO _starterSiteDAO;
+    @Autowired private SiteSetupDAO _siteSetupDAO;
 
     /**
      * Instantiates a new Starter site setup.
@@ -92,7 +92,7 @@ public class StarterSiteSetup extends AbstractCompanyPropertyEditor
     protected Runnable getPostSave()
     {
         return () -> {
-            _starterSiteDAO.getAdminsNeedingUser().forEach(p -> {
+            _siteSetupDAO.getAdminsNeedingUser().forEach(p -> {
                 User newUser = new User();
                 newUser.setPrincipal(p);
                 _companyDAO.addUserToCompany(getSaved(), newUser);
@@ -132,7 +132,7 @@ public class StarterSiteSetup extends AbstractCompanyPropertyEditor
     {
         super.configure(request);
 
-        if(!_starterSiteDAO.needsSetup())
+        if(!_siteSetupDAO.needsSetup())
         {
             NavigationDestination destination = new NavigationDestination(ApplicationFunctions.Company.MANAGEMENT);
             destination.setRecordNavigation(false);

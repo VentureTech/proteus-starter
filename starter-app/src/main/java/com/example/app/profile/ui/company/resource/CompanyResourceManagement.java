@@ -14,20 +14,21 @@ package com.example.app.profile.ui.company.resource;
 import com.example.app.profile.model.Profile;
 import com.example.app.profile.model.ProfileDAO;
 import com.example.app.profile.model.company.Company;
+import com.example.app.profile.model.repository.Repository;
+import com.example.app.profile.model.repository.RepositoryDAO;
+import com.example.app.profile.model.repository.RepositoryItemRelation;
+import com.example.app.profile.model.repository.RepositoryItemRelationType;
+import com.example.app.profile.model.repository.RepositoryItemStatus;
+import com.example.app.profile.model.repository.ResourceRepositoryItem;
+import com.example.app.profile.model.resource.Resource;
 import com.example.app.profile.model.user.User;
 import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.service.MembershipOperationProvider;
+import com.example.app.profile.service.resource.ResourceCategoryLabelProvider;
+import com.example.app.profile.service.resource.ResourceTagsLabelProvider;
+import com.example.app.profile.service.resource.ResourceTypeService;
 import com.example.app.profile.ui.ApplicationFunctions;
-import com.example.app.repository.model.Repository;
-import com.example.app.repository.model.RepositoryDAO;
-import com.example.app.repository.model.RepositoryItemRelation;
-import com.example.app.repository.model.RepositoryItemRelationType;
-import com.example.app.repository.model.RepositoryItemStatus;
-import com.example.app.repository.model.ResourceRepositoryItem;
-import com.example.app.resource.model.Resource;
-import com.example.app.resource.service.ResourceCategoryLabelProvider;
-import com.example.app.resource.service.ResourceTagsLabelProvider;
-import com.example.app.resource.service.ResourceTypeService;
+import com.example.app.profile.ui.URLProperties;
 import com.example.app.support.service.AppUtil;
 import com.example.app.support.ui.Application;
 import com.example.app.support.ui.UIPreferences;
@@ -191,12 +192,12 @@ public class CompanyResourceManagement extends MIWTPageElementModelHistoryContai
             item.addActionListener(ev -> {
                 NavigationDestination addDest = new NavigationDestination(ApplicationFunctions.Company.Resource.EDIT);
                 HashMap<String, Object> props = new HashMap<>();
-                props.put(com.example.app.repository.ui.URLProperties.REPOSITORY_ITEM, URLConfigPropertyConverter.ENTITY_NEW);
-                props.put(com.example.app.resource.ui.URLProperties.RESOURCE_TYPE, resourceType);
-                props.put(com.example.app.repository.ui.URLProperties.REPOSITORY_OWNER, _adminProfile);
+                props.put(URLProperties.REPOSITORY_ITEM, URLConfigPropertyConverter.ENTITY_NEW);
+                props.put(URLProperties.RESOURCE_TYPE, resourceType);
+                props.put(URLProperties.REPOSITORY_OWNER, _adminProfile);
                 if (_adminProfile.getRepository() != null)
                 {
-                    props.put(com.example.app.repository.ui.URLProperties.REPOSITORY, _adminProfile.getRepository());
+                    props.put(URLProperties.REPOSITORY, _adminProfile.getRepository());
                 }
                 addDest.apply(props);
                 addDest.actionPerformed(ev);
@@ -349,7 +350,7 @@ public class CompanyResourceManagement extends MIWTPageElementModelHistoryContai
             }
         };
         actions.configure()
-            .usingDataColumnTableRow(com.example.app.repository.ui.URLProperties.REPOSITORY_ITEM)
+            .usingDataColumnTableRow(URLProperties.REPOSITORY_ITEM)
             .withSourceComponent(this);
         actions.getEditLink().configure()
             .toPage(ApplicationFunctions.Company.Resource.EDIT);

@@ -14,6 +14,9 @@ package com.example.app.profile.ui;
 
 import com.example.app.profile.model.Profile;
 import com.example.app.profile.model.company.Company;
+import com.example.app.profile.model.repository.Repository;
+import com.example.app.profile.model.repository.RepositoryItem;
+import com.example.app.profile.model.resource.ResourceType;
 import com.example.app.profile.model.user.User;
 
 import net.proteusframework.ui.management.URLProperty;
@@ -55,6 +58,37 @@ public final class URLProperties
     public static final String COMPANY = "company";
     /** Path Info for URL Property company */
     public static final String COMPANY_PATH_INFO = '/' + COMPANY + "-{" + COMPANY + '}';
+
+
+    /** URL Property to signify a {@link RepositoryItem} */
+    public static final String REPOSITORY_ITEM = "repo-item";
+    /** Path Info for URL Property repo-item */
+    public static final String REPOSITORY_ITEM_PATH_INFO = '/' + REPOSITORY_ITEM + "-{" + REPOSITORY_ITEM + '}';
+
+    /** URL Property to signify a {@link Profile} owning a {@link Repository} */
+    public static final String REPOSITORY_OWNER = "repository-owner";
+    /** Path Info for URL Property repository-owner */
+    public static final String REPOSITORY_OWNER_PATH_INFO = '/' + REPOSITORY_OWNER + "-{" + REPOSITORY_OWNER + '}';
+    /** URL Property to signify a {@link Repository} */
+    public static final String REPOSITORY = "repository";
+    /** Path Info for URL Property repository */
+    public static final String REPOSITORY_PATH_INFO = '/' + REPOSITORY + "-{" + REPOSITORY + '}';
+
+    /** URL Property to signify a {@link ResourceType} */
+    public static final String RESOURCE_TYPE = "resource-type";
+    /** Path Info for URL Property resource-type */
+    public static final String RESOURCE_TYPE_PATH_INFO = '/' + RESOURCE_TYPE + "-{" + RESOURCE_TYPE + '}';
+
+    /** URL Property to signify a Resource */
+    public static final String RESOURCE = "resource";
+    /** Path Info for URL Property resource */
+    public static final String RESOURCE_PATH_INFO = '/' + RESOURCE + "-{" + RESOURCE + '}';
+
+    /** URL Property to signify a list of ResourceRepositoryItems */
+    public static final String RESOURCES = "resources";
+    /** Path Info for URL Property resources */
+    public static final String RESOURCES_PATH_INFO = '/' + RESOURCES + "-{" + RESOURCES + '}';
+
 
     private URLProperties()
     {

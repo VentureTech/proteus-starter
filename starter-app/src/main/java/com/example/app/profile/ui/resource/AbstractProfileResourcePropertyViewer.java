@@ -11,13 +11,13 @@
 
 package com.example.app.profile.ui.resource;
 
+import com.example.app.profile.model.repository.Repository;
+import com.example.app.profile.model.repository.RepositoryDAO;
+import com.example.app.profile.model.repository.ResourceRepositoryItem;
 import com.example.app.profile.model.user.User;
 import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.service.MembershipOperationProvider;
-import com.example.app.repository.model.Repository;
-import com.example.app.repository.model.RepositoryDAO;
-import com.example.app.repository.model.ResourceRepositoryItem;
-import com.example.app.repository.ui.ResourceRepositoryItemValueViewer;
+import com.example.app.profile.ui.repository.ResourceRepositoryItemValueViewer;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Nullable;
@@ -48,7 +48,7 @@ import static net.proteusframework.core.notification.NotificationImpl.error;
  * @since 12/11/15 3:38 PM
  */
 @I18NFile(
-    symbolPrefix = "com.lrsuccess.ldp.ui.resource.AbstractProfileResourcePropertyViewer",
+    symbolPrefix = "com.example.app.profile.ui.resource.AbstractProfileResourcePropertyViewer",
     i18n = {
         @I18N(symbol = "Error Unable To Find Resource FMT", l10n = @L10N("Unable to find {0}.")),
         @I18N(symbol = "Error Message Insufficient Permissions FMT",

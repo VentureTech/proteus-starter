@@ -106,10 +106,23 @@ public class ProjectConfig implements ApplicationListener<ContextRefreshedEvent>
      */
     @Bean()
     @LocationQualifier(entity_location)
-    public String annotatedEntityScanComExample()
+    public String annotatedEntityScanNote()
     {
-        return "com.example.app";
+        return "com.example.app.note";
     }
+
+    /**
+     * Package to scan for annotated entities.
+     *
+     * @return bean.
+     */
+    @Bean()
+    @LocationQualifier(entity_location)
+    public String annotatedEntityScanProfile()
+    {
+        return "com.example.app.profile";
+    }
+
 
     /**
      * Example to test if weaving is working.
@@ -147,9 +160,9 @@ public class ProjectConfig implements ApplicationListener<ContextRefreshedEvent>
      */
     @Bean()
     @LocationQualifier(orm_location)
-    public String ormLocationComExample()
+    public String ormLocationSchedule()
     {
-        return "classpath*:com/example/app/**/*.hbm.xml";
+        return "classpath*:com/example/app/mode/schedule/**/*.hbm.xml";
     }
 
     /**

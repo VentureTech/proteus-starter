@@ -11,8 +11,8 @@
 
 package com.example.app.support.ui;
 
-import com.example.app.repository.model.RepositoryItem;
-import com.example.app.repository.model.RepositoryItemStatus;
+import com.example.app.profile.model.repository.RepositoryItem;
+import com.example.app.profile.model.repository.RepositoryItemStatus;
 import com.example.app.resource.ui.ResourceText;
 
 import javax.annotation.Nullable;

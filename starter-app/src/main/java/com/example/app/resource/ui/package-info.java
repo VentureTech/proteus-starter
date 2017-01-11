@@ -18,7 +18,7 @@
     @I18NFile(
         file = "ResourceText",
         classVisibility = I18NFile.Visibility.PUBLIC,
-        symbolPrefix = "ResourceText",
+        symbolPrefix = "com.example.app.resource.ui.ResourceText",
         i18n = {
             @I18N(symbol = "Label Source", l10n = @L10N("Source")),
             @I18N(symbol = "Label Author", l10n = @L10N("Author"))

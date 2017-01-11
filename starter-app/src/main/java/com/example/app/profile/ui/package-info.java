@@ -17,7 +17,7 @@
 @I18NFiles(@I18NFile(
     file = "UIText",
     classVisibility = I18NFile.Visibility.PUBLIC,
-    symbolPrefix = "UIText",
+    symbolPrefix = "com.example.app.profile.ui.UIText",
     i18n = {
         @I18N(symbol = "ARG0 Or ARG1", l10n = @L10N("{0} Or {1}")),
         @I18N(symbol = "Label Category", l10n = @L10N("Category")),

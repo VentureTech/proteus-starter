@@ -11,7 +11,7 @@
 
 package ScriptableRedirect
 
-import com.example.app.profile.model.starter.StarterSiteDAO
+import com.example.app.profile.model.setup.SiteSetupDAO
 import com.example.app.profile.model.user.UserDAO
 import com.example.app.profile.ui.ApplicationFunctions
 import com.example.app.profile.ui.URLProperties
@@ -46,7 +46,7 @@ class StarterSiteRedirect implements ScriptableRedirect
 {
     @Autowired PrincipalDAO _principalDAO
     @Autowired UserDAO _userDAO
-    @Autowired StarterSiteDAO _starterSiteDAO
+    @Autowired SiteSetupDAO _starterSiteDAO
     @Autowired ApplicationRegistry _applicationRegistry
 
     private static final String DEFAULT_REDIRECT_PAGE = "Default Redirect Page"

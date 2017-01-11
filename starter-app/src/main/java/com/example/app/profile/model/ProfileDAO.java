@@ -1008,13 +1008,11 @@ public class ProfileDAO extends DAOHelper implements Serializable
      * @return the owner of the Repository or empty
      */
     @SuppressWarnings("unchecked")
-    public <P extends Profile> Optional<P> getRepoOwner(com.example.app.repository.model.Repository repository, Class<P> pClass)
+    public <P extends Profile> Optional<P> getRepoOwner(com.example.app.profile.model.repository.Repository repository, 
+        Class<P> pClass)
     {
-        return Optional.ofNullable(_er.narrowProxyIfPossible((P) getSession().createQuery("select p\n"
-                                                                                          + "from " + pClass.getSimpleName()
-                                                                                          + " p\n"
-                                                                                          + "inner join p.repository repo\n"
-                                                                                          + "where repo.id = :repoId")
+        return Optional.ofNullable(_er.narrowProxyIfPossible((P) getSession().createQuery(
+            "select p from " + pClass.getSimpleName() + " p inner join p.repository repo where repo.id = :repoId")
             .setParameter("repoId", repository.getId())
             .setMaxResults(1)
             .uniqueResult()));

@@ -12,14 +12,14 @@
 package com.example.app.profile.ui.company.resource;
 
 import com.example.app.profile.model.Profile;
+import com.example.app.profile.model.repository.Repository;
+import com.example.app.profile.model.repository.ResourceRepositoryItem;
+import com.example.app.profile.model.resource.ResourceType;
 import com.example.app.profile.ui.ApplicationFunctions;
 import com.example.app.profile.ui.URLConfigurations;
+import com.example.app.profile.ui.URLProperties;
 import com.example.app.profile.ui.resource.AbstractProfileResourcePropertyEditor;
-import com.example.app.repository.model.Repository;
-import com.example.app.repository.model.ResourceRepositoryItem;
-import com.example.app.repository.ui.URLProperties;
-import com.example.app.resource.model.ResourceType;
-import com.example.app.resource.ui.ResourceTypeURLConfigPropertyConverter;
+import com.example.app.profile.ui.resource.ResourceTypeURLConfigPropertyConverter;
 import com.example.app.support.ui.Application;
 
 import net.proteusframework.cms.category.CmsCategory;
@@ -54,14 +54,14 @@ import static com.example.app.profile.ui.company.resource.CompanyResourcePropert
         properties = {
             @URLProperty(name = URLProperties.REPOSITORY_ITEM, type = ResourceRepositoryItem.class),
             @URLProperty(
-                name = com.example.app.resource.ui.URLProperties.RESOURCE_TYPE,
+                name = URLProperties.RESOURCE_TYPE,
                 type = ResourceType.class,
                 converter = ResourceTypeURLConfigPropertyConverter.class),
             @URLProperty(name = URLProperties.REPOSITORY, type = Repository.class),
             @URLProperty(name = URLProperties.REPOSITORY_OWNER, type = Profile.class)
         },
         pathInfoPattern = URLProperties.REPOSITORY_ITEM_PATH_INFO
-                          + com.example.app.resource.ui.URLProperties.RESOURCE_TYPE_PATH_INFO
+                          + URLProperties.RESOURCE_TYPE_PATH_INFO
                           + URLProperties.REPOSITORY_PATH_INFO
                           + URLProperties.REPOSITORY_OWNER_PATH_INFO
     )
@@ -95,7 +95,7 @@ public class CompanyResourcePropertyEditor extends AbstractProfileResourceProper
     void configure(ParsedRequest request)
     {
         ResourceRepositoryItem value = request.getPropertyValue(URLProperties.REPOSITORY_ITEM);
-        ResourceType resourceType = request.getPropertyValue(com.example.app.resource.ui.URLProperties.RESOURCE_TYPE);
+        ResourceType resourceType = request.getPropertyValue(URLProperties.RESOURCE_TYPE);
         Repository repo = request.getPropertyValue(URLProperties.REPOSITORY);
         Profile owner = request.getPropertyValue(URLProperties.REPOSITORY_OWNER);
 
