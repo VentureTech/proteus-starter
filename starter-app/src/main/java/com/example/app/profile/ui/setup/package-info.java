@@ -10,8 +10,6 @@
  */
 
 /**
- * Starter App UIs
- *
- * @since 1/6/17
+ * Site Setup UIs
  */
-package com.example.app.profile.ui.starter;
+package com.example.app.profile.ui.setup;

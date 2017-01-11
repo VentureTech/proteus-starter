@@ -9,7 +9,7 @@
  * into with I2RD.
  */
 
-package com.example.app.profile.ui.starter;
+package com.example.app.profile.ui.setup;
 
 import com.example.app.profile.model.company.Company;
 import com.example.app.profile.model.company.CompanyStatus;
@@ -18,6 +18,7 @@ import com.example.app.profile.model.user.User;
 import com.example.app.profile.ui.ApplicationFunctions;
 import com.example.app.profile.ui.URLConfigurations;
 import com.example.app.profile.ui.company.AbstractCompanyPropertyEditor;
+import com.example.app.profile.ui.starter.StarterSiteSetupLOK;
 import com.example.app.support.ui.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,8 +38,6 @@ import net.proteusframework.ui.management.nav.NavigationDestination;
 import net.proteusframework.ui.miwt.event.ActionEvent;
 import net.proteusframework.users.model.AuthenticationDomain;
 
-import static com.example.app.profile.ui.starter.StarterSiteSetupLOK.COMPONENT_NAME;
-
 /**
  * Setup page for the starter Site.  Really just allows creation of Company when there are not any
  *
@@ -46,7 +45,7 @@ import static com.example.app.profile.ui.starter.StarterSiteSetupLOK.COMPONENT_N
  * @since 1/3/17
  */
 @I18NFile(
-    symbolPrefix = "com.example.app.profile.ui.starter.StarterSiteSetup",
+    symbolPrefix = "StarterSiteSetup",
     i18n = {
         @I18N(symbol = "Component Name", l10n = @L10N("Starter Site Setup"))
     }
@@ -58,17 +57,17 @@ import static com.example.app.profile.ui.starter.StarterSiteSetupLOK.COMPONENT_N
     description = "Starter Site Setup",
     urlConfigName = URLConfigurations.Company.EDIT
 )
-public class StarterSiteSetup extends AbstractCompanyPropertyEditor
+public class SiteSetup extends AbstractCompanyPropertyEditor
 {
     @Autowired private SiteSetupDAO _siteSetupDAO;
 
     /**
      * Instantiates a new Starter site setup.
      */
-    public StarterSiteSetup()
+    public SiteSetup()
     {
         super();
-        setName(COMPONENT_NAME());
+        setName(StarterSiteSetupLOK.COMPONENT_NAME());
         addCategory(CmsCategory.ClientBackend);
         withEditMode(EditMode.DefaultCompany);
     }
