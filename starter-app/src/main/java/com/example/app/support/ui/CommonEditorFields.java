@@ -13,7 +13,7 @@ package com.example.app.support.ui;
 
 import com.example.app.profile.model.repository.RepositoryItem;
 import com.example.app.profile.model.repository.RepositoryItemStatus;
-import com.example.app.resource.ui.ResourceText;
+import com.example.app.profile.ui.resource.ResourceText;
 
 import javax.annotation.Nullable;
 import java.util.Comparator;

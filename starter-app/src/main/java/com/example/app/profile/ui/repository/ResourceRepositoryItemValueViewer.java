@@ -14,7 +14,7 @@ package com.example.app.profile.ui.repository;
 
 import com.example.app.profile.model.repository.ResourceRepositoryItem;
 import com.example.app.profile.model.resource.Resource;
-import com.example.app.resource.ui.ResourceText;
+import com.example.app.profile.ui.resource.ResourceText;
 import com.google.common.base.Preconditions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -52,8 +52,8 @@ import net.proteusframework.ui.miwt.component.composite.editor.ValueEditor;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
 
 import static com.example.app.profile.model.resource.Resource.*;
+import static com.example.app.profile.ui.resource.ResourceText.LABEL_AUTHOR;
 import static com.example.app.profile.ui.resource.ResourceValueEditorLOK.*;
-import static com.example.app.resource.ui.ResourceText.LABEL_AUTHOR;
 import static com.i2rd.miwt.util.CSSUtil.CSS_INSTRUCTIONS;
 
 /**

@@ -11,7 +11,21 @@
 
 /**
  * Profile Resource UIs
- *
- * @since 1/6/17
  */
+@I18NFiles({
+    @I18NFile(
+        file = "ResourceText",
+        classVisibility = I18NFile.Visibility.PUBLIC,
+        symbolPrefix = "com.example.app.profile.ui.resource.ResourceText",
+        i18n = {
+            @I18N(symbol = "Label Source", l10n = @L10N("Source")),
+            @I18N(symbol = "Label Author", l10n = @L10N("Author"))
+        }
+    )
+})
 package com.example.app.profile.ui.resource;
+
+import net.proteusframework.core.locale.annotation.I18N;
+import net.proteusframework.core.locale.annotation.I18NFile;
+import net.proteusframework.core.locale.annotation.I18NFiles;
+import net.proteusframework.core.locale.annotation.L10N;

@@ -9,7 +9,7 @@
  * into with I2RD.
  */
 
-package com.example.app.url.shortener.service;
+package com.example.app.support.service;
 
 import com.example.app.config.ProjectInformation;
 import com.google.api.client.http.apache.ApacheHttpTransport;
