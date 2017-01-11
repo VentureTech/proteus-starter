@@ -420,8 +420,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
                 cmsPage.lastModified = Date()
                 cmsPage.pageTemplate = getOrCreatePageTemplatePass1(site, page.template)
                 session.save(cmsPage)
-                createNDEs(site, cmsPage, page)
                 updatePageElementPath(cmsPage, page)
+                createNDEs(site, cmsPage, page)
                 cmsBackendDAO.savePage(cmsPage)
                 session.flush()
             } else {
