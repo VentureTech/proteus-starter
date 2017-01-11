@@ -77,12 +77,14 @@ public class ShellCommandsUtil
      *
      * @throws LocaleSourceException if creating the LoK failed
      */
-    public LocalizedObjectKey createLoK(String value) throws LocaleSourceException
+    public LocalizedObjectKey createEnglishLOK(String value) throws LocaleSourceException
     {
         TransientLocalizedObjectKey valueKey = new TransientLocalizedObjectKey(new HashMap<>());
         valueKey.addLocalization(Locale.ENGLISH, value);
 
-        return valueKey.updateOrStore(_jdbcLocaleSource, null);
+        LocalizedObjectKey lok = valueKey.updateOrStore(_jdbcLocaleSource, null);
+        assert lok != null;
+        return lok;
     }
 
     /**
