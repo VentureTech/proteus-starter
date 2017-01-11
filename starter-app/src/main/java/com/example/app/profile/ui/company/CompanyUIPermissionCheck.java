@@ -44,7 +44,7 @@ public class CompanyUIPermissionCheck implements ApplicationFunctionPermissionCh
         if(functionExists(_appUtil.getSite(), request, _applicationRegistry, _registeredLinkDAO))
         {
             if (principal == null) return false;
-            return AppUtil.userHasAdminRole(principal);
+            return _appUtil.userHasAdminRole(principal);
         }
         return false;
     }

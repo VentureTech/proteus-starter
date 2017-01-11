@@ -88,6 +88,8 @@ public class ProfileDAO extends DAOHelper implements Serializable
     private static final long serialVersionUID = 7736105536343360133L;
 
     @Autowired
+    private transient AppUtil _appUtil;
+    @Autowired
     private transient EntityRetriever _er;
     @Value("#{new Boolean('${update-memberships:false}')}")
     private transient Boolean _updateMemberships;
@@ -104,7 +106,7 @@ public class ProfileDAO extends DAOHelper implements Serializable
      */
     public boolean canOperate(@Nullable User user, @Nullable Profile profile, TimeZone timeZone, MembershipOperation... operations)
     {
-        if(user != null && AppUtil.userHasAdminRole(user)) return true;
+        if(user != null && _appUtil.userHasAdminRole(user)) return true;
         if (profile == null) return false;
         return canOperate(user, Collections.singletonList(profile), timeZone, operations);
     }
@@ -124,7 +126,7 @@ public class ProfileDAO extends DAOHelper implements Serializable
         TimeZone timeZone,
         @Nonnull MembershipOperation... operations)
     {
-        if(user != null && AppUtil.userHasAdminRole(user)) return true;
+        if(user != null && _appUtil.userHasAdminRole(user)) return true;
         if (user == null || profiles.isEmpty())
             return false;
         final Date now = convertForPersistence(getZonedDateTimeForComparison(timeZone));
@@ -165,7 +167,7 @@ public class ProfileDAO extends DAOHelper implements Serializable
         TimeZone timeZone,
         MembershipOperation... operations)
     {
-        if(user != null && AppUtil.userHasAdminRole(user)) return true;
+        if(user != null && _appUtil.userHasAdminRole(user)) return true;
         if (user == null || profileType == null) return false;
         Preconditions.checkArgument(operations.length > 0);
         final Date now = convertForPersistence(getZonedDateTimeForComparison(timeZone));

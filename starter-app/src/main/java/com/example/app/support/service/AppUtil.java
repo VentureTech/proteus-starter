@@ -234,20 +234,6 @@ public class AppUtil implements Serializable
     }
 
     /**
-     * Use ApplicationContextUtils to get an instance of the given Class
-     *
-     * @param <C> the Class
-     * @param clazz the Class
-     *
-     * @return the singleton
-     */
-    @Deprecated
-    public static <C> C autowire(Class<C> clazz)
-    {
-        return autowire(clazz, null);
-    }
-
-    /**
      * Converts the given information into a Bootstrap Card
      *
      * @param htmlClassName a defining classname
@@ -698,25 +684,6 @@ public class AppUtil implements Serializable
         initialize(value.getPrimaryLocation());
         Hibernate.initialize(value.getProfileTerms());
         value.getLocations().forEach(AppUtil::initialize);
-    }
-
-    /**
-     * Use ApplicationContextUtils to get an instance of the given Class with the given Resource Name
-     *
-     * @param <C> the Class
-     * @param clazz the Class
-     * @param resourceName the resource name
-     *
-     * @return the singleton
-     */
-    @Deprecated
-    @SuppressWarnings("ConstantConditions")
-    public static <C> C autowire(Class<C> clazz, @Nullable String resourceName)
-    {
-        if (StringFactory.isEmptyString(resourceName))
-            return ApplicationContextUtils.getInstance().getContext().getBean(clazz);
-        else
-            return ApplicationContextUtils.getInstance().getContext().getBean(resourceName, clazz);
     }
 
     /**

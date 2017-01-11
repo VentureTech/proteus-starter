@@ -91,6 +91,7 @@ import static net.proteusframework.ui.search.PropertyConstraint.Operator.eq;
 public class CompanyDAO extends DAOHelper implements Serializable
 {
     private static final long serialVersionUID = -1864046652465972120L;
+    @Autowired private transient AppUtil _appUtil;
     @Autowired private transient ProfileDAO _profileDAO;
     @Autowired private transient UserDAO _userDAO;
     @Autowired private transient MembershipOperationConfiguration _mop;
@@ -568,7 +569,7 @@ public class CompanyDAO extends DAOHelper implements Serializable
         final List<Company> companies = getCompaniesThatUserHasMembershipFor(currentUser, AppUtil.UTC);
         return currentUser.getCompanies().contains(coaching)
                || companies.contains(coaching)
-               || AppUtil.userHasAdminRole(currentUser);
+               || _appUtil.userHasAdminRole(currentUser);
     }
 
     /**
