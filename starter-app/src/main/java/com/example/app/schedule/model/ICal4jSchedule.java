@@ -156,12 +156,11 @@ public class ICal4jSchedule extends Schedule
             recur.setUntil(until);
         else
             recur.setCount(1);
-        final Date start = new Date(startTime.toInstant(UTC).toEpochMilli());
-        DateTime periodStart = new DateTime(start);
+        DateTime periodStart = new DateTime(new Date(startTime.toInstant(UTC).toEpochMilli()));
         periodStart.setUtc(true);
         DateTime periodEnd = new DateTime(until);
         periodEnd.setUtc(true);
-        final DateList dateList = recur.getDates(start, new Period(periodStart, periodEnd), Value.DATE_TIME);
+        final DateList dateList = recur.getDates(periodStart, new Period(periodStart, periodEnd), Value.DATE_TIME);
         DateFormat parser = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
         parser.setTimeZone(AppUtil.UTC);
         for (Object dateObject : dateList)
