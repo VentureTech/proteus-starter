@@ -28,6 +28,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Objects;
 
 import net.proteusframework.core.hibernate.model.Entity;
 import net.proteusframework.core.locale.LocalizedObjectKey;
@@ -135,7 +136,7 @@ public class MembershipOperation implements Entity<Integer>, Serializable, Named
         }
         else
         {
-            return getId().equals(two.getId()); // single table inheritance, this should be ok.
+            return Objects.equals(getId(), two.getId()); // single table inheritance, this should be ok.
         }
     }
 

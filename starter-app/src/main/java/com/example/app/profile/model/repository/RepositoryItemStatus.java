@@ -15,7 +15,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
@@ -96,7 +95,7 @@ public enum RepositoryItemStatus implements NamedObject
     {
         List<RepositoryItemStatus> statusList = new ArrayList<>(EnumSet.allOf(RepositoryItemStatus.class));
         if (comparator != null)
-            Collections.sort(statusList, comparator);
+            statusList.sort(comparator);
         statusList.add(0, null);
         return statusList;
     }

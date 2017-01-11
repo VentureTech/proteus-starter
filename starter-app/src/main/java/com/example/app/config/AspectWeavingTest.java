@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
- * Test if load time weaving is occuring for this package.
+ * Test if load time weaving is occurring for this package.
  *
  * @author Russ Tennant (russ@i2rd.com)
  */

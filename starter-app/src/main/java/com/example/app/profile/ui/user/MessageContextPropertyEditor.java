@@ -66,14 +66,16 @@ public class MessageContextPropertyEditor extends PropertyEditor<MessageContext>
 {
     /** Logger. */
     private static final Logger _logger = LogManager.getLogger(MessageContextPropertyEditor.class);
-    private final List<User> _users;
-    private final ActionListener _closer;
+
     @Autowired
     private NotificationService _notificationService;
     @Autowired
     private EntityRetriever _er;
     @Value("${programmatic_email_sender:noreply@venturetech.net}")
     private String _emailSender;
+
+    private final List<User> _users;
+    private final ActionListener _closer;
 
     /**
      * Instantiate a new instance of ContactUserPropertyEditor

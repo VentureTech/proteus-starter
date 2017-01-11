@@ -76,7 +76,7 @@ public class ResourceTypeUserType implements UserType
         String factory2 = _resourceTypeService.getFactoryIdentifier(context, resourceType2);
         if (factory2 == null)
             throw new HibernateException("Invalid ResourceType: " + y);
-        return factory1.equals(factory2) && resourceType1.getIdentifier().equals(resourceType2.getIdentifier());
+        return Objects.equals(factory1, factory2) && Objects.equals(resourceType1.getIdentifier(), resourceType2.getIdentifier());
     }
 
     @Override

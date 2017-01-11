@@ -33,7 +33,7 @@ public class ArrayCollectorTest extends BaseTest
 {
     private static class TestCustomClass
     {
-        public int i;
+        public int integer;
         public String str;
     }
 
@@ -77,10 +77,10 @@ public class ArrayCollectorTest extends BaseTest
                 ((Supplier<List<TestCustomClass>>)() -> {
                     List<TestCustomClass> tccs = new ArrayList<>();
                     TestCustomClass tcc1 = new TestCustomClass();
-                    tcc1.i = 9;
+                    tcc1.integer = 9;
                     tcc1.str = "1";
                     TestCustomClass tcc2 = new TestCustomClass();
-                    tcc2.i = 1;
+                    tcc2.integer = 1;
                     tcc2.str = "9";
                     tccs.add(tcc1);
                     tccs.add(tcc2);
@@ -91,10 +91,10 @@ public class ArrayCollectorTest extends BaseTest
                 ((Supplier<List<TestCustomClass>>)() -> {
                     List<TestCustomClass> tccs = new ArrayList<>();
                     TestCustomClass tcc1 = new TestCustomClass();
-                    tcc1.i = 1;
+                    tcc1.integer = 1;
                     tcc1.str = "9";
                     TestCustomClass tcc2 = new TestCustomClass();
-                    tcc2.i = 9;
+                    tcc2.integer = 9;
                     tcc2.str = "1";
                     tccs.add(tcc1);
                     tccs.add(tcc2);
@@ -105,10 +105,10 @@ public class ArrayCollectorTest extends BaseTest
                 ((Supplier<List<TestCustomClass>>)() -> {
                     List<TestCustomClass> tccs = new ArrayList<>();
                     TestCustomClass tcc1 = new TestCustomClass();
-                    tcc1.i = 15;
+                    tcc1.integer = 15;
                     tcc1.str = "Hello World";
                     TestCustomClass tcc2 = new TestCustomClass();
-                    tcc2.i = 1;
+                    tcc2.integer = 1;
                     tcc2.str = "9";
                     tccs.add(tcc1);
                     tccs.add(tcc2);
@@ -138,7 +138,7 @@ public class ArrayCollectorTest extends BaseTest
         Assert.assertEquals(arr.length, tccs.size());
         for(int i = 0; i < arr.length; i++)
         {
-            Assert.assertEquals(arr[i].i, tccs.get(i).i);
+            Assert.assertEquals(arr[i].integer, tccs.get(i).integer);
             Assert.assertEquals(arr[i].str, tccs.get(i).str);
         }
     }

@@ -17,7 +17,6 @@ import com.example.app.profile.model.membership.Membership;
 import com.example.app.profile.model.user.User;
 import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.service.MembershipOperationProvider;
-import com.example.app.profile.service.SelectedCompanyTermProvider;
 import com.example.app.support.service.AppUtil;
 import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,8 +99,6 @@ import static com.example.app.profile.ui.user.UserMembershipManagementLOK.*;
 @Configurable
 public class UserMembershipManagement extends HistoryContainer implements SearchUIOperationHandler
 {
-    private final User _user;
-    private final List<Profile> _profiles = new ArrayList<>();
     @Autowired
     private EntityRetriever _er;
     @Autowired
@@ -110,8 +107,9 @@ public class UserMembershipManagement extends HistoryContainer implements Search
     private UserDAO _userDAO;
     @Autowired
     private MembershipOperationProvider _mop;
-    @Autowired
-    private SelectedCompanyTermProvider _terms;
+
+    private final User _user;
+    private final List<Profile> _profiles = new ArrayList<>();
     private SearchUIImpl _searchUI;
 
     /**
@@ -223,11 +221,10 @@ public class UserMembershipManagement extends HistoryContainer implements Search
         searchModel.getResultColumns().add(new SearchResultColumnImpl()
             .withName("role")
             .withTableColumn(new FixedValueColumn().withColumnName(COLUMN_ROLE()))
-            .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input
-
-                -> {
+            .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
                 Membership mem = _er.reattachIfNecessary((Membership) input);
 
+                assert mem != null;
                 if (mem.getMembershipType() != null)
                     return ConcatTextSource.create(mem.getProfile().getName(), mem.getMembershipType()).withSeparator(" : ");
                 else
@@ -246,6 +243,7 @@ public class UserMembershipManagement extends HistoryContainer implements Search
                 .withTableColumn(new FixedValueColumn().withColumnName(PROFILE_TYPE()))
                 .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
                     Membership mem = _er.reattachIfNecessary((Membership) input);
+                    assert mem != null;
                     return TextSources.createTextForAny(mem.getProfile().getProfileType());
                 })));
         }
@@ -281,7 +279,6 @@ public class UserMembershipManagement extends HistoryContainer implements Search
         final Profile finalProfile = profile;
         TextSource profileText = TextSources.createTextForAny(profile);
         MenuItem subMenu;
-        //noinspection ConstantConditions
         if (profile.getProfileType() != null && !profile.getProfileType().getMembershipTypeSet().isEmpty())
         {
             subMenu = new Menu(profileText);

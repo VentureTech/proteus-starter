@@ -20,14 +20,13 @@ import com.example.app.profile.ui.resource.ResourceValueEditor;
 import com.example.app.support.ui.CommonEditorFields;
 import com.example.app.support.ui.vtcrop.VTCropPictureEditor;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.Optional;
 
 import com.i2rd.cms.backend.files.FileChooser;
@@ -52,8 +51,6 @@ import net.proteusframework.ui.miwt.component.composite.editor.ValueEditor;
 @Configurable
 public class ResourceRepositoryItemValueEditor extends CompositeValueEditor<ResourceRepositoryItem>
 {
-    /** Logger. */
-    private static final Logger _logger = LogManager.getLogger(ResourceRepositoryItemValueEditor.class);
 
     @Autowired
     EntityRetriever entityRetriever;
@@ -118,7 +115,7 @@ public class ResourceRepositoryItemValueEditor extends CompositeValueEditor<Reso
                     public String getPath(FileSystemEntity fileSystemEntity, FileSystemEntity relativeTo)
                     {
                         FileSystemEntity ownerFSE = fileSystemEntity;
-                        while (!ownerFSE.getName().equals(ownerIdString) && !_fileSystemDAO.isRoot(ownerFSE))
+                        while (!Objects.equals(ownerFSE.getName(), ownerIdString) && !_fileSystemDAO.isRoot(ownerFSE))
                             ownerFSE = ownerFSE.getParent();
                         String path = fileSystemEntity.getPath(ownerFSE);
                         if (!_fileSystemDAO.isRoot(ownerFSE))
@@ -133,7 +130,7 @@ public class ResourceRepositoryItemValueEditor extends CompositeValueEditor<Reso
                     public String getPathComponent(FileSystemEntity fileSystemEntity)
                     {
                         final String name = fileSystemEntity.getName();
-                        if (name.equals(ownerIdString))
+                        if (Objects.equals(name, ownerIdString))
                         {
                             Repository owner = EntityRetriever.getInstance().reattachIfNecessary(getOwner());
                             return owner.getName().getText(getLocaleContext()).toString();

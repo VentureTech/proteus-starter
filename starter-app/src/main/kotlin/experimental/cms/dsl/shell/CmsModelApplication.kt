@@ -184,14 +184,10 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             ctrList.addAll(it.contentToRemove)
             ctrList.addAll(it.template.contentToRemove)
         }
-        for (ctr in ctrList)
-            addContentChildren(ctrList, ctr)
-        for (ctr in ctrList) {
-            val ce = siteDefinitionDAO.getContentElementByName(site, ctr.id)
-            if (ce != null) {
-                cmsBackendDAO.trashContentElement(ce, false)
-            }
-        }
+        ctrList.forEach { ctr -> addContentChildren(ctrList, ctr) }
+        ctrList.asSequence()
+            .mapNotNull { siteDefinitionDAO.getContentElementByName(site, it.id) }
+            .forEach { cmsBackendDAO.trashContentElement(it, false) }
         for (pg in siteModel.pagesToRemove) {
             pageList.remove(pg)
             val page = siteDefinitionDAO.getPageByName(site, pg.id)

@@ -486,6 +486,7 @@ public abstract class RepositoryItemSelector<RI extends RepositoryItem> extends 
         if(validForSelection(data))
         {
             fireRepoItemSelected(data);
+            //noinspection ConstantConditions - just in case
             if(getIsSelectedSetter() != null)
             {
                 getIsSelectedSetter().accept(data);

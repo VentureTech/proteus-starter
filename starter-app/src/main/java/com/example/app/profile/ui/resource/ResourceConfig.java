@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Configuration;
 public class ResourceConfig
 {
     /** Picture editor config bean name */
-    public static final String PICTURE_EDITOR_CONFIG = "lr-resource-picture-editor-config";
+    public static final String PICTURE_EDITOR_CONFIG = "resource-picture-editor-config";
 
     /**
      * Get the {@link VTCropPictureEditorConfig} for the Resource viewer/editor
@@ -34,7 +34,7 @@ public class ResourceConfig
      * @return a VTCropPictureEditorConfig
      */
     @Bean(name = PICTURE_EDITOR_CONFIG)
-    public VTCropPictureEditorConfig getPictureEditorConfig()
+    public VTCropPictureEditorConfig resourcePictureEditorConfig()
     {
         VTCropPictureEditorConfig config = new VTCropPictureEditorConfig();
         config.setMaxHeight(450);

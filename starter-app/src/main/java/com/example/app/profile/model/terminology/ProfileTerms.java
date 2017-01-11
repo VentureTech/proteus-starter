@@ -36,7 +36,7 @@ import static org.hibernate.annotations.CacheConcurrencyStrategy.NONSTRICT_READ_
 /**
  * Profile term entity.
  *
- * @author russ (russ@venturetech.net)
+ * @author Russ Tennant (russ@venturetech.net)
  */
 @SuppressWarnings("unused")
 @Entity

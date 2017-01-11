@@ -20,8 +20,9 @@
     <option name="pathToJarWithRules" value="" />
   </component>
   <component name="EntryPointsManager">
-    <list size="1">
-      <item index="0" class="java.lang.String" itemvalue="org.springframework.shell.core.annotation.CliCommand" />
+    <list size="2">
+      <item index="0" class="java.lang.String" itemvalue="edu.umd.cs.findbugs.annotations.SuppressFBWarnings" />
+      <item index="1" class="java.lang.String" itemvalue="org.springframework.shell.core.annotation.CliCommand" />
     </list>
   </component>
   <component name="FindBugsConfigurable">

@@ -130,7 +130,7 @@ class TropoRequest
  * @author Alan Holt (aholt@venturetech.net)
  */
 @SuppressFBWarnings(value = "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD", justification = "JSON Object")
-@SuppressWarnings("InstanceVariableNamingConvention")
+@SuppressWarnings({"InstanceVariableNamingConvention", "CanBeFinal"})
 class TropoResponse
 {
     public Boolean success;

@@ -45,7 +45,7 @@ class ProfileDataConversionVersion1
             $/alter table audit.Client_AUD add column company_id int4/$,
             $/alter table app.Client add constraint FK_86f9ck79jl8hb456vctralc7w foreign key (company_id) references app.Company/$,
         ]
-        new SQLDataConversion(IDENTIFIER, 'Add Company to Client', 201701112227, false, null, ddl, null, null);
+        new SQLDataConversion(IDENTIFIER, 'Add Company to Client', 201701112227, false, null, ddl, null, null)
     }
 
     /**

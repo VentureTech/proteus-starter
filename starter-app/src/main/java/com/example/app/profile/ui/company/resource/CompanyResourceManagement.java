@@ -373,6 +373,7 @@ public class CompanyResourceManagement extends MIWTPageElementModelHistoryContai
             .withTableColumn(new FixedValueColumn().withColumnName(_rclp.getLabelDomain().getName()))
             .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
                 ResourceRepositoryItem rri = (ResourceRepositoryItem) input;
+                assert rri != null;
                 return ConcatTextSource.create(
                     rri.getResource().getTags().stream()
                         .sorted(new LocalizedNamedObjectComparator(getLocaleContext()))
@@ -401,10 +402,9 @@ public class CompanyResourceManagement extends MIWTPageElementModelHistoryContai
             .withTableColumn(new PropertyColumn(ResourceRepositoryItem.class,
                 ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.CATEGORY_PROP)
                 .withColumnName(_rtlp.getLabelDomain().getName()))
-            .withOrderBy(new QLOrderByImpl("getTextValue("
-                                           + "rriAlias." + ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.CATEGORY_PROP
-                                           + ".name"
-                                           + ", '" + getLocaleContext().getLanguage() + "', '', '')")));
+            .withOrderBy(new QLOrderByImpl(
+                "getTextValue(rriAlias." + ResourceRepositoryItem.RESOURCE_PROP + '.' + Resource.CATEGORY_PROP
+                               + ".name, '" + getLocaleContext().getLanguage() + "', '', '')")));
 
         searchModel.getResultColumns().add(new SearchResultColumnImpl()
             .withName("status")

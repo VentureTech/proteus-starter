@@ -21,7 +21,6 @@ import com.example.app.profile.ui.URLProperties;
 import com.example.app.profile.ui.resource.AbstractProfileResourcePropertyEditor;
 import com.example.app.profile.ui.resource.ResourceTypeURLConfigPropertyConverter;
 import com.example.app.support.ui.Application;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import net.proteusframework.cms.category.CmsCategory;
@@ -94,8 +93,8 @@ public class CompanyResourcePropertyEditor extends AbstractProfileResourceProper
         return ApplicationFunctions.Company.Resource.VIEW;
     }
 
+    //Used by ApplicationFunction
     @SuppressWarnings("unused")
-        //Used by ApplicationFunction
     void configure(ParsedRequest request)
     {
         ResourceRepositoryItem value = request.getPropertyValue(URLProperties.REPOSITORY_ITEM);

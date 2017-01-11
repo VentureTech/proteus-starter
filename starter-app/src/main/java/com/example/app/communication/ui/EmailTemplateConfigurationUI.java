@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -97,7 +97,6 @@ import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static com.example.app.communication.ui.EmailTemplateConfigurationUILOK.*;
 import static com.example.app.profile.ui.UIText.PROFILE;
-import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.regex.Pattern.compile;
 import static java.util.regex.Pattern.quote;
@@ -320,7 +319,7 @@ public class EmailTemplateConfigurationUI extends Container
     @Nullable
     private Notifiable _notifiable;
     private EmailTemplate _lastEmailTemplate;
-    private Optional<String> _modifiedSubject = empty();
+    private final AtomicReference<String> _modifiedSubject = new AtomicReference<>();
     private String _processedSubject;
 
     private static void _getVariables(List<String> list, String body)
@@ -535,7 +534,7 @@ public class EmailTemplateConfigurationUI extends Container
         _emailTemplateSubjectField.addPropertyChangeListener(Field.PROP_TEXT,
             evt -> {
                 String text = _emailTemplateSubjectField.getText();
-                _modifiedSubject = isEmptyString(text) || Objects.equals(text, _processedSubject) ? empty() : Optional.of(text);
+                _modifiedSubject.set(isEmptyString(text) || Objects.equals(text, _processedSubject) ? null : text);
             });
         _emailTemplateChoice.addActionListener(this::updateEmailTemplatePreview);
         updateEmailTemplatePreview(null);
@@ -563,9 +562,10 @@ public class EmailTemplateConfigurationUI extends Container
      *
      * @return the subject if modified.
      */
-    public Optional<String> getSubject()
+    @Nullable
+    public String getSubject()
     {
-        return _modifiedSubject;
+        return _modifiedSubject.get();
     }
 
     /**
@@ -575,7 +575,7 @@ public class EmailTemplateConfigurationUI extends Container
      */
     public void setSubject(String subject)
     {
-        _modifiedSubject = ofNullable(subject);
+        _modifiedSubject.set(isEmptyString(subject) ? null : subject);
         _emailTemplateSubjectField.setText(subject);
     }
 
@@ -676,9 +676,9 @@ public class EmailTemplateConfigurationUI extends Container
             String newBody = getBody(emailData);
             _emailTemplatePreview.setText(new LocalizedText(newBody));
             _processedSubject = emailData.getSubject();
-            if (!emailTemplate.equals(_lastEmailTemplate))
+            if (!Objects.equals(emailTemplate, _lastEmailTemplate))
             {
-                _modifiedSubject = empty();
+                _modifiedSubject.set(null);
                 _emailTemplateSubjectField.setText(_processedSubject);
                 updateVariables(emailTemplate);
             }

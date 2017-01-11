@@ -33,6 +33,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -107,6 +108,8 @@ public class UserValueEditor extends CompositeValueEditor<User>
     private MembershipTypeProvider _mtp;
     @Autowired
     private UIPreferences _uiPreferences;
+
+
     private boolean _adminMode = true;
     private VTCropPictureEditor _userPictureEditor;
     private ListComponentValueEditor<MembershipType> _profileEntityMembershipTypeSelector;
@@ -153,7 +156,9 @@ public class UserValueEditor extends CompositeValueEditor<User>
     @Nullable
     public ContactMethod commitValuePreferredContactMethod()
     {
-        return _contactMethodSelector.commitValue().stream().findFirst().isPresent() ? ContactMethod.PhoneSms : null;
+        Collection<LocalizedObjectKey> localizedObjectKeys = _contactMethodSelector.commitValue();
+        assert localizedObjectKeys != null;
+        return localizedObjectKeys.stream().findFirst().isPresent() ? ContactMethod.PhoneSms : null;
     }
 
     /**
@@ -214,7 +219,6 @@ public class UserValueEditor extends CompositeValueEditor<User>
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void init()
     {
@@ -275,13 +279,14 @@ public class UserValueEditor extends CompositeValueEditor<User>
         _loginLandingPage.setVisible(
             Objects.equals(currentUser.getId(), Optional.ofNullable(getValue()).map(User::getId).orElse(0))
             && _profileDAO.getMembershipsForUser(getValue(), null, timeZone).stream()
-                .map(Membership::getMembershipType).filter(membershipType1 -> membershipType1 != null)
+                .map(Membership::getMembershipType).filter(Objects::nonNull)
                 .anyMatch(membershipType ->
-                    membershipType.equals(_mtp.companyAdmin()))
+                    Objects.equals(membershipType, _mtp.companyAdmin()))
 
         );
         _loginLandingPage.setCellRenderer(new CustomCellRenderer(CommonButtonText.PLEASE_SELECT, input -> {
             Link link = (Link) input;
+            assert link != null;
             return createText(link.getAdditionalAttributes().get("label"));
         }));
 
@@ -295,8 +300,7 @@ public class UserValueEditor extends CompositeValueEditor<User>
         addEditorForProperty(() -> _principalValueEditor,
             readProp -> {
                 Principal p = _er.reattachIfNecessary(readProp.getPrincipal());
-                //noinspection ConstantConditions
-                if (p == null) return p;
+                if (p == null) return null;
                 if (p.getContact() == null)
                     p.setContact(new Contact());
                 if (p.getContact().getPhoneNumbers().isEmpty())
@@ -338,7 +342,7 @@ public class UserValueEditor extends CompositeValueEditor<User>
         setEditable(isEditable());
     }
 
-    private <V> void removeRequiredValueValidator(AbstractSimpleValueEditor<V> editor)
+    private static <V> void removeRequiredValueValidator(AbstractSimpleValueEditor<V> editor)
     {
         Validator validator = editor.getValueComponent().getValidator();
         if (validator instanceof CompositeValidator)
@@ -382,7 +386,7 @@ public class UserValueEditor extends CompositeValueEditor<User>
             final String uri = userPref != null ? userPref.get(User.LOGIN_PREF_NODE_LANDING_PAGE, null) : null;
             for (Link l : _links)
             {
-                if (l != null && l.getURIAsString().equals(uri))
+                if (l != null && Objects.equals(l.getURIAsString(), uri))
                 {
                     _loginLandingPage.setValue(l);
                     break;
@@ -397,7 +401,7 @@ public class UserValueEditor extends CompositeValueEditor<User>
                 && _profileDAO.getMembershipsForUser(getValue(), null, getSession().getTimeZone()).stream()
                     .map(Membership::getMembershipType)
                     .anyMatch(membershipType ->
-                        membershipType.equals(_mtp.companyAdmin()))
+                        Objects.equals(membershipType, _mtp.companyAdmin()))
             );
         }
     }

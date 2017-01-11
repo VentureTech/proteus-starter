@@ -15,6 +15,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import net.proteusframework.core.StringFactory;
@@ -59,7 +60,7 @@ public class ApplicationFunctionTagListener extends TagListener<TagListenerConfi
     {
         String appFunction = attributes.getValue("data-app-function");
         if (!StringFactory.isEmptyString(appFunction)
-            && appFunction.equals(_applicationFunctionName))
+            && Objects.equals(appFunction, _applicationFunctionName))
         {
             String url = _urlSupplier.get();
             if (!StringFactory.isEmptyString(url))

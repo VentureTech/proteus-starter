@@ -634,7 +634,7 @@ public class AddressParser
                     }
                     else
                     {
-                        splitStreetName += " " + splitUnitNumber;
+                        splitStreetName += ' ' + splitUnitNumber;
                         splitUnitNumber = null;
                     }
                 }
@@ -897,7 +897,7 @@ public class AddressParser
                         //this almost guaranteed to break the parser, help the parser by putting a comma separator before the city
                         if (idx + s.length() >= stateIdx - 2)
                         {
-                            return input.substring(0, idx) + "," + input.substring(idx);
+                            return input.substring(0, idx) + ',' + input.substring(idx);
                         }
                     }
                 }

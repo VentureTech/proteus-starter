@@ -261,7 +261,7 @@ public class SpellingCorrector
                     int newEnd = end - i + 1;
                     for (int j = 0; j < i; j++)
                     {
-                        sb.append(tokens[newEnd + j]).append(" ");
+                        sb.append(tokens[newEnd + j]).append(' ');
                     }
                     float metrics = getNormalizedSimilarity(s, sb.toString().trim());
                     if ((int)metrics == 1)

@@ -116,8 +116,8 @@ public class MyAccountView extends MIWTPageElementModelPropertyViewer
         moveToTop(_messages);
     }
 
+    //Used by ApplicationFunction
     @SuppressWarnings("unused")
-        //Used by ApplicationFunction
     void configure(ParsedRequest request)
     {
         _permissionCheck.checkPermissionsForCurrent(Event.getRequest(), "You don't have a User account in the system.");

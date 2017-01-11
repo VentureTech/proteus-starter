@@ -24,7 +24,7 @@ import net.proteusframework.core.locale.TextSource;
 /**
  * Term provider for a company in an MIWT UI.
  *
- * @author russ (russ@venturetech.net)
+ * @author Russ Tennant (russ@venturetech.net)
  */
 @Service
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)

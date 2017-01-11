@@ -73,9 +73,7 @@ public class DemoUserProfilePropertyViewer extends MIWTPageElementModelPropertyV
         editAction.configure().toPage(USER_PROFILE_EDITOR).usingCurrentURLData().withSourceComponent(this);
         NavigationAction cancelAction = CommonActions.CANCEL.navAction();
         cancelAction.configure().toReturnPath(USER_PROFILE_LISTING).usingCurrentURLData().withSourceComponent(this);
-        //noinspection ThisEscapedInObjectConstruction
         cancelAction.setTarget(this, "close");
-        //noinspection ThisEscapedInObjectConstruction
         editAction.setTarget(this, "close");
         setPersistenceActions(editAction, cancelAction);
     }

@@ -55,9 +55,10 @@ import static com.example.app.profile.ui.user.UserPositionValueEditorLOK.*;
 @Configurable
 public class UserPositionValueEditor extends CompositeValueEditor<UserPosition>
 {
-    private final User _user;
     @Autowired
     private EntityRetriever _er;
+
+    private final User _user;
 
     /**
      * Instantiate a new instance of UserPositionValueEditor
@@ -124,8 +125,6 @@ public class UserPositionValueEditor extends CompositeValueEditor<UserPosition>
             return editor;
         }, UserPosition.END_DATE_COLUMN_PROP);
 
-        addEditorForProperty(() -> {
-            return new BooleanValueEditor(LABEL_CURRENT(), null);
-        }, UserPosition.CURRENT_COLUMN_PROP);
+        addEditorForProperty(() -> new BooleanValueEditor(LABEL_CURRENT(), null), UserPosition.CURRENT_COLUMN_PROP);
     }
 }

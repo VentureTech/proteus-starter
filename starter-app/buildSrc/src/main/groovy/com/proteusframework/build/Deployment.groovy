@@ -19,7 +19,7 @@ import org.gradle.api.tasks.TaskAction
 
 /**
  * Utility for posting deployment commands.
- * @author russ (russ@venturetech.net)
+ * @author Russ Tennant (russ@venturetech.net)
  */
 class DeployUtil
 {

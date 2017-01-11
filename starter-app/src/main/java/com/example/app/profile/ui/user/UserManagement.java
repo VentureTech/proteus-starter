@@ -340,6 +340,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
             .withTableColumn(new FixedValueColumn().withColumnName(CommonColumnText.TITLE))
             .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
                 User user = (User) input;
+                assert user != null;
                 return _userDAO.getCurrentUserPosition(user)
                     .map(UserPosition::getPosition)
                     .orElse("");
@@ -350,6 +351,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
             .withTableColumn(new FixedValueColumn().withColumnName(CONSTRAINT_ROLE()))
             .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
                 User user = (User) input;
+                assert user != null;
                 List<MembershipType> roles = _profileDAO.getMemberships(
                     _userProfile, user, getSession().getTimeZone())
                     .stream()
@@ -377,6 +379,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
             .withTableColumn(new FixedValueColumn().withColumnName(COLUMN_CONTACT_PHONE()))
             .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
                 User user = (User) input;
+                assert user != null;
                 return ContactUtil.getPhoneNumber(user.getPrincipal().getContact(), ContactDataCategory.values())
                     .map(PhoneNumber::toExternalForm).orElse("");
             })));

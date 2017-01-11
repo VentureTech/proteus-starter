@@ -58,7 +58,6 @@ import static net.proteusframework.ui.miwt.util.CommonColumnText.NAME;
 public class CommonEditorFields
 {
 
-
     /**
      * Add a description editor.
      *

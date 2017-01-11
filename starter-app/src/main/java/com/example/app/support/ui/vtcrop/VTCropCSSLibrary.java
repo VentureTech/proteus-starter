@@ -135,7 +135,6 @@ public enum VTCropCSSLibrary implements ClassPathResourceLibrary
         return _classPathResourceLibraryHelper;
     }
 
-    @SuppressWarnings("MethodOnlyUsedFromInnerClass")
     private void setClassPathResourceLibraryHelper(
         ClassPathResourceLibraryHelper classPathResourceLibraryHelper)
     {

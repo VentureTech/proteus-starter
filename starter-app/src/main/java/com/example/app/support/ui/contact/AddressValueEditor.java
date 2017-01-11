@@ -597,8 +597,10 @@ public class AddressValueEditor extends CompositeValueEditor<Address>
                 {
                     editor.setRequiredValueValidator();
                 }
-                editor.setCellRenderer(new CustomCellRenderer(CommonButtonText.PLEASE_SELECT,
-                    input -> ContactUtil.getUSStateName((String) input, _localeContext)));
+                editor.setCellRenderer(new CustomCellRenderer(CommonButtonText.PLEASE_SELECT, input -> {
+                        assert input != null;
+                        return ContactUtil.getUSStateName((String) input, _localeContext);
+                    }));
                 return editor;
             };
         }

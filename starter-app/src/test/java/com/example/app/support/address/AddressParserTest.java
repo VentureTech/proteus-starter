@@ -1692,37 +1692,37 @@ public class AddressParserTest
 
         if (streetNumber != null)
         {
-            address = address.concat(streetNumber);
+            address += streetNumber;
         }
 
         if (streetDirection != null && !streetDirection.isEmpty())
         {
-            address = address.concat(" ").concat(streetDirection);
+            address = address + ' ' + streetDirection;
         }
 
         if (streetName != null)
         {
-            address = address.concat(" ").concat(streetName);
+            address = address + ' ' + streetName;
         }
 
         if (streetType != null)
         {
-            address = address.concat(" ").concat(streetType);
+            address = address + ' ' + streetType;
         }
 
         if (unitNumber != null)
         {
-            address = address.concat(" ").concat(unitNumber);
+            address = address + ' ' + unitNumber;
         }
 
         if (city != null)
         {
-            address = address.concat(", ").concat(city);
+            address = address + ", " + city;
         }
 
         if (state != null)
         {
-            address = address.concat(", ").concat(state);
+            address = address + ", " + state;
         }
 
         Map<AddressComponent, String> results = AddressParser.parseAddress(address);

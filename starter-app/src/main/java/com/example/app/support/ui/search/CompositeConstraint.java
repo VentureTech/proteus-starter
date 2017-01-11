@@ -248,6 +248,7 @@ public class CompositeConstraint implements SearchConstraint
     private String _HTMLClass;
     private TextSource _label;
 
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public SearchConstraint clone()
     {

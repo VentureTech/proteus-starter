@@ -349,10 +349,6 @@ public class UserValueViewer extends Container
         _adminMode = adminMode;
     }
 
-
-
-
-
     private void setupUI()
     {
         removeAllComponents();
@@ -445,20 +441,21 @@ public class UserValueViewer extends Container
         loginLangingPage.setVisible(
             Objects.equals(currentUser.getId(), getUser().getId())
             && _profileDAO.getMembershipsForUser(getUser(), null, getSession().getTimeZone()).stream()
-                .map(Membership::getMembershipType).filter(membershipType1 -> membershipType1 != null)
+                .map(Membership::getMembershipType).filter(Objects::nonNull)
                 .anyMatch(membershipType ->
-                    membershipType.equals(_mtp.companyAdmin())
+                    Objects.equals(membershipType, _mtp.companyAdmin())
                 )
         );
         loginLangingPage.setCellRenderer(new CustomCellRenderer(CommonButtonText.PLEASE_SELECT, input -> {
             Link link = (Link) input;
+            assert link != null;
             return TextSources.createText(link.getAdditionalAttributes().get("label"));
         }));
         final Preferences userPref = Preferences.userRoot().node(User.LOGIN_PREF_NODE);
         final String uri = userPref != null ? userPref.get(User.LOGIN_PREF_NODE_LANDING_PAGE, null) : null;
         for (Link l : links)
         {
-            if (l != null && l.getURIAsString().equals(uri))
+            if (l != null && Objects.equals(l.getURIAsString(), uri))
             {
                 loginLangingPage.setValue(l);
                 break;

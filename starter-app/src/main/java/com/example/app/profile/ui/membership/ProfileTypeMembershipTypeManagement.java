@@ -13,7 +13,6 @@ package com.example.app.profile.ui.membership;
 
 import com.example.app.profile.model.ProfileDAO;
 import com.example.app.profile.model.ProfileType;
-import com.example.app.profile.model.company.CompanyDAO;
 import com.example.app.profile.model.membership.MembershipType;
 import com.example.app.profile.service.SelectedCompanyTermProvider;
 import com.example.app.support.service.AppUtil;
@@ -93,8 +92,6 @@ public class ProfileTypeMembershipTypeManagement extends Container
     private EntityRetriever _er;
     @Autowired
     private ProfileDAO _profileDAO;
-    @Autowired
-    private CompanyDAO _coachingEntityDAO;
     @Autowired
     private SelectedCompanyTermProvider _terms;
 
@@ -188,6 +185,7 @@ public class ProfileTypeMembershipTypeManagement extends Container
         Optional.ofNullable(dataTable.getUIColumn(roleCol)).ifPresent(uiCol -> uiCol.setTableCellRenderer(
             new CustomCellRenderer(TextSources.EMPTY, input -> {
                 MembershipType memType = (MembershipType)input;
+                assert memType != null;
                 return memType.getName();
             })));
         Optional.ofNullable(dataTable.getUIColumn(descCol)).ifPresent(uiCol -> uiCol.setTableCellRenderer(
@@ -285,6 +283,7 @@ public class ProfileTypeMembershipTypeManagement extends Container
 
         save.setActionListener(ev -> {
             if(propEditor.persist(input -> {
+                assert input != null;
                 input.setProfileType(pt);
                 if(StringFactory.isEmptyString(input.getProgrammaticIdentifier()))
                 {

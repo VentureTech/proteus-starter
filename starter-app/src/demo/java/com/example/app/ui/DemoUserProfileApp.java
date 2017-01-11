@@ -125,16 +125,16 @@ public class DemoUserProfileApp extends SearchUIApp
     /**
      * Create an instance of the application.
      *
-     * @param session the session.
+     * @param miwtSession the session.
      */
-    public DemoUserProfileApp(MIWTSession session)
+    public DemoUserProfileApp(MIWTSession miwtSession)
     {
-        super(session);
+        super(miwtSession);
         // Set the default application name used in toString() and some other circumstances.
         // Since internationalization (i18n) is not a concern for our application, we use the
         /// TextSources.createText method as a placeholder in case we change our mind about i18n later.
         /// This will allow you to quickly / programmatically find text needing i18n and l10n (localization).
-        this.defAppName = createText("User Profile Example App");
+        defAppName = createText("User Profile Example App");
     }
 
 

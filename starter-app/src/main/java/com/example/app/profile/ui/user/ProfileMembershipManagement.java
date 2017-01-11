@@ -22,6 +22,7 @@ import com.example.app.profile.model.user.User;
 import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.service.MembershipOperationProvider;
 import com.example.app.profile.service.SelectedCompanyTermProvider;
+import com.example.app.support.service.AppUtil;
 import com.google.common.base.Preconditions;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,11 +129,6 @@ import static net.proteusframework.core.locale.TextSources.createText;
 @Configurable
 public class ProfileMembershipManagement extends HistoryContainer
 {
-    private final Set<MembershipType> _excludedMembershipTypes = new HashSet<>();
-    private final Set<MembershipType> _requiredMembershipTypes = new HashSet<>();
-    @Nonnull
-    private final Profile _profile;
-    private final ComboBox _activeConstraint = new ComboBox(new SimpleListModel<>(Arrays.asList(ACTIVE(), INACTIVE())));
     @Autowired
     private ProfileDAO _profileDAO;
     @Autowired
@@ -143,6 +139,14 @@ public class ProfileMembershipManagement extends HistoryContainer
     private SelectedCompanyTermProvider _terms;
     @Autowired
     private MembershipTypeProvider _membershipTypeProvider;
+    @Autowired
+    private AppUtil _appUtil;
+
+    @Nonnull
+    private final Profile _profile;
+    private final ComboBox _activeConstraint = new ComboBox(new SimpleListModel<>(Arrays.asList(ACTIVE(), INACTIVE())));
+    private final Set<MembershipType> _excludedMembershipTypes = new HashSet<>();
+    private final Set<MembershipType> _requiredMembershipTypes = new HashSet<>();
     private DataColumnTable<Membership> _membershipTable;
     private boolean _allowEditActive;
 
@@ -158,8 +162,8 @@ public class ProfileMembershipManagement extends HistoryContainer
                 if (m1 == m2) continue;
                 final Date startB = m2.getStartDate();
                 final Date endB = m2.getEndDate();
-                if ((startA == null || endB == null || startA.before(endB) || startA.equals(endB))
-                    && (endA == null || startB == null || endA.after(startB) || endA.equals(startB)))
+                if ((startA == null || endB == null || startA.before(endB) || Objects.equals(startA, endB))
+                    && (endA == null || startB == null || endA.after(startB) || Objects.equals(endA, startB)))
                     return true;
             }
         }
@@ -516,8 +520,8 @@ public class ProfileMembershipManagement extends HistoryContainer
             if (((Supplier<Boolean>) () -> {
                 final Date startDate = startDateEditor.commitValue();
                 final Date endDate = endDateEditor.commitValue();
-                membership.setStartDate(convertForPersistence(toZonedDateTime(startDate, getSession().getTimeZone())));
-                ZonedDateTime endDateTime = toZonedDateTime(endDate, getSession().getTimeZone());
+                membership.setStartDate(convertForPersistence(_appUtil.toZonedDateTime(startDate, getSession().getTimeZone())));
+                ZonedDateTime endDateTime = _appUtil.toZonedDateTime(endDate, getSession().getTimeZone());
                 membership.setEndDate(convertForPersistence(endDateTime != null
                     ? endDateTime.minus(1, ChronoUnit.DAYS) : null));
                 if (startDate != null && endDate != null && startDate.after(endDate))
@@ -603,7 +607,7 @@ public class ProfileMembershipManagement extends HistoryContainer
         final ActionListener searchAction = ev -> {
             @SuppressWarnings("ConstantConditions")
             final List<User> exclude = getProfile().getMembershipSet().stream()
-                .filter(membership -> membershipType.equals(membership.getMembershipType()))
+                .filter(membership -> Objects.equals(membershipType, membership.getMembershipType()))
                 .map(Membership::getUser)
                 .collect(Collectors.toList());
             final List<User> users = _userDAO.getUsers(name.getText(), name.getText(), email.getText(), exclude);
@@ -637,7 +641,7 @@ public class ProfileMembershipManagement extends HistoryContainer
             assert user != null;
             final Calendar calendar = Calendar.getInstance(getSession().getTimeZone());
             _profileDAO.createMembership(getProfile(), user, membershipType,
-                toZonedDateTime(calendar.getTime(), getSession().getTimeZone()), false);
+                _appUtil.toZonedDateTime(calendar.getTime(), getSession().getTimeZone()), false);
             reloadTableData();
             ui.close();
         });
@@ -653,7 +657,7 @@ public class ProfileMembershipManagement extends HistoryContainer
         final Set<Membership> membershipSet = getProfile().getMembershipSet().stream()
             .filter(membership -> !_excludedMembershipTypes.contains(membership.getMembershipType()))
             .filter(membership -> {
-                if (ACTIVE().equals(_activeConstraint.getSelectedObject()))
+                if (Objects.equals(ACTIVE(), _activeConstraint.getSelectedObject()))
                     return membership.isActive();
                 else
                     return !membership.isActive();
@@ -672,8 +676,7 @@ public class ProfileMembershipManagement extends HistoryContainer
     void showHideConstraints()
     {
         final boolean hasInactive = getProfile().getMembershipSet().stream()
-            .filter(membership -> !membership.isActive())
-            .findAny().isPresent();
+            .anyMatch(membership -> !membership.isActive());
         if (!hasInactive)
         {
             _activeConstraint.setSelectedObject(ACTIVE());

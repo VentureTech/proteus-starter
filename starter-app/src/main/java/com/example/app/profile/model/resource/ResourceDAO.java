@@ -152,9 +152,7 @@ public class ResourceDAO extends DAOHelper
                 return _fileSystemDAO.mkdirs(directory, null, RESOURCE_PICTURE_FOLDER, String.valueOf(resource.getId()));
             }, (resource, image) -> {
                 String fileNameSuffix = RESOURCE_PICTURE_FILE_NAME_SUFFIX + AppUtil.getExtensionWithDot(image);
-                return resource.getId() > 0
-                    ? resource.getId() + fileNameSuffix
-                    : UUID.randomUUID() + fileNameSuffix;
+                return (resource.getId() > 0 ? resource.getId() : UUID.randomUUID()) + fileNameSuffix;
             }, this::mergeResource);
         }
         return _resourceImageSaver;

@@ -119,8 +119,6 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
 {
     /** Logger. */
     private static final Logger _logger = LogManager.getLogger(UserPropertyEditor.class);
-    boolean _newUser;
-    private final List<Notification> _notifications = new ArrayList<>();
 
     @Autowired @Qualifier(HibernateSessionHelper.RESOURCE_NAME) private HibernateSessionHelper _sessionHelper;
     @Autowired private UserDAO _userDAO;
@@ -133,6 +131,7 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
     @Autowired private CompanyDAO _companyDAO;
     @Autowired private UserManagementPermissionCheck _permissionCheck;
 
+    boolean _newUser;
     private User _saved;
 
     /**
@@ -147,8 +146,8 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
         setHTMLElement(HTMLElement.section);
     }
 
+    //Used by ApplicationFunction
     @SuppressWarnings("unused")
-        //Used by ApplicationFunction
     void configure(ParsedRequest request)
     {
         User value = request.getPropertyValue(URLProperties.USER);
@@ -171,7 +170,9 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
             getValueEditor().setValue(value);
         }
         setSaved(value);
-    }    /**
+    }
+
+    /**
      * Set the saved User to be used for constructing URL properties after saving the User
      *
      * @param saved the persisted User
@@ -320,8 +321,6 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
         cancelAction.setTarget(this, "close");
 
         setPersistenceActions(saveAction, cancelAction);
-
-        _notifications.forEach(notification -> getNotifiable().sendNotification(notification));
     }
 
     @Override

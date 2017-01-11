@@ -373,7 +373,6 @@ public abstract class AbstractCompanyPropertyEditor extends MIWTPageElementModel
         });
     }
 
-    @SuppressWarnings("ConstantConditions")
     private void setProfileTypesIfNeeded(Company company)
     {
         if(company.getProfileType() == null

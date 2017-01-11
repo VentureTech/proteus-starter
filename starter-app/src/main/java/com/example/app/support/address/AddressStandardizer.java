@@ -334,7 +334,7 @@ public class AddressStandardizer
             m = DIGIT.matcher(num);
             if (m.matches())
             {
-                ret = m.group(2) == null ? m.group(1) : m.group(1) + "-" + m.group(2);
+                ret = m.group(2) == null ? m.group(1) : m.group(1) + '-' + m.group(2);
             }
         }
         return nvl(ret, num);
@@ -365,9 +365,9 @@ public class AddressStandardizer
         {
             for (Map.Entry<String, String> e : getUNIT_MAP().entrySet())
             {
-                if (line2.startsWith(e.getKey() + " "))
+                if (line2.startsWith(e.getKey() + ' '))
                 {
-                    line2 = line2.replaceFirst(e.getKey() + " ", e.getValue() + " ");
+                    line2 = line2.replaceFirst(e.getKey() + ' ', e.getValue() + ' ');
                     break;
                 }
             }

@@ -28,7 +28,7 @@ import net.proteusframework.core.locale.TransientLocalizedObjectKey;
  * falls back to the DefaultProfileTermProvider
  * if the term isn't defined in the instance.
  *
- * @author russ (russ@venturetech.net)
+ * @author Russ Tennant (russ@venturetech.net)
  */
 @SuppressWarnings("unused")
 @Configurable

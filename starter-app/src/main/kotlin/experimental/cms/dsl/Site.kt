@@ -64,8 +64,8 @@ class Site(id: String, val appDefinition: AppDefinition) : IdentifiableParent<Pa
 //        val content = siteDefinitionDAO.getSiteByDescription(id)?.let {siteDefinitionDAO.getContentElementByName(it, existingId)}
 //        if(content != null) return CreateContent(existingId)
         val predicate = createContentIdPredicate(existingId)
-        return children.flatMap { it.contentList }.filter(predicate).firstOrNull() ?:
-            templates.flatMap { it.contentList }.filter(predicate).firstOrNull() ?:
+        return children.flatMap(Page::contentList).filter(predicate).firstOrNull() ?:
+            templates.flatMap(Template::contentList).filter(predicate).firstOrNull() ?:
             content.filter(predicate).firstOrNull()?:throw IllegalStateException("Content '$existingId' does not exist")
     }
 
@@ -312,7 +312,7 @@ class Site(id: String, val appDefinition: AppDefinition) : IdentifiableParent<Pa
 private fun appDefinitionExample() {
     @Profile("automation")
     @Component
-    open class MyAppDefinition() : AppDefinition("My Cool Application", version = 1) {
+    open class MyAppDefinition : AppDefinition("My Cool Application", version = 1) {
         init {
             createSite("Cool Application") {
                 // ...

@@ -52,6 +52,8 @@ public class RepositoryDAO extends DAOHelper
     private EntityRetriever _er;
     @Autowired
     private ProfileDAO _profileDAO;
+    @Autowired
+    private AppUtil _appUtil;
 
     /**
      * Assign the given RepositoryItem to the given Repository if a relation does not already exist.
@@ -273,9 +275,9 @@ public class RepositoryDAO extends DAOHelper
             .uniqueResult());
     }
 
-    private static Date getNow()
+    private Date getNow()
     {
-        final Calendar calendar = Calendar.getInstance(AppUtil.staticGetDefaultTimeZone(), Locale.ENGLISH);
+        final Calendar calendar = Calendar.getInstance(_appUtil.getDefaultTimeZone(), Locale.ENGLISH);
         calendar.add(Calendar.HOUR_OF_DAY, -1);// truncate to an hour for caching
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
@@ -463,7 +465,7 @@ public class RepositoryDAO extends DAOHelper
     }
 
     /**
-     * Save the given Repositoryitem via a merge operation
+     * Save the given RepositoryItem via a merge operation
      *
      * @param repositoryItem the RepositoryItem to save
      * @param <RI> the RepositoryItem Subclass

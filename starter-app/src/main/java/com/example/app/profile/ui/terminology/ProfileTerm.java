@@ -39,7 +39,7 @@ import net.proteusframework.core.locale.TransientLocalizedObjectKey;
 /**
  * A single term from ProfileTerms.
  *
- * @author russ (russ@venturetech.net)
+ * @author Russ Tennant (russ@venturetech.net)
  */
 public final class ProfileTerm
 {

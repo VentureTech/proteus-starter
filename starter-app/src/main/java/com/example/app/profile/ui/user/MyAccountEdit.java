@@ -17,7 +17,6 @@ import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.ui.ApplicationFunctions;
 import com.example.app.support.service.ContactUtil;
 import com.example.app.support.ui.Application;
-import com.example.app.support.ui.UIPreferences;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +79,6 @@ public class MyAccountEdit extends MIWTPageElementModelPropertyEditor<User>
     @Autowired private UserDAO _userDAO;
     @Autowired private PrincipalDAO _principalDAO;
     @Autowired @Qualifier(HibernateSessionHelper.RESOURCE_NAME) private HibernateSessionHelper _sessionHelper;
-    @Autowired private UIPreferences _uiPreferences;
     @Autowired private MyAccountPermissionCheck _permissionCheck;
 
     /**
@@ -96,8 +94,8 @@ public class MyAccountEdit extends MIWTPageElementModelPropertyEditor<User>
         setHTMLElement(HTMLElement.section);
     }
 
+    //Used by ApplicationFunction
     @SuppressWarnings("unused")
-        //Used by ApplicationFunction
     void configure(ParsedRequest request)
     {
         _permissionCheck.checkPermissionsForCurrent(Event.getRequest(), "You don't have a User account in the system.");

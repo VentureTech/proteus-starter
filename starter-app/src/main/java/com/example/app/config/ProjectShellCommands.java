@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -246,7 +247,7 @@ class MembershipTypeData
 
         membershipType.get().getDefaultOperations().addAll(Arrays.stream(defaultOperations)
             .map(opProg -> profileDAO.getMembershipOperation(opProg).orElse(null))
-            .filter(memOp -> memOp != null)
+            .filter(Objects::nonNull)
             .collect(Collectors.toList()));
 
         return membershipType.get();
@@ -258,6 +259,7 @@ class MembershipTypeData
  *
  * @author Alan Holt (aholt@venturetech.net)
  */
+@SuppressWarnings("CanBeFinal")
 class ProfileTypeData
 {
     /** json mapping */

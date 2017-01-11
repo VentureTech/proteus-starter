@@ -32,7 +32,7 @@ import net.proteusframework.ui.miwt.util.CommonColumnText;
 /**
  * ProfileTerms Editor.
  *
- * @author russ (russ@venturetech.net)
+ * @author Russ Tennant (russ@venturetech.net)
  */
 @Configurable(preConstruction = true)
 public class ProfileTermsViewer extends Container
@@ -62,9 +62,7 @@ public class ProfileTermsViewer extends Container
 
         final FunctionColumn<ProfileTerm, TextSource> providerCol = new FunctionColumn<>(ProfileTerm.class, TextSource.class,
             this::getTerm);
-        providerCol.setColumnName(
-            _company.getName()
-        );
+        providerCol.setColumnName(_company.getName());
         final FunctionColumn<ProfileTerm, TextSource> defaultCol = new FunctionColumn<>(ProfileTerm.class, TextSource.class,
             this::getDefaultTerm);
         defaultCol.setColumnName(CommonColumnText.DEFAULT);

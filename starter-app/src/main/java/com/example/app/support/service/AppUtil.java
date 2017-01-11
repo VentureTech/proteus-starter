@@ -52,6 +52,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.function.Consumer;
 
@@ -93,7 +94,7 @@ import static java.util.Optional.ofNullable;
 import static net.proteusframework.ui.miwt.component.Container.of;
 
 /**
- * Util class for holding utility methods and instances for use across applicaiton.
+ * Util class for holding utility methods and instances for use across application.
  *
  * @author Alan Holt (aholt@venturetech.net)
  * @since 11/2/15 11:03 AM
@@ -127,6 +128,9 @@ public class AppUtil implements Serializable
     private transient PrincipalDAO _principalDAO;
     @Autowired
     private transient CmsFrontendDAO _cmsFrontendDAO;
+    @Autowired
+    private transient EntityRetriever _entityRetriever;
+
     @Value("${frontend-access-role}")
     private String _frontEndRoleProgId;
     @Value("${admin-access-role}")
@@ -237,6 +241,7 @@ public class AppUtil implements Serializable
      *
      * @return the singleton
      */
+    @Deprecated
     public static <C> C autowire(Class<C> clazz)
     {
         return autowire(clazz, null);
@@ -479,7 +484,7 @@ public class AppUtil implements Serializable
     private static String _getExtensionWithFallback(String fileName, String contentType)
     {
         String ext = StringFactory.getExtension(fileName);
-        if (ext.isEmpty() && !ContentTypes.Application.octet_stream.toString().equals(contentType))
+        if (ext.isEmpty() && !Objects.equals(ContentTypes.Application.octet_stream.toString(), contentType))
         {
             try
             {
@@ -663,7 +668,7 @@ public class AppUtil implements Serializable
     public static void initialize(User value)
     {
         Hibernate.initialize(value);
-        EntityRetriever er = autowire(EntityRetriever.class, EntityRetriever.RESOURCE_NAME);
+        EntityRetriever er = EntityRetriever.getInstance();
         Hibernate.initialize(er.reattachIfNecessary(value.getPrincipal()));
     }
 
@@ -704,6 +709,7 @@ public class AppUtil implements Serializable
      *
      * @return the singleton
      */
+    @Deprecated
     @SuppressWarnings("ConstantConditions")
     public static <C> C autowire(Class<C> clazz, @Nullable String resourceName)
     {
@@ -825,19 +831,6 @@ public class AppUtil implements Serializable
     }
 
     /**
-     * Get the default TimeZone statically.
-     * Uses application context utils to get LRLabsUtil and call {@link AppUtil#getDefaultTimeZone()}
-     *
-     * @return the default time zone.
-     */
-    public static TimeZone staticGetDefaultTimeZone()
-    {
-        @SuppressWarnings("ConstantConditions")
-        AppUtil util = ApplicationContextUtils.getInstance().getContext().getBean(AppUtil.class);
-        return util.getDefaultTimeZone();
-    }
-
-    /**
      * Get the default time zone.
      *
      * @return the default time zone.
@@ -882,7 +875,7 @@ public class AppUtil implements Serializable
      * @return a ZonedDateTime that represents the same instant as the Date, at the TimeZone specified.
      */
     @Nullable
-    public static ZonedDateTime toZonedDateTime(@Nullable Date date, @Nullable TimeZone zone)
+    public ZonedDateTime toZonedDateTime(@Nullable Date date, @Nullable TimeZone zone)
     {
         if (date == null || zone == null) return null;
         return ZonedDateTime.ofInstant(date.toInstant(), zone.toZoneId());
@@ -960,13 +953,10 @@ public class AppUtil implements Serializable
      *
      * @return the boolean
      */
-    public static boolean userHasAdminRole(User user)
+    public boolean userHasAdminRole(User user)
     {
-        PrincipalDAO principalDAO = AppUtil.autowire(PrincipalDAO.class);
-        AppUtil appUtil = AppUtil.autowire(AppUtil.class);
-        EntityRetriever er = AppUtil.autowire(EntityRetriever.class, EntityRetriever.RESOURCE_NAME);
-
-        return principalDAO.getAllRoles(er.reattachIfNecessary(user).getPrincipal()).contains(appUtil.getAdminAccessRole());
+        return _principalDAO.getAllRoles(_entityRetriever.reattachIfNecessary(user).getPrincipal())
+            .contains(getAdminAccessRole());
     }
 
     /**
@@ -976,13 +966,9 @@ public class AppUtil implements Serializable
      *
      * @return the boolean
      */
-    public static boolean userHasAdminRole(Principal user)
+    public boolean userHasAdminRole(Principal user)
     {
-        PrincipalDAO principalDAO = AppUtil.autowire(PrincipalDAO.class);
-        AppUtil appUtil = AppUtil.autowire(AppUtil.class);
-        EntityRetriever er = AppUtil.autowire(EntityRetriever.class, EntityRetriever.RESOURCE_NAME);
-
-        return principalDAO.getAllRoles(er.reattachIfNecessary(user)).contains(appUtil.getAdminAccessRole());
+        return _principalDAO.getAllRoles(_entityRetriever.reattachIfNecessary(user)).contains(getAdminAccessRole());
     }
 
     /**

@@ -142,15 +142,15 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
     {
         SearchModelImpl searchModel = new SearchModelImpl();
         searchModel.setName("Resource Selector Search");
-        searchModel.setDisplayName(ResourceSelectorLOK.SEARCH_MODEL_NAME_FMT(RESOURCE()));
+        searchModel.setDisplayName(SEARCH_MODEL_NAME_FMT(RESOURCE()));
 
         addConstraints(searchModel);
 
         addResultColumns(searchModel);
 
         SearchSupplierImpl searchSupplier = new SearchSupplierImpl();
-        searchSupplier.setName(ResourceSelectorLOK.SEARCH_SUPPLIER_NAME_FMT(RESOURCE()));
-        searchSupplier.setDescription(ResourceSelectorLOK.SEARCH_SUPPLIER_DESCRIPTION_FMT(RESOURCE()));
+        searchSupplier.setName(SEARCH_SUPPLIER_NAME_FMT(RESOURCE()));
+        searchSupplier.setDescription(SEARCH_SUPPLIER_DESCRIPTION_FMT(RESOURCE()));
         searchSupplier.setSearchModel(searchModel);
 
         searchSupplier.setBuilderSupplier(() -> {
@@ -247,6 +247,7 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
             .withTableColumn(new FixedValueColumn().withColumnName(COLUMN_CATEGORIES()))
             .withTableCellRenderer(new CustomCellRenderer(EMPTY, input -> {
                 ResourceRepositoryItem rri = (ResourceRepositoryItem) input;
+                assert rri != null;
                 return ConcatTextSource.create(
                     rri.getResource().getTags().stream().map(TextSources::createTextForAny).collect(Collectors.toList()))
                     .withSeparator(", ");
@@ -264,6 +265,7 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
             .withTableColumn(new FixedValueColumn().withColumnName(LABEL_OWNER()))
             .withTableCellRenderer(new CustomCellRenderer(EMPTY, input -> {
                 ResourceRepositoryItem rri = (ResourceRepositoryItem) input;
+                assert rri != null;
                 return _repositoryDAO.getOwnerOfRepositoryItem(rri).getName();
             })));
 
@@ -305,7 +307,7 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
     }
 
     /**
-     * Set the Entity Actins on the Search UI. This only works if it is called before init.
+     * Set the Entity Actions on the Search UI. This only works if it is called before init.
      *
      * @param actions the Actions to set
      */
@@ -344,7 +346,6 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
      *
      * @return the OnSelect listener
      */
-    @SuppressWarnings("ConstantConditions")
     public Function<SearchUIOperationContext, Void> getOnSelect()
     {
         if (_onSelect == null)
@@ -356,6 +357,7 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
                     _selection.add(rri.getResource());
                     context.getSearchUI().doAction(search);
                 }
+                //noinspection ReturnOfNull
                 return null;
             };
         }

@@ -11,6 +11,8 @@
 
 package com.example.app.support.ui;
 
+import com.example.app.config.ProjectInformation;
+
 import net.proteusframework.ui.management.ApplicationRegistry;
 
 /**
@@ -21,7 +23,7 @@ import net.proteusframework.ui.management.ApplicationRegistry;
 public final class Application
 {
     /** Application NAME. */
-    public static final String NAME = "Example Application";
+    public static final String NAME = ProjectInformation.APPLICATION_NAME;
     /** Application Session. */
     public static final String SESSION = "app";
 

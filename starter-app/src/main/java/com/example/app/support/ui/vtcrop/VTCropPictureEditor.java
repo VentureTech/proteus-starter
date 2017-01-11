@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import net.proteusframework.cms.support.ImageFileUtil;
 import net.proteusframework.core.StringFactory;
@@ -202,7 +203,7 @@ public class VTCropPictureEditor extends Container implements ValueEditor<FileIt
         newDim =
             ImageFileUtil.getScaledDimension(origDim, newDimWidth, newDimHeight);
 
-        if (!newDim.equals(origDim))
+        if (!Objects.equals(newDim, origDim))
         {
             _logger.debug("Scale to " + newDim.getWidthMetric() + " x " + newDim.getHeightMetric());
             FileItem scaledFileItem = _fileItemFactory.createItem(

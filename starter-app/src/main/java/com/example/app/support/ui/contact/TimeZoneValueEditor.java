@@ -135,6 +135,7 @@ public class TimeZoneValueEditor extends ComboBoxValueEditor<TimeZone>
     public void init()
     {
         setCellRenderer(new CustomCellRenderer(_nullValueLabel, input -> {
+            assert input != null;
             TimeZone tz = (TimeZone) input;
             if (_renderStyle != TimezoneRenderStyle.ID)
             {

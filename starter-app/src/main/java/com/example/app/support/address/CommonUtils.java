@@ -242,7 +242,7 @@ public class CommonUtils
      */
     public static void printElapsed(long startInMilli, TimeUnit unit)
     {
-        System.out.println("Elapsed time = " + getElapsed(startInMilli, unit) + " " + unit.name());
+        System.out.println("Elapsed time = " + getElapsed(startInMilli, unit) + ' ' + unit.name());
     }
 
     /**

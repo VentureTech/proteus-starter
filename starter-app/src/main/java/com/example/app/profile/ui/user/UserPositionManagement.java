@@ -14,7 +14,6 @@ package com.example.app.profile.ui.user;
 import com.example.app.profile.model.user.User;
 import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.model.user.UserPosition;
-import com.example.app.profile.service.SelectedCompanyTermProvider;
 import com.example.app.support.service.AppUtil;
 import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,13 +90,12 @@ public class UserPositionManagement extends HistoryContainer implements SearchUI
             return cb;
         }
     }
-    private final User _user;
     @Autowired
     private EntityRetriever _er;
     @Autowired
     private UserDAO _userDAO;
-    @Autowired
-    private SelectedCompanyTermProvider _terms;
+
+    private final User _user;
     private SearchUIImpl _searchUI;
     private boolean _canBeModified = true;
 

@@ -46,16 +46,16 @@ import static com.example.app.profile.ui.setup.SiteSetupLOK.COMPONENT_NAME;
  * @since 1/3/17
  */
 @I18NFile(
-    symbolPrefix = "StarterSiteSetup",
+    symbolPrefix = "com.example.app.profile.ui.setup.SiteSetup",
     i18n = {
-        @I18N(symbol = "Component Name", l10n = @L10N("Starter Site Setup"))
+        @I18N(symbol = "Component Name", l10n = @L10N("Initial Site Setup"))
     }
 )
 @ApplicationFunction(
     applicationName = Application.NAME,
     sessionName = Application.SESSION,
     name = ApplicationFunctions.StarterSite.SETUP,
-    description = "Starter Site Setup",
+    description = "Initial Site Setup",
     urlConfigName = URLConfigurations.Company.EDIT
 )
 public class SiteSetup extends AbstractCompanyPropertyEditor

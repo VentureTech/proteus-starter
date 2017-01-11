@@ -104,7 +104,7 @@ public class User extends AbstractAuditableEntity<Integer> implements NamedObjec
     public static final String COMPANIES_PROP = "companies";
     /** Preference Node for Login */
     public static final String LOGIN_PREF_NODE = "LOGIN_PREF";
-    /** Prefernce for Login Landing Page */
+    /** Preference for Login Landing Page */
     public static final String LOGIN_PREF_NODE_LANDING_PAGE = "LANDING_PAGE";
     /** the serial version UID */
     private static final long serialVersionUID = -5249238131672936683L;

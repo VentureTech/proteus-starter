@@ -73,7 +73,7 @@ public class SiteSetupDAO extends DAOHelper
                     .setCacheable(true)
                     .setParameterList("adminIds", admins.stream()
                         .map(Principal::getId)
-                        .collect(new EntityIdCollector<Long>(() -> 0L)))
+                        .collect(new EntityIdCollector<>(() -> 0L)))
                     .list();
             return admins.stream().filter(a -> !adminsWithUser.contains(a)).collect(Collectors.toList());
         });

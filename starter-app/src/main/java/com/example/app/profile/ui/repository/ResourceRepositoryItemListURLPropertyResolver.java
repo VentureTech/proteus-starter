@@ -39,7 +39,7 @@ public class ResourceRepositoryItemListURLPropertyResolver extends DefaultURLCon
     private static final String SEPARATOR = ",";
     private static final String SEPARATOR_ENCODED = "%2C";
 
-    @SuppressWarnings({"unchecked", "DynamicRegexReplaceableByCompiledPattern"})
+    @SuppressWarnings({"unchecked"})
     @Nullable
     @Override
     public <V> V convert(ParsedRequest parsedRequest, String property, @Nullable String value, Class<V> type)
@@ -49,7 +49,7 @@ public class ResourceRepositoryItemListURLPropertyResolver extends DefaultURLCon
             boolean useEncodedVals = value.contains("%5B") || value.contains("%5D") || value.contains(SEPARATOR_ENCODED);
             value = value.replace(useEncodedVals ? "%5B" : "[", "").replace(useEncodedVals ? "%5D" : "]", "");
             String[] values = value.split(useEncodedVals ? SEPARATOR_ENCODED : SEPARATOR);
-            List<ResourceRepositoryItem> resources = Arrays.asList(values).stream()
+            List<ResourceRepositoryItem> resources = Arrays.stream(values)
                 .map(Integer::valueOf)
                 .map(id -> getRepositoryDAO().getRepositoryItem(ResourceRepositoryItem.class, id))
                 .filter(Optional::isPresent)

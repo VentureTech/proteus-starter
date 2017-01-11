@@ -84,10 +84,11 @@ import static net.proteusframework.users.model.dao.AuthenticationDomainList.crea
 @Configurable
 public class PrincipalValueEditor extends CompositeValueEditor<Principal>
 {
-    private final List<AuthenticationDomain> _authDomains = new ArrayList<>();
-    private final TextEditor _smsEditor = new TextEditor(LABEL_SMS_PHONE_NUMBER(), null);
     @Autowired
     private PrincipalDAO _principalDAO;
+
+    private final List<AuthenticationDomain> _authDomains = new ArrayList<>();
+    private final TextEditor _smsEditor = new TextEditor(LABEL_SMS_PHONE_NUMBER(), null);
     private boolean _adminMode = true;
 
     /**

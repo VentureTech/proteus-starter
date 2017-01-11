@@ -240,7 +240,7 @@ public class Membership extends AbstractAuditableEntity<Integer> implements Name
             return false;
         Membership that = (Membership) o;
         if (getId() != null)
-            return getId().equals(that.getId());
+            return Objects.equals(getId(), that.getId());
 
         return Objects.equals(getMembershipType(), that.getMembershipType())
                && Objects.equals(getUser(), that.getUser())

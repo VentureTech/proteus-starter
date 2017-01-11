@@ -158,7 +158,7 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
     {
         super();
 
-        setName(CompanyManagementLOK.COMPONENT_NAME());
+        setName(COMPONENT_NAME());
         addCategory(CmsCategory.ClientBackend);
 
         addClassName("company-management");

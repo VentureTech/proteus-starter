@@ -17,7 +17,6 @@ import com.example.app.profile.model.ProfileDAO;
 import com.example.app.profile.model.user.User;
 import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.service.MembershipOperationProvider;
-import com.example.app.profile.service.SelectedCompanyTermProvider;
 import com.example.app.profile.ui.ApplicationFunctions;
 import com.example.app.support.ui.UIPreferences;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,8 +68,6 @@ public class UserPropertyViewer extends PropertyViewer
     private MembershipOperationProvider _mop;
     @Autowired
     private UserDAO _userDAO;
-    @Autowired
-    private SelectedCompanyTermProvider _terms;
     @Autowired
     private UIPreferences _uiPreferences;
 

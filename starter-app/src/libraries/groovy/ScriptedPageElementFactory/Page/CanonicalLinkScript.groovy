@@ -65,18 +65,21 @@ class CanonicalLinkGenerator extends GeneratorImpl<ScriptedBase>
 
         builder = ContentBuilder.<CLComponentProperty>load(request.pageElementData, ContentBuilder.class, true)
 
-        boolean handlePageWildcard = builder.getPropertyBooleanValue(CLComponentProperty.canonical_for_wildcard_page, CLComponentProperty.canonical_for_wildcard_page.defaultValue)
+        boolean handlePageWildcard = builder.getPropertyBooleanValue(CLComponentProperty.canonical_for_wildcard_page,
+            CLComponentProperty.canonical_for_wildcard_page.defaultValue)
         //System.out.println("Handle Wildcard? ${handlePageWildcard} - Page Wildcard? ${request.getPageElementPath().isWildcard()}")
         if(request.getPageElementPath().isWildcard() && !handlePageWildcard)
             return // Not handling wildcard
         PageElementPath prp = request.getPageElementPath().getPageElement().getPrimaryPageElementPath();
         boolean isPrimaryPath = request.getPageElementPath().equals(prp)
-        boolean handlePageAlias = builder.getPropertyBooleanValue(CLComponentProperty.canonical_for_page_alias, CLComponentProperty.canonical_for_page_alias.defaultValue)
+        boolean handlePageAlias = builder.getPropertyBooleanValue(CLComponentProperty.canonical_for_page_alias,
+            CLComponentProperty.canonical_for_page_alias.defaultValue)
         //System.out.println("Handle Page Alias? ${handlePageAlias} - Is PRP? ${isPrimaryPath} - PRP is null? ${prp == null}");
         if(!handlePageAlias && !isPrimaryPath)
             return // Not handling page alias
 
-        boolean handlePathSlash = builder.getPropertyBooleanValue(CLComponentProperty.canonical_for_path_ending_slash, CLComponentProperty.canonical_for_path_ending_slash.defaultValue)
+        boolean handlePathSlash = builder.getPropertyBooleanValue(CLComponentProperty.canonical_for_path_ending_slash,
+            CLComponentProperty.canonical_for_path_ending_slash.defaultValue)
 
         def uri = response.createURL(CmsRequestContext.getOriginalRequestURL()).getLink().getURI()
         
@@ -106,7 +109,8 @@ class CanonicalLinkGenerator extends GeneratorImpl<ScriptedBase>
         }
         catch(java.lang.IllegalArgumentException e)
         {
-            org.apache.logging.log4j.org.apache.logging.log4j.LogManager.getLogger(CanonicalLinkGenerator.class).error('Unable to create link: ' + linkString, e);
+            org.apache.logging.log4j.LogManager.getLogger(CanonicalLinkGenerator.class)
+                .error('Unable to create link: ' + linkString, e);
         }
     }
     

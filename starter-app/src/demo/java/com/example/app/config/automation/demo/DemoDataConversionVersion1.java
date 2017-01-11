@@ -35,7 +35,7 @@ import net.proteusframework.core.automation.TaskQualifier;
 import static java.util.Collections.singletonList;
 
 // You can also put your code in the groovy source folder so you can more easily create
-//  mult-line string literals. Don't duplicate the package-info.java though - only create one
+//  multi-line string literals. Don't duplicate the package-info.java though - only create one
 //  for the same package.
 
 /**

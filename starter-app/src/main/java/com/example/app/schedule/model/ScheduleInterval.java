@@ -29,7 +29,6 @@ import static com.example.app.schedule.model.ScheduleIntervalLOK.*;
  *
  * @author Russ Tennant (russ@i2rd.com)
  */
-@SuppressWarnings("unused")
 @I18NFile(
     symbolPrefix = "com.example.app.schedule.model.ScheduleInterval",
     i18n = {

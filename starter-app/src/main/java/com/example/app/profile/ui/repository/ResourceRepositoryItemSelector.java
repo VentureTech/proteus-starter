@@ -237,6 +237,7 @@ public class ResourceRepositoryItemSelector extends RepositoryItemSelector<Resou
             .withTableColumn(new FixedValueColumn().withColumnName(COLUMN_CATEGORIES()))
             .withTableCellRenderer(new CustomCellRenderer(EMPTY, input -> {
                 ResourceRepositoryItem rri = (ResourceRepositoryItem) input;
+                assert rri != null;
                 return ConcatTextSource.create(
                     rri.getResource().getTags().stream().map(TextSources::createTextForAny).collect(Collectors.toList()))
                     .withSeparator(", ");
@@ -254,6 +255,7 @@ public class ResourceRepositoryItemSelector extends RepositoryItemSelector<Resou
             .withTableColumn(new FixedValueColumn().withColumnName(LABEL_OWNER()))
             .withTableCellRenderer(new CustomCellRenderer(EMPTY, input -> {
                 ResourceRepositoryItem rri = (ResourceRepositoryItem) input;
+                assert rri != null;
                 return _repositoryDAO.getOwnerOfRepositoryItem(rri).getName();
             })));
 

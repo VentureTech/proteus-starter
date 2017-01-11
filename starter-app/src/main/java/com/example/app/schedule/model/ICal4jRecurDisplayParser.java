@@ -19,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -311,7 +312,7 @@ public final class ICal4jRecurDisplayParser
     private static String parseWeekDay(WeekDay day) throws ParseException
     {
         StringBuilder sb = new StringBuilder();
-        if (day.getDay().equals(WeekDay.MO.getDay()))
+        if (Objects.equals(day.getDay(), WeekDay.MO.getDay()))
         {
             if (day.getOffset() > 0)
             {
@@ -324,7 +325,7 @@ public final class ICal4jRecurDisplayParser
             sb.append("Monday");
             return sb.toString();
         }
-        if (day.getDay().equals(WeekDay.TU.getDay()))
+        if (Objects.equals(day.getDay(), WeekDay.TU.getDay()))
         {
             if (day.getOffset() > 0)
             {
@@ -337,7 +338,7 @@ public final class ICal4jRecurDisplayParser
             sb.append("Tuesday");
             return sb.toString();
         }
-        if (day.getDay().equals(WeekDay.WE.getDay()))
+        if (Objects.equals(day.getDay(), WeekDay.WE.getDay()))
         {
             if (day.getOffset() > 0)
             {
@@ -350,7 +351,7 @@ public final class ICal4jRecurDisplayParser
             sb.append("Wednesday");
             return sb.toString();
         }
-        if (day.getDay().equals(WeekDay.TH.getDay()))
+        if (Objects.equals(day.getDay(), WeekDay.TH.getDay()))
         {
             if (day.getOffset() > 0)
             {
@@ -363,7 +364,7 @@ public final class ICal4jRecurDisplayParser
             sb.append("Thursday");
             return sb.toString();
         }
-        if (day.getDay().equals(WeekDay.FR.getDay()))
+        if (Objects.equals(day.getDay(), WeekDay.FR.getDay()))
         {
             if (day.getOffset() > 0)
             {
@@ -376,7 +377,7 @@ public final class ICal4jRecurDisplayParser
             sb.append("Friday");
             return sb.toString();
         }
-        if (day.getDay().equals(WeekDay.SA.getDay()))
+        if (Objects.equals(day.getDay(), WeekDay.SA.getDay()))
         {
             if (day.getOffset() > 0)
             {
@@ -389,7 +390,7 @@ public final class ICal4jRecurDisplayParser
             sb.append("Saturday");
             return sb.toString();
         }
-        if (day.getDay().equals(WeekDay.SU.getDay()))
+        if (Objects.equals(day.getDay(), WeekDay.SU.getDay()))
         {
             if (day.getOffset() > 0)
             {

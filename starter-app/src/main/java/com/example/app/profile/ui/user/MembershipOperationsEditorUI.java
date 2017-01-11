@@ -140,6 +140,7 @@ class MembershipOperationsEditorUI extends Container
         options.addSearchSupplier(searchSupplier);
         options.setHistory(_history);
         options.setRowExtractor(input -> {
+            assert input != null;
             if (input.getClass().isArray())
                 return Array.get(input, 0);
             else

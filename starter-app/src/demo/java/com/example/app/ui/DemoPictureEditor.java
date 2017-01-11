@@ -19,8 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Nullable;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.List;
 
@@ -73,21 +71,17 @@ public class DemoPictureEditor extends AbstractSimpleValueEditor<FileEntity>
         addClassName("prop");
         _picture.setImageCaching(false);
         _fileField.setAccept("image/*");
-        _fileField.addPropertyChangeListener(FileField.PROP_FILE_ITEMS, new PropertyChangeListener()
+        _fileField.addPropertyChangeListener(FileField.PROP_FILE_ITEMS, evt ->
         {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt)
+            @SuppressWarnings("unchecked")
+            final List<FileItem> files = (List<FileItem>) evt.getNewValue();
+            if(files != null && files.size() > 0)
             {
-                @SuppressWarnings("unchecked")
-                final List<FileItem> files = (List<FileItem>) evt.getNewValue();
-                if(files != null && files.size() > 0)
-                {
-                    _uiValue = files.get(0);
-                    _picture.setImage(new Image(_uiValue));
-                    _modified = true;
-                }
-                _fileField.resetFile();
+                _uiValue = files.get(0);
+                _picture.setImage(new Image(_uiValue));
+                _modified = true;
             }
+            _fileField.resetFile();
         });
 
         _defaultProfilePicture = _classPathResourceLibraryHelper.createResource(

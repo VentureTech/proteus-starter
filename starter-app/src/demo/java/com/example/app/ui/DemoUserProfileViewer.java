@@ -29,6 +29,7 @@ import java.net.URI;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import com.i2rd.media.ICodec;
@@ -103,7 +104,7 @@ public class DemoUserProfileViewer extends Container
                 for (IMediaStream stream : mmd.getStreams())
                 {
                     if (stream.getCodec().getType() == ICodec.Type.video
-                        && "H264".equals(stream.getCodec().name()))
+                        && Objects.equals("H264", stream.getCodec().name()))
                     {
                         hasVideo = true;
                         if (stream.getWidth() > 0)

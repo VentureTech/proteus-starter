@@ -245,18 +245,18 @@ class RegexLibrary
     /////////////US ADDRESSES///////////////
     public static final String TXT_ORDINAL_0_19 =
         "zeroth" +
-        "|" +
-        "(?:" + TXT_ORDINAL_1_9 + ")" +
-        "|" +
-        "(?:" + TXT_ORDINAL_10_19 + ")";
+        '|' +
+        "(?:" + TXT_ORDINAL_1_9 + ')' +
+        '|' +
+        "(?:" + TXT_ORDINAL_10_19 + ')';
     public static final String TXT_NUM_0_9 =
         "zero|one|two|three|four|five|six|seven|eight|nine";
     public static final String TXT_NUM_10_19 =
         "ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen";
     public static final String TXT_NUM_0_19 =
-        "(?:" + TXT_NUM_0_9 + ")" +
-        "|" +
-        "(?:" + TXT_NUM_10_19 + ")";
+        "(?:" + TXT_NUM_0_9 + ')' +
+        '|' +
+        "(?:" + TXT_NUM_10_19 + ')';
 
     @SuppressWarnings("unchecked")
     private static class UsAddressesData
@@ -264,7 +264,7 @@ class RegexLibrary
         public static String getDirectionRegex()
         {
             String abbrv = "N[ ]?E|S[ ]?E|S[ ]?W|N[ ]?W|N|S|E|W";
-            return join("|", getDIRECTIONAL_MAP().keySet()) + "|" + abbrv;
+            return join("|", getDIRECTIONAL_MAP().keySet()) + '|' + abbrv;
         }
 
         private static String join(String separator, Collection<String>... collections)

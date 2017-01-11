@@ -304,7 +304,6 @@ public class CompanyDAO extends DAOHelper implements Serializable
      *
      * @return the un-persisted profile type
      */
-    @SuppressWarnings("Duplicates")
     public ProfileType createCompanyProfileType(@Nullable String progId)
     {
         ProfileType pt = new ProfileType();
@@ -425,7 +424,6 @@ public class CompanyDAO extends DAOHelper implements Serializable
      *
      * @return a list of Memberships
      */
-    @SuppressWarnings("unchecked")
     @Nonnull
     public List<Membership> getMemberships(@Nonnull User user, TimeZone timeZone)
     {
@@ -440,7 +438,6 @@ public class CompanyDAO extends DAOHelper implements Serializable
      *
      * @return a list of Companies that the given User has a Membership for
      */
-    @SuppressWarnings("unchecked")
     @Nonnull
     public List<Company> getCompaniesThatUserHasMembershipFor(@Nullable User user, TimeZone timeZone)
     {

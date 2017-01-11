@@ -11,7 +11,6 @@
 
 package com.example.app.ui;
 
-import com.example.app.model.DemoUserProfile;
 import com.example.app.model.DemoUserProfileDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -147,7 +146,7 @@ public class DemoUserProfileListing extends MIWTPageElementModelContainer implem
             }
             case delete:
             {
-                _demoUserProfileDAO.deleteUserProfile(context.<DemoUserProfile>getData());
+                _demoUserProfileDAO.deleteUserProfile(context.getData());
                 context.getSearchUI().doAction(SearchUIAction.search);
                 break;
             }

@@ -42,27 +42,79 @@ import net.proteusframework.ui.miwt.util.CommonColumnText;
 /**
  * ProfileTerms Editor.
  *
- * @author russ (russ@venturetech.net)
+ * @author Russ Tennant (russ@venturetech.net)
  */
-@Configurable(preConstruction = true)
+@Configurable
 public class ProfileTermsEditor extends Container implements ValueEditor<ProfileTerms>
 {
-    private ProfileTerms _profileTerms;
+    private final LinkedHashMap<ProfileTerm, TransientLocalizedObjectKey> _termMap = new LinkedHashMap<>();
+    private final Company _company;
     @Autowired
     private DefaultProfileTermProvider _defaultProfileTermProvider;
-
-    private final LinkedHashMap<ProfileTerm, TransientLocalizedObjectKey> _termMap = new LinkedHashMap<>();
+    private ProfileTerms _profileTerms;
     private DataColumnTable<ProfileTerm> _table;
     private ModificationState _modificationState = ModificationState.UNCHANGED;
-    private final Company _company;
 
     /**
      * Instantiates a new Profile terms editor.
+     *
      * @param company coaching entity.
      */
     public ProfileTermsEditor(Company company)
     {
         _company = company;
+    }
+
+    @Nullable
+    @Override
+    public ProfileTerms getValue()
+    {
+        return _profileTerms;
+    }
+
+    @Override
+    public void setValue(@Nullable ProfileTerms profileTerms)
+    {
+        _profileTerms = profileTerms;
+        if (!isInited())
+            return;
+        if (profileTerms != null)
+        {
+            Hibernate.initialize(profileTerms);
+            _termMap.clear();
+            ProfileTerm.populateTermMap(profileTerms, _termMap, UtilityContext.LOCALE_SOURCE.getBean());
+            _table.getDefaultModel().setRows(_termMap.keySet());
+        }
+    }
+
+    @Override
+    public ModificationState getModificationState()
+    {
+        return _modificationState;
+    }
+
+    @Nullable
+    @Override
+    public ProfileTerms getUIValue(Level logErrorLevel)
+    {
+        final ProfileTerms terms = new ProfileTerms();
+        updateProfileTerms(terms);
+        return terms;
+    }
+
+    @Override
+    public boolean validateUIValue(Notifiable notifiable)
+    {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public ProfileTerms commitValue() throws MIWTException
+    {
+        final ProfileTerms terms = _profileTerms != null ? _profileTerms : new ProfileTerms();
+        updateProfileTerms(terms);
+        return terms;
     }
 
     @Override
@@ -87,9 +139,9 @@ public class ProfileTermsEditor extends Container implements ValueEditor<Profile
                 final TransientLocalizedObjectKey tlok = _termMap.get(pt);
                 final TextSource defaultTerm = getDefaultTerm(pt);
                 String existing = tlok.getText() == null ? null : tlok.getText().get(inputLocale);
-                if(!defaultTerm.getText(inputLocaleContext).toString().equals(value))
+                if (!Objects.equals(defaultTerm.getText(inputLocaleContext).toString(), value))
                 {
-                    if(!Objects.equals(existing, value))
+                    if (!Objects.equals(existing, value))
                     {
                         tlok.addLocalization(inputLocale, value.toString());
                         _modificationState = ModificationState.CHANGED;
@@ -97,7 +149,7 @@ public class ProfileTermsEditor extends Container implements ValueEditor<Profile
                 }
                 else
                 {
-                    if(existing != null && tlok.getText() != null)
+                    if (existing != null && tlok.getText() != null)
                     {
                         tlok.removeLocalization(inputLocale);
                         _modificationState = ModificationState.CHANGED;
@@ -125,87 +177,9 @@ public class ProfileTermsEditor extends Container implements ValueEditor<Profile
         setValue(_profileTerms);
     }
 
-    TextSource getTerm(ProfileTerm term)
-    {
-        final TransientLocalizedObjectKey tlok = _termMap.get(term);
-        if(tlok == null || tlok.getText() == null || tlok.getText().isEmpty())
-            return term.getDefaultTerm(_defaultProfileTermProvider);
-        return tlok;
-    }
-
     TextSource getDefaultTerm(ProfileTerm term)
     {
         return term.getDefaultTerm(_defaultProfileTermProvider);
-    }
-
-    @Nullable
-    @Override
-    public ProfileTerms getValue()
-    {
-        return _profileTerms;
-    }
-
-    @Override
-    public void setValue(@Nullable ProfileTerms profileTerms)
-    {
-        _profileTerms = profileTerms;
-        if(!isInited())
-            return;
-        if(profileTerms != null)
-        {
-            Hibernate.initialize(profileTerms);
-            _termMap.clear();
-            ProfileTerm.populateTermMap(profileTerms, _termMap, UtilityContext.LOCALE_SOURCE.getBean());
-            _table.getDefaultModel().setRows(_termMap.keySet());
-        }
-    }
-
-    @Override
-    public ModificationState getModificationState()
-    {
-        return _modificationState;
-    }
-
-    @Nullable
-    @Override
-    public ProfileTerms getUIValue(Level logErrorLevel)
-    {
-        final ProfileTerms terms = new ProfileTerms();
-        _termMap.entrySet().forEach(entry -> {
-            if(entry.getValue() != null)
-            {
-                final TransientLocalizedObjectKey tlok = entry.getValue();
-                if(tlok.hasInMemoryLocalization(true))
-                    entry.getKey().setTerm(terms, tlok);
-                else
-                    entry.getKey().setTerm(terms, null);
-            }
-        });
-        return terms;
-    }
-
-    @Override
-    public boolean validateUIValue(Notifiable notifiable)
-    {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public ProfileTerms commitValue() throws MIWTException
-    {
-        final ProfileTerms terms = _profileTerms != null ? _profileTerms : new ProfileTerms();
-        _termMap.entrySet().forEach(entry -> {
-            if(entry.getValue() != null)
-            {
-                final TransientLocalizedObjectKey tlok = entry.getValue();
-                if(tlok.hasInMemoryLocalization(true))
-                    entry.getKey().setTerm(terms, tlok);
-                else
-                    entry.getKey().setTerm(terms, null);
-            }
-        });
-        return terms;
     }
 
     @Override
@@ -217,8 +191,31 @@ public class ProfileTermsEditor extends Container implements ValueEditor<Profile
     @Override
     public void setEditable(boolean b)
     {
-        if(!b)
+        if (!b)
             throw new UnsupportedOperationException();
 
+    }
+
+    TextSource getTerm(ProfileTerm term)
+    {
+        final TransientLocalizedObjectKey tlok = _termMap.get(term);
+        if (tlok == null || tlok.getText() == null || tlok.getText().isEmpty())
+            return term.getDefaultTerm(_defaultProfileTermProvider);
+        return tlok;
+    }
+
+    private void updateProfileTerms(ProfileTerms terms)
+    {
+        _termMap.entrySet().forEach(entry ->
+        {
+            if (entry.getValue() != null)
+            {
+                final TransientLocalizedObjectKey tlok = entry.getValue();
+                if (tlok.hasInMemoryLocalization(true))
+                    entry.getKey().setTerm(terms, tlok);
+                else
+                    entry.getKey().setTerm(terms, null);
+            }
+        });
     }
 }

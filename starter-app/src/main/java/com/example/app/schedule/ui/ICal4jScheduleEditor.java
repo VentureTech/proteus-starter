@@ -35,6 +35,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.ConcatTextSource;
@@ -73,7 +74,7 @@ import static net.proteusframework.core.locale.TextSources.createText;
 import static net.proteusframework.ui.miwt.util.CommonButtonText.ANY;
 
 /**
- * Cron schedule editor.
+ * iCal4j schedule editor.
  *
  * @author Russ Tennant (russ@venturetech.net)
  */
@@ -302,7 +303,7 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
     {
         if (value == null)
             return;
-        if (LAST_DAY_OF_MONTH().equals(value))
+        if (Objects.equals(LAST_DAY_OF_MONTH(), value))
         {
             recur.getMonthDayList().add(-1);
         }
@@ -657,7 +658,7 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
                 if (!monthDayList.isEmpty())
                 {
                     final Integer n = (Integer) monthDayList.get(0);
-                    if (n.equals(-1))
+                    if (Objects.equals(n, -1))
                         _dayOfMonth.setValue(LAST_DAY_OF_MONTH());
                     else
                         _dayOfMonth.setValue(n);
@@ -873,6 +874,7 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
 
         _month.setCellRenderer(new CustomCellRenderer(EMPTY, input -> {
             Month m = (Month) input;
+            assert m != null;
             return createText(m.getDisplayName(TextStyle.FULL, getLocaleContext().getLocale()));
         }));
 

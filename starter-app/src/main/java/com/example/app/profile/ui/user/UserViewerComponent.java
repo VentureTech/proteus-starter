@@ -13,10 +13,7 @@ package com.example.app.profile.ui.user;
 
 
 import com.example.app.profile.model.Profile;
-import com.example.app.profile.model.ProfileDAO;
 import com.example.app.profile.model.user.User;
-import com.example.app.profile.model.user.UserDAO;
-import com.example.app.profile.service.MembershipOperationProvider;
 import com.example.app.profile.ui.ApplicationFunctions;
 import com.example.app.profile.ui.UIText;
 import com.example.app.profile.ui.URLConfigurations;
@@ -79,9 +76,7 @@ import static com.example.app.profile.ui.user.UserViewerComponentLOK.*;
     description = "Viewer for User",
     urlConfigDef = @URLConfigDef(
         name = URLConfigurations.User.VIEW,
-        properties = {
-            @URLProperty(name = URLProperties.USER, type = User.class)
-        },
+        properties = @URLProperty(name = URLProperties.USER, type = User.class),
         pathInfoPattern = "/{" + URLProperties.USER + '}'
     )
 )
@@ -89,9 +84,6 @@ public class UserViewerComponent extends MIWTPageElementModelContainer
 {
     private final MessageContainer _messages = new MessageContainer(35_000L);
 
-    @Autowired private ProfileDAO _profileDAO;
-    @Autowired private MembershipOperationProvider _mop;
-    @Autowired private UserDAO _userDAO;
     @Autowired private UIPreferences _uiPreferences;
     @Autowired private UserManagementPermissionCheck _permissionCheck;
 

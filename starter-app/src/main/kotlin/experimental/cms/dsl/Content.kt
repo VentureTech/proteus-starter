@@ -73,7 +73,7 @@ interface DelegateContent : ContentContainer {
     /**
      * Add delegate content.
      * @param content the Content to add.
-     * @param purpose optional purpose. Default to NONE. This is Content Container specifc.
+     * @param purpose optional purpose. Default to NONE. This is Content Container specific.
      * @param init the initialization block.
      */
     fun <T : Content> content(content: T, purpose: DelegatePurpose = DefaultDelegatePurpose.NONE, init: T.() -> Unit={}): T {
@@ -85,8 +85,8 @@ interface DelegateContent : ContentContainer {
 
     /**
      * Add delegate content.
-     * @param existingContentId an existnig Content's identifier.
-     * @param purpose optional purpose. Default to NONE. This is Content Container specifc.
+     * @param existingContentId an existing Content's identifier.
+     * @param purpose optional purpose. Default to NONE. This is Content Container specific.
      */
     fun content(existingContentId: String, purpose: DelegatePurpose = DefaultDelegatePurpose.NONE): Content {
         val contentById = _getSite(parent).getContentById(existingContentId)

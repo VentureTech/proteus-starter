@@ -29,6 +29,7 @@ import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 import java.net.URL;
 import java.util.Date;
+import java.util.Objects;
 
 import net.proteusframework.cms.CmsSite;
 import net.proteusframework.data.filesystem.FileEntity;
@@ -412,26 +413,29 @@ public class DemoUserProfile implements TimeAuditable
         DemoUserProfile that = (DemoUserProfile) o;
 
         if (getId() != null)
-            return getId().equals(that.getId());
+            return Objects.equals(getId(), that.getId());
 
-        if (_aboutMeProse != null ? !_aboutMeProse.equals(that._aboutMeProse) : that._aboutMeProse != null) return false;
-        if (_aboutMeVideoLink != null ? !_aboutMeVideoLink.toString().equals(that._aboutMeVideoLink.toString())
+        if (_aboutMeProse != null ? !Objects.equals(_aboutMeProse, that._aboutMeProse) : that._aboutMeProse != null) return false;
+        if (_aboutMeVideoLink != null ? !Objects.equals(_aboutMeVideoLink.toString(), that._aboutMeVideoLink.toString())
             : that._aboutMeVideoLink != null)
             return false;
-        if (_createTime != null ? !_createTime.equals(that._createTime) : that._createTime != null) return false;
-        if (_emailAddress != null ? !_emailAddress.equals(that._emailAddress) : that._emailAddress != null) return false;
-        if (_facebookLink != null ? !_facebookLink.toString().equals(that._facebookLink.toString()) : that._facebookLink != null)
+        if (_createTime != null ? !Objects.equals(_createTime, that._createTime) : that._createTime != null) return false;
+        if (_emailAddress != null ? !Objects.equals(_emailAddress, that._emailAddress) : that._emailAddress != null) return false;
+        if (_facebookLink != null ? !Objects.equals(_facebookLink.toString(), that._facebookLink.toString())
+            : that._facebookLink != null)
             return false;
-        if (_lastModTime != null ? !_lastModTime.equals(that._lastModTime) : that._lastModTime != null) return false;
-        if (_linkedInLink != null ? !_linkedInLink.toString().equals(that._linkedInLink.toString()) : that._linkedInLink != null)
+        if (_lastModTime != null ? !Objects.equals(_lastModTime, that._lastModTime) : that._lastModTime != null) return false;
+        if (_linkedInLink != null ? !Objects.equals(_linkedInLink.toString(), that._linkedInLink.toString())
+            : that._linkedInLink != null)
             return false;
-        if (_name != null ? !_name.equals(that._name) : that._name != null) return false;
-        if (_phoneNumber != null ? !_phoneNumber.equals(that._phoneNumber) : that._phoneNumber != null) return false;
-        if (_picture != null ? !_picture.equals(that._picture) : that._picture != null) return false;
-        if (_postalAddress != null ? !_postalAddress.equals(that._postalAddress) : that._postalAddress != null) return false;
-        if (_site != null ? !_site.equals(that._site) : that._site != null) return false;
+        if (_name != null ? !Objects.equals(_name, that._name) : that._name != null) return false;
+        if (_phoneNumber != null ? !Objects.equals(_phoneNumber, that._phoneNumber) : that._phoneNumber != null) return false;
+        if (_picture != null ? !Objects.equals(_picture, that._picture) : that._picture != null) return false;
+        if (_postalAddress != null ? !Objects.equals(_postalAddress, that._postalAddress) : that._postalAddress != null) return false;
+        if (_site != null ? !Objects.equals(_site, that._site) : that._site != null) return false;
 
-        return !(_twitterLink != null ? !_twitterLink.toString().equals(that._twitterLink.toString()) : that._twitterLink != null);
+        return !(_twitterLink != null ? !Objects.equals(_twitterLink.toString(), that._twitterLink.toString())
+            : that._twitterLink != null);
     }
 
     @Override

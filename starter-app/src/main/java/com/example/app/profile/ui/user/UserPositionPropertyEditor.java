@@ -35,9 +35,10 @@ import net.proteusframework.ui.miwt.util.CommonActions;
 @Configurable
 public class UserPositionPropertyEditor extends PropertyEditor<UserPosition>
 {
-    private final ActionListener _closeActionListener;
     @Autowired
     private UserDAO _userDAO;
+
+    private final ActionListener _closeActionListener;
 
     /**
      * Instantiate a new instance of UserPositionPropertyEditor

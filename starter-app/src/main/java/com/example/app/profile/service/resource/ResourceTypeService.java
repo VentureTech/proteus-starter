@@ -22,6 +22,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import com.i2rd.implementationmodel.IImplementationModelFactory;
 import com.i2rd.implementationmodel.ModelFactoryContext;
@@ -124,7 +125,7 @@ public class ResourceTypeService
     @Nullable
     public ResourceType getResourceType(String factoryId, String identifier)
     {
-        return factoryId.equals(SPRING_FACTORY_IDENTIFIER) ? _modelFactory.getModel(identifier) : null;
+        return Objects.equals(factoryId, SPRING_FACTORY_IDENTIFIER) ? _modelFactory.getModel(identifier) : null;
     }
 
     /**
