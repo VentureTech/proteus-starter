@@ -2,7 +2,8 @@
   "name": "starter-app-webdev",
   "repository": "git@github.com:VentureTech/proteus-starter.git",
   "group": "com.example",
-  "version": "1.2-SNAPSHOT",
+  "versionStatus": "SNAPSHOT",
+  "version": "1.2.0",
   "devDependencies": {
     "del": "^2.2.0",
     "gulp": "^3.9.1",

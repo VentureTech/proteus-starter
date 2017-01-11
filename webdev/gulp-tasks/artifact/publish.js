@@ -13,11 +13,14 @@ var SERVER_URL = process.env.publish_venturetech_url,
     PUBLISH_PASSWORD = process.env.publish_venturetech_password,
     parsedGroup = projectInfo.group.replace('.', '/');
 
+var VERSION = `${projectInfo.version}`;
+if(projectInfo.versionStatus == "SNAPSHOT")
+    VERSION += "-SNAPSHOT";
 var PUBLISH_METADATA_URL = `${SERVER_URL}/vt-snapshot-local/${parsedGroup}/${projectInfo.name}`;
-var PUBLISH_URL = `${SERVER_URL}/vt-snapshot-local/${parsedGroup}/${projectInfo.name}/${projectInfo.version}`;
+var PUBLISH_URL = `${SERVER_URL}/vt-snapshot-local/${parsedGroup}/${projectInfo.name}/${VERSION}`;
 
 gulp.task('publish', ['zip', 'publish:generate-maven-metadata'], function() {
-    return gulp.src(`./artifact/${projectInfo.name}-${projectInfo.version}.zip`)
+    return gulp.src(`./artifact/${projectInfo.name}-${VERSION}.zip`)
         .pipe(gafu({
             url: PUBLISH_URL,
             username: PUBLISH_USERNAME,
@@ -31,11 +34,11 @@ gulp.task('publish:generate-maven-metadata', ['zip'], function() {
 <metadata>
   <groupId>${projectInfo.group}</groupId>
   <artifactId>${projectInfo.name}</artifactId>
-  <version>${projectInfo.version}</version>
+  <version>${VERSION}</version>
   <versioning>
-    <latest>${projectInfo.version}</latest>
+    <latest>${VERSION}</latest>
     <versions>
-      <version>${projectInfo.version}</version>
+      <version>${VERSION}</version>
     </versions>
     <lastUpdated>${new Date().toISOString()}</lastUpdated>
   </versioning>
