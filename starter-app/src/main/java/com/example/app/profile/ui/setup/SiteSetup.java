@@ -18,7 +18,6 @@ import com.example.app.profile.model.user.User;
 import com.example.app.profile.ui.ApplicationFunctions;
 import com.example.app.profile.ui.URLConfigurations;
 import com.example.app.profile.ui.company.AbstractCompanyPropertyEditor;
-import com.example.app.profile.ui.starter.StarterSiteSetupLOK;
 import com.example.app.support.ui.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,6 +36,8 @@ import net.proteusframework.ui.management.nav.NavigationAction;
 import net.proteusframework.ui.management.nav.NavigationDestination;
 import net.proteusframework.ui.miwt.event.ActionEvent;
 import net.proteusframework.users.model.AuthenticationDomain;
+
+import static com.example.app.profile.ui.setup.SiteSetupLOK.COMPONENT_NAME;
 
 /**
  * Setup page for the starter Site.  Really just allows creation of Company when there are not any
@@ -67,7 +68,7 @@ public class SiteSetup extends AbstractCompanyPropertyEditor
     public SiteSetup()
     {
         super();
-        setName(StarterSiteSetupLOK.COMPONENT_NAME());
+        setName(COMPONENT_NAME());
         addCategory(CmsCategory.ClientBackend);
         withEditMode(EditMode.DefaultCompany);
     }
