@@ -380,7 +380,7 @@ bower_components/
                 [preDir    : {if (skipDirs.contains(it.name)) return SKIP_SUBTREE}], {f ->
                 if(f.isFile()) {
                     def content = f.getText('UTF-8')
-                    def updatedContent = content.replaceAll('webdev', "${model.appName}-webdev")
+                    def updatedContent = content
                         .replaceAll('starter-app-webdev', "${model.appName}-webdev")
                         .replaceAll('com.example', model.appGroup)
                         .replaceAll(Pattern.quote('<mapping directory="$PROJECT_DIR$/.." vcs="Git" />'),
@@ -390,7 +390,7 @@ bower_components/
                         println('Updating ' + f)
                         f.setText(updatedContent, 'UTF-8')
                     }
-                    if(f.name == 'webdev.iml'){
+                    if(f.name == 'starter-app-webdev.iml'){
                         f.renameTo(new File(f.getParentFile(), "${model.appName}-webdev.iml"))
                     }
                 }

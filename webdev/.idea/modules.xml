@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/webdev.iml" filepath="$PROJECT_DIR$/webdev.iml" />
+      <module fileurl="file://$PROJECT_DIR$/starter-app-webdev.iml" filepath="$PROJECT_DIR$/starter-app-webdev.iml" />
     </modules>
   </component>
 </project>
