@@ -49,7 +49,6 @@ public class RelativePeriodSchedule extends Schedule
     private String _eventProgrammaticIdentifier;
     private Period _period;
     private Time _time;
-    @Nonnull
     private TemporalDirection _temporalDirection = TemporalDirection.FUTURE;
 
     @SuppressWarnings("ConstantConditions")
@@ -111,7 +110,6 @@ public class RelativePeriodSchedule extends Schedule
      * @return the temporal direction.
      */
     @NotNull
-    @Nonnull
     @Enumerated(EnumType.STRING)
     public TemporalDirection getTemporalDirection()
     {

@@ -143,9 +143,8 @@ public class Company extends Profile
      *
      * @return the programmatic identifier
      */
-    @Column(name = PROGRAMMATIC_IDENTIFIER_COLUMN_PROP, unique = true)
+    @Column(name = PROGRAMMATIC_IDENTIFIER_COLUMN_PROP, unique = true, nullable = false)
     @Nonnull
-    @NotNull
     public String getProgrammaticIdentifier()
     {
         return _programmaticIdentifier;
@@ -419,9 +418,8 @@ public class Company extends Profile
      * @return the status
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = STATUS_PROP)
+    @Column(name = STATUS_PROP, nullable = false)
     @Nonnull
-    @NotNull
     public CompanyStatus getStatus()
     {
         return _status;

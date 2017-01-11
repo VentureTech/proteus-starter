@@ -14,7 +14,6 @@ package com.example.app.profile.model;
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
 import com.example.app.profile.model.membership.MembershipType;
-import net.proteusframework.users.model.AbstractAuditableEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
@@ -46,6 +45,7 @@ import java.util.Set;
 import net.proteusframework.cms.label.Label;
 import net.proteusframework.core.locale.LocalizedObjectKey;
 import net.proteusframework.core.locale.NamedObject;
+import net.proteusframework.users.model.AbstractAuditableEntity;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -188,9 +188,8 @@ public class ProfileType extends AbstractAuditableEntity<Integer> implements Nam
      *
      * @return the programmatic identifier
      */
-    @Column(name = PROGRAMMATIC_ID_COLUMN_PROP, unique = true)
+    @Column(name = PROGRAMMATIC_ID_COLUMN_PROP, unique = true, nullable = false)
     @Nonnull
-    @NotNull
     @NotEmpty
     public String getProgrammaticIdentifier()
     {

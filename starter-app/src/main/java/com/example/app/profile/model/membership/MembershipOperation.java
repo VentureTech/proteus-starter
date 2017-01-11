@@ -59,8 +59,7 @@ public class MembershipOperation implements Entity<Integer>, Serializable, Named
     private String _programmaticIdentifier;
     private LocalizedObjectKey _name;
 
-    @Column(name = NAME_COLUMN_PROP)
-    @NotNull
+    @Column(name = NAME_COLUMN_PROP, nullable = false)
     @Nonnull
     @Override
     public LocalizedObjectKey getName()
@@ -91,8 +90,7 @@ public class MembershipOperation implements Entity<Integer>, Serializable, Named
      *
      * @return the programmatic identifier
      */
-    @Column(name = PROGRAMMATIC_IDENTIFIER_COLUMN_PROP, unique = true)
-    @NotNull
+    @Column(name = PROGRAMMATIC_IDENTIFIER_COLUMN_PROP, unique = true, nullable = false)
     @Nonnull
     @NotEmpty
     public String getProgrammaticIdentifier()

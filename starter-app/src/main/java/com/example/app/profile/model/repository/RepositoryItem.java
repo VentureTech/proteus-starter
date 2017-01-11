@@ -92,9 +92,8 @@ public abstract class RepositoryItem extends AbstractAuditableEntity<Integer> im
      *
      * @return the source.
      */
-    @Column(name = SOURCE_COLUMN_PROP)
+    @Column(name = SOURCE_COLUMN_PROP, nullable = false)
     @Nonnull
-    @NotNull
     @NotEmpty
     public String getSource()
     {
@@ -119,7 +118,6 @@ public abstract class RepositoryItem extends AbstractAuditableEntity<Integer> im
     @Enumerated(EnumType.STRING)
     @Column(name = STATUS_COLUMN_PROP)
     @NotNull
-    @Nonnull
     public RepositoryItemStatus getStatus()
     {
         return _status;

@@ -51,7 +51,6 @@ import com.i2rd.hibernate.util.HibernateUtil;
 
 import net.proteusframework.cms.label.Label;
 import net.proteusframework.core.JunctionOperator;
-import net.proteusframework.core.StringFactory;
 import net.proteusframework.core.hibernate.dao.DAOHelper;
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.core.locale.ConcatTextSource;
@@ -70,6 +69,7 @@ import static com.example.app.profile.model.membership.MembershipOperation.PROGR
 import static com.example.app.profile.model.user.User.PRINCIPAL_PROP;
 import static com.example.app.support.service.AppUtil.convertForPersistence;
 import static com.example.app.support.service.AppUtil.getZonedDateTimeForComparison;
+import static net.proteusframework.core.StringFactory.isEmptyString;
 import static net.proteusframework.ui.search.PropertyConstraint.Operator.*;
 import static net.proteusframework.ui.search.QLBuilder.JoinType.INNER;
 
@@ -356,14 +356,14 @@ public class ProfileDAO extends DAOHelper implements Serializable
         hql.append("AND pdr.date >= :startDate\n");
         if (endDate != null) hql.append("AND pdr.date <= :endDate\n");
         hql.append("AND pdr.category = :category\n");
-        if (!StringFactory.isEmptyString(subCategory)) hql.append("AND pdr.subCategory = :subCategory\n");
+        if (!isEmptyString(subCategory)) hql.append("AND pdr.subCategory = :subCategory\n");
         return (List<ProfileDatedRecord>) doInTransaction(session -> {
             Query query = session.createQuery(hql.toString());
             query.setParameter("profileId", profile.getId());
             query.setParameter("startDate", convertForPersistence(startDate));
             query.setParameter("category", category);
             if (endDate != null) query.setParameter("endDate", convertForPersistence(endDate));
-            if (!StringFactory.isEmptyString(subCategory)) query.setParameter("subCategory", subCategory);
+            if (!isEmptyString(subCategory)) query.setParameter("subCategory", subCategory);
             return query.list();
         });
     }
@@ -380,9 +380,8 @@ public class ProfileDAO extends DAOHelper implements Serializable
     @SuppressWarnings("unchecked")
     public <Pr extends Profile> List<Pr> getDirectChildren(Pr profile, Class<Pr> clazz)
     {
-        return getSession().createQuery("select pr\n"
-                                        + "from " + clazz.getSimpleName() + " pr where\n"
-                                        + "pr.parent=:parent")
+        return getSession().createQuery(
+            "select pr from " + clazz.getSimpleName() + " pr where pr.parent=:parent")
             .setParameter("parent", profile)
             .list();
     }
@@ -444,7 +443,7 @@ public class ProfileDAO extends DAOHelper implements Serializable
      */
     public Optional<MembershipOperation> getMembershipOperation(@Nullable String programmaticIdentifier)
     {
-        if (StringFactory.isEmptyString(programmaticIdentifier)) return Optional.empty();
+        if (isEmptyString(programmaticIdentifier)) return Optional.empty();
         return Optional.ofNullable((MembershipOperation) getSession().createQuery(
             "FROM MembershipOperation WHERE programmaticIdentifier = :programmaticIdentifier")
             .setParameter("programmaticIdentifier", programmaticIdentifier)
@@ -641,7 +640,7 @@ public class ProfileDAO extends DAOHelper implements Serializable
     @Nonnull
     public Optional<MembershipType> getMembershipType(@Nullable String profileTypeProgId, @Nullable String programmaticId)
     {
-        if (StringFactory.isEmptyString(programmaticId)) return Optional.empty();
+        if (isEmptyString(programmaticId)) return Optional.empty();
         return Optional.ofNullable(getProfileType(profileTypeProgId)
             .map(profileType ->
                 (MembershipType) new QLBuilderImpl(MembershipType.class, "memTypeAlias")
@@ -805,12 +804,13 @@ public class ProfileDAO extends DAOHelper implements Serializable
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         final Date now = calendar.getTime();
-        return getSession().createQuery("select membership\n"
-                                        + "from Membership membership, " + profileSubclass.getSimpleName() + " subclass\n"
-                                        + "where membership.profile=subclass\n"
-                                        + "and membership.user=:user\n"
-                                        + "and (membership.startDate is null or membership.startDate <= :today)\n"
-                                        + "and (membership.endDate is null or membership.endDate >= :today)")
+        return getSession().createQuery(
+            "select membership\n"
+            + "from Membership membership, " + profileSubclass.getSimpleName() + " subclass\n"
+            + "where membership.profile=subclass\n"
+            + "and membership.user=:user\n"
+            + "and (membership.startDate is null or membership.startDate <= :today)\n"
+            + "and (membership.endDate is null or membership.endDate >= :today)")
             .setParameter("user", user)
             .setParameter("today", now)
             .setCacheable(true)
@@ -837,7 +837,7 @@ public class ProfileDAO extends DAOHelper implements Serializable
                      + "where membership.user=:user\n"
                      + "and (membership.startDate is null or membership.startDate <= :today)\n"
                      + "and (membership.endDate is null or membership.endDate >= :today)\n");
-        if (!StringFactory.isEmptyString(orderBy))
+        if (!isEmptyString(orderBy))
         {
             query.append("order by ").append(orderBy);
         }
@@ -897,7 +897,7 @@ public class ProfileDAO extends DAOHelper implements Serializable
     @Nonnull
     public Optional<ProfileType> getProfileType(@Nullable String programmaticId)
     {
-        if (StringFactory.isEmptyString(programmaticId)) return Optional.empty();
+        if (isEmptyString(programmaticId)) return Optional.empty();
         return Optional.ofNullable((ProfileType) getProfileTypeQLBuilder()
             .appendCriteria(ProfileType.PROGRAMMATIC_ID_COLUMN_PROP, eq, programmaticId)
             .getQueryResolver().createQuery(getSession()).uniqueResult());
@@ -988,7 +988,7 @@ public class ProfileDAO extends DAOHelper implements Serializable
             .append("and membership.user=:user\n")
             .append("and (membership.startDate is null or membership.startDate <= :today)\n")
             .append("and (membership.endDate is null or membership.endDate >= :today)\n");
-        if (!StringFactory.isEmptyString(additionalQueryLine))
+        if (!isEmptyString(additionalQueryLine))
             query.append(additionalQueryLine);
         return getSession().createQuery(query.toString())
             .setParameter("user", user)
@@ -1008,7 +1008,7 @@ public class ProfileDAO extends DAOHelper implements Serializable
      * @return the owner of the Repository or empty
      */
     @SuppressWarnings("unchecked")
-    public <P extends Profile> Optional<P> getRepoOwner(com.example.app.profile.model.repository.Repository repository, 
+    public <P extends Profile> Optional<P> getRepoOwner(com.example.app.profile.model.repository.Repository repository,
         Class<P> pClass)
     {
         return Optional.ofNullable(_er.narrowProxyIfPossible((P) getSession().createQuery(
@@ -1049,15 +1049,16 @@ public class ProfileDAO extends DAOHelper implements Serializable
         MembershipOperation operation,
         @Nonnull ZonedDateTime startDate, @Nonnull ZonedDateTime endDate)
     {
-        return getSession().createQuery("select distinct user\n"
-                                        + "from Membership membership\n"
-                                        + "inner join membership.user user\n"
-                                        + "inner join membership.profile profile\n"
-                                        + "inner join membership.operations operation\n"
-                                        + "where profile.id = :profileId\n"
-                                        + "and operation.id = :mopId\n"
-                                        + "and (membership.startDate is null or membership.startDate <= :startDate)\n"
-                                        + "and (membership.endDate is null or membership.endDate >= :endDate)\n")
+        return getSession().createQuery(
+            "select distinct user\n"
+            + "from Membership membership\n"
+            + "inner join membership.user user\n"
+            + "inner join membership.profile profile\n"
+            + "inner join membership.operations operation\n"
+            + "where profile.id = :profileId\n"
+            + "and operation.id = :mopId\n"
+            + "and (membership.startDate is null or membership.startDate <= :startDate)\n"
+            + "and (membership.endDate is null or membership.endDate >= :endDate)\n")
             .setParameter("profileId", profile.getId())
             .setParameter("mopId", operation.getId())
             .setParameter("startDate", convertForPersistence(startDate))

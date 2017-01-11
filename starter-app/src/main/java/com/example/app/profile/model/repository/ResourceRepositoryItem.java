@@ -29,7 +29,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 
 import net.proteusframework.core.locale.LocalizedObjectKey;
 
@@ -69,10 +68,9 @@ public class ResourceRepositoryItem extends RepositoryItem
      * @return the Resource
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = RESOURCE_COLUMN, unique = true)
+    @JoinColumn(name = RESOURCE_COLUMN, unique = true, nullable = false)
     @Cascade(CascadeType.ALL)
     @Nonnull
-    @NotNull
     public Resource getResource()
     {
         return _resource;

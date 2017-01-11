@@ -14,7 +14,6 @@ package com.example.app.profile.model.membership;
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
 import com.example.app.profile.model.ProfileType;
-import net.proteusframework.users.model.AbstractAuditableEntity;
 import com.example.app.support.service.AppUtil;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -45,6 +44,7 @@ import java.util.List;
 import net.proteusframework.core.GloballyUniqueStringGenerator;
 import net.proteusframework.core.locale.LocalizedObjectKey;
 import net.proteusframework.core.locale.NamedObject;
+import net.proteusframework.users.model.AbstractAuditableEntity;
 
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
@@ -146,9 +146,8 @@ public class MembershipType extends AbstractAuditableEntity<Integer> implements 
         return super.getId();
     }
 
-    @Column(name = NAME_COLUMN_PROP)
+    @Column(name = NAME_COLUMN_PROP, nullable = false)
     @Nonnull
-    @NotNull
     @Override
     public LocalizedObjectKey getName()
     {
@@ -191,7 +190,6 @@ public class MembershipType extends AbstractAuditableEntity<Integer> implements 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = ProfileType.ID_COLUMN)
     @NotNull
-    @Nonnull
     public ProfileType getProfileType()
     {
         return _profileType;
@@ -212,9 +210,8 @@ public class MembershipType extends AbstractAuditableEntity<Integer> implements 
      *
      * @return the programmatic identifier of this MembershipType
      */
-    @Column(name = PROGRAMMATIC_ID_COLUMN_PROP)
+    @Column(name = PROGRAMMATIC_ID_COLUMN_PROP, nullable = false)
     @Nonnull
-    @NotNull
     @NotEmpty
     public String getProgrammaticIdentifier()
     {

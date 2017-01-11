@@ -36,7 +36,6 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -169,13 +168,11 @@ public class EmailTemplateConfigurationUI extends Container
             removeButton.addActionListener(ev -> close());
         }
 
-        @Nullable
-        public UnparsedAddress getAddress()
+        UnparsedAddress getAddress()
         {
             return _address;
         }
 
-        @Nullable
         TextSource getLabel()
         {
             return _label;
@@ -590,13 +587,7 @@ public class EmailTemplateConfigurationUI extends Container
     public Map<String, String> getVariableValues()
     {
         final List<String> currentVariables = getEmailTemplateVariables(getEmailTemplate());
-        final Iterator<String> iterator = _variableValues.keySet().iterator();
-        while (iterator.hasNext())
-        {
-            final String key = iterator.next();
-            if (!currentVariables.contains(key))
-                iterator.remove();
-        }
+        _variableValues.keySet().removeIf(key -> !currentVariables.contains(key));
         return _variableValues;
     }
 
@@ -667,7 +658,7 @@ public class EmailTemplateConfigurationUI extends Container
             if (_configurator != null)
                 _configurator.accept(etc);
 
-            getVariableValues().entrySet().stream()
+            getVariableValues().entrySet()
                 .forEach(entry -> {
                     String value = entry.getValue();
                     final String key = entry.getKey();

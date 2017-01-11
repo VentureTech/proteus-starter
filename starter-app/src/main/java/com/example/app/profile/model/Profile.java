@@ -131,8 +131,7 @@ public abstract class Profile extends AbstractAuditableEntity<Integer> implement
         _membershipSet = membershipSet;
     }
 
-    @Column(name = NAME_COLUMN_PROP)
-    @NotNull
+    @Column(name = NAME_COLUMN_PROP, nullable = false)
     @Nonnull
     @Override
     public LocalizedObjectKey getName()
@@ -200,7 +199,6 @@ public abstract class Profile extends AbstractAuditableEntity<Integer> implement
     @JoinColumn(name = PROFILE_TYPE_COLUMN)
     @Cascade({CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REPLICATE, CascadeType.SAVE_UPDATE})
     @NotNull
-    @Nonnull
     public ProfileType getProfileType()
     {
         return _profileType;

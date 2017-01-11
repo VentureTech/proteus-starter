@@ -296,6 +296,7 @@ public class AppUtil implements Serializable
      * @return a Date object that represents the same instant as the ZonedDateTime, but at UTC.
      */
     @Nullable
+    @Contract(value = "!null->!null;null->null", pure = true)
     public static Date convertForPersistence(@Nullable ZonedDateTime dt)
     {
         if (dt == null) return null;
@@ -312,6 +313,7 @@ public class AppUtil implements Serializable
      * @return a ZonedDateTime that represents the same instant as the UTC date, but at the given TimeZone.
      */
     @Nullable
+    @Contract(value = "null,_->null;_,null->null;!null,!null->!null", pure = true)
     public static ZonedDateTime convertFromPersisted(@Nullable Date date, @Nullable TimeZone zone)
     {
         if (date == null || zone == null) return null;

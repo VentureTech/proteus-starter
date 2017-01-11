@@ -14,7 +14,6 @@ package com.example.app.profile.model.user;
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
 import com.example.app.profile.model.company.Company;
-import net.proteusframework.users.model.AbstractAuditableEntity;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -50,6 +49,7 @@ import com.i2rd.users.miwt.PrincipalRenderer;
 import net.proteusframework.core.locale.NamedObject;
 import net.proteusframework.core.locale.TextSource;
 import net.proteusframework.data.filesystem.FileEntity;
+import net.proteusframework.users.model.AbstractAuditableEntity;
 import net.proteusframework.users.model.PhoneNumber;
 import net.proteusframework.users.model.Principal;
 
@@ -259,7 +259,6 @@ public class User extends AbstractAuditableEntity<Integer> implements NamedObjec
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @NotNull
-    @Nonnull
     public Principal getPrincipal()
     {
         return _principal;
@@ -363,7 +362,6 @@ public class User extends AbstractAuditableEntity<Integer> implements NamedObjec
     @BatchSize(size = 10)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.ENTITY_DATA)
     @NotNull
-    @Nonnull
     public List<UserPosition> getUserPositions()
     {
         return _userPositions;

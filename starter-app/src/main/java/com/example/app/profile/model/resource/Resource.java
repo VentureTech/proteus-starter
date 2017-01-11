@@ -133,7 +133,6 @@ public abstract class Resource extends AbstractAuditableEntity<Integer> implemen
      */
     @Column(name = RESOURCE_TYPE_COLUMN_PROP)
     @NotNull
-    @Nonnull
     public ResourceType getResourceType()
     {
         return _resourceType;
@@ -147,7 +146,6 @@ public abstract class Resource extends AbstractAuditableEntity<Integer> implemen
     @Column(name = VISIBILITY_COLUMN_PROP)
     @Enumerated(EnumType.STRING)
     @NotNull
-    @Nonnull
     public ResourceVisibility getVisibility()
     {
         return _visibility;
@@ -184,7 +182,6 @@ public abstract class Resource extends AbstractAuditableEntity<Integer> implemen
     @JoinTable(name = TAGS_JOIN_TABLE, schema = ProjectConfig.PROJECT_SCHEMA,
         joinColumns = {@JoinColumn(name = ID_COLUMN, nullable = false)},
         inverseJoinColumns = {@JoinColumn(name = TAGS_INVERSE_JOIN, nullable = false)})
-    @Nonnull
     @NotNull
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.ENTITY_DATA)
     @BatchSize(size = 10)
@@ -204,9 +201,8 @@ public abstract class Resource extends AbstractAuditableEntity<Integer> implemen
         _tags = tags;
     }
 
-    @Column(name = NAME_COLUMN_PROP)
+    @Column(name = NAME_COLUMN_PROP, nullable = false)
     @Nonnull
-    @NotNull
     @Override
     public LocalizedObjectKey getName()
     {
@@ -315,7 +311,6 @@ public abstract class Resource extends AbstractAuditableEntity<Integer> implemen
     @SequenceGenerator(name = GENERATOR, sequenceName = GENERATOR)
     @Override
     @NotNull
-    @Nonnull
     public Integer getId()
     {
         return super.getId();

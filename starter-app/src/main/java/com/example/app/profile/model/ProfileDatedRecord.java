@@ -61,8 +61,8 @@ public class ProfileDatedRecord implements net.proteusframework.core.hibernate.m
     private Integer _id;
     private Date _date;
     private Profile _profile;
-    private String _category;
-    private String _subCategory;
+    private String _category="";
+    private String _subCategory="";
 
     /**
      * Get the Category for this DatedRecord
@@ -71,7 +71,6 @@ public class ProfileDatedRecord implements net.proteusframework.core.hibernate.m
      */
     @Column(name = CATEGORY_PROP)
     @NotNull
-    @Nonnull
     public String getCategory()
     {
         return _category;
@@ -94,7 +93,6 @@ public class ProfileDatedRecord implements net.proteusframework.core.hibernate.m
      */
     @Column(name = DATE_PROP)
     @NotNull
-    @Nonnull
     public Date getDate()
     {
         return _date;
@@ -140,7 +138,6 @@ public class ProfileDatedRecord implements net.proteusframework.core.hibernate.m
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id")
     @NotNull
-    @Nonnull
     public Profile getProfile()
     {
         return _profile;

@@ -13,7 +13,6 @@ package com.example.app.note.model;
 
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
-import net.proteusframework.users.model.AbstractAuditableEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.envers.Audited;
@@ -34,6 +33,7 @@ import java.util.Optional;
 import net.proteusframework.core.locale.NamedObject;
 import net.proteusframework.core.locale.TextSource;
 import net.proteusframework.core.locale.TextSources;
+import net.proteusframework.users.model.AbstractAuditableEntity;
 
 /**
  * Note Entity.
@@ -54,7 +54,7 @@ public class Note extends AbstractAuditableEntity<Integer> implements NamedObjec
     public static final String CONTENT_COLUMN_PROP = "content";
     private static final long serialVersionUID = -8659050739585920812L;
     private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + '.' + ID_COLUMN + "_seq";
-    private String _content;
+    private String _content="";
 
     @Id
     @Column(name = ID_COLUMN)
@@ -80,7 +80,6 @@ public class Note extends AbstractAuditableEntity<Integer> implements NamedObjec
      * @return content
      */
     @Column(name = CONTENT_COLUMN_PROP, length = 4096)
-    @Nullable
     @NotNull
     public String getContent()
     {

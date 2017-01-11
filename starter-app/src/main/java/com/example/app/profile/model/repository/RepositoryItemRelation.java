@@ -127,7 +127,6 @@ public class RepositoryItemRelation extends AbstractAuditableEntity<Integer>
         CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.PERSIST,
         CascadeType.REFRESH, CascadeType.DETACH, CascadeType.LOCK, CascadeType.REPLICATE})
     @NotNull
-    @Nonnull
     public RepositoryItem getRepositoryItem()
     {
         return _repositoryItem;
@@ -185,7 +184,6 @@ public class RepositoryItemRelation extends AbstractAuditableEntity<Integer>
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = Repository.ID_COLUMN)
     @NotNull
-    @Nonnull
     public Repository getRepository()
     {
         return _repository;

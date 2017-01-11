@@ -292,7 +292,6 @@ public class Membership extends AbstractAuditableEntity<Integer> implements Name
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = USER_COLUMN)
     @NotNull
-    @Nonnull
     public User getUser()
     {
         return _user;
