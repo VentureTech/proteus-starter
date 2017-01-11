@@ -5,10 +5,10 @@
       <webServer id="6142783d-1503-4427-8495-10dc9a545451" name="Development (WebDAV)" url="http://russ1-dev.russ1-vdm.vipasuite.com/_files/Web">
         <fileTransfer port="0" mountedRoot="$PROJECT_DIR$/mounts/dev-web" accessType="MOUNT" />
       </webServer>
-      <webServer id="f66afc96-2a07-44ca-ac6c-993cd2c356f5" name="QA (WebDAV)" url="http://starter-app-qa.veturetech.net/_files/Web">
+      <webServer id="f66afc96-2a07-44ca-ac6c-993cd2c356f5" name="QA (WebDAV)" url="https://starter-app-qa.veturetech.net/_files/Web">
         <fileTransfer port="0" mountedRoot="$PROJECT_DIR$/mounts/qa-web" accessType="MOUNT" />
       </webServer>
-      <webServer id="33a50adc-d11e-42c5-9bb0-768e2e5dd2d1" name="Live (WebDAV)" url="http://starter-app-release.venturetech.net/_files/Web">
+      <webServer id="33a50adc-d11e-42c5-9bb0-768e2e5dd2d1" name="Live (WebDAV)" url="https://starter-app-release.venturetech.net/_files/Web">
         <fileTransfer port="0" mountedRoot="$PROJECT_DIR$/mounts/live-web" accessType="MOUNT" />
       </webServer>
     </option>

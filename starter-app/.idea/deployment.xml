@@ -1,8 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" promptOnRemoteOverwrite="CHECK_CONTENT" serverName="Dev Libraries">
+  <component name="PublishConfigData" promptOnRemoteOverwrite="CHECK_CONTENT" serverName="Dev Libraries (WebDAV)">
     <serverData>
-      <paths name="Dev Libraries">
+      <paths name="Dev Libraries (WebDAV)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/" local="$PROJECT_DIR$/src/libraries/groovy" web="/" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/buildSrc" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+      <paths name="Live Libraries (WebDAV)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/" local="$PROJECT_DIR$/src/libraries/groovy" web="/" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/buildSrc" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+      <paths name="QA Libraries (WebDAV)">
         <serverdata>
           <mappings>
             <mapping deploy="/" local="$PROJECT_DIR$/src/libraries/groovy" web="/" />
