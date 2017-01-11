@@ -1,1 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
+dev-libraries/
+qa-libraries/
+live-libraries/
