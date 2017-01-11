@@ -14,6 +14,7 @@ package com.example.app.profile.model.client;
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
 import com.example.app.profile.model.Profile;
+import com.example.app.profile.model.company.Company;
 import com.example.app.profile.model.location.Location;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -82,6 +83,8 @@ public class Client extends Profile
     public static final String LOCATIONS_JOIN_TABLE = TABLE_NAME + '_' + Location.TABLE_NAME;
     /** The property: primaryLocation */
     public static final String PRIMARY_LOCATION_PROP = "primaryLocation";
+    /** The property: company */
+    public static final String COMPANY_PROP = "company";
     /** Serial ID */
     private static final long serialVersionUID = 9008466730246583817L;
 
@@ -89,6 +92,7 @@ public class Client extends Profile
     private List<Location> _locations = new ArrayList<>();
     private Location _primaryLocation;
     private FileEntity _logo;
+    private Company _company;
 
     /**
      * Default constructor
@@ -194,5 +198,26 @@ public class Client extends Profile
         _status = status;
     }
 
+    /**
+     * Gets company.
+     *
+     * @return the company
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = Company.JOIN_COLUMN)
+    @NotNull
+    public Company getCompany()
+    {
+        return _company;
+    }
 
+    /**
+     * Sets company.
+     *
+     * @param company the company
+     */
+    public void setCompany(@Nonnull Company company)
+    {
+        _company = company;
+    }
 }

@@ -40,6 +40,9 @@ class NoteDataConversion1
     DataConversion dataConversion_201701062213()
     {
         def ddl = [
+            $/create schema if not exists app/$,
+            $/create schema if not exists audit/$,
+            $/create table if not exists audit.REVINFO (REV int4 not null, REVTSTMP int8, primary key (REV))/$,
             $/create table app.Note (note_id int4 not null, createtime timestamp not null, 
 lastmodtime timestamp not null, content varchar(4096) not null, createuser_id int8, lastmoduser_id int8, 
 primary key (note_id))/$,
