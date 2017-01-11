@@ -32,6 +32,23 @@ class ProfileDataConversionVersion1
     private static final String IDENTIFIER = "starter-app-profile"
 
     /**
+     * Add Company to Client
+     * 2017.01.11 at 22:27 UTC
+     * @return Bean.
+     */
+    @TaskQualifier(TaskQualifier.Type.data_conversion)
+    @Bean
+    DataConversion dataConversion_201701112227()
+    {
+        def ddl = [
+            $/alter table app.Client add column company_id int4 not null/$,
+            $/alter table audit.Client_AUD add column company_id int4/$,
+            $/alter table app.Client add constraint FK_86f9ck79jl8hb456vctralc7w foreign key (company_id) references app.Company/$,
+        ]
+        new SQLDataConversion(IDENTIFIER, 'Add Company to Client', 201701112227, false, null, ddl, null, null);
+    }
+
+    /**
      * Add Client and Location to ProfileTerms
      * 2017.01.06 at 22:12 UTC
      * @return Bean.
@@ -63,8 +80,8 @@ class ProfileDataConversionVersion1
     DataConversion dataConversion_201612301907()
     {
         def ddl = [
-            $/CREATE SCHEMA app/$,
-            $/CREATE SCHEMA audit/$,
+            $/create schema if not exists app/$,
+            $/create schema if not exists audit/$,
             $/create table app.Client (status varchar(255) not null, profile_id int4 not null, 
 logo_id int8, location_id int4, primary key (profile_id))/$,
             $/create table app.Client_Location (profile_id int4 not null, location_id int4 not null)/$,
@@ -149,7 +166,7 @@ kind_id int8, primary key (profiletype_id, REV))/$,
             $/create table audit.Profile_AUD (disc_type varchar(31) not null, profile_id int4 not null, 
 REV int4 not null, revtype int2, description int8, name int8, parent int4, profiletype_id int4, 
 repository_id int4, primary key (profile_id, REV))/$,
-            $/create table audit.REVINFO (REV int4 not null, REVTSTMP int8, primary key (REV))/$,
+            $/create table if not exists audit.REVINFO (REV int4 not null, REVTSTMP int8, primary key (REV))/$,
             $/create table audit.Schedule_AUD (disc_type varchar(255) not null, schedule_id int4 not null, 
 REV int4 not null, revtype int2, primary key (schedule_id, REV))/$,
             $/create table audit.UserPosition_AUD (userPosition_id int4 not null, REV int4 not null, 

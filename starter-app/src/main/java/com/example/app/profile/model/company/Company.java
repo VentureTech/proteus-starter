@@ -14,6 +14,7 @@ package com.example.app.profile.model.company;
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
 import com.example.app.profile.model.Profile;
+import com.example.app.profile.model.client.Client;
 import com.example.app.profile.model.location.Location;
 import com.example.app.profile.model.terminology.ProfileTerms;
 import com.example.app.profile.model.user.User;
@@ -38,6 +39,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -68,6 +70,8 @@ public class Company extends Profile
     public static final String TABLE_NAME = "Company";
     /** The database column and property: programmaticName */
     public static final String PROGRAMMATIC_IDENTIFIER_COLUMN_PROP = "programmaticIdentifier";
+    /** The Join Column name for relationships with Company */
+    public static final String JOIN_COLUMN = "company_id";
     /** THe database join table for Company to User */
     public static final String USERS_JOIN_TABLE = "company_user";
     /** The property: users */
@@ -129,6 +133,7 @@ public class Company extends Profile
     private LabelDomain _resourceTags;
     private LabelDomain _resourceCategories;
     private CmsHostname _hostname = new CmsHostname();
+    private List<Client> _clients = new ArrayList<>();
 
     /**
      * Instantiates a new company.
@@ -560,5 +565,26 @@ public class Company extends Profile
     public void setHostname(@Nonnull CmsHostname hostname)
     {
         _hostname = hostname;
+    }
+
+    /**
+     * Gets clients.
+     *
+     * @return the clients
+     */
+    @OneToMany(mappedBy = "company")
+    List<Client> getClients()
+    {
+        return _clients;
+    }
+
+    /**
+     * Sets clients.
+     *
+     * @param clients the clients
+     */
+    void setClients(List<Client> clients)
+    {
+        _clients = clients;
     }
 }
