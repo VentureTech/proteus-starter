@@ -26,8 +26,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.proteusframework.internet.http.Request;
-import net.proteusframework.ui.management.ApplicationFunction;
-import net.proteusframework.ui.management.ApplicationFunctionContextProvider;
 import net.proteusframework.ui.management.ApplicationRegistry;
 import net.proteusframework.ui.management.link.RegisteredLinkDAO;
 import net.proteusframework.users.model.Principal;
@@ -51,17 +49,11 @@ public class CompanyResourcePermissionCheck implements ApplicationFunctionPermis
     @Override
     public boolean checkPermissions(@Nonnull Request request, @Nullable User user)
     {
-        ApplicationFunction appFunction = _applicationRegistry.getApplicationFunctionByName(getApplicationFunctionName());
-        if(appFunction != null)
+        if(functionExists(_appUtil.getSite(), request, _applicationRegistry, _registeredLinkDAO))
         {
-            ApplicationFunctionContextProvider contextProvider = _applicationRegistry.getApplicationContextProvider(appFunction);
-            if(_registeredLinkDAO.getRegisteredLink(_appUtil.getSite(), appFunction, contextProvider.getContext(request)) != null)
-            {
-                Company company = _uiPreferences.getSelectedCompany();
+            Company company = _uiPreferences.getSelectedCompany();
 
-                return _profileDAO.canOperate(user, company, AppUtil.UTC, _mop.viewRepositoryResources());
-            }
-            return false;
+            return _profileDAO.canOperate(user, company, AppUtil.UTC, _mop.viewRepositoryResources());
         }
         return false;
     }

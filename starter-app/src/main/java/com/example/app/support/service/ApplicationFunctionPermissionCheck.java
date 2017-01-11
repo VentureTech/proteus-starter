@@ -21,6 +21,12 @@ import javax.annotation.Nullable;
 
 import net.proteusframework.core.spring.ApplicationContextUtils;
 import net.proteusframework.internet.http.Request;
+import net.proteusframework.internet.http.Site;
+import net.proteusframework.ui.management.ApplicationFunction;
+import net.proteusframework.ui.management.ApplicationFunctionContext;
+import net.proteusframework.ui.management.ApplicationFunctionContextProvider;
+import net.proteusframework.ui.management.ApplicationRegistry;
+import net.proteusframework.ui.management.link.RegisteredLinkDAO;
 import net.proteusframework.users.model.Principal;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
@@ -39,7 +45,10 @@ import net.proteusframework.users.model.dao.PrincipalDAO;
 public interface ApplicationFunctionPermissionCheck
 {
     /**
-     * Check if the given User has the required permissions to view or access the Application Function
+     * Check if the given User has the required permissions to view or access the Application Function.
+     * <br><br>
+     * Implementations of this method should also check if the ApplicationFunction exists
+     * using {@link #functionExists(Site, Request, ApplicationRegistry, RegisteredLinkDAO)}
      *
      * @param request the Request
      * @param user the user
@@ -54,6 +63,9 @@ public interface ApplicationFunctionPermissionCheck
 
     /**
      * Check if the given Principal has the required permissions to view or access the Application Function
+     * <br><br>
+     * Implementations of this method should also check if the ApplicationFunction exists
+     * using {@link #functionExists(Site, Request, ApplicationRegistry, RegisteredLinkDAO)}
      *
      * @param request the Request
      * @param principal the principal
@@ -102,4 +114,28 @@ public interface ApplicationFunctionPermissionCheck
      * @return the ApplicationFunction name
      */
     String getApplicationFunctionName();
+
+    /**
+     * Check if the ApplicationFunction that this Permission check is for actually exists on the given Site.
+     * Will take ApplicationFunctionContext into consideration.
+     *
+     * @param site the Site to check on
+     * @param request the Request used to determine ApplicationFunctionContext
+     * @param applicationRegistry the ApplicationRegistry, should be provided by the caller.
+     * @param registeredLinkDAO the RegisteredLinkDAO, should be provided by the caller.
+     * @return boolean  True if the ApplicationFunction exists on the site, otherwise false.
+     */
+    default boolean functionExists(@Nonnull Site site, @Nonnull Request request,
+        @Nonnull ApplicationRegistry applicationRegistry, @Nonnull RegisteredLinkDAO registeredLinkDAO)
+    {
+        final ApplicationFunction appFunction = applicationRegistry.getApplicationFunctionByName(getApplicationFunctionName());
+        if(appFunction != null)
+        {
+            final ApplicationFunctionContextProvider contextProvider = applicationRegistry
+                .getApplicationContextProvider(appFunction);
+            final ApplicationFunctionContext functionContext = contextProvider.getContext(request);
+            return registeredLinkDAO.getRegisteredLink(site, appFunction, functionContext) != null;
+        }
+        return false;
+    }
 }

@@ -62,21 +62,29 @@ class StarterSiteMenuGenerator extends AbstractScriptGenerator
     }
 
     @Override
+    boolean includeWrappingContent(CmsRequest request)
+    {
+        return false
+    }
+
+    @Override
     void render(CmsRequest request, CmsResponse response, RenderChain chain) throws IOException
     {
         def pw = response.getContentWriter()
         ContentWrapper cw = new ContentWrapper(request, response)
         cw.setIdAttribute(_cssID)
-        cw.addClassAttribute('starter-menu-wrapper')
+        cw.addClassAttribute('starter-menu-wrapper menu')
         cw.open()
 
-        pw.append('<ul class="nav starter-menu">')
+        pw.append('<ul class="nav starter-menu menubeanh menu">')
 
         appendLink(request, response, _companiesPermissionCheck, "company-management", _terms.companies())
         appendLink(request, response, _userManagementPermissionCheck, "user-management", UIText.USERS())
         appendLink(request, response, _companyResourcePermissionCheck, "resource-management", UIText.RESOURCES())
 
         pw.append('</ul>')
+
+        cw.close()
     }
 
     private void appendLink(CmsRequest request, CmsResponse response,
@@ -91,7 +99,7 @@ class StarterSiteMenuGenerator extends AbstractScriptGenerator
             def url = response.createURL(link).getURL(false)
             pw.append('<li class="link ' + classname + '" data-path="/user">')
             pw.append('<a').appendEscapedAttribute('href', url)
-            pw.append(' class="link"><span>')
+            pw.append(' class="link menuitemlabel"><span>')
                 .appendEscapedData(displayText)
                 .append('</span></a></li>')
         }

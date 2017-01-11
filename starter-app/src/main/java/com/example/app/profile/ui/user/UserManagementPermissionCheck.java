@@ -26,6 +26,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.proteusframework.internet.http.Request;
+import net.proteusframework.ui.management.ApplicationRegistry;
+import net.proteusframework.ui.management.link.RegisteredLinkDAO;
 import net.proteusframework.users.model.Principal;
 
 /**
@@ -40,13 +42,20 @@ public class UserManagementPermissionCheck implements ApplicationFunctionPermiss
     @Autowired private UIPreferences _uiPreferences;
     @Autowired private ProfileDAO _profileDAO;
     @Autowired private MembershipOperationProvider _mop;
+    @Autowired private RegisteredLinkDAO _registeredLinkDAO;
+    @Autowired private ApplicationRegistry _applicationRegistry;
+    @Autowired private AppUtil _appUtil;
 
     @Override
     public boolean checkPermissions(@Nonnull Request request, @Nullable User user)
     {
-        if(user == null) return false;
-        Company selectedCompany = _uiPreferences.getSelectedCompany();
-        return _profileDAO.canOperate(user, selectedCompany, AppUtil.UTC, _mop.viewUser());
+        if(functionExists(_appUtil.getSite(), request, _applicationRegistry, _registeredLinkDAO))
+        {
+            if (user == null) return false;
+            Company selectedCompany = _uiPreferences.getSelectedCompany();
+            return _profileDAO.canOperate(user, selectedCompany, AppUtil.UTC, _mop.viewUser());
+        }
+        return false;
     }
 
     @Override
