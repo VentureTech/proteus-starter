@@ -1,34 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="Local Frontend" showExcludedInSync="true">
+  <component name="PublishConfigData" serverName="Development (WebDAV)" showExcludedInSync="true">
     <serverData>
-      <paths name="LDP Live (Web)">
+      <paths name="Development (WebDAV)">
         <serverdata>
           <mappings>
-            <mapping deploy="Stylesheets/Entropy/pages" local="$PROJECT_DIR$/web/build/stylesheets/pages" web="/Stylesheets/Entropy/pages" />
-            <mapping deploy="Stylesheets/Entropy/templates" local="$PROJECT_DIR$/web/build/stylesheets/templates" web="/Stylesheets/Entropy/templates" />
-            <mapping deploy="Design/Entropy/font" local="$PROJECT_DIR$/web/build/design/fonts" web="/Design/Entropy/font" />
-            <mapping deploy="Javascript/Entropy/components" local="$PROJECT_DIR$/web/build/javascript/components" web="Javascript/Entropy/components" />
-            <mapping deploy="Javascript/Entropy/templates" local="$PROJECT_DIR$/web/build/javascript/templates" web="Javascript/Entropy/templates" />
+            <mapping deploy="/" local="$PROJECT_DIR$/build" web="/" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="LDP QA (Web)">
+      <paths name="Live (WebDAV)">
         <serverdata>
           <mappings>
-            <mapping deploy="Stylesheets/Entropy/pages" local="$PROJECT_DIR$/web/build/stylesheets/pages" web="/Stylesheets/Entropy/pages" />
-            <mapping deploy="Stylesheets/Entropy/templates" local="$PROJECT_DIR$/web/build/stylesheets/templates" web="/Stylesheets/Entropy/templates" />
-            <mapping deploy="Design/Entropy/font" local="$PROJECT_DIR$/web/build/design/fonts" web="/Design/Entropy/font" />
-            <mapping deploy="Javascript/Entropy/components" local="$PROJECT_DIR$/web/build/javascript/components" web="Javascript/Entropy/components" />
-            <mapping deploy="Javascript/Entropy/templates" local="$PROJECT_DIR$/web/build/javascript/templates" web="Javascript/Entropy/templates" />
+            <mapping deploy="/" local="$PROJECT_DIR$/build" web="/" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="Local Frontend">
+      <paths name="QA (WebDAV)">
         <serverdata>
           <mappings>
-            <mapping deploy="Stylesheets" local="$PROJECT_DIR$/build/stylesheets" web="/" />
-            <mapping deploy="Javascript" local="$PROJECT_DIR$/build/javascript" web="/" />
+            <mapping deploy="/" local="$PROJECT_DIR$/build" web="/" />
           </mappings>
         </serverdata>
       </paths>
