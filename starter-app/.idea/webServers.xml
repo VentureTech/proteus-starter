@@ -2,7 +2,7 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="038fa80a-3f59-490d-9387-51ef20fbc44b" name="Dev" url="http://localhost/_files/Libraries">
+      <webServer id="038fa80a-3f59-490d-9387-51ef20fbc44b" name="Dev Libraries" url="http://localhost/_files/Libraries">
         <fileTransfer port="0" mountedRoot="$PROJECT_DIR$/mounts/dev-libraries" accessType="MOUNT" />
       </webServer>
     </option>

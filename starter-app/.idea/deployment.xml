@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" promptOnRemoteOverwrite="CHECK_CONTENT" serverName="Dev">
+  <component name="PublishConfigData" promptOnRemoteOverwrite="CHECK_CONTENT" serverName="Dev Libraries">
     <serverData>
-      <paths name="Dev">
+      <paths name="Dev Libraries">
         <serverdata>
           <mappings>
             <mapping deploy="/" local="$PROJECT_DIR$/src/libraries/groovy" web="/" />
