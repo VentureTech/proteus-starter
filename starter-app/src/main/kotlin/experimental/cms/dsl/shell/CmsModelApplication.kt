@@ -65,6 +65,7 @@ import net.proteusframework.email.EmailTemplate
 import net.proteusframework.email.EmailTemplateDAO
 import net.proteusframework.internet.http.Link
 import net.proteusframework.internet.http.resource.html.FactoryNDE
+import net.proteusframework.internet.http.resource.html.NDE
 import net.proteusframework.internet.http.resource.html.NDEType
 import net.proteusframework.ui.management.ApplicationRegistry
 import net.proteusframework.ui.management.link.RegisteredLink
@@ -426,6 +427,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             } else {
                 logger.info("Found Existing Cms Page (pass 1): ${page.id}")
                 updatePageElementPath(cmsPage, page)
+                createNDEs(site, cmsPage, page)
                 session.flush()
             }
             cmsPage
@@ -518,6 +520,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             }
             Hibernate.initialize(contentElement.publishedData)
             logger.info("Cms Content Is Modified: ${contentElement.name}")
+        } else {
+            handleNewDataSet(ContentInstance(contentElement), content, site)
         }
         createNDEs(site, contentElement, content)
         if (content is DelegateContent) {
@@ -605,6 +609,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             session.flush()
         } else {
             logger.info("Found Existing Cms Page Template (pass 1): ${template.id}")
+            createNDEs(site, pageTemplate, template)
         }
         return pageTemplate
     }
@@ -701,19 +706,34 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
 
     private fun createNDEs(site: CmsSite, siteElement: Any, resources: ResourceCapable) {
 
-        for (nde in createNDEs(site, NDEType.CSS, resources.cssPaths, siteElement)) {
+        val cssNDEs = createNDEs(site, NDEType.CSS, resources.cssPaths, siteElement)
+        val jsNDEs = createNDEs(site, NDEType.JS, resources.javaScriptPaths, siteElement)
+        for (nde in cssNDEs) {
             NDEUtil.addNDEToEntity(siteElement, nde,
                 ContentTypes.Text.html.contentType,
                 ContentTypes.Application.xhtml_xml.contentType
                                   )
         }
-        for (nde in createNDEs(site, NDEType.JS, resources.javaScriptPaths, siteElement)) {
+        for (nde in jsNDEs) {
             NDEUtil.addNDEToEntity(siteElement, nde,
                 ContentTypes.Text.html.contentType,
                 ContentTypes.Application.xhtml_xml.contentType
                                   )
         }
-
+        val comparator = Comparator<NDE> f@{e1, e2 ->
+            if(e1.type != e2.type) return@f 0
+            if(e1.type == NDEType.CSS) {
+                return@f cssNDEs.indexOf(e1).compareTo(cssNDEs.indexOf(e2))
+            }
+            if(e1.type == NDEType.JS) {
+                return@f jsNDEs.indexOf(e1).compareTo(jsNDEs.indexOf(e2))
+            }
+            return@f 0
+        }
+        NDEUtil.getNDEList(siteElement, ContentTypes.Text.html.contentType)
+            .ndEs.sortWith(comparator)
+        NDEUtil.getNDEList(siteElement, ContentTypes.Application.xhtml_xml.contentType)
+            .ndEs.sortWith(comparator)
     }
 
     private fun createNDEs(site: CmsSite, type: NDEType, paths: List<String>, siteElement: Any): List<FactoryNDE> {

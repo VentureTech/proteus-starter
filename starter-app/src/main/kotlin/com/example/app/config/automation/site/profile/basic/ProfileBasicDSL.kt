@@ -33,6 +33,9 @@ private val appName = ProjectInformation.getName()
 open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId = "$appName Frontend", init = {
     libraryResources(URL("https://repo.venturetech.net/artifactory/vt-snapshot-local/" +
         "com/example/starter-app/1.2-SNAPSHOT/starter-app-1.2-SNAPSHOT-libraries.zip"))
+    webResources(URL("https://repo.venturetech.net/artifactory/simple/vt-snapshot-local/" +
+        "com/example/starter-app-webdev/1.2-SNAPSHOT/starter-app-webdev-1.2-SNAPSHOT.zip"))
+
 
     template("Login") {
         javaScript("templates/main.min.js")
@@ -57,6 +60,10 @@ open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId 
     }
 
     template("Frontend") {
+        javaScript("vendor/jquery.min.js")
+        javaScript("vendor/tether.min.js")
+        javaScript("vendor/bootstrap.min.js")
+        javaScript("vendor/select2.min.js")
         javaScript("templates/main.min.js")
         css("templates/template--base.min.css")
         layout("Header, Main, Footer")
@@ -66,7 +73,9 @@ open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId 
         content("Header", ScriptedGenerator("Top Menu")) {
             script("ScriptGenerator/Frontend/StarterSiteMenuScript.groovy")
         }
-        content("Header", Logout("Logout"))
+        content("Header", Logout("Logout")) {
+            htmlClass = "menu"
+        }
     }
 
     page("Login", "/login") {

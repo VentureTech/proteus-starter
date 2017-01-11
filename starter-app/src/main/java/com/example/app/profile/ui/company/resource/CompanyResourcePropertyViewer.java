@@ -18,6 +18,8 @@ import com.example.app.profile.ui.URLProperties;
 import com.example.app.profile.ui.resource.AbstractProfileResourcePropertyViewer;
 import com.example.app.support.ui.Application;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import net.proteusframework.cms.category.CmsCategory;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
@@ -53,6 +55,8 @@ import static com.example.app.profile.ui.company.resource.CompanyResourcePropert
 )
 public class CompanyResourcePropertyViewer extends AbstractProfileResourcePropertyViewer
 {
+    @Autowired private CompanyResourcePermissionCheck _permissionCheck;
+
     /**
      * Instantiates a new Company resource property viewer.
      */
@@ -81,6 +85,6 @@ public class CompanyResourcePropertyViewer extends AbstractProfileResourceProper
     {
         ResourceRepositoryItem value = request.getPropertyValue(URLProperties.REPOSITORY_ITEM);
 
-        configure(value);
+        configure(value, _permissionCheck);
     }
 }

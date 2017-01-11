@@ -8,7 +8,7 @@ var stream = require('stream');
 var gutil = require('gulp-util');
 
 //noinspection JSUnresolvedVariable
-var SERVER_URL = process.env.publish_venturetech_url,
+var SERVER_URL = process.env.publish_venturetech_url || process.env.publish_venture_tech_url,
     PUBLISH_USERNAME = process.env.publish_venturetech_username,
     PUBLISH_PASSWORD = process.env.publish_venturetech_password,
     parsedGroup = projectInfo.group.replace('.', '/');
@@ -19,7 +19,7 @@ if(projectInfo.versionStatus == "SNAPSHOT")
 var PUBLISH_METADATA_URL = `${SERVER_URL}/vt-snapshot-local/${parsedGroup}/${projectInfo.name}`;
 var PUBLISH_URL = `${SERVER_URL}/vt-snapshot-local/${parsedGroup}/${projectInfo.name}/${VERSION}`;
 
-gulp.task('publish', ['zip', 'publish:generate-maven-metadata'], function() {
+gulp.task('publish', ['zip', 'publish:maven-metadata'], function() {
     return gulp.src(`./artifact/${projectInfo.name}-${VERSION}.zip`)
         .pipe(gafu({
             url: PUBLISH_URL,
@@ -28,7 +28,7 @@ gulp.task('publish', ['zip', 'publish:generate-maven-metadata'], function() {
         }));
 });
 
-gulp.task('publish:generate-maven-metadata', ['zip'], function() {
+gulp.task('publish:maven-metadata', ['zip'], function() {
     return templateAsFile('maven-metadata.xml',
         `<?xml version="1.0" encoding="UTF-8"?>
 <metadata>

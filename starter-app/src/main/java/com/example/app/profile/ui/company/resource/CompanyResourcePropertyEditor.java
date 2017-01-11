@@ -22,6 +22,8 @@ import com.example.app.profile.ui.resource.AbstractProfileResourcePropertyEditor
 import com.example.app.profile.ui.resource.ResourceTypeURLConfigPropertyConverter;
 import com.example.app.support.ui.Application;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import net.proteusframework.cms.category.CmsCategory;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
@@ -68,6 +70,8 @@ import static com.example.app.profile.ui.company.resource.CompanyResourcePropert
 )
 public class CompanyResourcePropertyEditor extends AbstractProfileResourcePropertyEditor
 {
+    @Autowired private CompanyResourcePermissionCheck _permissionCheck;
+
     /**
      * Instantiates a new Company resource property editor.
      */
@@ -99,6 +103,6 @@ public class CompanyResourcePropertyEditor extends AbstractProfileResourceProper
         Repository repo = request.getPropertyValue(URLProperties.REPOSITORY);
         Profile owner = request.getPropertyValue(URLProperties.REPOSITORY_OWNER);
 
-        configure(value, resourceType, repo, owner);
+        configure(value, resourceType, repo, owner, _permissionCheck);
     }
 }

@@ -25,6 +25,7 @@ import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.service.MembershipOperationProvider;
 import com.example.app.profile.ui.URLProperties;
 import com.example.app.profile.ui.repository.ResourceRepositoryItemValueEditor;
+import com.example.app.support.service.ApplicationFunctionPermissionCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Nullable;
@@ -107,11 +108,13 @@ public abstract class AbstractProfileResourcePropertyEditor extends MIWTPageElem
      * @param resourceType the resource type
      * @param repo the repo
      * @param owner the owner
+     * @param permissionCheck permission check
      */
     protected void configure(
         @Nullable ResourceRepositoryItem value,
         @Nullable ResourceType resourceType,
-        @Nullable Repository repo, @Nullable Profile owner)
+        @Nullable Repository repo, @Nullable Profile owner,
+        ApplicationFunctionPermissionCheck permissionCheck)
     {
         Optional<Profile> oOwner = Optional.ofNullable(owner);
         if (value != null && !_repositoryDAO.isTransient(value))
@@ -124,11 +127,11 @@ public abstract class AbstractProfileResourcePropertyEditor extends MIWTPageElem
         repo = oOwner.map(Profile::getRepository).orElse(repo);
         getValueEditor().setOwner(repo);
         final TimeZone tz = Event.getRequest().getTimeZone();
+
+        permissionCheck.checkPermissionsForCurrent(Event.getRequest(), "Invalid permissions to view page.");
+
         _currentUser = _userDAO.getAssertedCurrentUser();
-        _canEdit =
-            oOwner.map(profile -> _profileDAO.canOperate(_currentUser, profile, tz, _mop.viewRepositoryResources()))
-                .orElse(false)
-            && oOwner.map(profile -> _profileDAO.canOperate(_currentUser, profile, tz, _mop.modifyRepositoryResources()))
+        _canEdit = oOwner.map(profile -> _profileDAO.canOperate(_currentUser, profile, tz, _mop.modifyRepositoryResources()))
                 .orElse(false);
 
         final Repository fRepo = repo;
@@ -148,7 +151,7 @@ public abstract class AbstractProfileResourcePropertyEditor extends MIWTPageElem
         }
         else
         {
-            throw new IllegalArgumentException("Invalid Permissions To View Page");
+            throw new IllegalArgumentException("Invalid permissions to view page.");
         }
     }
 

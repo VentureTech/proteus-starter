@@ -490,7 +490,6 @@ public class CompanyResourceManagement extends MIWTPageElementModelHistoryContai
         _currentUser = _userDAO.getAssertedCurrentUser();
         _adminProfile = _uiPreferences.getSelectedCompany();
 
-        if (_permissionCheck.checkPermissions(Event.getRequest(), _currentUser))
-            throw new IllegalArgumentException("Invalid Permissions To View Page");
+        _permissionCheck.checkPermissionsForCurrent(Event.getRequest(), "Invalid permissions to view page.");
     }
 }

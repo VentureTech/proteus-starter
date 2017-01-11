@@ -69,7 +69,7 @@ public class DemoDataConversionVersion1
             + "(255), "
                 + "createtime timestamp, emailaddress varchar(255), facebooklink varchar(255), lastmodtime timestamp, "
                 + "linkedinlink varchar(255), phonenumber varchar(255), twitterlink varchar(255), name_id int8, picture_id int8, "
-                + "postaladdress_id int8, site_id int8, primary key (userprofile_id))",
+                + "postaladdress_id int8, site_id int8, primary key (demouserprofile_id))",
             null));
         ddl.add(new SQLStatement(
             "alter table DemoUserProfile add constraint FK_mrdqdc1atkriccxn00383la4u foreign key (name_id) references personname",

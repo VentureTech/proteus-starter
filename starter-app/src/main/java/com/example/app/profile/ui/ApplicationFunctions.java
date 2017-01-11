@@ -75,7 +75,8 @@ public final class ApplicationFunctions
         public static final String VIEW = "Company Viewer";
 
         /**
-         * Static class defining Application Functions for {@link com.example.app.resource.model.Resource}s on a Company
+         * Static class defining Application Functions for {@link com.example.app.profile.model.resource.Resource}s on a
+         * Company
          *
          * @author Alan Holt (aholt@venturetech.net)
          */
