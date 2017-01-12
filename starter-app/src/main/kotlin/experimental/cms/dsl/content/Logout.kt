@@ -42,14 +42,26 @@ class Logout(id: String) : Identifiable(id), Content {
 
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
         val contentElement = existing?:LogoutBean()
-        var expression = helper.convertXHTML(logoutExpression)
-        expression = expression.replace(Logout.PAT_CMSLINK.toRegex(),
-            {"getCMSLink(${helper.getInternalLink(it.groupValues[1])})"})
         val builder = LogoutBeanContentBuilder()
+        updateBuilder(helper, builder)
+        return ContentInstance(contentElement, builder.content)
+    }
+
+
+    override fun isModified(helper: ContentHelper, contentElement: ContentElement): Boolean {
+        val builder = LogoutBeanContentBuilder.load(contentElement.publishedData[helper.getCmsSite().primaryLocale],
+            LogoutBeanContentBuilder::class.java, false)
+        updateBuilder(helper, builder)
+        return builder.isDirty
+    }
+
+    private fun updateBuilder(helper: ContentHelper, builder: LogoutBeanContentBuilder) {
+        var expression = helper.convertXHTML(logoutExpression)
+        expression = expression.replace(PAT_CMSLINK.toRegex(),
+            { "getCMSLink(${helper.getInternalLink(it.groupValues[1])})" })
         builder.logoutOption = LogoutBean.LogoutOption.expression
         builder.logoutExpressionType = IExpression.Type.FreeMarker
         builder.logoutExpression = expression
-        return ContentInstance(contentElement, builder.content)
     }
 
     override fun toString(): String {
