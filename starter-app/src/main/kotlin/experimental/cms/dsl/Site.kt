@@ -231,10 +231,13 @@ class Site(id: String, val appDefinition: AppDefinition) : IdentifiableParent<Pa
      * @param id the identifier. Something like "User Management".
      * @param path the page path. Page paths can contain spring environment variables like "\${folder.company}/users".
      */
-    fun page(id: String, path: String, init: Page.() -> Unit) {
+    fun page(id: String, path: String, init: Page.() -> Unit): Page {
+        val page = Page(id = id, site = this, path = path)
         siteConstructedCallbacks.add({site ->
-            Page(id = id, site = this, path = resolvePlaceholders(path)).apply(init)
+            page.path = resolvePlaceholders(path)
+            page.apply(init)
         })
+        return page
     }
 
     /**
