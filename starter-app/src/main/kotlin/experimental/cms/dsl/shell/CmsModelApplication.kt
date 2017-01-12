@@ -82,6 +82,7 @@ import org.springframework.core.env.Environment
 import java.io.File
 import java.util.*
 import javax.annotation.Resource
+import javax.mail.internet.ContentType
 
 @Qualifier("standalone")
 open class PlaceholderHelperImpl : PlaceholderHelper {
@@ -143,7 +144,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
     @Autowired
     lateinit var fileManagerDAO: FileManagerDAO
 
-    private val contentElementData = mutableMapOf<ContentElement, CmsModelDataSet>()
+    private val contentElementData = mutableMapOf<String, CmsModelDataSet>()
     private val pagePermissionCache = mutableMapOf<String, PagePermission>()
     private val roleCache = mutableMapOf<String, Role>()
     private val pageModelToCmsPage = mutableMapOf<Page, net.proteusframework.cms.component.page.Page>()
@@ -551,7 +552,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         logger.info("Saving Cms Content: ${contentElement.name}")
         //session.saveOrUpdate(contentElement)
         val dataSet = instance.dataSet ?: return
-        contentElementData.put(contentElement, dataSet)
+        contentElementData.put(contentElement.name, dataSet)
         if (dataSet.locale == null)
             dataSet.locale = currentSite!!.primaryLocale
         dataSet.lastModUser = principalDAO.currentPrincipal
@@ -651,10 +652,9 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
     private fun saveContentElements(elements: MutableList<ContentElement>,
         hibernateUtil: HibernateUtil = HibernateUtil.getInstance(), site: CmsSite) {
         val it = elements.listIterator()
-        loop@
         while (it.hasNext()) {
             val ce = it.next()
-            val dataSet = contentElementData.remove(ce.delegate)
+            val dataSet = contentElementData.remove(ce.delegate.name)
             saveChildElements(ce, hibernateUtil, site)
             if (dataSet != null) {
                 logger.info("Creating New Cms Content Revision: ${ce.name}")
@@ -686,6 +686,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         if (cmsLayout == null) {
             logger.info("Creating Cms Layout: ${layout.id}")
             cmsLayout = net.proteusframework.cms.component.page.layout.Layout()
+            cmsLayout = net.proteusframework.cms.component.page.layout.Layout()
             cmsLayout.site = site
             cmsLayout.name = layout.id
             populateLayoutBoxes(site, layout, cmsLayout)
@@ -693,6 +694,17 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             session.flush()
         } else {
             logger.info("Found Existing Cms Layout: ${layout.id}")
+            val boxInformation = BoxInformation(cmsLayout)
+            val list = mutableListOf<Box>()
+            list.addAll(layout.children)
+            while(!list.isEmpty()) {
+                val box = list.first()
+                list.addAll(box.children)
+                val cmsBox = boxInformation.getBoxByName(box.id)
+                if(cmsBox.isPresent) {
+                    updateCmsBox(box, cmsBox.get(), site)
+                }
+            }
         }
 
         return cmsLayout
@@ -702,32 +714,34 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
 
         val cssNDEs = createNDEs(site, NDEType.CSS, resources.cssPaths, siteElement)
         val jsNDEs = createNDEs(site, NDEType.JS, resources.javaScriptPaths, siteElement)
+        val ndeLists = mutableMapOf<ContentType, NDEList>()
         for (nde in cssNDEs) {
-            NDEUtil.addNDEToEntity(siteElement, nde,
+            NDEUtil.addNDEToEntity(ndeLists, siteElement, nde,
                 ContentTypes.Text.html.contentType,
                 ContentTypes.Application.xhtml_xml.contentType
                                   )
         }
         for (nde in jsNDEs) {
-            NDEUtil.addNDEToEntity(siteElement, nde,
+            NDEUtil.addNDEToEntity(ndeLists, siteElement, nde,
                 ContentTypes.Text.html.contentType,
                 ContentTypes.Application.xhtml_xml.contentType
                                   )
         }
-        val comparator = Comparator<NDE> f@{e1, e2 ->
-            if(e1.type != e2.type) return@f 0
-            if(e1.type == NDEType.CSS) {
-                return@f cssNDEs.indexOf(e1).compareTo(cssNDEs.indexOf(e2))
+        val comparator = Comparator<NDE> {e1, e2 ->
+            if(e1.type != e2.type) {
+                0
             }
-            if(e1.type == NDEType.JS) {
-                return@f jsNDEs.indexOf(e1).compareTo(jsNDEs.indexOf(e2))
+            else if(e1.type == NDEType.CSS) {
+                cssNDEs.indexOf(e1).compareTo(cssNDEs.indexOf(e2))
             }
-            return@f 0
+            else if(e1.type == NDEType.JS) {
+                jsNDEs.indexOf(e1).compareTo(jsNDEs.indexOf(e2))
+            }
+            else 0
         }
-        NDEUtil.getNDEList(siteElement, ContentTypes.Text.html.contentType)
-            .ndEs.sortWith(comparator)
-        NDEUtil.getNDEList(siteElement, ContentTypes.Application.xhtml_xml.contentType)
-            .ndEs.sortWith(comparator)
+        ndeLists.values.forEach {
+            it.ndEs.sortWith(comparator)
+        }
     }
 
     private fun createNDEs(site: CmsSite, type: NDEType, paths: List<String>, siteElement: Any): List<FactoryNDE> {

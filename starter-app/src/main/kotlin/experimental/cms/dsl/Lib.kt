@@ -44,6 +44,7 @@ internal fun populateLayoutBoxes(site: CmsSite, layout: Layout,
     cmsLayout: net.proteusframework.cms.component.page.layout.Layout) {
     for (box in layout.children) {
         val cmsBox = createCmsBox(box, site)
+        updateCmsBox(box, cmsBox, site)
         cmsLayout.boxes.add(cmsBox)
         populateLayoutBoxes(site, box, cmsBox)
     }
@@ -52,6 +53,7 @@ internal fun populateLayoutBoxes(site: CmsSite, layout: Layout,
 internal fun populateLayoutBoxes(site: CmsSite, parent: Box, cmsParent: net.proteusframework.cms.component.page.layout.Box) {
     for (child in parent.children) {
         val cmsBox = createCmsBox(child, site)
+        updateCmsBox(child, cmsBox, site)
         cmsParent.children.add(cmsBox)
         populateLayoutBoxes(site, child, cmsBox)
     }
@@ -62,14 +64,18 @@ internal fun createCmsBox(box: Box,
     val cmsBox = net.proteusframework.cms.component.page.layout.Box()
     cmsBox.site = site
     cmsBox.name = box.id
-    cmsBox.boxDescriptor = box.boxType
-    cmsBox.defaultContentArea = box.defaultContentArea
-    cmsBox.cssName = box.htmlId
-    cmsBox.styleClass = box.htmlClass
+    return cmsBox
+}
+
+internal fun updateCmsBox(boxModel: Box, cmsBox: net.proteusframework.cms.component.page.layout.Box,
+    site: CmsSite){
+    cmsBox.boxDescriptor = boxModel.boxType
+    cmsBox.defaultContentArea = boxModel.defaultContentArea
+    cmsBox.cssName = boxModel.htmlId
+    cmsBox.styleClass = boxModel.htmlClass
     cmsBox.lastModUser = PrincipalDAO.getInstance().currentPrincipal
     cmsBox.lastModified = Date()
-    cmsBox.wrappingContainerCount = box.wrappingContainerCount
-    return cmsBox
+    cmsBox.wrappingContainerCount = boxModel.wrappingContainerCount
 }
 
 internal fun cleanPath(path: String): String = trimSlashes(path.replace('*', '/')).replace(Regex("""/+"""), "/")
