@@ -38,8 +38,13 @@ open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId 
 
 
     template("Login") {
+        javaScript("vendor/jquery.min.js")
+        javaScript("vendor/tether.min.js")
+        javaScript("vendor/bootstrap.min.js")
+        javaScript("vendor/select2.min.js")
         javaScript("templates/main.min.js")
         css("templates/template--base.min.css")
+        css("pages/page--login.min.css")
         layout("Header, Main, Footer") {
             box("Header") {
                 htmlId = "header"
@@ -82,6 +87,7 @@ open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId 
         template("Login")
         content("Content", Login("Login")) {
             scriptedRedirect("ScriptableRedirect/StarterSiteRedirectScript.groovy")
+            htmlClass = "form-signin"
         }
     }
 
