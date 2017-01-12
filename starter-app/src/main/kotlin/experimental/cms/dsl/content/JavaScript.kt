@@ -25,9 +25,19 @@ class JavaScript(id: String, var javaScriptContent: String = "", var renderInHea
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
         val contentElement = existing?:JavaScriptBean()
         val builder = JavaScriptBeanContentBuilder()
+        updateBuilder(builder)
+        return ContentInstance(contentElement, builder.content)
+    }
+
+    override fun isModified(helper: ContentHelper, contentElement: ContentElement): Boolean {
+        val builder = JavaScriptBeanContentBuilder.load(contentElement.publishedData[helper.getCmsSite().primaryLocale], false)
+        updateBuilder(builder)
+        return builder.isDirty
+    }
+
+    private fun updateBuilder(builder: JavaScriptBeanContentBuilder) {
         builder.isOutputInHEAD = renderInHead
         builder.javaScriptData = javaScriptContent
-        return ContentInstance(contentElement, builder.content)
     }
 
     override fun toString(): String {
