@@ -99,14 +99,16 @@ class Site(id: String, val appDefinition: AppDefinition) : IdentifiableParent<Pa
     }
 
     private fun _populateModelBoxes(layout: Layout, cmsBox: net.proteusframework.cms.component.page.layout.Box) {
-        val box = Box(cmsBox.name, cmsBox.boxDescriptor, cmsBox.defaultContentArea, cmsBox.cssName, cmsBox.styleClass)
+        val box = Box(cmsBox.name, cmsBox.boxDescriptor, cmsBox.defaultContentArea,
+            htmlId = cmsBox.cssName, htmlClass = cmsBox.styleClass)
         layout.add(box)
         for(cmsChildBox in cmsBox.children) {
             _populateModelBoxes(box, cmsChildBox)
         }
     }
     private fun _populateModelBoxes(parent: Box, cmsBox: net.proteusframework.cms.component.page.layout.Box) {
-        val box = Box(cmsBox.name, cmsBox.boxDescriptor, cmsBox.defaultContentArea, cmsBox.cssName, cmsBox.styleClass)
+        val box = Box(cmsBox.name, cmsBox.boxDescriptor, cmsBox.defaultContentArea,
+            htmlId = cmsBox.cssName, htmlClass = cmsBox.styleClass)
         parent.add(box)
         for(cmsChildBox in cmsBox.children) {
             _populateModelBoxes(box, cmsChildBox)
