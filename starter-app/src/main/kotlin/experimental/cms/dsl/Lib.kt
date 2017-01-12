@@ -68,6 +68,7 @@ internal fun createCmsBox(box: Box,
     cmsBox.styleClass = box.htmlClass
     cmsBox.lastModUser = PrincipalDAO.getInstance().currentPrincipal
     cmsBox.lastModified = Date()
+    cmsBox.wrappingContainerCount = box.wrappingContainerCount
     return cmsBox
 }
 

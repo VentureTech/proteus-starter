@@ -25,6 +25,7 @@ import net.proteusframework.users.model.CredentialPolicyLevel
  */
 class Box(id: String, var boxType: BoxDescriptor = BoxDescriptor.COLUMN,
           var defaultContentArea: PageProperties.Type = PageProperties.Type.page,
+          var wrappingContainerCount: Short = 0,
           override var htmlId: String="", override var htmlClass: String="")
     : IdentifiableParent<Box>(id), HTMLClass, HTMLIdentifier {
 
@@ -40,7 +41,7 @@ class Box(id: String, var boxType: BoxDescriptor = BoxDescriptor.COLUMN,
 
     override fun toString(): String {
         return "Box(id='$id', boxType=$boxType, defaultContentArea=$defaultContentArea, htmlId='$htmlId', " +
-                "htmlClass='$htmlClass', children=$children)"
+                "htmlClass='$htmlClass', wrappingContainerCount=$wrappingContainerCount, children=$children)"
     }
 
 }
