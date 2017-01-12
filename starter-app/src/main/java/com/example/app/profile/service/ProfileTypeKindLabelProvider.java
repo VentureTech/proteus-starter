@@ -12,6 +12,7 @@
 package com.example.app.profile.service;
 
 import com.example.app.profile.model.ProfileType;
+import com.example.app.support.service.AppUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -24,7 +25,6 @@ import java.util.Locale;
 import java.util.Set;
 
 import net.proteusframework.cms.CmsSite;
-import net.proteusframework.cms.dao.CmsFrontendDAO;
 import net.proteusframework.cms.label.Label;
 import net.proteusframework.cms.label.LabelDomainProvider;
 import net.proteusframework.core.locale.TransientLocalizedObjectKey;
@@ -40,12 +40,10 @@ import net.proteusframework.core.locale.TransientLocalizedObjectKey;
 public class ProfileTypeKindLabelProvider extends LabelDomainProvider
 {
     @Autowired
-    private CmsFrontendDAO _cmsFrontendDAO;
+    private AppUtil _appUtil;
 
     @Value("${profile_type_kind_label_domain:profile-type-kind}")
     private String _progId;
-    @Value("${default_site_assignment}")
-    private Long _siteAssignmentId;
 
     @Nonnull
     @Override
@@ -67,6 +65,6 @@ public class ProfileTypeKindLabelProvider extends LabelDomainProvider
     @Override
     protected Set<CmsSite> getDefaultAssignments()
     {
-        return Collections.singleton(_cmsFrontendDAO.getSite(_siteAssignmentId));
+        return Collections.singleton(_appUtil.getSite());
     }
 }

@@ -14,7 +14,6 @@ package com.example.app.support.service;
 import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -22,7 +21,6 @@ import java.util.HashMap;
 import java.util.Set;
 
 import net.proteusframework.cms.CmsSite;
-import net.proteusframework.cms.dao.CmsFrontendDAO;
 import net.proteusframework.cms.label.LabelDomain;
 import net.proteusframework.cms.label.LabelDomainProvider;
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
@@ -39,10 +37,8 @@ public class StandaloneLabelDomainProvider extends LabelDomainProvider
 {
     @Autowired
     private EntityRetriever _er;
-    @Value("${default_site_assignment}")
-    private Long _siteAssignmentId;
     @Autowired
-    private CmsFrontendDAO _cmsFrontendDAO;
+    private AppUtil _appUtil;
 
     private final LabelDomain _labelDomain;
 
@@ -91,6 +87,6 @@ public class StandaloneLabelDomainProvider extends LabelDomainProvider
     @Override
     protected Set<CmsSite> getDefaultAssignments()
     {
-        return Collections.singleton(_cmsFrontendDAO.getSite(_siteAssignmentId));
+        return Collections.singleton(_appUtil.getSite());
     }
 }

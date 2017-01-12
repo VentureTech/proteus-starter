@@ -55,6 +55,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.function.Consumer;
+import java.util.prefs.Preferences;
 
 import net.proteusframework.cms.CmsSite;
 import net.proteusframework.cms.component.generator.XMLRenderer;
@@ -103,6 +104,8 @@ import static net.proteusframework.ui.miwt.component.Container.of;
 @org.springframework.stereotype.Component
 public class AppUtil implements Serializable
 {
+    /** Preferences Key For The Profile Site. */
+    public static final String PREF_KEY_PROFILE_SITE = "ProfileSite.Id";
     /** UTC. */
     public static final TimeZone UTC = TimeZone.getTimeZone(ZoneOffset.UTC);
     /** Logger. */
@@ -135,8 +138,6 @@ public class AppUtil implements Serializable
     private String _frontEndRoleProgId;
     @Value("${admin-access-role}")
     private String _adminRoleProgId;
-    @Value("${default_site_assignment}")
-    private Long _defaultEmailTemplateSite;
     @Value("${system.sender}")
     private String _systemSender;
     @Autowired @Qualifier("localeSource")
@@ -814,7 +815,8 @@ public class AppUtil implements Serializable
      */
     public CmsSite getSite()
     {
-        final CmsSite site = _cmsFrontendDAO.getSite(_defaultEmailTemplateSite);
+        long siteId = Preferences.systemRoot().getLong(PREF_KEY_PROFILE_SITE, 0);
+        final CmsSite site = _cmsFrontendDAO.getSite(siteId);
         assert site != null;
         return site;
     }

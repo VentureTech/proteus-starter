@@ -31,6 +31,58 @@ class Version
      */
     public static final String PROJECT_INFORMATION_PACKAGE = 'projectInformationPackage'
 
+    /**
+     * Capitalize the string based on the delimiters or whitespace if no delimiters are specified.
+     *
+     * @param s the string.
+     * @param delimiters optional delimiters.
+     * @return the capitalized string.
+     */
+    static String capitalize(String s, char... delimiters)
+    {
+        final int dl;
+        if (delimiters == null)
+        {
+            dl = 0;
+        }
+        else
+        {
+            dl = delimiters.length;
+            Arrays.sort(delimiters);
+        }
+        boolean capitalizeNextCharacter = true;
+        final int sl = s.length();
+        final StringBuilder captialized = new StringBuilder(sl);
+        for (int i = 0; i < sl; i++)
+        {
+            final char c = s.charAt(i);
+            final boolean isDelimiter;
+            if (dl == 0)
+                isDelimiter = Character.isWhitespace(c);
+            else
+            {
+                isDelimiter = Arrays.binarySearch(delimiters, c) >= 0;
+            }
+
+            if (isDelimiter)
+            {
+                captialized.append(c);
+                capitalizeNextCharacter = true;
+            }
+            else if (capitalizeNextCharacter)
+            {
+                captialized.append(Character.toTitleCase(c));
+                capitalizeNextCharacter = false;
+            }
+            else
+            {
+                captialized.append(c);
+            }
+        }
+        return captialized.toString();
+
+    }
+
     String versionNumber;
     String originalVersion
     String thisVersion
@@ -145,7 +197,7 @@ import javax.annotation.Generated;
 public final class ProjectInformation
 {
     /** Application Name. */
-    public static final String APPLICATION_NAME = "${project.name.replace('-', ' ').toUpperCase()}";
+    public static final String APPLICATION_NAME = "${capitalize(project.name.replace('-', ' '))}";
     /** Name. */
     private static final String _name = "${project.name}";
     /** Group. */
@@ -237,3 +289,4 @@ public final class ProjectInformation
 
     }
 }
+

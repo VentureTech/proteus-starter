@@ -17,12 +17,12 @@ import com.example.app.profile.model.resource.Resource;
 import com.example.app.profile.model.resource.ResourceType;
 import com.example.app.profile.ui.resource.FileEntityResourceEditor;
 import com.example.app.profile.ui.resource.ResourceValueEditor;
+import com.example.app.support.service.AppUtil;
 import com.example.app.support.ui.CommonEditorFields;
 import com.example.app.support.ui.vtcrop.VTCropPictureEditor;
 import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,7 +32,6 @@ import java.util.Optional;
 import com.i2rd.cms.backend.files.FileChooser;
 
 import net.proteusframework.cms.FileSystemDirectory;
-import net.proteusframework.cms.dao.CmsFrontendDAO;
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.data.filesystem.DirectoryEntity;
 import net.proteusframework.data.filesystem.FileEntity;
@@ -55,12 +54,10 @@ public class ResourceRepositoryItemValueEditor extends CompositeValueEditor<Reso
     @Autowired
     EntityRetriever entityRetriever;
     @Autowired
-    private CmsFrontendDAO _frontendDAO;
-    @Autowired
     private FileSystemDAO _fileSystemDAO;
+    @Autowired
+    private AppUtil _appUtil;
 
-    @Value("${default_site_assignment}")
-    private Long _resourceSiteId;
     private ResourceType _resourceType;
     private Repository _owner;
 
@@ -99,9 +96,7 @@ public class ResourceRepositoryItemValueEditor extends CompositeValueEditor<Reso
             if (editor instanceof FileEntityResourceEditor)
             {
                 FileEntityResourceEditor castEditor = (FileEntityResourceEditor) editor;
-                final DirectoryEntity root = FileSystemDirectory.Documents.getDirectory2(
-                    Optional.ofNullable(_frontendDAO.getSite(_resourceSiteId)).orElseThrow(() -> new
-                        IllegalArgumentException("Resource site id given in properties file was not a valid site ID.")));
+                final DirectoryEntity root = FileSystemDirectory.Documents.getDirectory2(_appUtil.getSite());
 
                 Integer ownerId = getOwner().getId();
                 DirectoryEntity repoRoot = _fileSystemDAO.mkdirs(root, null, "repository", ownerId.toString());

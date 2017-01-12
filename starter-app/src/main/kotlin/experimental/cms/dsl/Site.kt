@@ -31,7 +31,6 @@ class Site(id: String, val appDefinition: AppDefinition) : IdentifiableParent<Pa
     companion object{
         val logger = LogManager.getLogger(Site::class.java)!!
     }
-
     private var siteDefinitionDAO: CmsSiteDefinitionDAO = appDefinition.siteDefinitionDAO
     private var dependency: AppDefinition? = null
         get() = getAppDefinitionDependency(appDefinition)
@@ -44,6 +43,7 @@ class Site(id: String, val appDefinition: AppDefinition) : IdentifiableParent<Pa
     override val cssPaths = mutableListOf<String>()
     override val javaScriptPaths = mutableListOf<String>()
 
+    internal var sitePreferenceKey: String = ""
     internal var webResources: URL? = null
     internal var libraryResources: URL? = null
     internal val roles = mutableListOf<Role>()
@@ -57,6 +57,7 @@ class Site(id: String, val appDefinition: AppDefinition) : IdentifiableParent<Pa
     internal var defaultTimezone: TimeZone = TimeZone.getTimeZone("US/Central")
     internal lateinit var parent: AppDefinition
     internal val siteConstructedCallbacks = mutableListOf<(Site) -> Unit>()
+
 
 
     internal fun getContentById(existingId: String): Content {
@@ -161,6 +162,15 @@ class Site(id: String, val appDefinition: AppDefinition) : IdentifiableParent<Pa
             }
             throw IllegalStateException("Page '$existingId' does not exist")
         }
+    }
+
+    /**
+     * Provide a java.util.prefs.Preferences key to store the [net.proteusframework.cms.CmsSite.getId].
+     * @param the key. Must follow [java.util.prefs.Preferences] constraints like key length.
+     */
+    fun storeSitePreference(key: String) {
+        if(key.isBlank()) throw IllegalArgumentException("Key must be specified")
+        sitePreferenceKey = key
     }
 
     /**

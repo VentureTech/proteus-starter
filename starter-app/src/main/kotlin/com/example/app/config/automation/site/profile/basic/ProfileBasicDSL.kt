@@ -13,6 +13,7 @@ package com.example.app.config.automation.site.profile.basic
 
 import com.example.app.config.ProjectInformation
 import com.example.app.profile.ui.ApplicationFunctions.*
+import com.example.app.support.service.AppUtil
 import experimental.cms.dsl.AppDefinition
 import experimental.cms.dsl.AppFunctionPage
 import experimental.cms.dsl.content.ApplicationFunction
@@ -26,7 +27,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import java.net.URL
 
-private val appName = ProjectInformation.getName()
+private val appName = ProjectInformation.APPLICATION_NAME
 
 @Profile("automation")
 @Component
@@ -36,6 +37,7 @@ open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId 
     webResources(URL("https://repo.venturetech.net/artifactory/simple/vt-snapshot-local/" +
         "com/example/starter-app-webdev/\${LATEST}/starter-app-webdev-\${LATEST}.zip"))
 
+    storeSitePreference(AppUtil.PREF_KEY_PROFILE_SITE)
 
     template("Login") {
         javaScript("vendor/jquery.min.js")
@@ -123,3 +125,4 @@ open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId 
 
     hostname("\${proteus.install.name}.\${base.domain}", "Home")
 })
+

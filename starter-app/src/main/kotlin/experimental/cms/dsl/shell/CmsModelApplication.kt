@@ -82,6 +82,7 @@ import org.springframework.core.env.Environment
 import java.io.File
 import java.net.URL
 import java.util.*
+import java.util.prefs.Preferences
 import javax.annotation.Resource
 import javax.mail.internet.ContentType
 import javax.xml.parsers.DocumentBuilderFactory
@@ -361,6 +362,11 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         currentWebRoot = FileSystemDirectory.getRootDirectory(cmsSite)
         createNDEs(cmsSite, cmsSite, siteModel)
         session.flush()
+        if(siteModel.sitePreferenceKey.isNotBlank()) {
+            val systemRoot = Preferences.systemRoot()
+            systemRoot.putLong(siteModel.sitePreferenceKey, cmsSite.id)
+            systemRoot.flush()
+        }
         return cmsSite
     }
 
@@ -731,10 +737,10 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         } else {
             logger.info("Found Existing Cms Layout: ${layout.id}")
             val boxInformation = BoxInformation(cmsLayout)
-            val list = mutableListOf<Box>()
+            val list = LinkedList<Box>()
             list.addAll(layout.children)
             while(!list.isEmpty()) {
-                val box = list.first()
+                val box = list.remove()
                 list.addAll(box.children)
                 val cmsBox = boxInformation.getBoxByName(box.id)
                 if(cmsBox.isPresent) {

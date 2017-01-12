@@ -12,6 +12,7 @@
 package com.example.app.profile.service.resource;
 
 import com.example.app.profile.model.resource.Resource;
+import com.example.app.support.service.AppUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -24,7 +25,6 @@ import java.util.Locale;
 import java.util.Set;
 
 import net.proteusframework.cms.CmsSite;
-import net.proteusframework.cms.dao.CmsFrontendDAO;
 import net.proteusframework.cms.label.Label;
 import net.proteusframework.cms.label.LabelDomainProvider;
 import net.proteusframework.core.locale.TransientLocalizedObjectKey;
@@ -41,12 +41,11 @@ import net.proteusframework.core.locale.TransientLocalizedObjectKey;
 public class ResourceCategoryLabelProvider extends LabelDomainProvider
 {
     @Autowired
-    private CmsFrontendDAO _cmsFrontendDAO;
+    private AppUtil _appUtil;
 
     @Value("${resource_types_label_domain:resource-category}")
     private String _progId;
-    @Value("${default_site_assignment}")
-    private Long _siteAssignmentId;
+
 
     /**
      * Instantiates a new Resource category label provider.
@@ -76,6 +75,6 @@ public class ResourceCategoryLabelProvider extends LabelDomainProvider
     @Override
     protected Set<CmsSite> getDefaultAssignments()
     {
-        return Collections.singleton(_cmsFrontendDAO.getSite(_siteAssignmentId));
+        return Collections.singleton(_appUtil.getSite());
     }
 }
