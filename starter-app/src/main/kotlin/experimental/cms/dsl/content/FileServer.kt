@@ -52,6 +52,17 @@ class FileServer(id: String): Identifiable(id), Content {
             builder.fileSystemEntity = fileSystemEntity
     }
 
+    override fun toString(): String {
+        return "FileServer(" +
+            "directory='$directory'," +
+            "path='$path'," +
+            "htmlId='$htmlId'," +
+            "htmlClass='$htmlClass'," +
+            "cssPaths=$cssPaths," +
+            "javaScriptPaths=$javaScriptPaths" +
+            ")"
+    }
+
 
     override var path: String = ""
     override var htmlId: String = ""
@@ -59,4 +70,6 @@ class FileServer(id: String): Identifiable(id), Content {
     override val cssPaths = mutableListOf<String>()
     override val javaScriptPaths = mutableListOf<String>()
     override var parent: Any? = null
+
+
 }
