@@ -3,34 +3,20 @@
 @import "../../../../../bower_components/bootstrap/scss/mixins";
 @import "../../../../../bower_components/bootstrap/scss/buttons";
 
-#main-content {
-	min-height: calc(100vh - 87px); //window height - footer
-}
-
 .login-body {
 	background-color: #f1f2f7;
 }
 
-.action-login, .action-password {
-	@extend .btn-block;
-	@extend .btn-lg;
-	font-weight: 300;
-	text-transform: uppercase;
-}
 
 .form-signin .title {
-	margin: 0;
-	padding:20px 15px;
+	padding: .6rem 0 .3rem;
 	text-align: center;
-	background: $header-bg;
+	background: $color-app-brand;
 	border-radius: 5px 5px 0 0;
-	-webkit-border-radius: 5px 5px 0 0;
-	color: #fff;
-	font-size: 18px;
+	color: $headings-color;
+	font-size: 1.6rem;
 	text-transform: uppercase;
-	line-height: $headings-line-height;
 	font-weight: $headings-font-weight;
-	font-family: $headings-font-family;
 }
 
 .form-signin .checkbox {
@@ -54,31 +40,9 @@
 	z-index: 2;
 }
 .form-signin input[type="text"], .form-signin input[type="password"] {
-	margin-bottom: 15px;
-	border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border: 1px solid #eaeaea;
-	box-shadow: none;
-	font-size: 12px;
-	padding:2px 4px;
+	padding-left: 5px;
+	border: 2px solid #71767c;
 	width: 100%;
-}
-
-.form-signin .action-login,
-.form-signin button.submit,
-.form-signin .action-password {
-	background: $btn-primary-bg;
-	color: #fff;
-	text-transform: uppercase;
-	font-weight: 300;
-	//box-shadow: 0 4px darken($btn-primary-border, 12%);
-	margin-bottom: 20px;
-
-	&:hover {
-		background-color: darken($btn-primary-bg, 15%);
-		color: $color-white;
-	}
-
 }
 
 .form-signin p {
@@ -86,21 +50,6 @@
 	margin: 0;
 }
 
-.label, label {
-	font-weight: 500;
-	display: block;
-	padding: 0;
-	margin-bottom: .25rem;
-	text-align: left;
-}
-
-.form-signin a {
-	color: #41cac0;
-}
-
-.form-signin a:hover {
-	color: #b6b6b6;
-}
 
 .login-wrap {
 	padding: 20px;
@@ -140,129 +89,229 @@
 	float:left;
 }
 
-
-.set-pw-intro {
-	padding: 1rem;
-	font-weight: 400;
-	color: $color-app-grey;
-	text-align: center;
-	max-width: 50rem;
-	margin: 100px auto 0;
-
-	h3 {
-		color: $color-app-brand;
-	}
-
-	p {
-		margin-bottom: 0;
-	}
-
-	+ .password-reset.form-signin {
-		margin-top: 1rem;
-		max-width: 30rem;
-
-		.action-password.btn {
-			max-width: 16rem;
-			margin: 0 auto 20px;
-		}
-
-	}
-
-}
-
 #authentication {
 	background-color: #f1f2f7;
 }
-.form-signin, .form-signout {
-	max-width: 375px;
-	margin: 100px auto 0;
-	background: #fff;
-	border-radius: 5px;
-	-webkit-border-radius: 5px;
-}
-.form-signin .fields{
-	text-align: left;
-	padding:20px 3rem;
-}
-.form-signin .message-container,
-.form-signin .actions {
-	padding-left:20px;
-	padding-right:20px;
-}
-.form-signin {
 
-	.text p, .password-rules {
-		color: $color-app-grey;
-		font-size: 90%;
-	}
-
-	.message-container{
-		margin: 10px 0 25px;
-	}
-
-	.retrieve-password {
-		padding: 10px 0;
-
-		div.email {
-			padding: 0 3rem 15px;
-			text-align: left;
-
-			> span {
-				color: #444;
-				font-weight: 500;
-				font-size: 90%;
-			}
-
-		}
-
-		.submit {
-			border: 1px solid transparent;
-			@include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
-			@extend .btn-block;
-			@extend .btn-lg;
-		}
-
-	}
-
-	.actions {
-		text-align: center;
-	}
-
+.form-signin .message-container{
+	margin-top: 10px;
 }
 
-.password-reset {
-	.password-rules { padding: 25px 20px 0; }
-
-	.username .value { color: $color-app-grey; font-size: .9rem; }
-
-	.actions {
-		padding-bottom: 25px;
-	}
-
-	.fields {
-
-		> .field { margin-bottom: 15px; }
-	}
-
-	.label label, .value input {
-		margin-bottom: 0;
-		font-size: 90%;
-	}
+.form-signin .retrieve-password p {
+	padding:0 0 1rem;
+	background-color:#fff;
+	font-size:.85rem;
+	margin:0;
+	border-bottom-left-radius: .3rem;
+	border-bottom-right-radius:.3rem;
+	text-align:center;
 }
 
 .form-reset #retrieve-password {
 	text-align: center;
 }
+
 header#main-header {
 	display: none;
 }
 
-@media (max-width: 600px) {
-	.set-pw-intro {
-		margin-top: 1rem;
+.composite {
+	width: 100%;
+	max-width: 370px;
+	margin: 0 auto;
 
-		h3 {
-			padding-left: 0 !important;
+	.form-signin, .logged-in {
+		border-radius: 0.3rem;
+		margin-top: 5rem;
+	}
+
+}
+
+.logged-in {
+	background: #fff;
+	padding: 2rem;
+	p {
+		margin-bottom: 0;
+	}
+}
+
+.field {
+	display: flex;
+	flex-direction: column;
+	padding: 1.5rem 3.5rem 0;
+	text-align: left;
+
+	.field {
+		background-color: #fff;
+	}
+	.label {
+		padding: 0;
+		display: block;
+		border-radius: 0;
+		text-align: left;
+	}
+}
+
+.form-content {
+	display: flex;
+	flex-direction: column;
+	color: black;
+	background: #fff;
+	padding-bottom: 1.5rem;
+	label {
+		color: #000;
+		font-size: .85rem;
+		text-transform: uppercase;
+		margin-bottom: .25rem;
+	}
+	.actions {
+		text-align: center;
+		padding-top: 20px;
+		background-color: #fff;
+		.btn {
+			max-width: 10rem;
+			line-height: 1rem;
+			padding: .5rem 1rem;
 		}
 	}
+}
+
+.retrieve-password-con {
+	background: #fff;
+	font-family: "open-sans", sans-serif;
+	border-radius: 0.3rem;
+	margin-top: 5rem;
+	.html {
+		font-size: .85rem;
+		padding: 0;
+		.title {
+			background-color: $header-bg;
+			text-align: center;
+			color: #fff;
+			font-size: 1.6em;
+			vertical-align: center;
+			text-transform: uppercase;
+			padding: .5rem 0;
+			border-top-left-radius: 0.3rem;
+			border-top-right-radius: 0.3rem;
+			font-family: "raleway", sans-serif;
+			font-weight: 700;
+		}
+		p {
+			padding: 2rem 2rem 0;
+		}
+	}
+	span.email {
+		display: block;
+		font-weight: 700;
+		margin-bottom: .25rem;
+	}
+	input[type="text"] {
+		border: 2px solid #71767c;
+		width: 100%;
+	}
+	.retrieve-password {
+		padding: 0 3rem 2rem;
+		button {
+			display: block;
+			margin: .5rem auto 0;
+			font-weight: 700;
+			text-transform: uppercase;
+			border-width: 1px;
+			border-style: solid;
+			color: #fff;
+			background-color: #02549d;
+			border-color: #013e75;
+			box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075);
+			padding: 0.25rem 0.75rem;
+			font-size: 0.875rem;
+			line-height: 1.5;
+			border-radius: 0.2rem;
+
+			&:hover {
+				color: #fff;
+				background-color: #01396b;
+				border-color: #011e38;
+			}
+			&:focus, &.focus {
+				color: #fff;
+				background-color: #01396b;
+				border-color: #011e38;
+			}
+		}
+	}
+}
+
+
+.retrieve-password-con .retrieve-password button:active, .retrieve-password-con .retrieve-password button.active,
+.open > .retrieve-password-con .retrieve-password button.dropdown-toggle {
+	color: #fff;
+	background-color: #01396b;
+	border-color: #011e38;
+	background-image: none;
+	box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+
+.retrieve-password-con .retrieve-password button:active:hover, .retrieve-password-con .retrieve-password button:active:focus, .retrieve-password-con .retrieve-password button:active.focus, .retrieve-password-con .retrieve-password button.active:hover, .retrieve-password-con .retrieve-password button.active:focus, .retrieve-password-con .retrieve-password button.active.focus,
+.open > .retrieve-password-con .retrieve-password button.dropdown-toggle:hover,
+.open > .retrieve-password-con .retrieve-password button.dropdown-toggle:focus,
+.open > .retrieve-password-con .retrieve-password button.dropdown-toggle.focus {
+	color: #fff;
+	background-color: #012647;
+	border-color: black;
+}
+
+.retrieve-password-con .retrieve-password button.disabled:focus, .retrieve-password-con .retrieve-password button.disabled.focus, .retrieve-password-con .retrieve-password button:disabled:focus, .retrieve-password-con .retrieve-password button:disabled.focus {
+	background-color: #02549d;
+	border-color: #013e75;
+}
+
+.retrieve-password-con .retrieve-password button.disabled:hover, .retrieve-password-con .retrieve-password button:disabled:hover {
+	background-color: #02549d;
+	border-color: #013e75;
+}
+
+.password-reset {
+	background: #fff;
+	font-family: "open-sans", sans-serif;
+	border-radius: 0.3rem;
+	margin-top: 5rem;
+}
+
+.password-reset .title {
+	background-color: $header-bg;
+	text-align: center;
+	color: #fff;
+	font-size: 1.6em;
+	vertical-align: center;
+	text-transform: uppercase;
+	padding: .5rem 0;
+	border-top-left-radius: 0.3rem;
+	border-top-right-radius: 0.3rem;
+	font-family: "raleway", sans-serif;
+	font-weight: 700;
+}
+
+.password-reset p {
+	padding: 2rem 2rem 0;
+}
+
+.password-reset .label {
+	font-size: .85rem;
+	color: #343940;
+	text-transform: uppercase;
+	font-family: "open-sans", sans-serif;
+}
+
+.password-reset .label label {
+	margin-bottom: .25rem;
+}
+
+.password-reset .actions {
+	padding: 0 3rem 2rem;
+}
+
+.password-reset .actions .btn {
+	margin: .5rem auto 0;
+	display: block;
 }

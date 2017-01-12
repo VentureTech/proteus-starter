@@ -236,6 +236,8 @@ To run the demo code, you will need to update your ProjectConfig.'''
                     include 'gradle*'
                     include 'build.gradle'
                     include 'settings.gradle'
+                    include 'src/main/kotlin/**/*'
+                    include 'src/main/groovy/**/*'
 
                     exclude '.idea/workspace.xml'
                     exclude '.idea/tasks.xml'
