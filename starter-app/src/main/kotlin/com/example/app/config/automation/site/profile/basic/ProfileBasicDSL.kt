@@ -32,9 +32,9 @@ private val appName = ProjectInformation.getName()
 @Component
 open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId = "$appName Frontend", init = {
     libraryResources(URL("https://repo.venturetech.net/artifactory/vt-snapshot-local/" +
-        "com/example/starter-app/1.2-SNAPSHOT/starter-app-1.2-SNAPSHOT-libraries.zip"))
+        "com/example/starter-app/\${LATEST}/starter-app-\${LATEST}-libraries.zip"))
     webResources(URL("https://repo.venturetech.net/artifactory/simple/vt-snapshot-local/" +
-        "com/example/starter-app-webdev/1.2-SNAPSHOT/starter-app-webdev-1.2-SNAPSHOT.zip"))
+        "com/example/starter-app-webdev/\${LATEST}/starter-app-webdev-\${LATEST}.zip"))
 
 
     template("Login") {
@@ -53,6 +53,7 @@ open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId 
             }
             box("Content") {
                 htmlId = "main"
+                htmlClass = "main"
                 defaultContentArea = page
                 boxType = MAIN
             }
@@ -80,6 +81,7 @@ open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId 
         }
         content("Header", Logout("Logout")) {
             htmlClass = "menu"
+            htmlId = "logout"
         }
     }
 

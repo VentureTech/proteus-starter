@@ -80,9 +80,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.env.Environment
 import java.io.File
+import java.net.URL
 import java.util.*
 import javax.annotation.Resource
 import javax.mail.internet.ContentType
+import javax.xml.parsers.DocumentBuilderFactory
 
 @Qualifier("standalone")
 open class PlaceholderHelperImpl : PlaceholderHelper {
@@ -217,8 +219,9 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
 
     @SuppressFBWarnings("DE_MIGHT_IGNORE")
     private fun uploadResources(siteModel: Site) {
-        var username=""
-        var password=""
+        var username = ""
+        var password = ""
+        var basic = ""
         val home = System.getenv()["HOME"]
         val gradlePropertiesFile = File("$home/.gradle/gradle.properties")
         if(gradlePropertiesFile.canRead()) {
@@ -227,17 +230,20 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             username = properties["repo_venturetech_username"] as String
             password = properties["repo_venturetech_password"] as String
         }
+        if(username.isNotBlank()) {
+            val userPass = BaseEncoding.base64().encode("$username:$password".toByteArray())
+            basic = "Basic $userPass"
+        }
         val messages = mutableListOf<Message>()
-        for((dir, url) in mapOf(currentWebRoot to siteModel.webResources,
-            libraryDAO.librariesDirectory to siteModel.libraryResources)) {
+        val webURL = resolveURLVariables(siteModel.webResources, basic)
+        val libURL = resolveURLVariables(siteModel.libraryResources, basic)
+        for((dir, url) in mapOf(currentWebRoot to webURL, libraryDAO.librariesDirectory to libURL)) {
             if(url == null) continue
             val tempFile = createTempFile(suffix = ".zip")
             tempFile.deleteOnExit()
             logger.info("Downloading $url")
             val connection = url.openConnection()
-            if(url.host == ARTIFACTORY_HOST && username.isNotBlank()) {
-                val userPass = BaseEncoding.base64().encode("$username:$password".toByteArray())
-                val basic = "Basic $userPass"
+            if(url.host == ARTIFACTORY_HOST && basic.isNotBlank()) {
                 connection.setRequestProperty("Authorization", basic)
             }
             connection.inputStream.use { ins ->
@@ -256,6 +262,37 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         for(m in messages){
             Notifications.log4jNotification(logger, m, localeContext)
         }
+    }
+
+    private fun resolveURLVariables(url: URL?, basic: String): URL? {
+        if(url == null) return null
+        val urlString = url.toExternalForm()
+        if(urlString.contains("\${LATEST}")) {
+            val metaDataURL = URL(urlString.substring(0, urlString.indexOf("\${LATEST}")) + "maven-metadata.xml")
+            val connection = metaDataURL.openConnection()
+            if(url.host == ARTIFACTORY_HOST && basic.isNotBlank()) {
+                connection.setRequestProperty("Authorization", basic)
+            }
+            var version = ""
+            connection.inputStream.use { ins ->
+                val dbf = DocumentBuilderFactory.newInstance()
+                val db = dbf.newDocumentBuilder()
+                val doc = db.parse(ins)
+                val childNodes = doc.documentElement.childNodes
+                for(idx in IntRange(0, childNodes.length-1)) {
+                    val node = childNodes.item(idx)
+                    if(node.nodeName == "version"){
+                        version = node.textContent
+                        break
+                    }
+                }
+            }
+
+            if(version.isNotBlank()) {
+                return URL(urlString.replace("\${LATEST}", version))
+            }
+        }
+        return url
     }
 
     private fun createEmailTemplate(site: CmsSite, emailTemplateModel: experimental.cms.dsl.EmailTemplate<*>) {
@@ -686,7 +723,6 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         if (cmsLayout == null) {
             logger.info("Creating Cms Layout: ${layout.id}")
             cmsLayout = net.proteusframework.cms.component.page.layout.Layout()
-            cmsLayout = net.proteusframework.cms.component.page.layout.Layout()
             cmsLayout.site = site
             cmsLayout.name = layout.id
             populateLayoutBoxes(site, layout, cmsLayout)
@@ -702,7 +738,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
                 list.addAll(box.children)
                 val cmsBox = boxInformation.getBoxByName(box.id)
                 if(cmsBox.isPresent) {
-                    updateCmsBox(box, cmsBox.get(), site)
+                    updateCmsBox(box, cmsBox.get())
                 }
             }
         }

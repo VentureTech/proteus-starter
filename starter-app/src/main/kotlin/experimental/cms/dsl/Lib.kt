@@ -44,7 +44,7 @@ internal fun populateLayoutBoxes(site: CmsSite, layout: Layout,
     cmsLayout: net.proteusframework.cms.component.page.layout.Layout) {
     for (box in layout.children) {
         val cmsBox = createCmsBox(box, site)
-        updateCmsBox(box, cmsBox, site)
+        updateCmsBox(box, cmsBox)
         cmsLayout.boxes.add(cmsBox)
         populateLayoutBoxes(site, box, cmsBox)
     }
@@ -53,7 +53,7 @@ internal fun populateLayoutBoxes(site: CmsSite, layout: Layout,
 internal fun populateLayoutBoxes(site: CmsSite, parent: Box, cmsParent: net.proteusframework.cms.component.page.layout.Box) {
     for (child in parent.children) {
         val cmsBox = createCmsBox(child, site)
-        updateCmsBox(child, cmsBox, site)
+        updateCmsBox(child, cmsBox)
         cmsParent.children.add(cmsBox)
         populateLayoutBoxes(site, child, cmsBox)
     }
@@ -67,8 +67,7 @@ internal fun createCmsBox(box: Box,
     return cmsBox
 }
 
-internal fun updateCmsBox(boxModel: Box, cmsBox: net.proteusframework.cms.component.page.layout.Box,
-    site: CmsSite){
+internal fun updateCmsBox(boxModel: Box, cmsBox: net.proteusframework.cms.component.page.layout.Box){
     cmsBox.boxDescriptor = boxModel.boxType
     cmsBox.defaultContentArea = boxModel.defaultContentArea
     cmsBox.cssName = boxModel.htmlId
