@@ -27,6 +27,7 @@ import net.proteusframework.core.html.EntityUtil
 import net.proteusframework.core.html.HTMLElement
 import net.proteusframework.core.mail.support.MimeTypeUtility
 import net.proteusframework.core.xml.*
+import net.proteusframework.data.filesystem.FileSystemEntity
 import net.proteusframework.data.filesystem.FileSystemEntityDataSource
 import net.proteusframework.email.EmailTemplate
 import net.proteusframework.internet.http.Link
@@ -253,6 +254,13 @@ interface ContentHelper : PlaceholderHelper {
      * @param componentIdentifier the identifier. Can be looked up using the BackendConfig.
      */
     fun assignToSite(componentIdentifier: String)
+
+    /**
+     * Find the FileSystemEntity that matches the full or partial path specified.
+     * @path the full or partial path.
+     * @return the directory or file.
+     */
+    fun findWebFileSystemEntity(path: String): FileSystemEntity?
 
     /**
      * Creates a Library, if necessary, and returns the library.

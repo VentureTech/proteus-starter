@@ -45,6 +45,7 @@ import net.proteusframework.cms.dao.CmsFrontendDAO
 import net.proteusframework.cms.dao.PageElementPathDAO
 import net.proteusframework.cms.permission.PagePermission
 import net.proteusframework.cms.support.HTMLPageElementUtil.populateBeanBoxLists
+import net.proteusframework.core.StringFactory.trimSlashes
 import net.proteusframework.core.hibernate.HibernateSessionHelper
 import net.proteusframework.core.hibernate.dao.DAOHelper
 import net.proteusframework.core.io.StreamUtils
@@ -54,10 +55,7 @@ import net.proteusframework.core.locale.TransientLocalizedObjectKey
 import net.proteusframework.core.locale.TransientLocalizedObjectKey.getTransientLocalizedObjectKey
 import net.proteusframework.core.net.ContentTypes
 import net.proteusframework.core.notification.Notifications
-import net.proteusframework.data.filesystem.DirectoryEntity
-import net.proteusframework.data.filesystem.FileEntity
-import net.proteusframework.data.filesystem.FileSystemDAO
-import net.proteusframework.data.filesystem.FileSystemEntityCreateMode
+import net.proteusframework.data.filesystem.*
 import net.proteusframework.data.filesystem.http.FileSystemEntityResourceFactory
 import net.proteusframework.email.EmailConfig
 import net.proteusframework.email.EmailConfigType
@@ -797,6 +795,27 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         val siteConfiguration = cmsBackendDAO.getSiteConfiguration(currentSite)
         if (siteConfiguration.assignedComponentIdentifiers.add(componentIdentifier))
             cmsBackendDAO.saveSiteConfiguration(siteConfiguration)
+    }
+
+    override fun findWebFileSystemEntity(path: String): FileSystemEntity? {
+        val query1 = hsh.session.createQuery(
+            "SELECT fe FROM FileSystemEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root")
+            .setParameter("root", currentWebRoot)
+            .setParameter("path", "/${currentWebRoot.name}/${trimSlashes(path)}")
+        val exactMatch = query1.uniqueResult() as FileSystemEntity?
+        if(exactMatch != null) return exactMatch
+        val query2 = hsh.session.createQuery(
+            "SELECT fe FROM FileSystemEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root")
+            .setParameter("root", currentWebRoot)
+            .setParameter("path", "%" + path)
+        @Suppress("UNCHECKED_CAST")
+        val results: List<FileEntity> = query2.list() as List<FileEntity>
+        if (results.size > 1) {
+            throw IllegalArgumentException("Multiple files/directories match path: $path for site: ${getCmsSite().id}")
+        } else if(results.isNotEmpty()) {
+            return results[0]
+        }
+        return null
     }
 
     override fun createLibrary(libraryName: String, libraryPath: String, libraryType: String): Library<*>? {
