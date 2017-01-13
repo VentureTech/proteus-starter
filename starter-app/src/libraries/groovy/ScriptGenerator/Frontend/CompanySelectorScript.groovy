@@ -126,8 +126,8 @@ class CompanySelectorGenerator extends AbstractScriptGenerator
             {
                 writer.append('<span class="fa fa-chevron-right"></span>')
             }
-            writer.append('</span>')
         }
+        writer.append('</span>')
 
         if(_companies.size() > 1 || (_companies.size() > 0 && _currentCompany == null))
         {
