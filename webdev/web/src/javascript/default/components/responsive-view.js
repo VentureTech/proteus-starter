@@ -1,3 +1,5 @@
+var SIDE_BAR_CLOSED = "sidebar-closed";
+var SIDE_BAR_OPEN = "sidebar-open";
 /** PUT THIS IN THE HTML AT THE TOP OF THE PAGE
  <script>
  var SIDE_BAR_CLOSED = "sidebar-closed";
