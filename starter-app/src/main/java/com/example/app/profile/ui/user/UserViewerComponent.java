@@ -14,6 +14,7 @@ package com.example.app.profile.ui.user;
 
 import com.example.app.profile.model.Profile;
 import com.example.app.profile.model.user.User;
+import com.example.app.profile.service.ProfileUIService;
 import com.example.app.profile.ui.ApplicationFunctions;
 import com.example.app.profile.ui.UIText;
 import com.example.app.profile.ui.URLConfigurations;
@@ -84,6 +85,7 @@ public class UserViewerComponent extends MIWTPageElementModelContainer
 {
     private final MessageContainer _messages = new MessageContainer(35_000L);
 
+    @Autowired private ProfileUIService _uiService;
     @Autowired private UIPreferences _uiPreferences;
     @Autowired private UserManagementPermissionCheck _permissionCheck;
 
@@ -156,7 +158,7 @@ public class UserViewerComponent extends MIWTPageElementModelContainer
         _user = request.getPropertyValue(URLProperties.USER);
         if (_user == null)
             throw new IllegalArgumentException("Unable to determine User.");
-        _adminProfile = _uiPreferences.getSelectedCompany();
+        _adminProfile = _uiService.getSelectedCompany();
 
         _permissionCheck.checkPermissionsForCurrent(Event.getRequest(), "Invalid Permissions To View Page");
     }

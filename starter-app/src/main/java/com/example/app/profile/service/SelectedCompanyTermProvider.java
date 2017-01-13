@@ -12,7 +12,6 @@
 package com.example.app.profile.service;
 
 import com.example.app.profile.model.terminology.ProfileTermProvider;
-import com.example.app.support.ui.UIPreferences;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -32,8 +31,7 @@ public class SelectedCompanyTermProvider implements ProfileTermProvider
 {
     private static final long serialVersionUID = -1682061106170397120L;
 
-    @Autowired
-    private UIPreferences _uiPreferences;
+    @Autowired private ProfileUIService _uiService;
 
 
     @Override
@@ -74,7 +72,7 @@ public class SelectedCompanyTermProvider implements ProfileTermProvider
 
     private ProfileTermProvider getDelegate()
     {
-        return _uiPreferences.getSelectedCompanyTermProvider();
+        return _uiService.getSelectedCompanyTermProvider();
     }
 
 }

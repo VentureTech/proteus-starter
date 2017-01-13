@@ -54,6 +54,7 @@ references Role/$,
 references Role/$,
             $/alter table audit.Note_AUD add constraint FK_svabcv1pycuqt7bcme481wuvg foreign key (REV) 
 references audit.REVINFO/$,
+            $/create sequence IF NOT EXISTS hibernate_sequence/$
         ]
         new SQLDataConversion(IDENTIFIER, "Add Note", 201701062213, false, null, ddl, null, null)
     }

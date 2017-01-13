@@ -24,6 +24,7 @@ import com.example.app.profile.model.resource.Resource;
 import com.example.app.profile.model.user.User;
 import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.service.MembershipOperationProvider;
+import com.example.app.profile.service.ProfileUIService;
 import com.example.app.profile.service.resource.ResourceCategoryLabelProvider;
 import com.example.app.profile.service.resource.ResourceTagsLabelProvider;
 import com.example.app.profile.service.resource.ResourceTypeService;
@@ -31,7 +32,6 @@ import com.example.app.profile.ui.ApplicationFunctions;
 import com.example.app.profile.ui.URLProperties;
 import com.example.app.support.service.AppUtil;
 import com.example.app.support.ui.Application;
-import com.example.app.support.ui.UIPreferences;
 import com.google.common.base.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -153,7 +153,7 @@ public class CompanyResourceManagement extends MIWTPageElementModelHistoryContai
     @Autowired private ResourceTypeService _rts;
     @Autowired private ResourceCategoryLabelProvider _rtlp;
     @Autowired private ResourceTagsLabelProvider _rclp;
-    @Autowired private UIPreferences _uiPreferences;
+    @Autowired private ProfileUIService _uiService;
     @Autowired private CompanyResourcePermissionCheck _permissionCheck;
 
     private User _currentUser;
@@ -488,7 +488,7 @@ public class CompanyResourceManagement extends MIWTPageElementModelHistoryContai
     void configure(ParsedRequest request)
     {
         _currentUser = _userDAO.getAssertedCurrentUser();
-        _adminProfile = _uiPreferences.getSelectedCompany();
+        _adminProfile = _uiService.getSelectedCompany();
 
         _permissionCheck.checkPermissionsForCurrent(Event.getRequest(), "Invalid permissions to view page.");
     }

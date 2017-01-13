@@ -21,11 +21,11 @@ import com.example.app.profile.model.user.User;
 import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.model.user.UserPosition;
 import com.example.app.profile.service.MembershipOperationProvider;
+import com.example.app.profile.service.ProfileUIService;
 import com.example.app.profile.ui.ApplicationFunctions;
 import com.example.app.profile.ui.URLProperties;
 import com.example.app.support.service.ContactUtil;
 import com.example.app.support.ui.Application;
-import com.example.app.support.ui.UIPreferences;
 import com.google.common.base.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -135,7 +135,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
     @Autowired private ProfileDAO _profileDAO;
     @Autowired private MembershipOperationProvider _mop;
     @Autowired private CompanyDAO _companyDAO;
-    @Autowired private UIPreferences _uiPreferences;
+    @Autowired private ProfileUIService _uiService;
     @Autowired private UserManagementPermissionCheck _permissionCheck;
 
     private SearchUIImpl _searchUI;
@@ -515,7 +515,7 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
     void configure(ParsedRequest request)
     {
         _currentUser = _userDAO.getAssertedCurrentUser();
-        _userProfile = _uiPreferences.getSelectedCompany();
+        _userProfile = _uiService.getSelectedCompany();
 
         _permissionCheck.checkPermissionsForCurrent(Event.getRequest(), "Invalid Permissions To View Page");
     }

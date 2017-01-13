@@ -105,4 +105,11 @@ public interface MembershipOperationProvider
      * @return a MembershipOperation
      */
     MembershipOperation modifyClient();
+
+    /**
+     * Get the "View Client" MembershipOperation, or create it, if it has not been created yet.
+     *
+     * @return a MembershipOperation
+     */
+    MembershipOperation viewClient();
 }

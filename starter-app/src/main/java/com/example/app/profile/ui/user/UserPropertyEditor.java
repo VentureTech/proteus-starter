@@ -20,6 +20,7 @@ import com.example.app.profile.model.membership.MembershipType;
 import com.example.app.profile.model.user.User;
 import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.service.MembershipOperationProvider;
+import com.example.app.profile.service.ProfileUIService;
 import com.example.app.profile.ui.ApplicationFunctions;
 import com.example.app.profile.ui.URLConfigurations;
 import com.example.app.profile.ui.URLProperties;
@@ -127,6 +128,7 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
     @Autowired private MembershipOperationProvider _mop;
     @Autowired private EntityRetriever _er;
     @Autowired private AppUtil _appUtil;
+    @Autowired private ProfileUIService _uiService;
     @Autowired private UIPreferences _uiPreferences;
     @Autowired private CompanyDAO _companyDAO;
     @Autowired private UserManagementPermissionCheck _permissionCheck;
@@ -157,7 +159,7 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
         final String invalidPermissionsMessage = "Invalid Permissions To View Page";
         _permissionCheck.checkPermissionsForCurrent(Event.getRequest(), invalidPermissionsMessage);
 
-        Company profile = _uiPreferences.getSelectedCompany();
+        Company profile = _uiService.getSelectedCompany();
         User currentUser = _userDAO.getAssertedCurrentUser();
 
         final TimeZone timeZone = Event.getRequest().getTimeZone();
@@ -260,7 +262,7 @@ public class UserPropertyEditor extends MIWTPageElementModelPropertyEditor<User>
                             _principalDAO.savePrincipal(user.getPrincipal());
                         }
                         user = _userDAO.mergeUser(user);
-                        Company userProfile = _uiPreferences.getSelectedCompany();
+                        Company userProfile = _uiService.getSelectedCompany();
                         if (userProfile != null && !userProfile.getUsers().contains(user) && _newUser)
                         {
                             _companyDAO.addUserToCompany(userProfile, user);

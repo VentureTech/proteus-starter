@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 import com.i2rd.hibernate.util.HibernateUtil;
 
@@ -103,15 +104,35 @@ public final class ClientDAO extends DAOHelper implements Serializable
      *
      * @return the persisted client
      */
-    public Client mergeClient(Client client)
+    @SuppressWarnings("ConstantConditions")
+    public Client saveClient(Client client)
     {
-        return (Client) doInTransaction(session -> {
+        Consumer<Client> presave = (toSave) -> {
+            if(toSave.getProfileType() == null)
+                toSave.setProfileType(_profileTypeProvider.client());
 
-            if (client.getProfileType() == null)
-                client.setProfileType(_profileTypeProvider.company());
-
-            return session.merge(client);
-        });
+            //Repository Name will be null if it is a completely fresh Repository
+            if(toSave.getPrimaryLocation().getRepository().getName() == null)
+                toSave.getPrimaryLocation().getRepository().setName(_appUtil.copyLocalizedObjectKey(toSave.getName()));
+            if(toSave.getRepository().getName() == null)
+                toSave.getRepository().setName(_appUtil.copyLocalizedObjectKey(toSave.getName()));
+        };
+        if(isAttached(client))
+        {
+            return doInTransaction(session -> {
+                presave.accept(client);
+                session.saveOrUpdate(client);
+                return client;
+            });
+        }
+        else
+        {
+            return doInTransaction(session ->
+            {
+                presave.accept(client);
+                return (Client) session.merge(client);
+            });
+        }
     }
 
     /**

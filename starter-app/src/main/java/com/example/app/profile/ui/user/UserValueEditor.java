@@ -19,15 +19,13 @@ import com.example.app.profile.model.membership.MembershipTypeProvider;
 import com.example.app.profile.model.user.ContactMethod;
 import com.example.app.profile.model.user.User;
 import com.example.app.profile.model.user.UserDAO;
+import com.example.app.profile.service.ProfileUIService;
 import com.example.app.profile.service.SelectedCompanyTermProvider;
 import com.example.app.support.service.AppUtil;
 import com.example.app.support.service.ContactUtil;
-import com.example.app.support.ui.UIPreferences;
 import com.example.app.support.ui.vtcrop.VTCropPictureEditor;
-import com.example.app.support.ui.vtcrop.VTCropPictureEditorConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -91,23 +89,15 @@ import static net.proteusframework.core.locale.TextSources.createText;
 public class UserValueEditor extends CompositeValueEditor<User>
 {
     private final List<AuthenticationDomain> _authDomains = new ArrayList<>();
+    @Autowired private EntityRetriever _er;
+    @Autowired private AppUtil _appUtil;
+    @Autowired private UserDAO _userDAO;
+    @Autowired private ProfileDAO _profileDAO;
     @Autowired
-    private EntityRetriever _er;
-    @Autowired
-    private AppUtil _appUtil;
-    @Autowired
-    private UserDAO _userDAO;
-    @Autowired
-    private ProfileDAO _profileDAO;
-    @Autowired
-    @Qualifier(UserConfig.PICTURE_EDITOR_CONFIG)
-    private VTCropPictureEditorConfig _pictureEditorConfig;
-    @Autowired
-    private SelectedCompanyTermProvider _terms;
-    @Autowired
-    private MembershipTypeProvider _mtp;
-    @Autowired
-    private UIPreferences _uiPreferences;
+    private UserConfig _userConfig;
+    @Autowired private SelectedCompanyTermProvider _terms;
+    @Autowired private MembershipTypeProvider _mtp;
+    @Autowired private ProfileUIService _uiService;
 
 
     private boolean _adminMode = true;
@@ -224,7 +214,7 @@ public class UserValueEditor extends CompositeValueEditor<User>
     {
         User currentUser = _userDAO.getAssertedCurrentUser();
 
-        _userPictureEditor = new VTCropPictureEditor(_pictureEditorConfig);
+        _userPictureEditor = new VTCropPictureEditor(_userConfig.userPictureEditorConfig());
         _userPictureEditor.addClassName("user-picture");
         _userPictureEditor.setDefaultResource(_appUtil.getDefaultUserImage());
         _userPictureEditor.setValue(
@@ -236,7 +226,7 @@ public class UserValueEditor extends CompositeValueEditor<User>
         TimeZone timeZone = getSession().getTimeZone();
 
         List<MembershipType> initialMemTypes = new ArrayList<>(_profileDAO.getMembershipTypesForProfile(
-            _uiPreferences.getSelectedCompany()));
+            _uiService.getSelectedCompany()));
         _profileEntityMembershipTypeSelector = new ListComponentValueEditor<>(
             createText(UserValueEditorLOK.LABEL_PROFILE_ROLE_FMT(_terms.company())),
             initialMemTypes,

@@ -25,15 +25,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ResourceConfig
 {
-    /** Picture editor config bean name */
-    public static final String PICTURE_EDITOR_CONFIG = "resource-picture-editor-config";
-
     /**
      * Get the {@link VTCropPictureEditorConfig} for the Resource viewer/editor
      *
      * @return a VTCropPictureEditorConfig
      */
-    @Bean(name = PICTURE_EDITOR_CONFIG)
+    @Bean
     public VTCropPictureEditorConfig resourcePictureEditorConfig()
     {
         VTCropPictureEditorConfig config = new VTCropPictureEditorConfig();

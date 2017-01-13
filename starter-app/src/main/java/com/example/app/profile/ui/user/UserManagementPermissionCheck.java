@@ -15,10 +15,10 @@ import com.example.app.profile.model.ProfileDAO;
 import com.example.app.profile.model.company.Company;
 import com.example.app.profile.model.user.User;
 import com.example.app.profile.service.MembershipOperationProvider;
+import com.example.app.profile.service.ProfileUIService;
 import com.example.app.profile.ui.ApplicationFunctions;
 import com.example.app.support.service.AppUtil;
 import com.example.app.support.service.ApplicationFunctionPermissionCheck;
-import com.example.app.support.ui.UIPreferences;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +39,7 @@ import net.proteusframework.users.model.Principal;
 @Service
 public class UserManagementPermissionCheck implements ApplicationFunctionPermissionCheck
 {
-    @Autowired private UIPreferences _uiPreferences;
+    @Autowired private ProfileUIService _uiService;
     @Autowired private ProfileDAO _profileDAO;
     @Autowired private MembershipOperationProvider _mop;
     @Autowired private RegisteredLinkDAO _registeredLinkDAO;
@@ -52,7 +52,7 @@ public class UserManagementPermissionCheck implements ApplicationFunctionPermiss
         if(functionExists(_appUtil.getSite(), request, _applicationRegistry, _registeredLinkDAO))
         {
             if (user == null) return false;
-            Company selectedCompany = _uiPreferences.getSelectedCompany();
+            Company selectedCompany = _uiService.getSelectedCompany();
             return _profileDAO.canOperate(user, selectedCompany, AppUtil.UTC, _mop.viewUser());
         }
         return false;

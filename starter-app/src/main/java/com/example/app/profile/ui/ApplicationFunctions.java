@@ -97,6 +97,23 @@ public final class ApplicationFunctions
     }
 
     /**
+     * Static class defining Application Functions for {@link com.example.app.profile.model.client.Client}.
+     *
+     * @author Alan Holt (aholt@venturetech.net)
+     */
+    public static final class Client
+    {
+        /** The constant MANAGEMENT */
+        public static final String MANAGEMENT = "Client Management";
+        /** The constant VIEW */
+        public static final String VIEW = "Client Viewer";
+        /** The constant EDIT */
+        public static final String EDIT = "Client Editor";
+
+        private Client(){}
+    }
+
+    /**
      * Static class defining Application Functions for the Starter Site.
      *
      * @author Alan Holt (aholt@venturetech.net)
