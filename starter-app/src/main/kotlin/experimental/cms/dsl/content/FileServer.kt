@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit
  */
 class FileServer(id: String): Identifiable(id), Content {
     /** Directory Path. May be partial as long as it is unique. */
-    val directory: String = ""
+    var directory: String = ""
 
 
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
