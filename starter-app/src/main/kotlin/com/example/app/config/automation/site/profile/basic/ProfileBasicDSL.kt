@@ -46,8 +46,8 @@ open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId 
         javaScript("vendor/bootstrap.min.js")
         javaScript("vendor/select2.min.js")
         javaScript("templates/main.min.js")
+        css("vendor/select2.min.css")
         css("templates/template--base.min.css")
-        css("pages/page--login.min.css")
         layout("Header, Main, Footer") {
             box("Enclosing") {
                 htmlId = "e-content"
@@ -57,10 +57,13 @@ open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId 
                     defaultContentArea = page_template
                     boxType = HEADER
                 }
-                box("Body") {
-                    htmlId = "body"
-                    defaultContentArea = page
-                    boxType = MAIN
+                box("Body Wrapper") {
+                    htmlId = "body-wrapper"
+                    box("Body") {
+                        htmlId = "body"
+                        defaultContentArea = page
+                        boxType = MAIN
+                    }
                 }
             }
             box("Footer") {
@@ -85,7 +88,9 @@ open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId 
         javaScript("vendor/bootstrap.min.js")
         javaScript("vendor/select2.min.js")
         javaScript("templates/main.min.js")
+        css("vendor/select2.min.css")
         css("templates/template--base.min.css")
+        css("templates/font-awesome.min.css")
         layout("Header, Main, Footer")
         content("Header", "Logo & Menu Toggle")
         content("Header", ScriptedGenerator("Company Selector")) {
@@ -103,6 +108,7 @@ open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId 
 
     page("Login", "/login") {
         template("Login")
+        css("pages/page--login.min.css")
         content("Body", Composite("Login Group")) {
             content(Text("Already Logged-In Text")) {
                 htmlContent = "<p>You're logged in. Click <a href=\"/dashboard\">HERE</a> to return to $appName.</p>"
@@ -119,6 +125,7 @@ open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId 
                 forgotPasswordText = """<p><a href="/password-reset">Forgot your password?</a></p>"""
                 landingPage("Dashboard")
                 scriptedRedirect("ScriptableRedirect/StarterSiteRedirectScript.groovy")
+                scriptedRedirectParam("Default Redirect Page", "/dashboard")
             }
         }
     }
@@ -171,7 +178,9 @@ match an existing user account, then an email message will be sent with addition
         AppFunctionPage(StarterSite.SETUP, "/site/setup", "site-setup"),
         AppFunctionPage(User.MANAGEMENT, "/user/manage", "user-management"),
         AppFunctionPage(User.VIEW, "/user/view/*", "user-viewer"),
-        AppFunctionPage(User.EDIT, "/user/edit/*", "user-editor")
+        AppFunctionPage(User.EDIT, "/user/edit/*", "user-editor"),
+        AppFunctionPage(User.MY_ACCOUNT_VIEW, "/account/my-profile", "my-profile"),
+        AppFunctionPage(User.MY_ACCOUNT_EDIT, "/account/my-profile/edit/*", "my-profile-edit")
      )) {
 
         page(appFunction, path) {
@@ -186,5 +195,15 @@ match an existing user account, then an email message will be sent with addition
     }
 
     hostname("\${proteus.install.name}.\${base.domain}", "Dashboard")
+
+    content(FileServer("Sourcemaps")){
+        directory = "Sourcemaps"
+        path = "_sourcemaps/*"
+    }
+
+    content(FileServer("Design")){
+        directory = "Design"
+        path = "_design/*"
+    }
 })
 
