@@ -30,6 +30,10 @@ class Logout(id: String) : Identifiable(id), Content {
   <li class="mi mi-inactive mi-parent">
       <div class="menuitemlabel"><span class="mil">${"$"}{users.current.name}</span></div>
       <ul class="menu menu-t2 menubeanh">
+        <li class="mi mi-inactive my-profile">
+          <a class="menuitemlabel" href="${"$"}{links.getCMSLink('/account/my-profile').url}" title="My Profile">
+            <span class="mil">My Profile</span></a>
+        </li>
         <li class="mi mi-inactive logout-url">
           <a class="menuitemlabel" href="/csarf" title="Logout">
             <span class="mil">Logout</span></a>
