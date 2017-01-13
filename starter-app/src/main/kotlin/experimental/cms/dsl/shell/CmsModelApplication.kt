@@ -11,6 +11,7 @@
 
 package experimental.cms.dsl.shell
 
+import com.google.common.collect.ArrayListMultimap
 import com.google.common.collect.Multimap
 import com.google.common.io.BaseEncoding
 import com.i2rd.cms.HostnameDestination
@@ -809,7 +810,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
     private fun createNDEs(site: CmsSite, type: NDEType, paths: List<String>, siteElement: Any): List<FactoryNDE> {
         val list = mutableListOf<FactoryNDE>()
         val query = hsh.session.createQuery(
-            "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root")
+            "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root AND fe.revision = false")
             .setParameter("root", currentWebRoot)
         for (path in paths) {
             @Suppress("UNCHECKED_CAST")
@@ -842,7 +843,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             return LinkUtil.getCMSLink(exactPath.pageElement).uriAsString
 
         val query = hsh.session.createQuery(
-            "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root")
+            "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root AND fe.revision = false")
             .setParameter("root", currentWebRoot)
             .setParameter("path", "%" + link)
         @Suppress("UNCHECKED_CAST")
@@ -903,7 +904,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             val site = getCmsSite()
             val root = libraryDAO.librariesDirectory
             val query = hsh.session.createQuery(
-                "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root")
+                "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root AND fe.revision = false")
                 .setParameter("root", root)
                 .setParameter("path", "%" + libraryPath)
             @Suppress("UNCHECKED_CAST")
@@ -975,7 +976,25 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
 
     override fun <LT:ILibraryType<LT>> setScriptParameters(libraryConfiguration: LibraryConfiguration<LT>,
         parameters: Multimap<String, Any>) {
-        libraryDAO.setParameterValues(libraryConfiguration, null, null, parameters)
+        val paramCopy = ArrayListMultimap.create<String,Any>()
+        val library = libraryConfiguration.library
+        val type = library.type
+        val scriptParameters = type.getParameters(libraryConfiguration, libraryDAO, type.createContext())
+        for(entry in parameters.entries()) {
+            var value = entry.value
+            scriptParameters.find { it.name == entry.key }?. let {
+                when(it.dataDomain.dataType) {
+                    Link::class.java, FileEntity::class.java -> {
+                        val ev = entry.value
+                        if (ev is String) {
+                            value = getInternalLink(ev)
+                        }
+                    }
+                }
+            }
+            paramCopy.put(entry.key, value)
+        }
+        libraryDAO.setParameterValues(libraryConfiguration, null, null, paramCopy)
     }
 }
 

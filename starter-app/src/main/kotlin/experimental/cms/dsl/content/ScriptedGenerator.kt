@@ -25,6 +25,8 @@ import experimental.cms.dsl.*
 import net.proteusframework.cms.PageElementModelImpl
 import net.proteusframework.cms.category.CmsCategory
 import net.proteusframework.cms.component.ContentElement
+import net.proteusframework.data.filesystem.FileEntity
+import net.proteusframework.internet.http.Link
 
 /**
  * Scripted Generator.
@@ -47,9 +49,18 @@ class ScriptedGenerator(id: String) : Identifiable(id), Content {
             val libraryDAO = LibraryDAO.getInstance()
             val scriptParameters = type.getParameters(LibraryConfiguration(library), libraryDAO, type.createContext())
             for(param in scriptParameters) {
-                val parameterValue = parameters[param.name] ?: continue
-                val convertedValue = param.converter.convert(ConverterContext(parameterValue, String::class.java))!!
-                builder.params.put(param.name, convertedValue)
+                val parameterValues = parameters[param.name] ?: continue
+                for(item in parameterValues) {
+                    var parameterValue = item
+                    when(param.dataDomain.dataType) {
+                        Link::class.java, FileEntity::class.java -> {
+                            if (parameterValue is String)
+                                parameterValue = helper.getInternalLink(parameterValue)
+                            }
+                    }
+                    val convertedValue = param.converter.convert(ConverterContext(parameterValue, String::class.java))!!
+                    builder.params.put(param.name, convertedValue)
+                }
             }
         }
         if(library != null) {
