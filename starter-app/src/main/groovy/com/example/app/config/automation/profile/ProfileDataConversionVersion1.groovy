@@ -109,8 +109,6 @@ date timestamp not null, subCategory varchar(255), profile_id int4 not null, pri
 createtime timestamp not null, lastmodtime timestamp not null, description int8, name int8 not null, 
 programmaticIdentifier varchar(255) not null, createuser_id int8, lastmoduser_id int8, 
 kind_id int8, primary key (profiletype_id))/$,
-            $/create table app.Schedule (schedule_id int4 not null, disc_type varchar(255) not null, 
-createtime timestamp not null, createuser int8, lastmodtime timestamp not null, lastmoduser int8, primary key (schedule_id))/$,
             $/create table app.User (user_id int4 not null, createtime timestamp not null, lastmodtime timestamp not null, 
 facebookLink varchar(255), googlePlusLink varchar(255), linkedInLink varchar(255), preferredContactMethod varchar(255), 
 twitterLink varchar(255), createuser_id int8, lastmoduser_id int8, image_id int8, principal_id int8 not null, 
@@ -119,15 +117,10 @@ smsPhone_id int8, primary key (user_id))/$,
 lastmodtime timestamp not null, current boolean not null, endDate timestamp, position varchar(255) not null, 
 startDate timestamp, createuser_id int8, lastmoduser_id int8, user_id int4 not null, primary key (userPosition_id))/$,
             $/create table app.company_user (profile_id int4 not null, user_id int4 not null)/$,
-            $/create table app.ical4jschedule (ICal4jSchedule_id int4 not null, eventprogrammaticidentifier varchar(255), 
-repeat boolean, recurrencerule varchar(255), temporaldirection varchar(255), primary key (ICal4jSchedule_id))/$,
             $/create table app.membership_operations (membership_id int4 not null, membershipOperation_id int4 not null)/$,
             $/create table app.membershiptype_operations (membershiptype_id int4 not null, membershipOperation_id int4 not null)/$,
             $/create table app.profileterms (profileterms_id int4 not null, companies int8, 
 company int8, primary key (profileterms_id))/$,
-            $/create table app.relativeperiodschedule (RelativePeriodSchedule_id int4 not null, 
-eventprogrammaticidentifier varchar(255), repeat boolean, period varchar(255), time time, 
-temporaldirection varchar(255), primary key (RelativePeriodSchedule_id))/$,
             $/create table app.repository (repository_id int4 not null, createtime timestamp not null, 
 lastmodtime timestamp not null, description int8, name int8 not null, createuser_id int8, 
 lastmoduser_id int8, primary key (repository_id))/$,
@@ -167,8 +160,6 @@ kind_id int8, primary key (profiletype_id, REV))/$,
 REV int4 not null, revtype int2, description int8, name int8, parent int4, profiletype_id int4, 
 repository_id int4, primary key (profile_id, REV))/$,
             $/create table if not exists audit.REVINFO (REV int4 not null, REVTSTMP int8, primary key (REV))/$,
-            $/create table audit.Schedule_AUD (disc_type varchar(255) not null, schedule_id int4 not null, 
-REV int4 not null, revtype int2, primary key (schedule_id, REV))/$,
             $/create table audit.UserPosition_AUD (userPosition_id int4 not null, REV int4 not null, 
 revtype int2, current boolean, endDate timestamp, position varchar(255), startDate timestamp, 
 user_id int4, primary key (userPosition_id, REV))/$,
@@ -177,18 +168,12 @@ facebookLink varchar(255), googlePlusLink varchar(255), linkedInLink varchar(255
 twitterLink varchar(255), image_id int8, principal_id int8, smsPhone_id int8, primary key (user_id, REV))/$,
             $/create table audit.company_user_AUD (REV int4 not null, profile_id int4 not null, 
 user_id int4 not null, revtype int2, primary key (REV, profile_id, user_id))/$,
-            $/create table audit.ical4jschedule_AUD (ICal4jSchedule_id int4 not null, REV int4 not null, 
-eventprogrammaticidentifier varchar(255), repeat boolean, recurrencerule varchar(255), temporaldirection int4, 
-primary key (ICal4jSchedule_id, REV))/$,
             $/create table audit.membership_operations_AUD (REV int4 not null, membership_id int4 not null, 
 membershipOperation_id int4 not null, revtype int2, primary key (REV, membership_id, membershipOperation_id))/$,
             $/create table audit.membershiptype_operations_AUD (REV int4 not null, membershiptype_id int4 not null, 
 membershipOperation_id int4 not null, revtype int2, primary key (REV, membershiptype_id, membershipOperation_id))/$,
             $/create table audit.profileterms_AUD (profileterms_id int4 not null, REV int4 not null, revtype int2, 
 companies int8, company int8, primary key (profileterms_id, REV))/$,
-            $/create table audit.relativeperiodschedule_AUD (RelativePeriodSchedule_id int4 not null, REV int4 not null, 
-eventprogrammaticidentifier varchar(255), repeat boolean, period varchar(255), time time, 
-temporaldirection int4, primary key (RelativePeriodSchedule_id, REV))/$,
             $/create table audit.repositoryItemRelation_AUD (repositoryItemRelation_id int4 not null, 
 REV int4 not null, revtype int2, relationType varchar(255), repository_id int4, 
 repositoryItem_id int4, primary key (repositoryItemRelation_id, REV))/$,
@@ -214,7 +199,6 @@ constraint profileType_programmaticIdentifier unique (profiletype_id, programmat
             $/create index profile_disc_idx on app.Profile (disc_type)/$,
             $/create index profile_profletype_idx on app.Profile (profiletype_id)/$,
             $/alter table app.ProfileType add constraint UK_t3j4l3s018c8tjak4bhg5pw0s unique (programmaticIdentifier)/$,
-            $/create index schedule_disc_idx on app.Schedule (disc_type)/$,
             $/alter table app.User add constraint UK_ehd3c2thh07pprbxg4ueb44oa unique (principal_id)/$,
             $/create index userposition_user_idx on app.UserPosition (user_id)/$,
             $/alter table app.repositoryItemRelation add constraint repoItem_repo unique (repository_id, repositoryItem_id)/$,
@@ -291,10 +275,6 @@ references Role/$,
 references Role/$,
             $/alter table app.ProfileType add constraint FK_oijwrpvd1t5tof88sc0rp971l foreign key (kind_id) 
 references Label/$,
-            $/alter table app.Schedule add constraint FK_77hcm4h5i2ws4yucjnwru69x3 foreign key (createuser) 
-references Role/$,
-            $/alter table app.Schedule add constraint FK_tfovuod0gt382elqocm4tqaj7 foreign key (lastmoduser) 
-references Role/$,
             $/alter table app.User add constraint FK_i20ejp70fp5113y1v6vbmoxkp foreign key (createuser_id) 
 references Role/$,
             $/alter table app.User add constraint FK_e6f4pgiryip91h2tpsgxjjb7t foreign key (lastmoduser_id) 
@@ -315,8 +295,6 @@ references app.User/$,
 references app.User/$,
             $/alter table app.company_user add constraint FK_d6syqfgojuse080rmvoo078gh foreign key (profile_id) 
 references app.Company/$,
-            $/alter table app.ical4jschedule add constraint FK_kv3cgqtbsnq8nww9pao5lvm7v foreign key (ICal4jSchedule_id) 
-references app.Schedule/$,
             $/alter table app.membership_operations add constraint FK_dmns569x6n1gti950ktg9uwwe foreign key (membershipOperation_id)
  references app.MembershipOperation/$,
             $/alter table app.membership_operations add constraint FK_n73mw17rewdvopj3v7a0hkn9v foreign key (membership_id) 
@@ -325,8 +303,6 @@ references app.Membership/$,
 foreign key (membershipOperation_id) references app.MembershipOperation/$,
             $/alter table app.membershiptype_operations add constraint FK_g0e9q2294161aiv3l7xtir251 
 foreign key (membershiptype_id) references app.MembershipType/$,
-            $/alter table app.relativeperiodschedule add constraint FK_dc3167603jugwpp96g2fddvxt 
-foreign key (RelativePeriodSchedule_id) references app.Schedule/$,
             $/alter table app.repository add constraint FK_hbh8xhafqcsthsf2jhmse4l47 foreign key (createuser_id) 
 references Role/$,
             $/alter table app.repository add constraint FK_mjxadc5ro7s55gmx4acu0iqy foreign key (lastmoduser_id) 
@@ -379,24 +355,18 @@ references audit.REVINFO/$,
 references audit.REVINFO/$,
             $/alter table audit.Profile_AUD add constraint FK_sxglrbe43jmbvthlep203rwqq foreign key (REV) 
 references audit.REVINFO/$,
-            $/alter table audit.Schedule_AUD add constraint FK_dasyt80y84r7yp28nwmw8k7ev foreign key (REV) 
-references audit.REVINFO/$,
             $/alter table audit.UserPosition_AUD add constraint FK_8xbe5s4q57yusgfejgipgu147 foreign key (REV) 
 references audit.REVINFO/$,
             $/alter table audit.User_AUD add constraint FK_97pph94d4cb7qah5aygmmll2y foreign key (REV) 
 references audit.REVINFO/$,
             $/alter table audit.company_user_AUD add constraint FK_g0wcf8u9vwcecs1kiua8a8b4b foreign key (REV) 
 references audit.REVINFO/$,
-            $/alter table audit.ical4jschedule_AUD add constraint FK_jeh5q2v29ikcuco5altja5sov foreign key (ICal4jSchedule_id, REV)
- references audit.Schedule_AUD/$,
             $/alter table audit.membership_operations_AUD add constraint FK_1h7caud9oufwaunvqgkbvsdqp foreign key (REV)
  references audit.REVINFO/$,
             $/alter table audit.membershiptype_operations_AUD add constraint FK_on7ockr4feg5jbhof7utdvvy7 foreign key (REV)
  references audit.REVINFO/$,
             $/alter table audit.profileterms_AUD add constraint FK_jee7gcucver5x6df9dgj4uo9g foreign key (REV)
  references audit.REVINFO/$,
-            $/alter table audit.relativeperiodschedule_AUD add constraint FK_78wtb0hshvemw4px7mn2t8aip 
-foreign key (RelativePeriodSchedule_id, REV) references audit.Schedule_AUD/$,
             $/alter table audit.repositoryItemRelation_AUD add constraint FK_hl6cxng21u1j2oolj0q04imiq foreign key (REV) 
 references audit.REVINFO/$,
             $/alter table audit.repositoryItem_AUD add constraint FK_m6ay2qlbxt6oq2u6uepagkle9 foreign key (REV) 
@@ -421,7 +391,6 @@ references audit.REVINFO/$,
             $/create sequence app.repositoryItem_id_seq/$,
             $/create sequence app.repository_id_seq/$,
             $/create sequence app.resource_id_seq/$,
-            $/create sequence app.schedule_id_seq start 1 increment 5/$,
             $/create sequence app.user_id_seq/$,
             $/create sequence app.user_position_id_seq/$,
             $/create sequence hibernate_sequence/$,
