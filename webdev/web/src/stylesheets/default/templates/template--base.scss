@@ -14,10 +14,25 @@
 @import "../components/file-chooser";
 
 body {
+	background: $body-bg;
 	font-family: $font-roboto;
-	font-weight: 300;
-}
+	font-weight: 400;
+	color: $font-default-color;
+	text-rendering: optimizeLegibility;
+	-moz-osx-font-smoothing: antialiased;
+	-webkit-font-smoothing: antialiased;
 
+	div.page {
+		display: flex;
+		flex-flow: column nowrap;
+	}
+
+}
+#e-content {
+	flex: 1 0 auto;
+	min-height: calc(100vh - 90px);
+	padding-bottom: 3rem;
+}
 #main-wrapper main { padding-bottom: 3rem; }
 
 ::selection {
@@ -110,19 +125,6 @@ p.instructions {
 
 }
 
-#page-footer {
-	padding: 2rem 0;
-	background: #4F5A69;
-	width: 100%;
-	display: block;
-	color: $color-white;
-	text-align: center;
-
-	p {
-		margin: 0;
-	}
-
-}
 
 
 .user-search {
@@ -182,6 +184,31 @@ and (orientation:portrait) {
 
 	#main-content-wc-0 h1, #main-content-wc-0 h2, #main-content-wc-0 h3 {
 		padding-left: 2.5rem;
+	}
+
+}
+
+#footer {
+	display: block;
+	min-height: 4.625rem;
+	height: auto;
+	margin-top: 0;
+	background-color: $color-app-light-grey;
+	color: $color-app-grey;
+	//flex: 1;
+	width: 100%;
+
+	.text {
+		padding: 1.5rem 0;
+		max-width: 70rem;
+		margin: 0 auto;
+		text-align: center;
+
+		p {
+			margin: 0;
+			font-size: .75rem;
+		}
+
 	}
 
 }
