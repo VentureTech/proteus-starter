@@ -111,7 +111,7 @@ public class AppUtil implements Serializable
     /** Logger. */
     private static final Logger _logger = LogManager.getLogger(AppUtil.class);
     private static final long serialVersionUID = -6831853311031034991L;
-    private static final String CLIENT_PROP_DIALOGS_ANCESTRY = "lr-app-util-dialog-ancestor-workaround";
+    private static final String CLIENT_PROP_DIALOGS_ANCESTRY = "app-util-dialog-ancestor-workaround";
 
     @SuppressWarnings("ConstantConditions")
     private static class Holder
