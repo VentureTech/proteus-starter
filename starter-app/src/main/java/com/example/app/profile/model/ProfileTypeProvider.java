@@ -12,6 +12,7 @@
 package com.example.app.profile.model;
 
 import com.example.app.profile.service.ProfileTypeKindLabelProvider;
+import com.example.app.support.service.AppUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,8 @@ public class ProfileTypeProvider implements ApplicationListener<ApplicationConte
     private static final Logger _logger = LogManager.getLogger(ProfileTypeProvider.class);
 
     @Autowired
+    private AppUtil _appUtil;
+    @Autowired
     private ProfileDAO _profileDAO;
     @Autowired
     private JDBCLocaleSource _localeSource;
@@ -62,6 +65,11 @@ public class ProfileTypeProvider implements ApplicationListener<ApplicationConte
             try
             {
                 handler.openSessions();
+                if(_appUtil.getSite() == null)
+                {
+                    _logger.info("Site hasn't bean created yet. Skipping initialization.");
+                    return;
+                }
                 initialize();
                 _initialized = true;
             }

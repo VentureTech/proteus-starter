@@ -14,6 +14,7 @@ package com.example.app.profile.model.membership;
 import com.example.app.profile.model.ProfileDAO;
 import com.example.app.profile.model.ProfileTypeProvider;
 import com.example.app.profile.service.MembershipOperationProvider;
+import com.example.app.support.service.AppUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,8 @@ public class MembershipTypeProvider implements ApplicationListener<ApplicationCo
     private static final Logger _logger = LogManager.getLogger(MembershipTypeProvider.class);
 
     @Autowired
+    private AppUtil _appUtil;
+    @Autowired
     private ProfileDAO _profileDAO;
     @Autowired
     private ProfileTypeProvider _profileTypeProvider;
@@ -63,6 +66,11 @@ public class MembershipTypeProvider implements ApplicationListener<ApplicationCo
             try
             {
                 handler.openSessions();
+                if(_appUtil.getSite() == null)
+                {
+                    _logger.info("Site hasn't bean created yet. Skipping initialization.");
+                    return;
+                }
                 initialize();
                 _initialized = true;
             }
