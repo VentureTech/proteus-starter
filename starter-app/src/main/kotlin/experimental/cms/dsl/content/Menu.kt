@@ -15,6 +15,7 @@ import com.i2rd.cms.bean.MenuBean
 import com.i2rd.cms.bean.MenuStyle
 import com.i2rd.cms.bean.util.MenuBeanContentBuilder
 import com.i2rd.cms.bean.util.MenuItem
+import com.i2rd.cms.visibility.VisibilityConditionInstance
 import com.i2rd.contentmodel.data.ModelData
 import com.i2rd.contentmodel.data.ModelDataDAO
 import experimental.cms.dsl.Content
@@ -81,6 +82,7 @@ internal class MenuItemBuilderImpl(val menu: Menu, val item: MenuItem) : MenuIte
  */
 class Menu(id: String): Identifiable(id), Content, MenuBuilder {
 
+    override var visibilityCondition: VisibilityConditionInstance? = null
     override var path: String = ""
     override var htmlId: String = ""
     override var htmlClass: String = ""

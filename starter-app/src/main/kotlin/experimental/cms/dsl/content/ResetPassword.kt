@@ -13,7 +13,9 @@ package experimental.cms.dsl.content
 
 import com.i2rd.cms.bean.ResetPasswordBean
 import com.i2rd.cms.bean.ResetPasswordBeanContentBuilder
+import com.i2rd.cms.visibility.VisibilityConditionInstance
 import experimental.cms.dsl.*
+import net.proteusframework.cms.PageElementModelImpl
 import net.proteusframework.cms.component.ContentElement
 import net.proteusframework.email.EmailTemplate
 
@@ -40,6 +42,7 @@ class ResetPassword(id: String): Identifiable(id), Content {
         val contentElement = existing?:ResetPasswordBean()
         val builder = ResetPasswordBeanContentBuilder()
         updateBuilder(builder, helper)
+        helper.assignToSite(PageElementModelImpl.StandardIdentifier(ResetPasswordBean::class.java).toIdentifier())
         return ContentInstance(contentElement, builder.content)
     }
 
@@ -60,7 +63,7 @@ class ResetPassword(id: String): Identifiable(id), Content {
         }
     }
 
-
+    override var visibilityCondition: VisibilityConditionInstance? = null
     override var path: String = ""
     override var htmlId: String = ""
     override var htmlClass: String = ""

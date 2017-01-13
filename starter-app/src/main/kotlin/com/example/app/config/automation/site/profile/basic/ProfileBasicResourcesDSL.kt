@@ -36,7 +36,7 @@ open class ProfileBasicResourcesDSL :
             permission("Frontend Access")
             authenticationPage("Login")
 
-            content("Content", ApplicationFunction(appFunction)) {
+            content("Body", ApplicationFunction(appFunction)) {
                 htmlClass = htmlClassName
             }
         }

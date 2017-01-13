@@ -13,6 +13,7 @@ package experimental.cms.dsl.content
 
 import com.i2rd.cms.bean.LogoutBean
 import com.i2rd.cms.bean.util.LogoutBeanContentBuilder
+import com.i2rd.cms.visibility.VisibilityConditionInstance
 import com.i2rd.expression.IExpression
 import experimental.cms.dsl.Content
 import experimental.cms.dsl.ContentHelper
@@ -75,6 +76,7 @@ class Logout(id: String) : Identifiable(id), Content {
             ")"
     }
 
+    override var visibilityCondition: VisibilityConditionInstance? = null
     override var path: String = ""
     override var htmlId: String = ""
     override var htmlClass: String = ""

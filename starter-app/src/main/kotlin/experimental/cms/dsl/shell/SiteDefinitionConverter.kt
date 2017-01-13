@@ -14,6 +14,7 @@ package experimental.cms.dsl.shell
 import com.i2rd.hibernate.util.HibernateRunnable
 import experimental.cms.dsl.AppDefinition
 import org.apache.logging.log4j.LogManager
+import org.springframework.beans.BeansException
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 import org.springframework.shell.core.Completion
@@ -40,7 +41,11 @@ open class SiteDefinitionConverter : Converter<AppDefinition>, ApplicationContex
     private fun getAppDefinitionList(): List<AppDefinition> {
         if(_appDefinitionList.isEmpty()) {
             HibernateRunnable({
-                _appDefinitionList.addAll(_applicationContext.getBeansOfType(AppDefinition::class.java).values)
+                try {
+                    _appDefinitionList.addAll(_applicationContext.getBeansOfType(AppDefinition::class.java).values)
+                } catch (e: BeansException) {
+                    e.printStackTrace()
+                }
             }).run()
         }
         return _appDefinitionList

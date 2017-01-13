@@ -12,6 +12,7 @@
 package experimental.cms.dsl.content
 
 import com.i2rd.cms.component.miwt.MIWTPageElementModel
+import com.i2rd.cms.visibility.VisibilityConditionInstance
 import experimental.cms.dsl.Content
 import experimental.cms.dsl.ContentHelper
 import experimental.cms.dsl.ContentInstance
@@ -25,6 +26,7 @@ internal data class RegisteredLink(val functionName: String, val functionContext
 
 class ApplicationFunction(id: String)
     : Identifiable(id), Content {
+    override var visibilityCondition: VisibilityConditionInstance? = null
     override var path: String = ""
     override var htmlId: String = ""
     override var htmlClass: String = ""

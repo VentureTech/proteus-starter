@@ -13,6 +13,7 @@ package experimental.cms.dsl.content
 
 import com.i2rd.cms.bean.TextBean
 import com.i2rd.cms.bean.contentmodel.CmsModelDataSet
+import com.i2rd.cms.visibility.VisibilityConditionInstance
 import com.i2rd.contentmodel.data.ModelDataDAO
 import com.i2rd.contentmodel.data.ModelDataXML
 import experimental.cms.dsl.Content
@@ -23,7 +24,13 @@ import net.proteusframework.cms.component.ContentElement
 import net.proteusframework.cms.component.content.DefaultDataPurpose
 import net.proteusframework.core.xml.XMLUtil
 
-open class Text(id: String, var htmlContent: String = "") : Identifiable(id), Content {
+/**
+ * Text Content. This generates a [com.i2rd.cms.bean.TextBean].
+ */
+open class Text(id: String,
+    /** The HTML Content. */
+    var htmlContent: String = "")
+    : Identifiable(id), Content {
 
     internal open fun createContentElement(): ContentElement = TextBean()
 
@@ -47,6 +54,7 @@ open class Text(id: String, var htmlContent: String = "") : Identifiable(id), Co
         return XMLUtil.getIdentity("<div>${modelData.value}</div>") != XMLUtil.getIdentity("<div>${toCheck}</div>")
     }
 
+    override var visibilityCondition: VisibilityConditionInstance? = null
     override var path: String = ""
     override var htmlId: String = ""
     override var htmlClass: String = ""

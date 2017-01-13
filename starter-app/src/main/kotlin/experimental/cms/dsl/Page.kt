@@ -71,6 +71,17 @@ class Layout(id: String, val parent: Site) : IdentifiableParent<Box>(id){
 
 }
 
+private fun _findBox(boxId: String, search: List<Box>): Box?{
+    for(test in search) {
+        if(test.id == boxId)
+            return test
+        val foundChild = _findBox(boxId, test.children)
+        if(foundChild != null)
+            return foundChild
+    }
+    return null
+}
+
 /**
  * BoxedContent model.
  */
@@ -95,7 +106,7 @@ interface BoxedContent : ContentContainer {
      */
     fun <T : Content> content(boxId: String, content: T, init: T.() -> Unit={}): T {
         site.siteConstructedCallbacks.add({site ->
-            val box = layout.children.filter { it.id == boxId }.first()
+            val box = _findBox(boxId, layout.children)?:throw IllegalStateException("Unable to find box: $boxId")
             this.content.getOrPut(box, {mutableListOf<Content>()}).add(content)
             content.parent = this
             content.apply(init)
@@ -110,7 +121,7 @@ interface BoxedContent : ContentContainer {
      */
     fun content(boxId: String, existingContentId: String): Unit {
         site.siteConstructedCallbacks.add({ site ->
-            val box = layout.children.filter { it.id == boxId }.first()
+            val box = _findBox(boxId, layout.children)?:throw IllegalStateException("Unable to find box: $boxId")
             val contentElement = site.getContentById(existingContentId)
             this.content.getOrPut(box, { mutableListOf<Content>() }).add(contentElement)
         })
@@ -160,8 +171,9 @@ class Template(id: String, override val site: Site, override var layout: Layout 
 
 /** Page Model. */
 class Page(id: String, override val site: Site, override var path: String = "", var template: Template = Template("", site))
-    : Identifiable(id), ResourceCapable, BoxedContent, PathCapable {
+    : Identifiable(id), ResourceCapable, BoxedContent, PathCapable, HTMLIdentifier {
 
+    override var htmlId: String=""
     override val layout: Layout get() = template.layout
     override val cssPaths = mutableListOf<String>()
     override val javaScriptPaths = mutableListOf<String>()

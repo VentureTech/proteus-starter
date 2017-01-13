@@ -12,6 +12,7 @@
 package experimental.cms.dsl.content
 
 import com.i2rd.cms.bean.CompositeBean
+import com.i2rd.cms.visibility.VisibilityConditionInstance
 import experimental.cms.dsl.*
 import net.proteusframework.cms.component.ContentElement
 import net.proteusframework.cms.component.editor.DelegatePurpose
@@ -24,6 +25,7 @@ class Composite(id: String) : Identifiable(id), Content, DelegateContent {
 
     override fun createInstance(helper: ContentHelper, existing: ContentElement?) = ContentInstance(existing?:CompositeBean())
 
+    override var visibilityCondition: VisibilityConditionInstance? = null
     override val contentList = mutableListOf<Content>()
     override val contentToRemove = mutableListOf<Content>()
     override var path: String = ""

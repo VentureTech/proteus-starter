@@ -15,6 +15,7 @@ import com.google.common.collect.ArrayListMultimap
 import com.i2rd.cms.bean.ScriptingBean
 import com.i2rd.cms.bean.util.ScriptingBeanContentBuilder
 import com.i2rd.cms.generator.ScriptGeneratorType
+import com.i2rd.cms.visibility.VisibilityConditionInstance
 import com.i2rd.contentmodel.data.ModelDataDAO
 import com.i2rd.converter.ConverterContext
 import com.i2rd.lib.Library
@@ -92,7 +93,7 @@ class ScriptedGenerator(id: String) : Identifiable(id), Content {
             ")"
     }
 
-
+    override var visibilityCondition: VisibilityConditionInstance? = null
     override var path: String = ""
     override var htmlId: String = ""
     override var htmlClass: String = ""

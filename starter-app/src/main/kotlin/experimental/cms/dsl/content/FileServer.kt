@@ -12,10 +12,12 @@
 package experimental.cms.dsl.content
 
 import com.i2rd.cms.bean.FileServer.FileServerModel
+import com.i2rd.cms.visibility.VisibilityConditionInstance
 import experimental.cms.dsl.Content
 import experimental.cms.dsl.ContentHelper
 import experimental.cms.dsl.ContentInstance
 import experimental.cms.dsl.Identifiable
+import net.proteusframework.cms.PageElementModelImpl
 import net.proteusframework.cms.component.ContentElement
 import java.util.concurrent.TimeUnit
 
@@ -33,6 +35,7 @@ class FileServer(id: String): Identifiable(id), Content {
         val builder = FileServerModel.load(
             contentElement.publishedData[helper.getCmsSite().primaryLocale], false)
         updateBuilder(helper, builder)
+        helper.assignToSite(PageElementModelImpl.StandardIdentifier(com.i2rd.cms.bean.FileServer::class.java).toIdentifier())
         return ContentInstance(contentElement, builder.content)
     }
 
@@ -63,7 +66,7 @@ class FileServer(id: String): Identifiable(id), Content {
             ")"
     }
 
-
+    override var visibilityCondition: VisibilityConditionInstance? = null
     override var path: String = ""
     override var htmlId: String = ""
     override var htmlClass: String = ""

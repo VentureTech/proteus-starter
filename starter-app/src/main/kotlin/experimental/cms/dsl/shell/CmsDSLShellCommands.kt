@@ -22,6 +22,7 @@ import org.jetbrains.exposed.sql.SchemaUtils.create
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
+import org.springframework.beans.BeansException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
@@ -43,7 +44,11 @@ open class CmsDSLShellCommands : AbstractShellCommands(), ApplicationContextAwar
 
     private fun getAppDefinitionList(): List<AppDefinition> {
         if(_appDefinitionList.isEmpty()) {
-            _appDefinitionList.addAll(_applicationContext.getBeansOfType(AppDefinition::class.java).values)
+            try {
+                _appDefinitionList.addAll(_applicationContext.getBeansOfType(AppDefinition::class.java).values)
+            } catch (e: BeansException) {
+                e.printStackTrace()
+            }
         }
         return _appDefinitionList
     }

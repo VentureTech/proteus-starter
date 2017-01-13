@@ -13,6 +13,7 @@ package experimental.cms.dsl.content
 
 import com.i2rd.cms.bean.JavaScriptBean
 import com.i2rd.cms.bean.util.JavaScriptBeanContentBuilder
+import com.i2rd.cms.visibility.VisibilityConditionInstance
 import experimental.cms.dsl.Content
 import experimental.cms.dsl.ContentHelper
 import experimental.cms.dsl.ContentInstance
@@ -52,6 +53,7 @@ class JavaScript(id: String, var javaScriptContent: String = "", var renderInHea
             ")"
     }
 
+    override var visibilityCondition: VisibilityConditionInstance? = null
     override var path: String = ""
     override var htmlId: String = ""
     override var htmlClass: String = ""

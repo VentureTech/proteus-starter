@@ -15,6 +15,7 @@ import com.google.common.collect.ArrayListMultimap
 import com.i2rd.cms.bean.LoginBean
 import com.i2rd.cms.bean.LoginBeanContentBuilder
 import com.i2rd.cms.scripts.impl.ScriptableRedirectType
+import com.i2rd.cms.visibility.VisibilityConditionInstance
 import com.i2rd.lib.Library
 import com.i2rd.lib.LibraryConfiguration
 import com.i2rd.xml.XsdConstants
@@ -23,13 +24,21 @@ import net.proteusframework.cms.component.ContentElement
 
 class Login(id: String) : Identifiable(id), Content {
 
+
     private var landingPage: Page? = null
+    /** Forgot Password Text For Login. */
     var forgotPasswordText = ""
+    /** Reset Password Text For Login. */
     var resetPasswordText = ""
+    /** Title Text For Login. */
     var titleText = ""
     private var scriptedRedirect: Script? = null
     private val scriptedRedirectParameters = ArrayListMultimap.create<String, Any>()
 
+    /**
+     * Set the landing page.
+     * @param landingPageId an existing page identifier.
+     */
     fun landingPage(landingPageId: String) {
         getSite().siteConstructedCallbacks.add({ site ->
             val page = site._getExistingPage(landingPageId)
@@ -87,7 +96,7 @@ class Login(id: String) : Identifiable(id), Content {
         }
     }
 
-
+    override var visibilityCondition: VisibilityConditionInstance? = null
     override var path: String = ""
     override var htmlId: String = ""
     override var htmlClass: String = ""

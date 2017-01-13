@@ -200,7 +200,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         getOrCreateHostnames(siteModel, site)
 
         siteModel.emailTemplates.forEach { createEmailTemplate(site, it) }
-        if(siteModel.emailTemplates.isNotEmpty()) session.flush()
+        if(siteModel.emailTemplates.isNotEmpty())
+            session.flush()
 
         pageList.forEach { getOrCreatePagePass1(site, it) }
         pageList.forEach { getOrCreatePagePass2(site, it) }
@@ -306,6 +307,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             emailTemplate.emailConfig = etct.instantiateEmailConfig()
         }
         if(emailTemplate.id == 0L) {
+            emailTemplate.programmaticName = emailTemplateModel.programmaticName
             emailTemplate.from = emailTemplateModel.from
             emailTemplate.replyTo = emailTemplateModel.replyTo
             emailTemplate.to = emailTemplateModel.to
@@ -468,6 +470,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
                 createNDEs(site, cmsPage, page)
                 session.flush()
             }
+            cmsPage.persistedCssName = page.htmlId
             cmsPage
         })
         layoutToBoxInformation.put(page.layout, BoxInformation(pass1.pageTemplate.layout))
@@ -583,26 +586,43 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
 
     private fun handleNewDataSet(instance: ContentInstance, content: Content, site: CmsSite): Unit {
         val contentElement = instance.contentElement
-        contentElement.lastModified = Date()
+        val now = Date()
+        contentElement.lastModified = now
         if (contentElement.name.isNullOrBlank())
             contentElement.name = content.id
         contentElement.cssName = content.htmlId
         contentElement.styleClass = content.htmlClass
-        contentElement.lastModUser = principalDAO.currentPrincipal
-        contentElement.lastModified = Date()
+        val currentPrincipal = principalDAO.currentPrincipal
+        contentElement.lastModUser = currentPrincipal
+        contentElement.lastModified = now
         if (contentElement.site == null)
             contentElement.site = site
+        var updateVisibilityCondition = content.visibilityCondition != null
+        if(contentElement.visibilityCondition != null) {
+           updateVisibilityCondition = Hibernate.getClass(contentElement.visibilityCondition) !=
+               Hibernate.getClass(content.visibilityCondition)
+            if(updateVisibilityCondition)
+                updateVisibilityCondition = !(contentElement.visibilityCondition?.configurationDataMap?.equals(content
+                    .visibilityCondition?.configurationDataMap)?:false)
+        }
+        if(updateVisibilityCondition) {
+            val vc = content.visibilityCondition!!
+            vc.lastModTime = now
+            vc.lastModUser = currentPrincipal
+            contentElement.visibilityCondition = content.visibilityCondition
+        }
+
         logger.info("Saving Cms Content: ${contentElement.name}")
         //session.saveOrUpdate(contentElement)
         val dataSet = instance.dataSet ?: return
         contentElementData.put(contentElement.name, dataSet)
         if (dataSet.locale == null)
             dataSet.locale = currentSite!!.primaryLocale
-        dataSet.lastModUser = principalDAO.currentPrincipal
-        dataSet.lastModTime = Date()
+        dataSet.lastModUser = currentPrincipal
+        dataSet.lastModTime = now
         dataSet.modelData.forEach {
-            dataSet.lastModUser = principalDAO.currentPrincipal
-            dataSet.lastModTime = Date()
+            dataSet.lastModUser = currentPrincipal
+            dataSet.lastModTime = now
         }
     }
 
@@ -795,7 +815,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             @Suppress("UNCHECKED_CAST")
             val result: List<FileEntity> = query.setParameter("path", "%" + path).list() as List<FileEntity>
             if (result.size > 1) {
-                throw IllegalArgumentException("Multiple files match path: $path for site: ${site.id}")
+                val paths = result.map { it.path }.toString()
+                throw IllegalArgumentException("Multiple files match path: $path for site: ${site.id}: $paths")
             } else if (result.isNotEmpty()) {
                 val file = result[0]
                 val nde = FactoryNDE()
@@ -827,7 +848,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         @Suppress("UNCHECKED_CAST")
         val results: List<FileEntity> = query.list() as List<FileEntity>
         if (results.size > 1) {
-            throw IllegalArgumentException("Multiple files match file link: $link for site: ${site.id}")
+            val paths = results.map { it.path }.toString()
+            throw IllegalArgumentException("Multiple files match file link: $link for site: ${site.id}: $paths")
         } else if (results.isNotEmpty()) {
             val file = results[0]
             return fileSystemDAO.getLocalURI(null, file).toString()
@@ -867,7 +889,9 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         @Suppress("UNCHECKED_CAST")
         val results: List<FileEntity> = query2.list() as List<FileEntity>
         if (results.size > 1) {
-            throw IllegalArgumentException("Multiple files/directories match path: $path for site: ${getCmsSite().id}")
+            val paths = results.map { it.path }.toString()
+            throw IllegalArgumentException(
+                "Multiple files/directories match path: $path for site: ${getCmsSite().id}: $paths")
         } else if(results.isNotEmpty()) {
             return results[0]
         }
@@ -885,7 +909,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             @Suppress("UNCHECKED_CAST")
             val results: List<FileEntity> = query.list() as List<FileEntity>
             if (results.size > 1) {
-                throw IllegalArgumentException("Multiple files match file link: $libraryPath for site: ${site.id}")
+                val paths = results.map { it.path }.toString()
+                throw IllegalArgumentException("Multiple files match file link: $libraryPath for site: ${site.id}: $paths")
             } else if (results.isNotEmpty()) {
                 val file = results[0]
                 val libraryList = libraryDAO.getLibraries(site, file)

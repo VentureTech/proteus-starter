@@ -15,6 +15,7 @@ import com.i2rd.cms.bean.contentmodel.CmsModelDataSet
 import com.i2rd.cms.bean.scripted.ScriptedPageElementFactoryType
 import com.i2rd.cms.generator.ScriptGeneratorType
 import com.i2rd.cms.scripts.impl.ScriptableRedirectType
+import com.i2rd.cms.visibility.VisibilityConditionInstance
 import net.proteusframework.cms.component.ContentElement
 import net.proteusframework.cms.component.editor.DefaultDelegatePurpose
 import net.proteusframework.cms.component.editor.DelegatePurpose
@@ -101,7 +102,7 @@ data class ContentInstance(val contentElement: ContentElement, val dataSet: CmsM
 interface Content : HTMLIdentifier, HTMLClass, ResourceCapable, PathCapable {
     val id: String
     var parent: Any?
-
+    var visibilityCondition: VisibilityConditionInstance?
     fun getSite(): Site {
         return _getSite(parent)
     }
