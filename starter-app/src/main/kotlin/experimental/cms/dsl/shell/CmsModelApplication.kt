@@ -816,8 +816,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             @Suppress("UNCHECKED_CAST")
             val result: List<FileEntity> = query.setParameter("path", "%" + path).list() as List<FileEntity>
             if (result.size > 1) {
-                val paths = result.map { it.path }.toString()
-                throw IllegalArgumentException("Multiple files match path: $path for site: ${site.id}: $paths")
+                val resultPaths = result.map { it.path }.toString()
+                throw IllegalArgumentException("Multiple files match path: $path for site: ${site.id}: $resultPaths")
             } else if (result.isNotEmpty()) {
                 val file = result[0]
                 val nde = FactoryNDE()
