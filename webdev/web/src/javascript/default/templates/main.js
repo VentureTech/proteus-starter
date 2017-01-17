@@ -5,7 +5,8 @@
 //=require ../components/charts.js 
 //=require ../components/data-download.js 
 //=require ../components/nav-highlight.js 
-//=require ../components/tooltips.js 
+//=require ../components/tooltips.js
+//=require ../components/custom-dropdown.js
 
 /* Bundle */
 //=require ../components/top-menu.js 
@@ -26,6 +27,8 @@ jQuery(function () {
 
 	navHighlight();
 
+    setupCustomDropdowns();
+
 	$('form.miwt-form').each(function (idx, form) {
 		//noinspection JSUnusedGlobalSymbols
 		form.submit_options = {
@@ -40,6 +43,7 @@ jQuery(function () {
 					enableTooltips(ctx);
 					setupCharts(ctx);
 					navHighlight();
+                    setupCustomDropdowns(ctx);
 					if($(ctx).hasClass('message-container') || $(ctx).find('.message-container').length > 0)
 						errorMessageCleanup();
 					setTimeout(function () {

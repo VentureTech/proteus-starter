@@ -94,10 +94,10 @@ open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId 
         layout("Header, Main, Footer")
         content("Header", "Logo & Menu Toggle")
         content("Header", ScriptedGenerator("Company Selector")) {
-            script("ScriptGenerator/Frontend/CompanySelectorScript.groovy")
+            script("CompanySelectorScript.groovy")
         }
         content("Header", ScriptedGenerator("Top Menu")) {
-            script("ScriptGenerator/Frontend/StarterSiteMenuScript.groovy")
+            script("StarterSiteMenuScript.groovy")
         }
         content("Header", Logout("Logout")) {
             htmlClass = "menu"
@@ -163,7 +163,7 @@ match an existing user account, then an email message will be sent with addition
 
     page("Dashboard", "/dashboard") {
         template("Frontend")
-        permission("Frontend Access")
+        permission("Frontend Access", "\${admin-access-role}")
         authenticationPage("Login")
         content("Body", Text("Dashboard Heading")) {
             htmlContent = "<h1>Dashboard</h1>"

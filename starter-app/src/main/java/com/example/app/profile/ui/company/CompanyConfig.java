@@ -41,7 +41,7 @@ public class CompanyConfig
         config.setCropWidth(200);
         config.setImageBackgroundStr("rgba(255,255,255, 1.0)");
         config.setImageType("image/jpeg");
-        config.setImageScales(new VTCropPictureEditorConfig.ImageScaleOption(1.0, 1.0, "coaching_img"));
+        config.setImageScales(new VTCropPictureEditorConfig.ImageScaleOption(1.0, 1.0, "company_img"));
         return config;
     }
 

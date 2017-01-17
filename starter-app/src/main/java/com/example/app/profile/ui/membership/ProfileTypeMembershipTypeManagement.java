@@ -20,6 +20,7 @@ import com.example.app.support.ui.CommonEditorFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -97,6 +98,7 @@ public class ProfileTypeMembershipTypeManagement extends Container
 
     private ProfileType _value;
     private final List<String> _coreTypeProgIds = new ArrayList<>();
+    private Supplier<Boolean> _canEditCheck = () -> true;
 
     /**
      * Instantiates a new Profile type membership type management.
@@ -144,6 +146,29 @@ public class ProfileTypeMembershipTypeManagement extends Container
         firePropertyChange(EVENT_SET_CORE_TYPES, null, new ArrayList<>(_coreTypeProgIds));
     }
 
+    /**
+     * Sets can edit check.
+     *
+     * @param canEditCheck the can edit check
+     */
+    public void setCanEditCheck(@Nonnull Supplier<Boolean> canEditCheck)
+    {
+        _canEditCheck = canEditCheck;
+    }
+
+    /**
+     * With can edit check profile type membership type management.
+     *
+     * @param canEditCheck the can edit check
+     *
+     * @return the profile type membership type management
+     */
+    public ProfileTypeMembershipTypeManagement withCanEditCheck(Supplier<Boolean> canEditCheck)
+    {
+        setCanEditCheck(canEditCheck);
+        return this;
+    }
+
     @Override
     public void init()
     {
@@ -176,9 +201,12 @@ public class ProfileTypeMembershipTypeManagement extends Container
             }
         };
         actionsRenderer.addClassName("actions");
-        actionsRenderer.add(edit);
-        actionsRenderer.add(modifyPerms);
-        actionsRenderer.add(delete);
+        if(_canEditCheck.get())
+        {
+            actionsRenderer.add(edit);
+            actionsRenderer.add(modifyPerms);
+            actionsRenderer.add(delete);
+        }
 
         //Set up Renderers for Columns
         Optional.ofNullable(dataTable.getUIColumn(actionsCol)).ifPresent(uiCol -> uiCol.setTableCellRenderer(actionsRenderer));

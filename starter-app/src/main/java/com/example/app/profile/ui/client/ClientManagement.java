@@ -24,6 +24,7 @@ import com.example.app.profile.ui.URLProperties;
 import com.example.app.support.service.AppUtil;
 import com.example.app.support.ui.Application;
 import com.example.app.support.ui.search.SearchUIHelper;
+import com.example.app.support.ui.search.ToggleDeleteNavigationColumn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ import java.util.EnumSet;
 import java.util.Map;
 
 import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelContainer;
+import com.i2rd.hr.miwt.PhoneNumberCellRenderer;
 
 import net.proteusframework.cms.category.CmsCategory;
 import net.proteusframework.core.locale.annotation.I18N;
@@ -54,7 +56,6 @@ import net.proteusframework.ui.miwt.util.CommonColumnText;
 import net.proteusframework.ui.search.AbstractPropertyConstraint;
 import net.proteusframework.ui.search.ComboBoxConstraint;
 import net.proteusframework.ui.search.LocalizedObjectKeyQLOrderBy;
-import net.proteusframework.ui.search.NavigationLinkColumn;
 import net.proteusframework.ui.search.QLBuilder;
 import net.proteusframework.ui.search.QLBuilderImpl;
 import net.proteusframework.ui.search.QLOrderByImpl;
@@ -240,7 +241,13 @@ public class ClientManagement extends MIWTPageElementModelContainer implements S
 
     private void addResultRows(SearchModelImpl sm)
     {
-        final NavigationLinkColumn actions = new NavigationLinkColumn();
+        final ToggleDeleteNavigationColumn actions = new ToggleDeleteNavigationColumn()
+            .withToggleTextExtractor(obj -> ((Client)obj).getStatus() == ClientStatus.ACTIVE
+                ? UIText.ACTION_DEACTIVATE()
+                : UIText.ACTION_ACTIVATE())
+            .withToggleHtmlClassExtractor(obj -> ((Client)obj).getStatus() == ClientStatus.ACTIVE
+                ? "delete client-active delete-toggle"
+                : "client-inactive delete-toggle");
         actions.setName("actions");
         actions.configure()
             .usingDataColumnTableRow(URLProperties.CLIENT)
@@ -289,7 +296,8 @@ public class ClientManagement extends MIWTPageElementModelContainer implements S
                 .withColumnName(CommonColumnText.PHONE_NUMBER))
             .withOrderBy((qb, order) -> _updatePhoneOrderBy(qb
                 .createJoin(QLBuilder.JoinType.LEFT, Client.PRIMARY_LOCATION_PROP, null),
-                order, Location.PHONE_NUMBER_PROP));
+                order, Location.PHONE_NUMBER_PROP))
+            .withTableCellRenderer(new PhoneNumberCellRenderer());
 
         final SearchResultColumnImpl statusCol = new SearchResultColumnImpl()
             .withName("status")
