@@ -1,7 +1,7 @@
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
 /**
  * FIXME - ${USER}, please document me.
- * @author ${Full_Name} (${USER}@venturetech.net)
+ * @author ${Your_Full_Name} (${USER}@venturetech.net)
  */
 @javax.persistence.Entity
 public class ${Class_Name} extends AbstractAuditableEntity<java.lang.Long> {
