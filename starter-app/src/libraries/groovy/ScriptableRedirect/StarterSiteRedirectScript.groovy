@@ -16,6 +16,7 @@ import com.example.app.profile.model.user.UserDAO
 import com.example.app.profile.ui.ApplicationFunctions
 import com.example.app.profile.ui.URLProperties
 import com.google.common.collect.ImmutableMap
+import com.i2rd.cms.SiteSSLOption
 import com.i2rd.cms.bean.LoginBean
 import com.i2rd.cms.scripts.impl.ScriptableRedirect
 import com.i2rd.lib.Parameter
@@ -65,10 +66,18 @@ class StarterSiteRedirect implements ScriptableRedirect
         if(_starterSiteDAO.needsSetup())
         {
             def appFunc = _applicationRegistry.getApplicationFunctionByName(ApplicationFunctions.StarterSite.SETUP)
-            return _applicationRegistry.createLink(cmsRequest.getHostname(), appFunc, null,
-                ImmutableMap.<String, Object>builder()
-                .put(URLProperties.COMPANY, URLConfigPropertyConverter.ENTITY_NEW)
-                .build()).getURIAsString()
+            def link = _applicationRegistry.createLink(cmsRequest.getHostname(), appFunc, null,
+                ImmutableMap.<String, Object> builder()
+                    .put(URLProperties.COMPANY, URLConfigPropertyConverter.ENTITY_NEW)
+                    .build())
+            def uri = link.getURI()
+            if(uri == null) return ""
+            if(cmsRequest.getHostname().sslOption != SiteSSLOption.force_for_authorized_principals
+                && !cmsRequest.secure)
+            {
+                uri = new URI("http", uri.userInfo, uri.host, uri.port, uri.path, uri.query, uri.fragment)
+            }
+            return uri.toString()
         }
         else
         {

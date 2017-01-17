@@ -393,7 +393,7 @@ references audit.REVINFO/$,
             $/create sequence app.resource_id_seq/$,
             $/create sequence app.user_id_seq/$,
             $/create sequence app.user_position_id_seq/$,
-            $/create sequence hibernate_sequence/$,
+            $/create sequence IF NOT EXISTS hibernate_sequence/$,
         ]
         return new SQLDataConversion(IDENTIFIER, 'initial data conversion', 201612301907, false, null, ddl, null, null)
     }

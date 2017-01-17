@@ -12,7 +12,7 @@
 package com.example.app.config.automation.site.profile.basic
 
 import com.example.app.config.ProjectInformation
-import com.example.app.profile.ui.ApplicationFunctions.Company.Resource
+import com.example.app.profile.ui.ApplicationFunctions.Client
 import experimental.cms.dsl.AppDefinition
 import experimental.cms.dsl.AppFunctionPage
 import experimental.cms.dsl.content.ApplicationFunction
@@ -23,14 +23,13 @@ private val appName = ProjectInformation.APPLICATION_NAME
 
 @Profile("automation")
 @Component
-open class ProfileBasicResourcesDSL :
-    AppDefinition("Profile Basic - Resources", version = 1, siteId = "$appName Frontend", dependency = "Profile Basic", init = {
+open class ProfileBasicClientsDSL :
+    AppDefinition("Profile Basic - Clients", version = 1, siteId = "$appName Frontend", dependency = "Profile Basic", init = {
     for((appFunction, path, htmlClassName) in listOf(
-        AppFunctionPage(Resource.MANAGEMENT, "/resource/manage", "resource-management"),
-        AppFunctionPage(Resource.EDIT, "/resource/edit/*", "resource-editor"),
-        AppFunctionPage(Resource.VIEW, "/resource/view/*", "resource-viewer")
+        AppFunctionPage(Client.MANAGEMENT, "/\${folder.client}/manage", "client-management"),
+        AppFunctionPage(Client.EDIT, "/\${folder.client}/edit/*", "client-editor"),
+        AppFunctionPage(Client.VIEW, "/\${folder.client}/view/*", "client-viewer")
     )) {
-
         page(appFunction, path) {
             template("Frontend")
             permission("Frontend Access")

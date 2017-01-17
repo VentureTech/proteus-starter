@@ -16,7 +16,7 @@ import com.example.app.profile.model.company.Company
 import com.example.app.profile.model.company.CompanyDAO
 import com.example.app.profile.model.user.User
 import com.example.app.profile.model.user.UserDAO
-import com.example.app.support.ui.UIPreferences
+import com.example.app.profile.service.ProfileUIService
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 import net.proteusframework.cms.component.generator.AbstractScriptGenerator
@@ -33,11 +33,6 @@ import net.proteusframework.internet.http.Scope
 import net.proteusframework.users.model.Principal
 import net.proteusframework.users.model.dao.PrincipalDAO
 import org.springframework.beans.factory.annotation.Autowired
-
-import java.util.concurrent.TimeUnit
-
-import static net.proteusframework.cms.support.HTMLPageElementUtil.getExpireTime
-
 /**
  * Provides a UI for selecting the current user's Company
  * @author Alan Holt (aholt@venturetech.net)
@@ -51,14 +46,12 @@ class CompanySelectorGenerator extends AbstractScriptGenerator
     @Autowired CompanyDAO _companyDAO
     @Autowired ProfileDAO _profileDAO
     @Autowired URLGenerator _urlGenerator
-    @Autowired UIPreferences _uiPreferences
+    @Autowired ProfileUIService _uiService
 
     private User _currentUser
     private Principal _currentPrincipal
     private Company _currentCompany
     private List<Company> _companies
-    long expireTime = 0L;
-
 
     @Override
     boolean includeWrappingContent(CmsRequest request)
@@ -91,8 +84,7 @@ class CompanySelectorGenerator extends AbstractScriptGenerator
         _currentPrincipal = _principalDAO.currentPrincipal
         if (_currentUser == null && _currentPrincipal == null)
             return
-        setExpireTime(getExpireTime(request.getPageElement(), TimeUnit.MINUTES, 10))
-        _currentCompany = _uiPreferences.getSelectedCompany()
+        _currentCompany = _uiService.getSelectedCompany()
         _companies = (_currentUser != null
             ? _companyDAO.getActiveCompanies(_currentUser)
             : _companyDAO.getActiveCompanies(_currentPrincipal))

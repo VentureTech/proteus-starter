@@ -61,7 +61,7 @@ public class MembershipOperationConfiguration implements MembershipOperationProv
             try
             {
                 handler.openSessions();
-                initializeOperations();
+                getOperations();
                 _initialized = true;
             }
             catch (Exception e)
@@ -75,39 +75,6 @@ public class MembershipOperationConfiguration implements MembershipOperationProv
         }
     }
 
-    /**
-     * Initialize the MembershipOperations provided by this MembershipOperationProvider to ensure they exist in the database.
-     */
-    public void initializeOperations()
-    {
-        manageUser();
-        modifyUser();
-        modifyUserRoleOperations();
-        changeUserPassword();
-        modifyUserRoles();
-        viewRepositoryResources();
-        viewUser();
-        modifyCompany();
-        modifyRepositoryResources();
-        deleteUserRoles();
-    }
-
-    @Override
-    @Bean
-    public MembershipOperation changeUserPassword()
-    {
-        return _profileDAO.getMembershipOperationOrNew("change-pw",
-            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Change User Password"));
-    }
-
-    @Override
-    @Bean
-    public MembershipOperation deleteUserRoles()
-    {
-        return _profileDAO.getMembershipOperationOrNew("deleteUserRoles",
-            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Delete User Roles"));
-    }
-
     @Override
     public List<MembershipOperation> getOperations()
     {
@@ -115,32 +82,19 @@ public class MembershipOperationConfiguration implements MembershipOperationProv
 
 
         operations.add(manageUser());
+        operations.add(viewUser());
         operations.add(modifyUser());
         operations.add(modifyUserRoleOperations());
         operations.add(changeUserPassword());
         operations.add(modifyUserRoles());
-        operations.add(viewRepositoryResources());
-        operations.add(viewUser());
-        operations.add(modifyCompany());
-        operations.add(modifyRepositoryResources());
         operations.add(deleteUserRoles());
-
+        operations.add(viewRepositoryResources());
+        operations.add(modifyRepositoryResources());
+        operations.add(modifyCompany());
+        operations.add(viewClient());
+        operations.add(modifyClient());
 
         return operations;
-    }
-
-    @Override
-    public MembershipOperation modifyCompany()
-    {
-        return _profileDAO.getMembershipOperationOrNew("modifyCompany",
-            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Modify Client"));
-    }
-
-    @Override
-    public MembershipOperation modifyRepositoryResources()
-    {
-        return _profileDAO.getMembershipOperationOrNew("modifyRepositorResources",
-            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Modify Respository Resources"));
     }
 
     @Override
@@ -149,6 +103,13 @@ public class MembershipOperationConfiguration implements MembershipOperationProv
     {
         return _profileDAO.getMembershipOperationOrNew("manageUser",
             () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Manage User"));
+    }
+
+    @Override
+    public MembershipOperation viewUser()
+    {
+        return _profileDAO.getMembershipOperationOrNew("viewUser",
+            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "View User"));
     }
 
     @Override
@@ -167,10 +128,26 @@ public class MembershipOperationConfiguration implements MembershipOperationProv
 
     @Override
     @Bean
+    public MembershipOperation changeUserPassword()
+    {
+        return _profileDAO.getMembershipOperationOrNew("change-pw",
+            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Change User Password"));
+    }
+
+    @Override
+    @Bean
     public MembershipOperation modifyUserRoles()
     {
         return _profileDAO.getMembershipOperationOrNew("modifyUserRoles",
             () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Modify User Roles"));
+    }
+
+    @Override
+    @Bean
+    public MembershipOperation deleteUserRoles()
+    {
+        return _profileDAO.getMembershipOperationOrNew("deleteUserRoles",
+            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Delete User Roles"));
     }
 
     @Override
@@ -181,10 +158,17 @@ public class MembershipOperationConfiguration implements MembershipOperationProv
     }
 
     @Override
-    public MembershipOperation viewUser()
+    public MembershipOperation modifyRepositoryResources()
     {
-        return _profileDAO.getMembershipOperationOrNew("viewUser",
-            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "View User"));
+        return _profileDAO.getMembershipOperationOrNew("modifyRepositorResources",
+            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Modify Respository Resources"));
+    }
+
+    @Override
+    public MembershipOperation modifyCompany()
+    {
+        return _profileDAO.getMembershipOperationOrNew("modifyCompany",
+            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Modify Client"));
     }
 
     @Override
@@ -192,5 +176,12 @@ public class MembershipOperationConfiguration implements MembershipOperationProv
     {
         return _profileDAO.getMembershipOperationOrNew("modifyClient",
             () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Modify Client"));
+    }
+
+    @Override
+    public MembershipOperation viewClient()
+    {
+        return _profileDAO.getMembershipOperationOrNew("viewClient",
+            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "View Client"));
     }
 }

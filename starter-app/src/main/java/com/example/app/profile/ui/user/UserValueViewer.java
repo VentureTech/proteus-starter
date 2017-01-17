@@ -20,10 +20,10 @@ import com.example.app.profile.model.user.ContactMethod;
 import com.example.app.profile.model.user.User;
 import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.service.MembershipOperationProvider;
+import com.example.app.profile.service.ProfileUIService;
 import com.example.app.profile.service.SelectedCompanyTermProvider;
 import com.example.app.support.service.AppUtil;
 import com.example.app.support.service.ContactUtil;
-import com.example.app.support.ui.UIPreferences;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,24 +154,15 @@ public class UserValueViewer extends Container
         }
     }
 
-    @Autowired
-    private AppUtil _appUtil;
-    @Autowired
-    private EntityRetriever _er;
-    @Autowired
-    private UserDAO _userDAO;
-    @Autowired
-    private ProfileDAO _profileDAO;
-    @Autowired
-    private MembershipOperationProvider _mop;
-    @Autowired
-    private PrincipalDAO _principalDAO;
-    @Autowired
-    private SelectedCompanyTermProvider _terms;
-    @Autowired
-    private MembershipTypeProvider _mtp;
-    @Autowired
-    private UIPreferences _uiPreferences;
+    @Autowired private AppUtil _appUtil;
+    @Autowired private EntityRetriever _er;
+    @Autowired private UserDAO _userDAO;
+    @Autowired private ProfileDAO _profileDAO;
+    @Autowired private MembershipOperationProvider _mop;
+    @Autowired private PrincipalDAO _principalDAO;
+    @Autowired private SelectedCompanyTermProvider _terms;
+    @Autowired private MembershipTypeProvider _mtp;
+    @Autowired private ProfileUIService _uiService;
 
     private boolean _adminMode = true;
     private User _user;
@@ -316,7 +307,7 @@ public class UserValueViewer extends Container
     {
         User currentUser = _userDAO.getAssertedCurrentUser();
         final TimeZone timeZone = getSession().getTimeZone();
-        Profile profile = _uiPreferences.getSelectedCompany();
+        Profile profile = _uiService.getSelectedCompany();
         return _profileDAO.canOperate(currentUser, profile, timeZone, _mop.changeUserPassword())
                || Objects.equals(currentUser.getId(), getUser().getId());
     }
@@ -354,7 +345,7 @@ public class UserValueViewer extends Container
         removeAllComponents();
 
         User currentUser = _userDAO.getAssertedCurrentUser();
-        Profile profile = _uiPreferences.getSelectedCompany();
+        Profile profile = _uiService.getSelectedCompany();
 
         final ImageComponent userImage = new ImageComponent();
         if (getUser().getImage() != null)

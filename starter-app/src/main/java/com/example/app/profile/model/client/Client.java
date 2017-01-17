@@ -90,7 +90,7 @@ public class Client extends Profile
 
     private ClientStatus _status = ClientStatus.PENDING;
     private List<Location> _locations = new ArrayList<>();
-    private Location _primaryLocation;
+    private Location _primaryLocation = new Location();
     private FileEntity _logo;
     private Company _company;
 
@@ -136,7 +136,7 @@ public class Client extends Profile
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = LOCATIONS_JOIN_COLUMN)
     @Cascade(CascadeType.ALL)
-    @Nullable
+    @NotNull
     public Location getPrimaryLocation()
     {
         return _primaryLocation;
@@ -147,7 +147,7 @@ public class Client extends Profile
      *
      * @param primaryLocation the primary location
      */
-    public void setPrimaryLocation(@Nullable Location primaryLocation)
+    public void setPrimaryLocation(@Nonnull Location primaryLocation)
     {
         _primaryLocation = primaryLocation;
     }

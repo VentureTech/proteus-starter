@@ -13,6 +13,7 @@ package ScriptGenerator.Frontend
 
 import com.example.app.profile.service.SelectedCompanyTermProvider
 import com.example.app.profile.ui.UIText
+import com.example.app.profile.ui.client.ClientManagementPermissionCheck
 import com.example.app.profile.ui.company.CompanyUIPermissionCheck
 import com.example.app.profile.ui.company.resource.CompanyResourcePermissionCheck
 import com.example.app.profile.ui.user.MyAccountPermissionCheck
@@ -45,6 +46,7 @@ class StarterSiteMenuGenerator extends AbstractScriptGenerator
     @Autowired UserManagementPermissionCheck _userManagementPermissionCheck
     @Autowired MyAccountPermissionCheck _myAccountPermissionCheck
     @Autowired CompanyResourcePermissionCheck _companyResourcePermissionCheck
+    @Autowired ClientManagementPermissionCheck _clientManagementPermissionCheck
     @Autowired SelectedCompanyTermProvider _terms
     @Autowired ApplicationRegistry _applicationRegistry
 
@@ -79,6 +81,7 @@ class StarterSiteMenuGenerator extends AbstractScriptGenerator
         pw.append('<ul class="nav starter-menu menubeanh menu">')
 
         appendLink(request, response, _companiesPermissionCheck, "company-management", _terms.companies())
+        appendLink(request, response, _clientManagementPermissionCheck, "client-management", _terms.clients())
         appendLink(request, response, _userManagementPermissionCheck, "user-management", UIText.USERS())
         appendLink(request, response, _companyResourcePermissionCheck, "resource-management", UIText.RESOURCES())
 

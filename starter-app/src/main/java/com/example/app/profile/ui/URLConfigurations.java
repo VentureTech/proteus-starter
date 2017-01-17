@@ -67,6 +67,22 @@ public class URLConfigurations
         private Company(){}
     }
 
+    /**
+     * Defined URL Configurations used by Client UIs
+     *
+     * @author Alan Holt (aholt@venturetech.net)
+     */
+    public static class Client
+    {
+        /** URL Config for Editing a Client*/
+        public static final String EDIT = "Client Edit URL Config";
+
+        /** URL Config for Viewing a Client */
+        public static final String VIEW = "Client View URL Config";
+
+        private Client(){}
+    }
+
     private URLConfigurations()
     {
     }

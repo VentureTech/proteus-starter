@@ -9,11 +9,12 @@
  * into with I2RD.
  */
 
-package com.example.app.profile.ui.company.resource;
+package com.example.app.profile.ui.client;
 
 import com.example.app.profile.model.ProfileDAO;
 import com.example.app.profile.model.company.Company;
 import com.example.app.profile.model.user.User;
+import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.service.MembershipOperationConfiguration;
 import com.example.app.profile.service.ProfileUIService;
 import com.example.app.profile.ui.ApplicationFunctions;
@@ -31,19 +32,20 @@ import net.proteusframework.ui.management.link.RegisteredLinkDAO;
 import net.proteusframework.users.model.Principal;
 
 /**
- * Provides methods for checking permission to view the Company Resource page
+ * Provides methods for checking permission to view the Client Management Pages
  *
  * @author Alan Holt (aholt@venturetech.net)
- * @since 1/10/17
+ * @since 1/12/17
  */
 @Service
-public class CompanyResourcePermissionCheck implements ApplicationFunctionPermissionCheck
+public class ClientManagementPermissionCheck implements ApplicationFunctionPermissionCheck
 {
     @Autowired private ProfileUIService _uiService;
     @Autowired private ProfileDAO _profileDAO;
     @Autowired private MembershipOperationConfiguration _mop;
     @Autowired private RegisteredLinkDAO _registeredLinkDAO;
     @Autowired private ApplicationRegistry _applicationRegistry;
+    @Autowired private UserDAO _userDAO;
     @Autowired private AppUtil _appUtil;
 
     @Override
@@ -53,7 +55,7 @@ public class CompanyResourcePermissionCheck implements ApplicationFunctionPermis
         {
             Company company = _uiService.getSelectedCompany();
 
-            return _profileDAO.canOperate(user, company, AppUtil.UTC, _mop.viewRepositoryResources());
+            return _profileDAO.canOperate(user, company, AppUtil.UTC, _mop.viewClient());
         }
         return false;
     }
@@ -67,6 +69,37 @@ public class CompanyResourcePermissionCheck implements ApplicationFunctionPermis
     @Override
     public String getApplicationFunctionName()
     {
-        return ApplicationFunctions.Company.Resource.MANAGEMENT;
+        return ApplicationFunctions.Client.MANAGEMENT;
+    }
+
+    /**
+     * Check if the given User can modify Clients for the selected Company
+     *
+     * @param request the request
+     * @param user the user
+     *
+     * @return true if the given user has permission to modify Clients
+     */
+    public boolean checkCanUserModify(@Nonnull Request request, @Nullable User user)
+    {
+        if(functionExists(_appUtil.getSite(), request, _applicationRegistry, _registeredLinkDAO))
+        {
+            Company company = _uiService.getSelectedCompany();
+
+            return _profileDAO.canOperate(user, company, AppUtil.UTC, _mop.modifyClient());
+        }
+        return false;
+    }
+
+    /**
+     * Check if the current User can modify Clients for the selected Company
+     *
+     * @param request the request
+     *
+     * @return true if the current user has permission to modify Clients
+     */
+    public boolean checkCanCurrentUserModify(@Nonnull Request request)
+    {
+        return checkCanUserModify(request, _userDAO.getAssertedCurrentUser());
     }
 }

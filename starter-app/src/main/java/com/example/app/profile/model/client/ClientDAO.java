@@ -11,9 +11,13 @@
 
 package com.example.app.profile.model.client;
 
+import com.example.app.profile.model.ProfileType;
 import com.example.app.profile.model.ProfileTypeProvider;
+import com.example.app.profile.model.company.CompanyDAO;
 import com.example.app.profile.model.location.LocationDAO;
+import com.example.app.profile.model.membership.MembershipTypeInfo;
 import com.example.app.profile.model.user.UserDAO;
+import com.example.app.profile.service.MembershipOperationConfiguration;
 import com.example.app.support.service.AppUtil;
 import com.example.app.support.service.FileSaver;
 import org.apache.commons.fileupload.FileItem;
@@ -24,19 +28,25 @@ import org.springframework.stereotype.Repository;
 import javax.annotation.Nullable;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Locale;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 import com.i2rd.hibernate.util.HibernateUtil;
 
 import net.proteusframework.cms.CmsSite;
 import net.proteusframework.cms.FileSystemDirectory;
+import net.proteusframework.core.GloballyUniqueStringGenerator;
 import net.proteusframework.core.hibernate.dao.DAOHelper;
+import net.proteusframework.core.locale.TransientLocalizedObjectKey;
 import net.proteusframework.core.spring.ApplicationContextUtils;
 import net.proteusframework.data.filesystem.DirectoryEntity;
 import net.proteusframework.data.filesystem.FileEntity;
 import net.proteusframework.data.filesystem.FileSystemDAO;
 
 import static java.util.UUID.randomUUID;
+import static net.proteusframework.core.StringFactory.isEmptyString;
 
 /**
  * {@link DAOHelper} implementation for {@link Client}
@@ -57,16 +67,14 @@ public final class ClientDAO extends DAOHelper implements Serializable
     /** The name of the folder to store logos in */
     private static final String LOGO_FOLDER = "Logos";
     private final HibernateUtil _hu = HibernateUtil.getInstance();
-    @Autowired
-    private transient LocationDAO _locationDAO;
-    @Autowired
-    private transient UserDAO _userDAO;
-    @Autowired
-    private transient ProfileTypeProvider _profileTypeProvider;
-    @Autowired
-    private transient FileSystemDAO _fileSystemDAO;
-    @Autowired
-    private transient AppUtil _appUtil;
+
+    @Autowired private transient LocationDAO _locationDAO;
+    @Autowired private transient UserDAO _userDAO;
+    @Autowired private transient ProfileTypeProvider _profileTypeProvider;
+    @Autowired private transient FileSystemDAO _fileSystemDAO;
+    @Autowired private transient AppUtil _appUtil;
+    @Autowired private transient CompanyDAO _companyDAO;
+    @Autowired private transient MembershipOperationConfiguration _mop;
 
     /**
      * Get the Client whose ID corresponds to the given ID
@@ -97,21 +105,71 @@ public final class ClientDAO extends DAOHelper implements Serializable
     }
 
     /**
+     * Create client profile type profile type.
+     *
+     * @param progId the prog id
+     *
+     * @return the profile type
+     */
+    public ProfileType createClientProfileType(@Nullable String progId)
+    {
+        ProfileType pt = new ProfileType();
+        TransientLocalizedObjectKey tlok = new TransientLocalizedObjectKey(Collections.singletonMap(Locale.ENGLISH, "Client PT"));
+
+        pt.setName(tlok);
+        pt.setProgrammaticIdentifier(isEmptyString(progId) ? GloballyUniqueStringGenerator.getUniqueString() : progId);
+
+        pt.getMembershipTypeSet().add(_companyDAO.createMembershipType(pt, MembershipTypeInfo.SystemAdmin,
+            () -> _mop.getOperations()));
+
+        return pt;
+    }
+
+    /**
      * Save the given Client into the database by merging it
      *
      * @param client the client to save
      *
      * @return the persisted client
      */
-    public Client mergeClient(Client client)
+    @SuppressWarnings("ConstantConditions")
+    public Client saveClient(Client client)
     {
-        return (Client) doInTransaction(session -> {
+        Consumer<Client> presave = (toSave) -> {
+            if(toSave.getProfileType() == null)
+                toSave.setProfileType(_profileTypeProvider.client());
 
-            if (client.getProfileType() == null)
-                client.setProfileType(_profileTypeProvider.company());
-
-            return session.merge(client);
-        });
+            //Repository Name will be null if it is a completely fresh Repository
+            if(toSave.getPrimaryLocation().getRepository().getName() == null)
+                toSave.getPrimaryLocation().getRepository().setName(_appUtil.copyLocalizedObjectKey(toSave.getName()));
+            if(toSave.getPrimaryLocation().getProfileType() == null)
+            {
+                toSave.getPrimaryLocation().setProfileType(new ProfileType());
+                toSave.getPrimaryLocation().getProfileType().setName(_appUtil.copyLocalizedObjectKey(toSave.getName()));
+                toSave.getPrimaryLocation().getProfileType()
+                    .setProgrammaticIdentifier(GloballyUniqueStringGenerator.getUniqueString());
+            }
+            if(toSave.getPrimaryLocation().getName() == null)
+                toSave.getPrimaryLocation().setName(_appUtil.copyLocalizedObjectKey(toSave.getName()));
+            if(toSave.getRepository().getName() == null)
+                toSave.getRepository().setName(_appUtil.copyLocalizedObjectKey(toSave.getName()));
+        };
+        if(isAttached(client))
+        {
+            return doInTransaction(session -> {
+                presave.accept(client);
+                session.saveOrUpdate(client);
+                return client;
+            });
+        }
+        else
+        {
+            return doInTransaction(session ->
+            {
+                presave.accept(client);
+                return (Client) session.merge(client);
+            });
+        }
     }
 
     /**
@@ -120,10 +178,12 @@ public final class ClientDAO extends DAOHelper implements Serializable
      * @param client the client to update
      * @param parent the parent directory
      * @param image the image to save
+     *
+     * @return the client
      */
-    public void saveLogo(final Client client, final DirectoryEntity parent, final FileItem image)
+    public Client saveLogo(final Client client, final DirectoryEntity parent, @Nullable final FileItem image)
     {
-        _createImageSaver(parent).save(client, image);
+        return _createImageSaver(parent).save(client, image);
     }
 
     private FileSaver<Client> _createImageSaver(final DirectoryEntity parent)

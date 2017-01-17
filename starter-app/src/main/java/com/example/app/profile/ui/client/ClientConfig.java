@@ -9,40 +9,40 @@
  * into with I2RD.
  */
 
-package com.example.app.profile.ui.resource;
+package com.example.app.profile.ui.client;
 
-
-import com.example.app.profile.model.resource.Resource;
+import com.example.app.profile.model.client.Client;
 import com.example.app.support.ui.vtcrop.VTCropPictureEditorConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * {@link Configuration} defining configuration information for {@link Resource} viewers and editors
+ * {@link Configuration} defining configuration information for {@link Client} viewers and editors
  *
  * @author Alan Holt (aholt@venturetech.net)
+ * @since 1/16/17
  */
 @Configuration
-public class ResourceConfig
+public class ClientConfig
 {
     /**
-     * Get the {@link VTCropPictureEditorConfig} for the Resource viewer/editor
+     * Client logo config vt crop picture editor config.
      *
-     * @return a VTCropPictureEditorConfig
+     * @return the vt crop picture editor config
      */
     @Bean
-    public VTCropPictureEditorConfig resourcePictureEditorConfig()
+    public VTCropPictureEditorConfig clientLogoConfig()
     {
         VTCropPictureEditorConfig config = new VTCropPictureEditorConfig();
-        config.setMaxHeight(450);
-        config.setMaxWidth(700);
-        config.setMinHeight(112);
-        config.setMinWidth(175);
-        config.setCropHeight(225);
-        config.setCropWidth(350);
+        config.setMaxHeight(250);
+        config.setMaxWidth(500);
+        config.setMinHeight(30);
+        config.setMinWidth(60);
+        config.setCropHeight(100);
+        config.setCropWidth(200);
         config.setImageBackgroundStr("rgba(255,255,255, 1.0)");
         config.setImageType("image/jpeg");
-        config.setImageScales(new VTCropPictureEditorConfig.ImageScaleOption(1.0, 1.0, "resource_img"));
+        config.setImageScales(new VTCropPictureEditorConfig.ImageScaleOption(1.0, 1.0, "client_img"));
         return config;
     }
 }

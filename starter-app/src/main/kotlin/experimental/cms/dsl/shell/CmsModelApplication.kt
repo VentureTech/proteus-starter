@@ -157,7 +157,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
     private val libraries = mutableMapOf<String, Library<*>>()
     private val libraryConfigurations = mutableMapOf<Library<*>, LibraryConfiguration<*>>()
     var currentSite: CmsSite? = null
-    lateinit var currentWebRoot: DirectoryEntity
+    var currentWebRoot: DirectoryEntity? = null
 
     fun applyDefinition(appDefinition: AppDefinition) {
         appDefinition.getSites().forEach { siteModel ->
@@ -171,6 +171,13 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
     private fun cleanup() {
         pageModelToCmsPage.clear()
         layoutToBoxInformation.clear()
+        pagePermissionCache.clear()
+        roleCache.clear()
+        pagePaths.clear()
+        libraries.clear()
+        libraryConfigurations.clear()
+        currentSite = null
+        currentWebRoot = null
     }
 
     private fun applySiteModel(appDefinition: AppDefinition, siteModel: Site) {
@@ -502,13 +509,13 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             save(site, bbl, key, page)
         }
         page.pagePermission?.let {
-            val programmaticName = it.programmaticName
+            val programmaticName = resolvePlaceholders(it.programmaticName)
             var permission = pagePermissionCache[programmaticName] ?:
                 siteDefinitionDAO.getPagePermissionByProgrammaticName(site, programmaticName)
             if (permission == null) {
                 permission = PagePermission(programmaticName)
                 permission.siteId = site.id
-                permission.displayName = TransientLocalizedObjectKey(mutableMapOf(Locale.ENGLISH to it.name))
+                permission.displayName = TransientLocalizedObjectKey(mutableMapOf(Locale.ENGLISH to resolvePlaceholders(it.name)))
                 permission.minimumSecurityLevel = it.minAuthenticationMethodSecurityLevel
                 permission.maximumSecurityLevel = it.maxAuthenticationMethodSecurityLevel
                 permission.credentialPolicyLevel = it.policyLevel
@@ -516,28 +523,32 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
                 pagePermissionCache.put(programmaticName, permission)
             }
             if(it.addToRole.isNotBlank()) {
-                val userRole = roleCache[it.addToRole] ?:
+                val roleProgId = resolvePlaceholders(it.addToRole)
+                val userRole = roleCache[roleProgId] ?:
                     session.createQuery("FROM Role WHERE programmaticName = " + ":programmaticName")
-                    .setParameter("programmaticName", it.addToRole)
-                    .uniqueResult() as Role? ?: throw IllegalArgumentException("Role does not exist: ${it.addToRole}")
+                    .setParameter("programmaticName", roleProgId)
+                    .uniqueResult() as Role? ?: throw IllegalArgumentException("Role does not exist: ${roleProgId}")
                 if(!userRole.permissions.contains(permission)) {
                     userRole.permissions.add(permission)
                     session.saveOrUpdate(userRole)
                 }
 
             }
-            page.title.let {
-                val title = getTransientLocalizedObjectKey(localeSource, cmsPage.persistedTitleKey)?:
-                    TransientLocalizedObjectKey(mutableMapOf())
-                title.text[site.primaryLocale] = it
-                cmsPage.persistedTitleKey = title
-            }
             cmsPage.authorization = permission
             cmsPage.touch()
         }
+
+        page.title.let {
+            val title = getTransientLocalizedObjectKey(localeSource, cmsPage.persistedTitleKey)?:
+                TransientLocalizedObjectKey(mutableMapOf())
+            title.text[site.primaryLocale] = it
+            cmsPage.persistedTitleKey = title
+        }
+
         val authenticationPageModel = page.authenticationPage
         if (authenticationPageModel != null) {
-            cmsPage.authorizationPage = pageModelToCmsPage[authenticationPageModel]
+            cmsPage.authorizationPage = (pageModelToCmsPage[authenticationPageModel] ?:
+                getOrCreatePagePass2(site, authenticationPageModel))
             cmsPage.touch()
         }
         return cmsPage
@@ -858,7 +869,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         return link
     }
 
-    override fun getCMSLink(page: Page): Link = LinkUtil.getCMSLink(pageModelToCmsPage[page])
+    override fun getCMSLink(page: Page): Link = LinkUtil.getCMSLink(pageModelToCmsPage[page] ?:
+        getOrCreatePagePass2(currentSite!!, page))
 
     override fun getBackendConfig(): BackendConfig = _backendConfig
 
@@ -880,7 +892,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         val query1 = hsh.session.createQuery(
             "SELECT fe FROM FileSystemEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root")
             .setParameter("root", currentWebRoot)
-            .setParameter("path", "/${currentWebRoot.name}/${trimSlashes(path)}")
+            .setParameter("path", "/${currentWebRoot?.name}/${trimSlashes(path)}")
         val exactMatch = query1.uniqueResult() as FileSystemEntity?
         if(exactMatch != null) return exactMatch
         val query2 = hsh.session.createQuery(

@@ -17,8 +17,8 @@ import com.example.app.profile.model.ProfileDAO;
 import com.example.app.profile.model.user.User;
 import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.service.MembershipOperationProvider;
+import com.example.app.profile.service.ProfileUIService;
 import com.example.app.profile.ui.ApplicationFunctions;
-import com.example.app.support.ui.UIPreferences;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -62,14 +62,11 @@ import static net.proteusframework.core.notification.NotificationImpl.error;
 public class UserPropertyViewer extends PropertyViewer
 {
     private final MessageContainer _messages = new MessageContainer(35_000L);
-    @Autowired
-    private ProfileDAO _profileDAO;
-    @Autowired
-    private MembershipOperationProvider _mop;
-    @Autowired
-    private UserDAO _userDAO;
-    @Autowired
-    private UIPreferences _uiPreferences;
+
+    @Autowired private ProfileDAO _profileDAO;
+    @Autowired private MembershipOperationProvider _mop;
+    @Autowired private UserDAO _userDAO;
+    @Autowired private ProfileUIService _uiService;
 
     private boolean _canEdit;
 
@@ -89,7 +86,7 @@ public class UserPropertyViewer extends PropertyViewer
         UserValueViewer viewer;
         if (user != null)
         {
-            Profile adminProfile = _uiPreferences.getSelectedCompany();
+            Profile adminProfile = _uiService.getSelectedCompany();
             User currentUser = _userDAO.getAssertedCurrentUser();
             final TimeZone timeZone = Event.getRequest().getTimeZone();
             boolean canView = _profileDAO.canOperate(currentUser, adminProfile, timeZone, _mop.viewUser());

@@ -21,7 +21,6 @@ import com.example.app.support.ui.vtcrop.VTCropPictureEditor;
 import com.example.app.support.ui.vtcrop.VTCropPictureEditorConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -143,13 +142,12 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
     /**
      * Set the PictureEditorConfig for this ResourceValueEditor
      *
-     * @param pictureEditorConfig the picture editor config
+     * @param resourceConfig the ResourceConfig from which to retrieve the PictureEditorConfig
      */
     @Autowired
-    @Qualifier(ResourceConfig.PICTURE_EDITOR_CONFIG)
-    public void setPictureEditorConfig(VTCropPictureEditorConfig pictureEditorConfig)
+    public void setPictureEditorConfig(ResourceConfig resourceConfig)
     {
-        _pictureEditorConfig = pictureEditorConfig;
+        _pictureEditorConfig = resourceConfig.resourcePictureEditorConfig();
     }
 
     /**

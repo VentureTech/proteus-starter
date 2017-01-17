@@ -18,6 +18,7 @@ import com.example.app.profile.service.SelectedCompanyTermProvider;
 import com.example.app.profile.ui.ApplicationFunctions;
 import com.example.app.profile.ui.URLProperties;
 import com.example.app.support.ui.Application;
+import com.example.app.support.ui.search.SearchUIHelper;
 import com.google.common.base.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -150,6 +151,7 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
     @Autowired private CompanyDAO _companyDAO;
     @Autowired private SelectedCompanyTermProvider _terms;
     @Autowired private CompanyUIPermissionCheck _permissionCheck;
+    @Autowired private SearchUIHelper _uiHelper;
 
     /**
      * Instantiates a new company management.
@@ -168,15 +170,7 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
     @Override
     public boolean supportsOperation(SearchUIOperation operation)
     {
-        switch(operation)
-        {
-            case add:
-            case view:
-            case delete:
-                return true;
-            default:
-                return false;
-        }
+        return _uiHelper.isStandardSearchUIOperation(operation);
     }
 
     @Override

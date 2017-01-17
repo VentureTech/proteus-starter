@@ -13,6 +13,7 @@ package com.example.app.profile.ui;
 
 
 import com.example.app.profile.model.Profile;
+import com.example.app.profile.model.client.Client;
 import com.example.app.profile.model.company.Company;
 import com.example.app.profile.model.repository.Repository;
 import com.example.app.profile.model.repository.RepositoryItem;
@@ -59,6 +60,10 @@ public final class URLProperties
     /** Path Info for URL Property company */
     public static final String COMPANY_PATH_INFO = '/' + COMPANY + "-{" + COMPANY + '}';
 
+    /** URL Property to disnigfy a {@link Client} */
+    public static final String CLIENT = "client";
+    /** Path Ino for URL Property client */
+    public static final String CLIENT_PATH_INFO = '/' + CLIENT + "-{" + CLIENT + '}';
 
     /** URL Property to signify a {@link RepositoryItem} */
     public static final String REPOSITORY_ITEM = "repo-item";

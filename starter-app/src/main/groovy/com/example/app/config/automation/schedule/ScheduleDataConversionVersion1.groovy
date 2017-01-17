@@ -20,27 +20,31 @@ import org.springframework.context.annotation.Lazy
 import org.springframework.context.annotation.Profile
 
 /**
- * Data covnersions for schedule API.
- * @author Russ Tennant (russ@venturetech.net)
+ * Data conversions for Schedule API.
+ * @author Alan Holt (aholt@venturetech.net)
+ * @since 1/12/17
  */
 @Profile(["automation", "development"])
 @Configuration
 @Lazy
-class ScheduleDataConversion1
+class ScheduleDataConversionVersion1
 {
     private static final String IDENTIFIER = "starter-app-schedule"
 
     /**
-     * Add Schedule
-     * 2017.01.11 at 22:28 UTC
+     * add schedule
+     * 2016.12.30 at 19:07 UTC
      * @return Bean.
      */
     @TaskQualifier(TaskQualifier.Type.data_conversion)
     @Bean
-    DataConversion dataConversion_201701112228()
+    DataConversion dataConversion_201701121830()
     {
         def ddl = [
-            $/create table app.Schedule (schedule_id int4 not null, disc_type varchar(255) not null, 
+            $/create schema if not exists app/$,
+            $/create schema if not exists audit/$,
+            $/create table if not exists audit.REVINFO (REV int4 not null, REVTSTMP int8, primary key (REV))/$,
+            $/create table app.Schedule (schedule_id int4 not null, disc_type varchar(255) not null,
 createtime timestamp not null, createuser int8, lastmodtime timestamp not null, lastmoduser int8, primary key (schedule_id))/$,
             $/create table app.ical4jschedule (ICal4jSchedule_id int4 not null, eventprogrammaticidentifier varchar(255), 
 repeat boolean, recurrencerule varchar(255), temporaldirection varchar(255), primary key (ICal4jSchedule_id))/$,
@@ -71,7 +75,9 @@ references audit.REVINFO/$,
             $/alter table audit.relativeperiodschedule_AUD add constraint FK_78wtb0hshvemw4px7mn2t8aip 
 foreign key (RelativePeriodSchedule_id, REV) references audit.Schedule_AUD/$,
             $/create sequence app.schedule_id_seq start 1 increment 5/$,
+            $/create sequence IF NOT EXISTS hibernate_sequence/$
         ]
-        new SQLDataConversion(IDENTIFIER, 'Add Schedule', 201701112228, false, null, ddl, null, null)
+        return new SQLDataConversion(IDENTIFIER, 'add schedule', 201612301907, false, null, ddl, null, null)
+
     }
 }

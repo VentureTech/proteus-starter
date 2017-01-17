@@ -13,6 +13,7 @@ package com.example.app.support.service;
 
 import com.example.app.profile.model.Profile;
 import com.example.app.profile.model.ProfileType;
+import com.example.app.profile.model.client.Client;
 import com.example.app.profile.model.company.Company;
 import com.example.app.profile.model.membership.Membership;
 import com.example.app.profile.model.resource.Resource;
@@ -684,6 +685,19 @@ public class AppUtil implements Serializable
         Hibernate.initialize(value.getImage());
         initialize(value.getPrimaryLocation());
         Hibernate.initialize(value.getProfileTerms());
+        value.getLocations().forEach(AppUtil::initialize);
+    }
+
+    /**
+     * Initialize.
+     *
+     * @param value the value
+     */
+    public static void initialize(Client value)
+    {
+        initialize((Profile)value);
+        Hibernate.initialize(value.getLogo());
+        initialize(value.getPrimaryLocation());
         value.getLocations().forEach(AppUtil::initialize);
     }
 

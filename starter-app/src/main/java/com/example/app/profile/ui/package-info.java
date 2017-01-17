@@ -73,6 +73,7 @@
         @I18N(symbol = "Action Take Action", l10n = @L10N("Take Action")),
         @I18N(symbol = "Action Manage", l10n = @L10N("Manage")),
         @I18N(symbol = "Action Deactivate", l10n = @L10N("Deactivate")),
+        @I18N(symbol = "Action Activate", l10n = @L10N("Activate")),
         @I18N(symbol = "Instructions Draft Mode By Default FMT",
             l10n = @L10N("The new {0} will be in Draft mode after it is created.")),
         @I18N(symbol = "Instructions Picture Editor FMT",
