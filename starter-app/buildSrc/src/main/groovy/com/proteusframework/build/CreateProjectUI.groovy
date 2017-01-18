@@ -264,6 +264,7 @@ To run the demo code, you will need to update your ProjectConfig.'''
         def packageName = model.appGroup + '.' + (model.appName.toLowerCase().replaceAll('[^a-z0-9_]', '_'))
         def slash = File.separator
         def packageDir = packageName.replace('.', slash)
+        def groupDir = model.appGroup.replace('.', slash)
         def packageSuppression = packageName.replace('.', '[\\/]')
 
         println "appGroup = ${model.appGroup}"
@@ -359,6 +360,7 @@ derby.log
                         .replaceAll('com/example/app', packageDir)
                         .replaceAll(Pattern.quote("com[\\/]example[\\/]app"), packageSuppression)
                         .replaceAll('starter-app', model.appName)
+                        .replaceAll('com/example', groupDir)
                         .replaceAll('com.example', model.appGroup)
                         .replaceAll('starter_app', model.appName.replace('.', '-'))
                         .replace('task createProject(type: com.proteusframework.build.CreateProjectTask)', '')
