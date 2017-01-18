@@ -205,7 +205,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
                 cmsBackendDAO.trashPage(page)
             }
         }
-        getOrCreateHostnames(siteModel, site)
+        val hostnames = getOrCreateHostnames(siteModel, site)
 
         siteModel.emailTemplates.forEach { createEmailTemplate(site, it) }
         if(siteModel.emailTemplates.isNotEmpty())
@@ -224,6 +224,12 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
                 session.flush()
                 updatePageElementPath(contentElementList[0], content)
             }
+        }
+        if(hostnames.isNotEmpty()) {
+            val hostnamesString = StringBuilder()
+            hostnamesString.append("Site Model Applied.  Hostnames:\n")
+            hostnames.forEach { hostnamesString.append(it.name).append("\n") }
+            logger.info(hostnamesString.toString())
         }
     }
 

@@ -14,8 +14,7 @@ package com.example.app.profile.ui.resource;
 import com.example.app.profile.model.resource.Resource;
 import com.example.app.profile.model.resource.ResourceType;
 import com.example.app.profile.model.resource.ResourceVisibility;
-import com.example.app.profile.service.resource.ResourceCategoryLabelProvider;
-import com.example.app.profile.service.resource.ResourceTagsLabelProvider;
+import com.example.app.profile.service.ProfileUIService;
 import com.example.app.support.service.AppUtil;
 import com.example.app.support.ui.vtcrop.VTCropPictureEditor;
 import com.example.app.support.ui.vtcrop.VTCropPictureEditorConfig;
@@ -30,6 +29,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import net.proteusframework.cms.label.Label;
+import net.proteusframework.cms.label.LabelDomainProvider;
 import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.LocalizedNamedObjectComparator;
 import net.proteusframework.core.locale.TextSources;
@@ -84,8 +84,8 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
     /** The classname for the Resource Picture Editor */
     public static final String PICTURE_EDITOR_CLASS_NAME = "resource-picture";
 
-    private ResourceTagsLabelProvider _categoryLabelProvider;
-    private ResourceCategoryLabelProvider _typeLabelProvider;
+    private LabelDomainProvider _categoryLabelProvider;
+    private LabelDomainProvider _tagLabelProvider;
     private VTCropPictureEditorConfig _pictureEditorConfig;
     private AppUtil _appUtil;
 
@@ -120,12 +120,12 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
     /**
      * Set the Category Label Provider for this ResourceValueEditor
      *
-     * @param categoryLabelProvider the category label provider
+     * @param uiService the Profile UI Service
      */
     @Autowired
-    public void setCategoryLabelProvider(ResourceTagsLabelProvider categoryLabelProvider)
+    public void setCategoryLabelProvider(ProfileUIService uiService)
     {
-        _categoryLabelProvider = categoryLabelProvider;
+        _categoryLabelProvider = uiService.getSelectedCompany().getResourceCategoriesLabelProvider();
     }
 
     /**
@@ -153,13 +153,15 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
     /**
      * Set the Type Label Provider for this ResourceValueEditor
      *
-     * @param typeLabelProvider the type label provider
+     * @param uiService the Profile UI Service
      */
     @Autowired
-    public void setTypeLabelProvider(ResourceCategoryLabelProvider typeLabelProvider)
+    public void setTagLabelProvider(ProfileUIService uiService)
     {
-        _typeLabelProvider = typeLabelProvider;
-    }    @Override
+        _tagLabelProvider = uiService.getSelectedCompany().getResourceTagsLabelProvider();
+    }
+
+    @Override
     public void init()
     {
         _resourcePictureEditor = new VTCropPictureEditor(_pictureEditorConfig);
@@ -211,10 +213,10 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
         }, VISIBILITY_COLUMN_PROP);
 
         addEditorForProperty(() -> {
-            List<Label> rlsCategories = _categoryLabelProvider.getEnabledLabels(Optional.empty())
+            List<Label> rlsTags = _tagLabelProvider.getEnabledLabels(Optional.empty())
                 .stream().sorted(new LocalizedNamedObjectComparator(getLocaleContext())).collect(Collectors.toList());
             ListComponentValueEditor<Label> editor = new ListComponentValueEditor<>(
-                _categoryLabelProvider.getLabelDomain().getName(), rlsCategories, null);
+                _tagLabelProvider.getLabelDomain().getName(), rlsTags, null);
             final Component valueComponent = editor.getValueComponent();
             editor.addClassName("categories");
             valueComponent.setAttribute("data-placeholder",
@@ -225,10 +227,10 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
         }, TAGS_PROP);
 
         addEditorForProperty(() -> {
-            List<Label> rlsTypes = new ArrayList<>(_typeLabelProvider.getEnabledLabels(Optional.empty())
+            List<Label> rlsTypes = new ArrayList<>(_categoryLabelProvider.getEnabledLabels(Optional.empty())
                 .stream().sorted(new LocalizedNamedObjectComparator(getLocaleContext())).collect(Collectors.toList()));
             rlsTypes.add(0, null);
-            ComboBoxValueEditor<Label> e = new ComboBoxValueEditor<>(_typeLabelProvider.getLabelDomain().getName(), rlsTypes, null);
+            ComboBoxValueEditor<Label> e = new ComboBoxValueEditor<>(_categoryLabelProvider.getLabelDomain().getName(), rlsTypes, null);
             e.setCellRenderer(new CustomCellRenderer(CommonButtonText.PLEASE_SELECT));
             e.setRequiredValueValidator();
             return e;
