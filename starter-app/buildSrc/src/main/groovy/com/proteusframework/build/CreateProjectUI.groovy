@@ -36,6 +36,8 @@ class CreateProjectUI
     def logger = LoggerFactory.getLogger("build")
     def swing = new SwingBuilder()
     def model = new ProjectModel()
+    def skipDirs = ['.git', '.apt_generated', '.apt_generated_tests', 'demo'] as Set
+    def skipFiles = ['CreateProjectUI.groovy'] as Set
     CompletableFuture<ProjectModel> _future = new CompletableFuture<>()
     Project project
     CreateProjectUI(def project)
@@ -184,6 +186,79 @@ To run the demo code, you will need to update your ProjectConfig.'''
         return true
     }
 
+    class SourceSetCopyInfo
+    {
+        static class ChildPackageInfo
+        {
+            File destination
+            File origin
+            String originPackageDir
+
+            ChildPackageInfo(File destination, File origin, String originPackageDir)
+            {
+                this.destination = destination
+                this.origin = origin
+                this.originPackageDir = originPackageDir
+            }
+        }
+
+        File destination
+        File origin
+        Set<ChildPackageInfo> childPackages
+
+        SourceSetCopyInfo(
+            File destination, File origin,
+            ChildPackageInfo... childPackages
+        )
+        {
+            this.destination = destination
+            this.origin = origin
+            if(childPackages != null && childPackages.length > 0)
+                this.childPackages = childPackages as Set
+            else
+                this.childPackages = [] as Set
+        }
+
+        def copy()
+        {
+            destination.mkdirs()
+            project.copy() {
+                into destination
+                from(origin) {
+                    include '**/*'
+                    childPackages.forEach({cp ->
+                        exclude "${cp.originPackageDir}"
+                    })
+                    includeEmptyDirs = false
+                }
+            }
+            childPackages.forEach({cp ->
+                cp.destination.mkdirs()
+                project.copy() {
+                    into cp.destination
+                    from(cp.origin) {
+                        include '**/*'
+                    }
+                    includeEmptyDirs = false
+                }
+            })
+        }
+    }
+
+    def copySourceSet(String sourceSetName, File baseDir, String packageDir)
+    {
+        def slash = File.separator
+        new SourceSetCopyInfo(
+            new File(baseDir, "src${slash}main${slash}${sourceSetName}"),
+            new File(project.projectDir, "src${slash}main${slash}${sourceSetName}"),
+            new SourceSetCopyInfo.ChildPackageInfo(
+                new File(baseDir, "src${slash}main${slash}${sourceSetName}${slash}${packageDir}"),
+                new File(project.projectDir, "src${slash}main${slash}${sourceSetName}${slash}com${slash}example${slash}app"),
+                "com${slash}example${slash}app"
+            )
+        ).copy()
+    }
+
     def createProject(ev)
     {
         def packageName = model.appGroup + '.' + (model.appName.toLowerCase().replaceAll('[^a-z0-9_]', '_'))
@@ -214,7 +289,7 @@ To run the demo code, you will need to update your ProjectConfig.'''
                     include 'buildSrc/src/main/groovy/com/proteusframework/build/Property.groovy'
                     include 'buildSrc/src/main/groovy/com/proteusframework/build/Version.groovy'
                     include 'buildSrc/src/main/groovy/com/proteusframework/build/Deployment.groovy'
-                    include 'buildSrc/src/main/resources/**/*'
+//                    include 'buildSrc/src/main/resources/**/*'
                     include 'buildSrc/build.gradle'
                     include 'buildSrc/gradle.properties'
                     include 'buildSrc/buildSrc.iml'
@@ -233,7 +308,10 @@ To run the demo code, you will need to update your ProjectConfig.'''
                     include 'gradle*'
                     include 'build.gradle'
                     include 'settings.gradle'
-                    include 'src/main/**/*'
+//                    include 'src/main/**/*'
+//                    include 'src/main/webapp/**/*'
+//                    include 'src/main/kotlin/**/*'
+//                    include 'src/main/groovy/**/*'
 
                     exclude '.idea/workspace.xml'
                     exclude '.idea/tasks.xml'
@@ -267,25 +345,12 @@ derby.log
   </component>
 </project>
 '''
-            def mainJava = new File(baseDir, "src${slash}main${slash}java${slash}${packageDir}")
-            def mainRes  = new File(baseDir, "src${slash}main${slash}resources${slash}${packageDir}")
-            mainJava.mkdirs()
-            mainRes.mkdirs()
-            project.copy() {
-                into mainJava
-                from(new File(project.projectDir, 'src/main/java/com/example/app')) {
-                    include '**/*'
-                }
-            }
-            project.copy() {
-                into mainRes
-                from(new File(project.projectDir, 'src/main/resources/com/example/app')) {
-                    include '**/*'
-                }
-            }
+            copySourceSet("java", baseDir, packageDir)
+            copySourceSet("groovy", baseDir, packageDir)
+            copySourceSet("kotlin", baseDir, packageDir)
+            copySourceSet("resources", baseDir, packageDir)
+            copySourceSet("webapp", baseDir, packageDir)
 
-            def skipDirs = ['.git', '.apt_generated', '.apt_generated_tests', 'demo'] as Set
-            def skipFiles = ['CreateProjectUI.groovy'] as Set
             baseDir.traverse(
                 [preDir    : {if (skipDirs.contains(it.name)) return SKIP_SUBTREE}], {f ->
                 if(f.isFile() && !skipFiles.contains(f.name)) {
@@ -308,7 +373,15 @@ derby.log
                 }
 
                 CONTINUE
-                 })
+                })
+
+            def dataSourcesLocal = new File(baseDir, ".idea/dataSources.local.xml")
+            println('Updating ' + dataSourcesLocal)
+            dataSourcesLocal.setText(
+                dataSourcesLocal.getText('UTF-8')
+                    .replaceAll('example_app', model.appName),
+                'UTF-8'
+            )
 
             def demoIML = new File(baseDir, ".idea/${slash}modules${slash}starter-app_demo.iml")
             if(!model.copyDemo)
@@ -352,6 +425,11 @@ derby.log
                 into webdevBaseDir
                 from(new File(project.projectDir.parentFile, 'webdev')) {
                     include '**/*'
+                    exclude 'node_modules'
+                    exclude 'bower_components'
+                    exclude '.idea/workspace.xml'
+                    exclude '.idea/tasks.xml'
+                    exclude '.idea/artifacts/**'
                 }
             })
             new File(webdevBaseDir, '.gitignore').text = '''
@@ -395,6 +473,13 @@ bower_components/
 
                 CONTINUE
                 })
+            def webServersFile = new File(webdevBaseDir, ".idea/webServers.xml")
+            println('Updating ' + webServersFile)
+            webServersFile.setText(
+                webServersFile.getText('UTF-8')
+                    .replaceAll('starter-app', model.appName),
+                'UTF-8'
+            )
             if(new File('/usr/bin/git').canExecute()){
                 command = ['/usr/bin/git', 'init']
                 process = command.execute(envp, webdevBaseDir)

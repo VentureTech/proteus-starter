@@ -40,7 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * @since 1/4/17
  */
 @CompileStatic
-class StarterSiteMenuGenerator extends AbstractScriptGenerator
+class AppFunctionMenuGenerator extends AbstractScriptGenerator
 {
     @Autowired CompanyUIPermissionCheck _companiesPermissionCheck
     @Autowired UserManagementPermissionCheck _userManagementPermissionCheck
@@ -52,7 +52,7 @@ class StarterSiteMenuGenerator extends AbstractScriptGenerator
 
     String _cssID
 
-    StarterSiteMenuGenerator()
+    AppFunctionMenuGenerator()
     {
         super()
     }
@@ -109,5 +109,5 @@ class StarterSiteMenuGenerator extends AbstractScriptGenerator
     }
 }
 
-generator = new StarterSiteMenuGenerator()
+generator = new AppFunctionMenuGenerator()
 ApplicationContextUtils.instance.context.autowireCapableBeanFactory.autowireBean(generator)
