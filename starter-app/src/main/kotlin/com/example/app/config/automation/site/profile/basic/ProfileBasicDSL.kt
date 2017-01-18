@@ -97,7 +97,7 @@ open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId 
             script("CompanySelectorScript.groovy")
         }
         content("Header", ScriptedGenerator("Top Menu")) {
-            script("StarterSiteMenuScript.groovy")
+            script("AppFunctionMenuScript.groovy")
         }
         content("Header", Logout("Logout")) {
             htmlClass = "menu"
