@@ -39,6 +39,8 @@ import org.xml.sax.Attributes
 import java.io.*
 import java.util.*
 
+@DslMarker
+annotation class SiteElementMarker
 
 internal fun populateLayoutBoxes(site: CmsSite, layout: Layout,
     cmsLayout: net.proteusframework.cms.component.page.layout.Layout) {
@@ -96,7 +98,7 @@ interface PathCapable {
     fun getCleanPath(): String = cleanPath(path)
 }
 
-open class Identifiable(val id: String) {
+open class Identifiable(/** Internal Use. */val id: String) {
 
     override fun toString(): String {
         return "Identifiable(id='$id')"
@@ -117,7 +119,9 @@ open class Identifiable(val id: String) {
 }
 
 open class IdentifiableParent<C>(id: String) : Identifiable(id) {
+    /** Internal Use. */
     internal val children = mutableListOf<C>()
+    /** Internal Use. */
     internal fun add(child: C): C = child.apply { children.add(this) }
 
     override fun toString(): String {

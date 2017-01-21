@@ -7,3 +7,13 @@ targetCompatibility = 1.8
 version = new Version(app_version, project)
 group = app_group
 ext[Version.PROJECT_INFORMATION_PACKAGE] = 'com.example.app.config'
+
+// Kotlin Configuration
+allOpen {
+    // Makes classes with this annotation open (spring is taken care of)
+    annotation('net.proteusframework.ui.management.ApplicationFunction')
+}
+noArg {
+    // Generates a hibernate/JPA no-arg constructor for classes with this annotation
+    annotation('javax.persistence.Entity')
+}

@@ -79,7 +79,7 @@ class ScriptedGenerator(id: String) : Identifiable(id), Content {
 
     override fun isModified(helper: ContentHelper, contentElement: ContentElement): Boolean {
         val existingDataSet = contentElement.publishedData[helper.getCmsSite().primaryLocale]?: return false
-        val (ce, newDataSet) = createInstance(helper, contentElement)
+        val (_, newDataSet) = createInstance(helper, contentElement)
         return !ModelDataDAO.getInstance(contentElement.contentModelDefinition).deepEquals(existingDataSet, newDataSet)
     }
 

@@ -49,6 +49,7 @@ class Box(id: String, var boxType: BoxDescriptor = BoxDescriptor.COLUMN,
 /**
  * Layout model.
  */
+@SiteElementMarker
 class Layout(id: String, val parent: Site) : IdentifiableParent<Box>(id){
     init {
         if(id.isNotBlank())
@@ -105,7 +106,7 @@ interface BoxedContent : ContentContainer {
      * @param init the initialization block.
      */
     fun <T : Content> content(boxId: String, content: T, init: T.() -> Unit={}): T {
-        site.siteConstructedCallbacks.add({site ->
+        site.siteConstructedCallbacks.add({_ ->
             val box = _findBox(boxId, layout.children)?:throw IllegalStateException("Unable to find box: $boxId")
             this.content.getOrPut(box, {mutableListOf<Content>()}).add(content)
             content.parent = this
@@ -132,13 +133,20 @@ interface BoxedContent : ContentContainer {
 /**
  * Template Model.
  */
+@SiteElementMarker
 class Template(id: String, override val site: Site, override var layout: Layout = Layout("", site))
     : Identifiable(id), ResourceCapable, HTMLIdentifier, BoxedContent {
+
     override var htmlId: String = ""
+    /** Internal Use. */
     override val cssPaths = mutableListOf<String>()
+    /** Internal Use. */
     override val javaScriptPaths = mutableListOf<String>()
+    /** Internal Use. */
     override val content = mutableMapOf<Box, MutableList<Content>>()
+    /** Internal Use. */
     override val contentToRemove = mutableListOf<Content>()
+
     init {
         if(id.isNotBlank())
             site.templates.add(this)
@@ -170,14 +178,21 @@ class Template(id: String, override val site: Site, override var layout: Layout 
 }
 
 /** Page Model. */
-class Page(id: String, override val site: Site, override var path: String = "", var template: Template = Template("", site))
+@SiteElementMarker
+class Page(id: String, override val site: Site, override var path: String = "",
+    internal var template: Template = Template("", site))
     : Identifiable(id), ResourceCapable, BoxedContent, PathCapable, HTMLIdentifier {
 
     override var htmlId: String=""
+
     override val layout: Layout get() = template.layout
+    /** Internal Use. */
     override val cssPaths = mutableListOf<String>()
+    /** Internal Use. */
     override val javaScriptPaths = mutableListOf<String>()
+    /** Internal Use. */
     override val content = mutableMapOf<Box, MutableList<Content>>()
+    /** Internal Use. */
     override val contentToRemove = mutableListOf<Content>()
 
     var title: String = id
@@ -199,6 +214,13 @@ class Page(id: String, override val site: Site, override var path: String = "", 
         if(id.isNotBlank())
             site.add(this)
     }
+    /**
+     * Remove a defined Page.
+     * @receiver the page to remove.
+     */
+    fun remove() = site.pagesToRemove.add(this)
+
+
 
     /**
      * Set a template on this page.

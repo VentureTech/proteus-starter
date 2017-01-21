@@ -44,6 +44,7 @@ interface ContentContainer {
      * Remove Content.
      */
     fun Content.remove() = contentToRemove.add(this)
+    /** Internal Use. */
     fun typeName(): String = javaClass.simpleName
 }
 internal fun _getSite(toCheck: Any?): Site {
@@ -99,6 +100,7 @@ interface DelegateContent : ContentContainer {
 
 data class ContentInstance(val contentElement: ContentElement, val dataSet: CmsModelDataSet? = null)
 
+@SiteElementMarker
 interface Content : HTMLIdentifier, HTMLClass, ResourceCapable, PathCapable {
     val id: String
     var parent: Any?

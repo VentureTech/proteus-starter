@@ -26,7 +26,8 @@ import javax.annotation.PostConstruct
 
 internal data class Hostname(val address: String, val welcomePage: Page)
 
-class Site(id: String, val appDefinition: AppDefinition) : IdentifiableParent<Page>(id), ContentContainer, ResourceCapable {
+@SiteElementMarker
+class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableParent<Page>(id), ContentContainer, ResourceCapable {
 
     companion object{
         val logger = LogManager.getLogger(Site::class.java)!!
@@ -43,23 +44,41 @@ class Site(id: String, val appDefinition: AppDefinition) : IdentifiableParent<Pa
     override val cssPaths = mutableListOf<String>()
     override val javaScriptPaths = mutableListOf<String>()
 
+    /** Internal Use. */
     internal var sitePreferenceKey: String = ""
+    /** Internal Use. */
     internal var webResources: URL? = null
+    /** Internal Use. */
     internal var libraryResources: URL? = null
+    /** Internal Use. */
     internal val roles = mutableListOf<Role>()
+    /** Internal Use. */
     internal val emailTemplates = mutableListOf<EmailTemplate<*>>()
+    /** Internal Use. */
     internal val hostnames = mutableListOf<Hostname>()
+    /** Internal Use. */
     internal val templates = mutableListOf<Template>()
+    /** Internal Use. */
     internal val layouts = mutableListOf<Layout>()
+    /** Internal Use. */
     internal val content = mutableListOf<Content>()
+    /** Internal Use. */
     internal val pagesToRemove = mutableListOf<Page>()
+    /** Internal Use. */
     internal var primaryLocale: Locale = Locale.ENGLISH
+    /** Internal Use. */
     internal var defaultTimezone: TimeZone = TimeZone.getTimeZone("US/Central")
+    /** Internal Use. */
     internal lateinit var parent: AppDefinition
+    /** Internal Use. */
     internal val siteConstructedCallbacks = mutableListOf<(Site) -> Unit>()
 
 
-
+    /**
+     * Internal Use.
+     *
+     * Get Content previously added to a site element by its identifier.
+     */
     internal fun getContentById(existingId: String): Content {
         // Need ContentElement.class => Content::class mapping
 //        val content = siteDefinitionDAO.getSiteByDescription(id)?.let {siteDefinitionDAO.getContentElementByName(it, existingId)}
@@ -214,7 +233,7 @@ class Site(id: String, val appDefinition: AppDefinition) : IdentifiableParent<Pa
      * @param init initialization block.
      */
     fun <T : Content> content(content: T, init: T.() -> Unit = {}): T {
-        siteConstructedCallbacks.add({ site ->
+        siteConstructedCallbacks.add({ _ ->
             this.content.add(content)
         })
         content.parent = this
@@ -230,7 +249,7 @@ class Site(id: String, val appDefinition: AppDefinition) : IdentifiableParent<Pa
      */
     fun content(existingContentId: String): Content {
         val contentById = getContentById(existingContentId)
-        siteConstructedCallbacks.add({ site ->
+        siteConstructedCallbacks.add({ _ ->
             this.content.add(contentById)
         })
         return contentById
@@ -243,18 +262,13 @@ class Site(id: String, val appDefinition: AppDefinition) : IdentifiableParent<Pa
      */
     fun page(id: String, path: String, init: Page.() -> Unit): Page {
         val page = Page(id = id, site = this, path = path)
-        siteConstructedCallbacks.add({site ->
+        siteConstructedCallbacks.add({_ ->
             page.path = resolvePlaceholders(path)
             page.apply(init)
         })
         return page
     }
 
-    /**
-     * Remove a defined Page.
-     * @receiver the page to remove.
-     */
-    fun Page.remove() = pagesToRemove.add(this)
 
     /**
      * Add a template to the site.
@@ -276,7 +290,7 @@ class Site(id: String, val appDefinition: AppDefinition) : IdentifiableParent<Pa
      * @param existingWelcomePageId a reference to an existing page to use as the welcome / home page.
      */
     fun hostname(address: String, existingWelcomePageId: String) {
-        siteConstructedCallbacks.add({site ->
+        siteConstructedCallbacks.add({_ ->
             val page = _getExistingPage(existingWelcomePageId)
             hostnames.add(Hostname(address, page))
         })
@@ -292,7 +306,7 @@ class Site(id: String, val appDefinition: AppDefinition) : IdentifiableParent<Pa
         val page = children.filter { it.id == welcomePageId }.firstOrNull() ?: Page(welcomePageId, this)
         page.apply(init)
         if (page.path.isBlank()) throw IllegalStateException("Missing path")
-        siteConstructedCallbacks.add({ site ->
+        siteConstructedCallbacks.add({ _ ->
             hostnames.add(Hostname(address, page))
         })
     }

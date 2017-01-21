@@ -78,20 +78,29 @@ open class CmsDSLShellCommands : AbstractShellCommands(), ApplicationContextAwar
             if (!SiteDefinitionRecord.exists())
                 create(SiteDefinitionRecord)
             list.forEach { sd ->
+                println()
                 val result = SiteDefinitionRecord
                     .slice(SiteDefinitionRecord.version, SiteDefinitionRecord.modified)
                     .select(SiteDefinitionRecord.name eq sd.definitionName)
                     .orderBy(SiteDefinitionRecord.version, isAsc = false)
                     .limit(1)
                 if (result.empty()) {
-                    println("${sd.definitionName}(${sd.version}): Never Applied")
+                    println("${sd.definitionName} #${sd.version}: Never Applied")
                 } else {
                     val row = result.iterator().next()
                     val modified: Date = row[SiteDefinitionRecord.modified].toDate()
                     val version = row[SiteDefinitionRecord.version]
-                    println("${sd.definitionName}(${sd.version}): Last Applied Version #$version on ${fmt.format(modified)}")
+                    println("${sd.definitionName} #${sd.version}: Last Applied Version #$version on ${fmt.format(modified)}")
+                }
+                if(sd.getSites().isNotEmpty()) {
+                    for(site in sd.getSites())
+                        println("\tSite: ${site.id}")
+                }
+                sd.dependency?.let {
+                    println("\tDepends On => ${sd.dependency}")
                 }
             }
+            println()
         }
     }
 

@@ -31,6 +31,12 @@ if(compileLibraries) {
     }
 }
 
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
 compileJava {
     options.encoding = 'UTF-8'
     options.compilerArgs << '-Xlint:all,-deprecation,-processing'
@@ -103,6 +109,7 @@ dependencies {
 
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     compile "org.jetbrains.exposed:exposed:0.7.+"
 

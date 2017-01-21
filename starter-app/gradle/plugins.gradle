@@ -1,5 +1,9 @@
 
 // Compilation
+apply plugin: 'kotlin'
+apply plugin: "kotlin-allopen"
+apply plugin: "kotlin-spring"
+apply plugin: "kotlin-noarg"
 apply plugin: 'java'
 apply plugin: 'groovy'
 // doesn't currently work

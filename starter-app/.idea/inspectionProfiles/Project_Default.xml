@@ -420,7 +420,6 @@
     <inspection_tool class="EqualsAndHashcode" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="EqualsCalledOnEnumConstant" enabled="true" level="INFO" enabled_by_default="true" />
     <inspection_tool class="EqualsHashCodeCalledOnUrl" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="EqualsOrHashCode" enabled="false" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="EqualsReplaceableByObjectsCall" enabled="true" level="INFO" enabled_by_default="true" />
     <inspection_tool class="EqualsWithItself" enabled="false" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="Evaluate arithmetic expression" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -519,8 +518,8 @@
     </inspection_tool>
     <inspection_tool class="IfNullToElvis" enabled="false" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="IfStatementWithIdenticalBranches" enabled="true" level="ERROR" enabled_by_default="true" />
-    <inspection_tool class="IfThenToElvis" enabled="false" level="WEAK WARNING" enabled_by_default="true" />
-    <inspection_tool class="IfThenToSafeAccess" enabled="false" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="IfThenToElvis" enabled="true" level="INFORMATION" enabled_by_default="true" />
+    <inspection_tool class="IfThenToSafeAccess" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="IgnoreCoverEntry" enabled="false" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="IgnoreDuplicateEntry" enabled="false" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="IgnoreIncorrectEntry" enabled="false" level="ERROR" enabled_by_default="true" />
@@ -898,8 +897,8 @@
     <inspection_tool class="SimplifiableBooleanExpression" enabled="false" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SimplifiableEqualsExpression" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SimplifiableIfStatement" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="SimplifyBooleanWithConstants" enabled="false" level="WEAK WARNING" enabled_by_default="true" />
-    <inspection_tool class="SimplifyNegatedBinaryExpression" enabled="false" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="SimplifyBooleanWithConstants" enabled="true" level="INFORMATION" enabled_by_default="true" />
+    <inspection_tool class="SimplifyNegatedBinaryExpression" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="SingletonInjectsScoped" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SizeReplaceableByIsEmpty" enabled="true" level="INFO" enabled_by_default="true">
       <option name="ignoreNegations" value="true" />
@@ -1024,7 +1023,7 @@
       <option name="ignoreSameClass" value="true" />
       <option name="ignoreEquals" value="true" />
     </inspection_tool>
-    <inspection_tool class="UsePropertyAccessSyntax" enabled="false" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="UsePropertyAccessSyntax" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="UseVirtualFileEquals" enabled="false" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="VolatileArrayField" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="W3CssValidation" enabled="true" level="WARNING" enabled_by_default="true">
