@@ -230,7 +230,8 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
             List<Label> rlsTypes = new ArrayList<>(_categoryLabelProvider.getEnabledLabels(Optional.empty())
                 .stream().sorted(new LocalizedNamedObjectComparator(getLocaleContext())).collect(Collectors.toList()));
             rlsTypes.add(0, null);
-            ComboBoxValueEditor<Label> e = new ComboBoxValueEditor<>(_categoryLabelProvider.getLabelDomain().getName(), rlsTypes, null);
+            ComboBoxValueEditor<Label> e = new ComboBoxValueEditor<>(_categoryLabelProvider.getLabelDomain().getName(),
+                 rlsTypes, null);
             e.setCellRenderer(new CustomCellRenderer(CommonButtonText.PLEASE_SELECT));
             e.setRequiredValueValidator();
             return e;
