@@ -2,7 +2,7 @@
 
 @media (max-width: 768px) {
 
-	.starter-menu {
+	.app-menu {
 		> li > .fa,
 		> li.dropdown a.dropdown-toggle {
 			font-size: 75%;
@@ -24,7 +24,7 @@
 			display: none;
 		}
 	}
-	.starter-menu {
+	.app-menu {
 		margin-top: 0;
 		li.link {
 			margin-right: 0;
