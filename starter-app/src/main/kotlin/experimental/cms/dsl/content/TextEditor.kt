@@ -11,6 +11,7 @@
 
 package experimental.cms.dsl.content
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import experimental.cms.dsl.ContentHelper
 import experimental.cms.dsl.ContentInstance
 import net.proteusframework.cms.component.ContentElement
@@ -39,6 +40,8 @@ class TextEditor(id: String) : ApplicationFunction(id, functionName = TextEditor
      */
     fun symbolPrefix(prefix: String) = symbolPrefixList.add(prefix)
 
+    @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE",
+        justification = "FindBugs is Wrong")
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
         val contentInstance = super.createInstance(helper, existing)
         val builder = TextEditorContentBuilder.load(null, false)
