@@ -11,6 +11,14 @@
       <webServer id="33a50adc-d11e-42c5-9bb0-768e2e5dd2d1" name="Live (WebDAV)" url="https://starter-app-release.venturetech.net/_files/Web">
         <fileTransfer port="0" mountedRoot="$PROJECT_DIR$/mounts/live-web" accessType="MOUNT" />
       </webServer>
+      <webServer id="ccf052c3-1c16-44a5-a8ed-b570dc7ba848" name="Example Development (SFTP)" url="http://russ1-dev.russ1-vdm.vipasuite.com/_files/Web">
+        <fileTransfer host="localhost" port="2222" rootFolder="/russ1-dev.russ1-vdm.vipasuite.com/Web" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" maxConnections="2" />
+          </advancedOptions>
+          <option name="port" value="2222" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

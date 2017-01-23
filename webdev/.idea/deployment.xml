@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" promptOnRemoteOverwrite="CHECK_CONTENT" serverName="Development (WebDAV)" showExcludedInSync="true">
+  <component name="PublishConfigData" promptOnRemoteOverwrite="CHECK_CONTENT" serverName="Example Development (SFTP)" showExcludedInSync="true">
     <serverData>
       <paths name="Development (WebDAV)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/" local="$PROJECT_DIR$/build" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="Example Development (SFTP)">
         <serverdata>
           <mappings>
             <mapping deploy="/" local="$PROJECT_DIR$/build" web="/" />
