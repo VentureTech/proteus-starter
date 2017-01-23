@@ -1,0 +1,47 @@
+@import "../config/base-vars";
+
+.text-group {
+	padding-left: 1rem;
+	&.actions {
+		text-align: center;
+		button {
+			display: block;
+			margin-top: 1rem;
+		}
+	}
+	&.last-text-change-record {
+		flex: 1 100%;
+		display: flex;
+		flex-wrap: wrap;
+		.prop {
+			padding-left: 1rem;
+			&:first-child {
+				padding-left: 0;
+			}
+		}
+		.group-label {
+			flex: 1 100%;
+			font-size: 1.25rem;
+			font-weight: bold;
+			text-decoration: underline;
+		}
+	}
+}
+
+.prop-body {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	.text-group:first-child {
+		padding-left: 0;
+	}
+	textarea {
+		min-width: 380px;
+		resize: both;
+		&[readonly] {
+			border: 1px dotted #ddd;
+			background-color: #eee;
+		}
+	}
+}
+
