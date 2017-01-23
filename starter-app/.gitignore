@@ -18,3 +18,4 @@ atlassian-ide-plugin.xml
 spring-shell.log
 derby.log
 velocity.log
+proteus_ssh_host_key

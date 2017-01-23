@@ -24,7 +24,7 @@ import net.proteusframework.ui.management.ApplicationFunction
 internal data class RegisteredLink(val functionName: String, val functionContext: String = "",
     val pathInfoPattern: String = "")
 
-class ApplicationFunction(id: String)
+open class ApplicationFunction(id: String, val functionName: String = id)
     : Identifiable(id), Content {
     override var visibilityCondition: VisibilityConditionInstance? = null
     override var path: String = ""
@@ -34,7 +34,7 @@ class ApplicationFunction(id: String)
     override val javaScriptPaths = mutableListOf<String>()
     override var parent: Any? = null
 
-    internal var registeredLink = RegisteredLink(id)
+    internal var registeredLink = RegisteredLink(functionName)
 
     fun registeredLink(functionContext: String = "", pathInfoPattern: String = "") {
         registeredLink = RegisteredLink(id, functionContext, pathInfoPattern)
@@ -59,7 +59,7 @@ class ApplicationFunction(id: String)
         if (existing != null) return ContentInstance(existing)
         val match = helper.getApplicationFunctions().filter {
             val annotation = it.javaClass.getAnnotation(ApplicationFunction::class.java)
-            annotation.name == this@ApplicationFunction.id
+            annotation.name == functionName
         }.first() as MIWTPageElementModel
         val pageElementModel = helper.getMIWTPageElementModelFactory().getVirtualComponents(helper.getCmsSite()).filter {
             PageElementModelImpl.StandardIdentifier(it.identifier).virtualIdentifier == match.javaClass.name

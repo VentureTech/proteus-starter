@@ -12,6 +12,13 @@
           </excludedPaths>
         </serverdata>
       </paths>
+      <paths name="Example Dev Libraries (SFTP)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/" local="$PROJECT_DIR$/src/libraries/groovy" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="Live Libraries (WebDAV)">
         <serverdata>
           <mappings>

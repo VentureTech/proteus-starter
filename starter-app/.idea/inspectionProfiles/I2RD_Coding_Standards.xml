@@ -335,6 +335,7 @@
     <inspection_tool class="Convert to string" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="Convert2Diamond" enabled="true" level="INFO" enabled_by_default="true" />
     <inspection_tool class="Convert2Lambda" enabled="true" level="INFO" enabled_by_default="true" />
+    <inspection_tool class="ConvertReferenceToLambda" enabled="true" level="INFO" enabled_by_default="true" />
     <inspection_tool class="ConvertToStringTemplate" enabled="true" level="INFORMATION" enabled_by_default="false">
       <scope name="Changed Files" level="WARNING" enabled="true" />
     </inspection_tool>

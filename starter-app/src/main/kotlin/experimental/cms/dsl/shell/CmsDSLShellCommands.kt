@@ -93,8 +93,10 @@ open class CmsDSLShellCommands : AbstractShellCommands(), ApplicationContextAwar
                     println("${sd.definitionName} #${sd.version}: Last Applied Version #$version on ${fmt.format(modified)}")
                 }
                 if(sd.getSites().isNotEmpty()) {
-                    for(site in sd.getSites())
-                        println("\tSite: ${site.id}")
+                    for(site in sd.getSites()) {
+                        val hostname = site.hostnames.firstOrNull()?.address?:"[no hostname]"
+                        println("\tSite: ${site.id}, ${hostname}")
+                    }
                 }
                 sd.dependency?.let {
                     println("\tDepends On => ${sd.dependency}")

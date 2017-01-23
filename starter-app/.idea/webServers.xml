@@ -11,6 +11,14 @@
       <webServer id="114df402-d486-4fb2-9c3e-7275bf998d3f" name="Live Libraries (WebDAV)" url="https://starter-app-release.venturetech.net/_files/Libraries">
         <fileTransfer port="0" mountedRoot="$PROJECT_DIR$/mounts/live-libraries" accessType="MOUNT" />
       </webServer>
+      <webServer id="ad6e11d5-fb4f-4ac5-881e-5498fad9c609" name="Example Dev Libraries (SFTP)" url="http://localhost/_files/Libraries">
+        <fileTransfer host="localhost" port="2222" rootFolder="/russ1-vdm.vipasuite.com/Libraries" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" maxConnections="2" />
+          </advancedOptions>
+          <option name="port" value="2222" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

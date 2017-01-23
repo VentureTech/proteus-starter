@@ -19,6 +19,8 @@ import com.example.app.profile.ui.company.resource.CompanyResourcePermissionChec
 import com.example.app.profile.ui.user.MyAccountPermissionCheck
 import com.example.app.profile.ui.user.UserManagementPermissionCheck
 import com.example.app.support.service.ApplicationFunctionPermissionCheck
+import com.example.app.text.ui.TextManagementPermissionCheck
+import com.example.app.text.ui.TextManagementText
 import com.i2rd.cms.generator.MenuBeanGenerator
 import groovy.transform.CompileStatic
 import net.proteusframework.cms.component.generator.AbstractScriptGenerator
@@ -42,6 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired
 @CompileStatic
 class AppFunctionMenuGenerator extends AbstractScriptGenerator
 {
+    @Autowired TextManagementPermissionCheck _textManagementPermissionCheck
     @Autowired CompanyUIPermissionCheck _companiesPermissionCheck
     @Autowired UserManagementPermissionCheck _userManagementPermissionCheck
     @Autowired MyAccountPermissionCheck _myAccountPermissionCheck
@@ -75,15 +78,16 @@ class AppFunctionMenuGenerator extends AbstractScriptGenerator
         def pw = response.getContentWriter()
         ContentWrapper cw = new ContentWrapper(request, response)
         cw.setIdAttribute(_cssID)
-        cw.addClassAttribute('starter-menu-wrapper menu')
+        cw.addClassAttribute('app-menu-wrapper menu')
         cw.open()
 
-        pw.append('<ul class="nav starter-menu menubeanh menu">')
+        pw.append('<ul class="nav app-menu menubeanh menu">')
 
         appendLink(request, response, _companiesPermissionCheck, "company-management", _terms.companies())
         appendLink(request, response, _clientManagementPermissionCheck, "client-management", _terms.clients())
         appendLink(request, response, _userManagementPermissionCheck, "user-management", UIText.USERS())
         appendLink(request, response, _companyResourcePermissionCheck, "resource-management", UIText.RESOURCES())
+        appendLink(request, response, _textManagementPermissionCheck, "text-management", TextManagementText.MENU_ITEM_NAME())
 
         pw.append('</ul>')
 

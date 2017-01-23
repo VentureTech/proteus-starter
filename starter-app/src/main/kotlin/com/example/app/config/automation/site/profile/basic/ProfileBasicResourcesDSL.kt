@@ -11,7 +11,7 @@
 
 package com.example.app.config.automation.site.profile.basic
 
-import com.example.app.config.ProjectInformation
+import com.example.app.config.automation.site.profile.basic.ProfileBasicDSL.Companion.SITE_FRONTEND
 import com.example.app.profile.ui.ApplicationFunctions.Company.Resource
 import experimental.cms.dsl.AppDefinition
 import experimental.cms.dsl.AppFunctionPage
@@ -19,12 +19,11 @@ import experimental.cms.dsl.content.ApplicationFunction
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
-private val appName = ProjectInformation.APPLICATION_NAME
-
 @Profile("automation")
 @Component
 open class ProfileBasicResourcesDSL :
-    AppDefinition("Profile Basic - Resources", version = 1, siteId = "$appName Frontend", dependency = "Profile Basic", init = {
+    AppDefinition(DEFINITION_NAME, version = 1, siteId = SITE_FRONTEND, dependency = ProfileBasicDSL.DEFINITION_NAME, init = {
+
     for((appFunction, path, htmlClassName) in listOf(
         AppFunctionPage(Resource.MANAGEMENT, "/resource/manage", "resource-management"),
         AppFunctionPage(Resource.EDIT, "/resource/edit/*", "resource-editor"),
@@ -41,4 +40,9 @@ open class ProfileBasicResourcesDSL :
             }
         }
     }
-})
+
+}) {
+    companion object {
+        internal const val DEFINITION_NAME = "${ProfileBasicDSL.DEFINITION_NAME} - Resources"
+    }
+}

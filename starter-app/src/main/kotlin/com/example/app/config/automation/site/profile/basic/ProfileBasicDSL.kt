@@ -30,9 +30,10 @@ import java.net.URL
 
 private val appName = ProjectInformation.APPLICATION_NAME
 
+
 @Profile("automation")
 @Component
-open class ProfileBasicDSL : AppDefinition("Profile Basic", version = 1, siteId = "$appName Frontend", init = {
+open class ProfileBasicDSL : AppDefinition(DEFINITION_NAME, version = 1, siteId = SITE_FRONTEND, init = {
     libraryResources(URL("https://repo.venturetech.net/artifactory/vt-snapshot-local/" +
         "com/example/starter-app/\${LATEST}/starter-app-\${LATEST}-libraries.zip"))
     webResources(URL("https://repo.venturetech.net/artifactory/simple/vt-snapshot-local/" +
@@ -182,7 +183,6 @@ match an existing user account, then an email message will be sent with addition
         AppFunctionPage(User.MY_ACCOUNT_VIEW, "/account/my-profile", "my-profile"),
         AppFunctionPage(User.MY_ACCOUNT_EDIT, "/account/my-profile/edit/*", "my-profile-edit")
      )) {
-
         page(appFunction, path) {
             template("Frontend")
             permission("Frontend Access")
@@ -205,5 +205,10 @@ match an existing user account, then an email message will be sent with addition
         directory = "Design"
         path = "_design/*"
     }
-})
+}) {
+    companion object {
+        internal const val DEFINITION_NAME = "Profile Basic"
+        val SITE_FRONTEND = "$appName Frontend"
+    }
+}
 
