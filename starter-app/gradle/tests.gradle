@@ -17,6 +17,8 @@ test {
     minHeapSize = "128m"
     maxHeapSize = "512m"
 
+    jvmArgs '-Duser.timezone=Etc/UTC'
+
     testLogging {
         outputs.upToDateWhen {false} // Always generate report immediately
         events "passed", "skipped", "failed", "standardOut", "standardError"
