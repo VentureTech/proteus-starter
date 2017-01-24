@@ -17,6 +17,7 @@ import com.i2rd.cms.visibility.VisibilityConditionInstance
 import com.i2rd.lib.Library
 import com.i2rd.lib.LibraryConfiguration
 import experimental.cms.dsl.*
+import net.proteusframework.cms.PageElementModelImpl
 import net.proteusframework.cms.component.ContentElement
 
 /**
@@ -40,6 +41,7 @@ class SocialLogin(id: String) : Identifiable(id), Content {
     private var _loginService: String? = null
     private var _providers = mutableListOf<String>()
     private var _mode: SocialLoginMode? = null
+    private var _additionalProperties = mutableMapOf<String, String?>()
 
     fun landingPage(landingPageId: String) {
         getSite().siteConstructedCallbacks.add{ site ->
@@ -71,8 +73,13 @@ class SocialLogin(id: String) : Identifiable(id), Content {
         _mode = loginmode
     }
 
+    fun additionalProperty(property: String, value: String?) {
+        _additionalProperties.put(property, value)
+    }
+
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
         val contentElement = existing ?: SocialLoginElement()
+        helper.assignToSite(PageElementModelImpl.StandardIdentifier(SocialLoginElement::class.java).toIdentifier())
         val builder = SocialLoginContentBuilder()
         updateBuilder(builder, helper)
         return ContentInstance(contentElement, builder.content)
@@ -111,5 +118,6 @@ class SocialLogin(id: String) : Identifiable(id), Content {
         builder.loginServiceIdentifier = _loginService
         builder.providerProgrammaticNames = _providers
         builder.mode = _mode
+        _additionalProperties.keys.forEach { builder.setProperty(it, _additionalProperties[it]) }
     }
 }

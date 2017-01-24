@@ -19,6 +19,7 @@ import com.example.app.login.social.service.SocialLoginService;
 import com.example.app.login.social.ui.SocialLoginElement;
 import com.example.app.login.social.ui.SocialLoginMode;
 import com.example.app.login.social.ui.SocialLoginParams;
+import com.example.app.login.social.ui.SocialLoginServiceEditor;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -55,11 +56,12 @@ import net.proteusframework.core.locale.TextSource;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
-import net.proteusframework.internet.dataprovider.JavaScriptInitProvider;
 import net.proteusframework.internet.http.Request;
 import net.proteusframework.internet.http.Response;
+import net.proteusframework.internet.http.Scope;
 import net.proteusframework.internet.http.resource.html.NDE;
 import net.proteusframework.ui.miwt.component.composite.Message;
+import net.proteusframework.ui.miwt.component.composite.editor.BooleanValueEditor;
 import net.proteusframework.users.model.Principal;
 import net.proteusframework.users.model.SSOType;
 import net.proteusframework.users.model.dao.PrincipalDAO;
@@ -72,7 +74,7 @@ import static net.proteusframework.users.model.AuthenticationMethodSecurityLevel
  * OneAll Login Service
  *
  * @author Alan Holt (aholt@venturetech.net)
- * @since 1/20/17
+ * @since 1 /20/17
  */
 @I18NFile(
     symbolPrefix = "com.example.app.login.oneall.service.OneAllLoginService",
@@ -91,7 +93,10 @@ import static net.proteusframework.users.model.AuthenticationMethodSecurityLevel
             l10n = @L10N("A User already exists in the system for the given social network login")),
         @I18N(symbol = "Error Not Logged In",
             description = "",
-            l10n = @L10N("In order to link to a social network, you will have to log in first."))
+            l10n = @L10N("In order to link to a social network, you will have to log in first.")),
+        @I18N(symbol = "Label SSO Enabled",
+            description = "",
+            l10n = @L10N("SSO Enabled"))
     }
 )
 @Service(SERVICE_IDENTIFIER)
@@ -100,6 +105,13 @@ public class OneAllLoginService implements SocialLoginService
     private static final Logger _logger = LogManager.getLogger(OneAllLoginService.class);
     /** The constant SERVICE_IDENTIFIER. */
     public static final String SERVICE_IDENTIFIER = "oneall";
+    /** The constant SESSION_KEY_SSO_TOKEN */
+    public static final String SESSION_KEY_SSO_TOKEN = "oneall-sso-token";
+    /** The constant PROP_SSO_ENABLED */
+    public static final String PROP_SSO_ENABLED = "sso-enabled";
+    /** The constant PARAM_SSO_CALLBACK */
+    public static final String PARAM_SSO_CALLBACK = "sso-callback";
+
     private static final Pattern NEWLINE_PATTERN = Pattern.compile("[\n\r]");
     private static final String PARAM_CONNECTION_TOKEN = "connection_token";
 
@@ -121,20 +133,10 @@ public class OneAllLoginService implements SocialLoginService
             @Override
             public void preRenderProcess(CmsRequest<SocialLoginElement> request, CmsResponse response, ProcessChain chain)
             {
-                if(isConfigured())
-                {
-                    request.getDataProviderContainer().registerDataProvider(new JavaScriptInitProvider(
-                        "var oneall_subdomain = '" + _subdomain + "';\n"
-                        + "\n"
-                        + "/* The library is loaded asynchronously */\n"
-                        + "var oa = document.createElement('script');\n"
-                        + "oa.type = 'text/javascript'; oa.async = true;\n"
-                        + "oa.src = '//' + oneall_subdomain + '.api.oneall.com/socialize/library.js';\n"
-                        + "var s = document.getElementsByTagName('script')[0];\n"
-                        + "s.parentNode.insertBefore(oa, s);"));
-                }
+                //Do Nothing.
             }
 
+            @SuppressWarnings("unchecked")
             @Override
             public List<NDE> getNDEs()
             {
@@ -149,25 +151,36 @@ public class OneAllLoginService implements SocialLoginService
                     String modeString = getModeString(loginParams.getMode());
                     EntityUtilWriter pw = response.getContentWriter();
                     pw.append("<div id='oneall_social_login'></div>");
-                    pw.append("<script type=\"text/javascript\">\n")
+                    pw.append("<script async=\"async\" type=\"text/javascript\">\n")
+                        //Setup OneAll Library
+                        .append("var oneall_subdomain = '").append(_subdomain).append("';\n")
+                        .append('\n')
+                        .append("var oa = document.createElement('script');\n")
+                        .append("oa.type = 'text/javascript';\n")
+                        .append("oa.async = true;\n")
+                        .append("oa.src = '//' + oneall_subdomain + '.api.oneall.com/socialize/library.js';\n")
+                        .append("var s = document.getElementsByTagName('script')[0];\n")
+                        .append("s.parentNode.insertBefore(oa, s);\n")
+                        //Done Setting Up OneAll Library
                         .append('\n')
                         .append("\t/* Embeds the buttons into the container oneall_social_login */\n")
-                        .append("  var _oneall = _oneall || [];\n" + "  _oneall.push(['")
+                        .append("var _oneall = _oneall || [];\n")
+                        .append("_oneall.push(['")
                         .append(modeString)
                         .append("', 'set_providers', ")
                         .append(loginParams.getLoginProvidersString())
                         .append("]);\n")
-                        .append("  _oneall.push(['")
+                        .append("_oneall.push(['")
                         .append(modeString)
                         .append("', 'set_callback_uri', '")
-                        .append(loginParams.getCallbackURI())
+                        .append(loginParams.getCallbackURL().getURL(true))
                         .append("']);\n");
                     if (loginParams.getMode() == SocialLoginMode.Link)
                     {
                         String userToken = getUserTokenForCurrentUser(request);
                         if (!StringFactory.isEmptyString(userToken))
                         {
-                            pw.append("  _oneall.push(['")
+                            pw.append("_oneall.push(['")
                                 .append(modeString)
                                 .append("', 'set_user_token', '")
                                 .append(userToken)
@@ -175,11 +188,35 @@ public class OneAllLoginService implements SocialLoginService
                         }
                     }
                     pw
-                        .append("  _oneall.push(['")
+                        .append("_oneall.push(['")
                         .append(modeString)
                         .append("', 'do_render_ui', 'oneall_social_login']);\n")
                         .append(String.valueOf('\n'));
                     pw.append("</script>");
+
+                    if(Boolean.valueOf(loginParams.getContentBuilder().getProperty(PROP_SSO_ENABLED, "false")))
+                    {
+                        String ssoToken = request.getSession(Scope.SESSION).getString(SESSION_KEY_SSO_TOKEN, null);
+                        String callbackURL = loginParams.getCallbackURL().addParameter(PARAM_SSO_CALLBACK, true).getURL(true);
+
+                        pw.append("<script async=\"async\" type=\"text/javascript\">\n")
+                            .append('\n')
+                            .append("var _oneall = _oneall || [];\n");
+                        if(StringFactory.isEmptyString(ssoToken))
+                        {
+                            pw.append("_oneall.push(['single_sign_on', 'set_callback_uri', '")
+                                .append(callbackURL)
+                                .append("']);\n")
+                                .append("_oneall.push(['single_sign_on', 'do_check_for_sso_session']);\n");
+                        }
+                        else
+                        {
+                            pw.append("_oneall.push(['single_sign_on', 'do_register_sso_session', '")
+                                .append(ssoToken)
+                                .append("']);\n");
+                        }
+                        pw.append("</script>");
+                    }
                 }
             }
         };
@@ -203,24 +240,21 @@ public class OneAllLoginService implements SocialLoginService
     public List<SocialLoginProvider> getSupportedProviders()
     {
         String reqURL = _apiEndpoint + "/providers.json";
-        try
+        String responseString = safeSendAPIRequest(reqURL, "GET");
+        if(!StringFactory.isEmptyString(responseString))
         {
-            String responseString = sendAPIRequest(reqURL, "GET").get();
-            if(!StringFactory.isEmptyString(responseString))
+            Gson gson = new GsonBuilder().create();
+            APIProvidersResponseWrapper response = gson.fromJson(responseString, APIProvidersResponseWrapper.class);
+            if(Objects.equals(response.response.request.status.flag, "success"))
             {
-                Gson gson = new GsonBuilder().create();
-                APIProvidersResponseWrapper response = gson.fromJson(responseString, APIProvidersResponseWrapper.class);
-                if(Objects.equals(response.response.request.status.flag, "success"))
-                {
-                    _supportedProviders.clear();
-                    response.response.result.data.providers.entries.forEach(entry ->
-                        _supportedProviders.add(new SocialLoginProvider(entry.name, entry.key)));
-                }
+                _supportedProviders.clear();
+                response.response.result.data.providers.entries.forEach(entry -> {
+                    if(entry.isConfigured())
+                    {
+                        _supportedProviders.add(new SocialLoginProvider(entry.name, entry.key));
+                    }
+                });
             }
-        }
-        catch (InterruptedException | ExecutionException e)
-        {
-            _logger.error("Error occurred while recieving response from OneAll API:", e);
         }
         return _supportedProviders;
     }
@@ -234,30 +268,24 @@ public class OneAllLoginService implements SocialLoginService
             if (!StringFactory.isEmptyString((connectionToken = request.getParameter(PARAM_CONNECTION_TOKEN))))
             {
                 String reqURL = _apiEndpoint + "/connections/" + connectionToken + ".json";
-                try
+                String responseString = safeSendAPIRequest(reqURL, "GET");
+                if (!StringFactory.isEmptyString(responseString))
                 {
-                    String responseString = sendAPIRequest(reqURL, "GET").get();
-                    if (!StringFactory.isEmptyString(responseString))
+                    Gson gson = new GsonBuilder().create();
+                    APIConnectionsResponseWrapper res = gson.fromJson(responseString, APIConnectionsResponseWrapper.class);
+                    if (Objects.equals(res.response.request.status.flag, "success"))
                     {
-                        Gson gson = new GsonBuilder().create();
-                        APIConnectionsResponseWrapper res = gson.fromJson(responseString, APIConnectionsResponseWrapper.class);
-                        if (Objects.equals(res.response.request.status.flag, "success"))
-                        {
-                            String userToken = res.response.result.data.user.user_token;
+                        String userToken = res.response.result.data.user.user_token;
+                        String identityToken = res.response.result.data.user.identity.identity_token;
 
-                            Principal toLogin = _oneAllDAO.getPrincipalForUserToken(userToken,
-                                request.getHostname().getDomain(),
-                                request.getHostname().getSite().getDomain());
-                            if (loginParams.getMode() == SocialLoginMode.Link)
-                                return doLink(loginParams, userToken, toLogin);
-                            if (loginParams.getMode() == SocialLoginMode.Login)
-                                return doLogin(loginParams, userToken, toLogin);
-                        }
+                        Principal toLogin = _oneAllDAO.getPrincipalForUserToken(userToken,
+                            request.getHostname().getDomain(),
+                            request.getHostname().getSite().getDomain());
+                        if (loginParams.getMode() == SocialLoginMode.Link)
+                            return doLink(loginParams, userToken, toLogin);
+                        if (loginParams.getMode() == SocialLoginMode.Login)
+                            return doLogin(loginParams, userToken, toLogin, request, identityToken);
                     }
-                }
-                catch (InterruptedException | ExecutionException e)
-                {
-                    _logger.error("Error occurred while recieving response from OneAll API:", e);
                 }
             }
             else
@@ -268,17 +296,38 @@ public class OneAllLoginService implements SocialLoginService
         return false;
     }
 
-    private boolean doLogin(SocialLoginParams loginParams, String userToken, @Nullable Principal toLogin)
-        throws ExecutionException, InterruptedException
+    private boolean doLogin(SocialLoginParams loginParams, String userToken, @Nullable Principal toLogin,
+        Request request, String identityToken)
     {
         if(toLogin != null)
         {
             _principalDAO.authenticatePrincipalProgrammatically(toLogin, SHARED_SECRET,
-                toLogin.getSSOCredentials(SSOType.other, "oneall"));
+                toLogin.getSSOCredentials(SSOType.other, SERVICE_IDENTIFIER));
+            if(Boolean.valueOf(loginParams.getContentBuilder().getProperty(PROP_SSO_ENABLED, "false"))
+                && !Boolean.valueOf(request.getParameter(PARAM_SSO_CALLBACK, "false")))
+            {
+                //If SSO Is Enabled for this Social Login component, then we instantiate a new SSO Session
+                //And insert the sso token into the session
+                String reqURL = _apiEndpoint + "/sessions/identities/" + identityToken + ".json";
+                String responseString = safeSendAPIRequest(reqURL, "PUT");
+                if(!StringFactory.isEmptyString(responseString))
+                {
+                    Gson gson = new GsonBuilder().create();
+                    APISSOSessionResponseWrapper res = gson.fromJson(responseString, APISSOSessionResponseWrapper.class);
+                    if(Objects.equals(res.response.request.status.flag, "success"))
+                    {
+                        String ssoToken = res.response.result.data.sso_session.sso_session_token;
+                        request.getSession(Scope.SESSION).setString(SESSION_KEY_SSO_TOKEN, ssoToken);
+                    }
+                }
+            }
             return true;
         }
-        //If no user exists in our system, instruct OneAll to delete the user that it created.
-        sendAPIRequest(_apiEndpoint + "/users/" + userToken + ".json?confirm_deletion=true", "DELETE");
+        if(_oneAllDAO.getPrincipalForUserToken(userToken) == null)
+        {
+            //If no user exists in our system, instruct OneAll to delete the user that it created.
+            sendAPIRequest(_apiEndpoint + "/users/" + userToken + ".json?confirm_deletion=true", "DELETE");
+        }
 
         loginParams.getMessageAcceptor().accept(Message.error(
             ERROR_USER_DOES_NOT_EXIST_FOR_USER_TOKEN(), ERROR_DETAILS_USER_DOES_NOT_EXIST_FOR_USER_TOKEN()));
@@ -288,13 +337,11 @@ public class OneAllLoginService implements SocialLoginService
     private boolean doLink(SocialLoginParams loginParams, String userToken, @Nullable Principal toLogin)
     {
         Principal current = _principalDAO.getCurrentPrincipal();
-        if(loginParams.getMode() == SocialLoginMode.Link
-           && current != null
-           && (toLogin == null || Objects.equals(toLogin.getId(), current.getId())))
+        if(current != null && (toLogin == null || Objects.equals(toLogin.getId(), current.getId())))
         {
             _oneAllDAO.createOneAllCredential(current, userToken);
             _principalDAO.authenticatePrincipalProgrammatically(current, SHARED_SECRET,
-                current.getSSOCredentials(SSOType.other, "oneall"));
+                current.getSSOCredentials(SSOType.other, SERVICE_IDENTIFIER));
             return true;
         }
         if(current == null)
@@ -319,6 +366,32 @@ public class OneAllLoginService implements SocialLoginService
     public String getServiceIdentifier()
     {
         return SERVICE_IDENTIFIER;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Nonnull
+    @Override
+    public List<SocialLoginServiceEditor> createEditors()
+    {
+        BooleanValueEditor ssoEnabledValueEditor = new BooleanValueEditor(LABEL_SSO_ENABLED(), null);
+        ssoEnabledValueEditor.addClassName(PROP_SSO_ENABLED);
+        SocialLoginServiceEditor<Boolean> sSOEnabledEditor = new SocialLoginServiceEditor<>(
+            PROP_SSO_ENABLED, ssoEnabledValueEditor, String::valueOf, Boolean::valueOf);
+        return Collections.singletonList(sSOEnabledEditor);
+    }
+
+    @Nullable
+    private String safeSendAPIRequest(@Nullable String urlString, @Nullable final String method)
+    {
+        try
+        {
+            return sendAPIRequest(urlString, method).get();
+        }
+        catch (InterruptedException | ExecutionException e)
+        {
+            _logger.error("Error occurred while recieving response from OneAll API:", e);
+        }
+        return null;
     }
 
     @Nullable
@@ -495,6 +568,16 @@ public class OneAllLoginService implements SocialLoginService
                             public String key;
                             public Boolean is_configurable;
                             public APIProviderConfiguration configuration;
+
+                            /**
+                             * Is configured boolean.
+                             *
+                             * @return the boolean
+                             */
+                            public boolean isConfigured()
+                            {
+                                return !is_configurable || (!configuration.is_required || configuration.is_completed);
+                            }
                         }
 
                         public Integer count;
@@ -512,5 +595,34 @@ public class OneAllLoginService implements SocialLoginService
         }
 
         public APIProvidersResponse response;
+    }
+
+    @SuppressWarnings("InstanceVariableNamingConvention")
+    public static class APISSOSessionResponseWrapper
+    {
+        public static class APISSOSessionResponse
+        {
+            public static class APISSOSessionResult
+            {
+                public static class APISSOSessionData
+                {
+                    public static class APISSOSession
+                    {
+                        public String sso_session_token;
+                        public String user_token;
+                        public String identity_token;
+                    }
+
+                    public APISSOSession sso_session;
+                }
+
+                public APISSOSessionData data;
+            }
+
+            public APIRequest request;
+            public APISSOSessionResult result;
+        }
+
+        public APISSOSessionResponse response;
     }
 }

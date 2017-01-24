@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
@@ -46,6 +47,7 @@ import net.proteusframework.ui.miwt.component.composite.editor.ListComponentValu
 import net.proteusframework.ui.miwt.util.CommonButtonText;
 
 import static com.example.app.login.social.ui.SocialLoginEditorLOK.*;
+import static net.proteusframework.ui.miwt.component.Container.of;
 
 /**
  * Editor for {@link SocialLoginElement}
@@ -81,6 +83,10 @@ public class SocialLoginEditor extends ContentBuilderBasedEditor<SocialLoginCont
     private BooleanValueEditor _overrideDynamicReturn;
     private LibraryConfigurationForm<ScriptableRedirectType> _scriptedRedirectSelector = null;
 
+    private final Container _loginServiceEditorWrapper = of("login-service-editors");
+    @SuppressWarnings("rawtypes")
+    private List<SocialLoginServiceEditor> _loginServiceEditors;
+
     /**
      * Constructor.
      */
@@ -89,6 +95,7 @@ public class SocialLoginEditor extends ContentBuilderBasedEditor<SocialLoginCont
         super(SocialLoginContentBuilder.class);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void createUI(EditorUI editorUI)
     {
@@ -114,6 +121,9 @@ public class SocialLoginEditor extends ContentBuilderBasedEditor<SocialLoginCont
         LibraryConfiguration<ScriptableRedirectType> scriptableRedirect = getBuilder().getScriptedRedirectInstance() > 0
             ? _libraryDAO.getLibraryConfiguration(getBuilder().getScriptedRedirectInstance())
             : null;
+        _loginServiceEditors = selectedService != null
+            ? selectedService.createEditors()
+            : Collections.emptyList();
 
         //Construct UI
         _loginServiceSelector = new ComboBoxValueEditor<>(
@@ -131,7 +141,16 @@ public class SocialLoginEditor extends ContentBuilderBasedEditor<SocialLoginCont
                 .filter(sel -> providers.stream()
                     .anyMatch(p -> Objects.equals(p.getProgrammaticName(), sel.getProgrammaticName())))
                 .collect(Collectors.toList())));
+            _loginServiceEditors = ls != null ? ls.createEditors() : Collections.emptyList();
+            _loginServiceEditorWrapper.removeAllComponents();
+            _loginServiceEditors.stream().map(SocialLoginServiceEditor::getEditor).forEach(_loginServiceEditorWrapper::add);
+            _loginServiceEditors.forEach(editor -> editor.getEditor().setValue(
+                    editor.getStringToValue().apply(getBuilder().getProperty(editor.getProperty(), null))));
         });
+
+        _loginServiceEditors.stream().map(SocialLoginServiceEditor::getEditor).forEach(_loginServiceEditorWrapper::add);
+        _loginServiceEditors.forEach(editor -> editor.getEditor().setValue(
+            editor.getStringToValue().apply(getBuilder().getProperty(editor.getProperty(), null))));
 
         _providerSelector = new ListComponentValueEditor<>(LABEL_PROVIDERS(), availableProviders, selectedProviders);
         _providerSelector.setRequiredValueValidator();
@@ -156,16 +175,18 @@ public class SocialLoginEditor extends ContentBuilderBasedEditor<SocialLoginCont
 
         //Add UI Components to the Editor
         editorUI.addComponent(_loginServiceSelector);
+        editorUI.addComponent(_loginServiceEditorWrapper);
         editorUI.addComponent(_providerSelector);
         editorUI.addComponent(_modeSelector);
-        editorUI.addComponent(Container.of("landing-page", LABEL_LANDING_PAGE(), _landingPageSelector));
+        editorUI.addComponent(of("landing-page", LABEL_LANDING_PAGE(), _landingPageSelector));
         editorUI.addComponent(_overrideDynamicReturn);
         if(_scriptedRedirectSelector != null)
         {
-            editorUI.addComponent(Container.of("scriptable-redirect", LABEL_SCRIPTED_REDIRECT(), _scriptedRedirectSelector));
+            editorUI.addComponent(of("scriptable-redirect", LABEL_SCRIPTED_REDIRECT(), _scriptedRedirectSelector));
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void _updateBuilder()
     {
@@ -195,5 +216,7 @@ public class SocialLoginEditor extends ContentBuilderBasedEditor<SocialLoginCont
         {
             getBuilder().setScriptedRedirectInstance(0L);
         }
+        _loginServiceEditors.forEach(editor -> getBuilder().setProperty(editor.getProperty(),
+            (String)editor.getValueToString().apply(editor.getEditor().commitValue())));
     }
 }

@@ -49,14 +49,32 @@ public class OneAllDAO extends DAOHelper
      * Gets principal for user token.
      *
      * @param userToken the user token
-     * @param domains the domains
+     * @param domains the domains.  If null or empty, will return any principal within the system that is linked to the given token
      *
      * @return the principal for user token
      */
     @Nullable
     public Principal getPrincipalForUserToken(String userToken, AuthenticationDomain... domains)
     {
-        return _principalDAO.getPrincipalBySSO(SSOType.other, userToken, OneAllLoginService.SERVICE_IDENTIFIER, domains);
+        if(domains != null && domains.length > 0)
+        {
+            return _principalDAO.getPrincipalBySSO(SSOType.other, userToken, OneAllLoginService.SERVICE_IDENTIFIER, domains);
+        }
+        else
+        {
+            StringBuilder hql = new StringBuilder();
+            hql.append("select p from ").append(Principal.class.getName()).append(" p inner join p.credentials cred ")
+                .append(" where cred.SSOType = :ssoType and cred.SSOId = :ssoId and ");
+            hql.append("cred.otherType = :otherType");
+            return doInTransaction(session -> {
+                Query query = getSession().createQuery(hql.toString());
+                query.setParameter("ssoType", SSOType.other);
+                query.setString("otherType", OneAllLoginService.SERVICE_IDENTIFIER);
+                query.setString("ssoId", userToken);
+                query.setMaxResults(1);
+                return (Principal) query.uniqueResult();
+            });
+        }
     }
 
     /**

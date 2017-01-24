@@ -13,7 +13,9 @@ package com.example.app.login.social.service;
 
 import com.example.app.login.social.ui.SocialLoginElement;
 import com.example.app.login.social.ui.SocialLoginParams;
+import com.example.app.login.social.ui.SocialLoginServiceEditor;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 import net.proteusframework.cms.component.generator.Renderer;
@@ -65,4 +67,12 @@ public interface SocialLoginService extends NamedObject
      * @return url parameter names
      */
     List<String> getURLParametersToRemoveAfterCallback();
+
+    /**
+     * Create a list of SocialLoginServiceEditors to be used when configuring {@link SocialLoginElement}
+     * @return editors
+     */
+    @SuppressWarnings("rawtypes")
+    @Nonnull
+    List<SocialLoginServiceEditor> createEditors();
 }
