@@ -102,19 +102,19 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
                     callbackURL.setAbsolute(true);
 
                     SocialLoginParams params = new SocialLoginParams(
-                        callbackURL.getURL(true),
-                        cb.getMode(), selectedService, _uiPreferences::addMessage, providers);
+                        callbackURL,
+                        cb.getMode(), selectedService, _uiPreferences::addMessage, cb, providers);
 
                     //Check if we are in a callback
                     if(request.getParameter(PARAM_CALLBACK) != null)
                     {
                         if(selectedService.handleLoginCallback(request, response, params))
                         {
-                            //If we're linking, we just stay on the page we did the link from.
                             if(params.getMode() == SocialLoginMode.Login)
-                                handleLoginSuccess(cb, request, response);
+                                handleLoginSuccess(params, request, response);
                             else if(params.getMode() == SocialLoginMode.Link)
                                 handleLinkSuccess(params, request, response);
+                            return;
                         }
                         else
                         {
@@ -144,15 +144,15 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
         clearURLParams(params, request, response);
     }
 
-    private void handleLoginSuccess(SocialLoginContentBuilder cb, CmsRequest<SocialLoginElement> request, CmsResponse response)
+    private void handleLoginSuccess(SocialLoginParams params, CmsRequest<SocialLoginElement> request, CmsResponse response)
     {
         ResponseURL redirect;
         //Respect the dynamic return page first
         redirect = getDynamicReturn(request, response);
         //Get the scripted redirect URL if it exists
-        redirect = redirect != null ? redirect : getScriptableRedirectURL(cb, request, response);
+        redirect = redirect != null ? redirect : getScriptableRedirectURL(params.getContentBuilder(), request, response);
         //Finally, use the specified landing page
-        redirect = redirect != null ? redirect : getLandingPage(cb, response);
+        redirect = redirect != null ? redirect : getLandingPage(params.getContentBuilder(), response);
 
         if(redirect != null)
             response.redirect(redirect);

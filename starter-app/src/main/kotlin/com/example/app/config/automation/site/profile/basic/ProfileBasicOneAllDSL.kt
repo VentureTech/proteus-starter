@@ -37,6 +37,8 @@ open class ProfileBasicOneAllDSL :
             provider("google")
             provider("facebook")
             mode(SocialLoginMode.Login)
+            //You can enable SSO by uncommenting the line below:
+//            additionalProperty(OneAllLoginService.PROP_SSO_ENABLED, "true")
         }
     }
 

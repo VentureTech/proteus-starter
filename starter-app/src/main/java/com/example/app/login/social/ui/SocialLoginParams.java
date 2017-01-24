@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import net.proteusframework.core.notification.Notification;
+import net.proteusframework.internet.http.ResponseURL;
 
 /**
  * Parameters used to construct Social Login UIs
@@ -29,11 +30,12 @@ import net.proteusframework.core.notification.Notification;
  */
 public class SocialLoginParams
 {
-    private final String _callbackURI;
+    private final ResponseURL _callbackURL;
     private final SocialLoginMode _mode;
     private final Consumer<Notification> _messageAcceptor;
     private final ImmutableList<SocialLoginProvider> _loginProviders;
     private final SocialLoginService _loginService;
+    private final SocialLoginContentBuilder _contentBuilder;
 
     /**
      * Instantiates a new Social login params.
@@ -42,15 +44,17 @@ public class SocialLoginParams
      * @param mode the mode
      * @param loginService the login service
      * @param messageAcceptor the message acceptor
+     * @param contentBuilder the content builder
      * @param providers the providers
      */
-    public SocialLoginParams(String callbackURI, SocialLoginMode mode, SocialLoginService loginService,
-        Consumer<Notification> messageAcceptor, List<SocialLoginProvider> providers)
+    public SocialLoginParams(ResponseURL callbackURI, SocialLoginMode mode, SocialLoginService loginService,
+        Consumer<Notification> messageAcceptor, SocialLoginContentBuilder contentBuilder, List<SocialLoginProvider> providers)
     {
-        _callbackURI = callbackURI;
+        _callbackURL = callbackURI;
         _mode = mode;
         _messageAcceptor = messageAcceptor;
         _loginService = loginService;
+        _contentBuilder = contentBuilder;
         if(providers != null)
             _loginProviders = ImmutableList.copyOf(providers);
         else
@@ -62,9 +66,9 @@ public class SocialLoginParams
      *
      * @return the callback uri
      */
-    public String getCallbackURI()
+    public ResponseURL getCallbackURL()
     {
-        return _callbackURI;
+        return _callbackURL;
     }
 
     /**
@@ -124,5 +128,15 @@ public class SocialLoginParams
     public SocialLoginService getLoginService()
     {
         return _loginService;
+    }
+
+    /**
+     * Gets content builder.
+     *
+     * @return the content builder
+     */
+    public SocialLoginContentBuilder getContentBuilder()
+    {
+        return _contentBuilder;
     }
 }
