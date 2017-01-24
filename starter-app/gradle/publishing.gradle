@@ -2,11 +2,12 @@ artifactoryPublish.doFirst({createDependencyFile.execute()})
 
 publishing {
     publications {
+
         ivyPub(IvyPublication) {
             from components.java
 
             artifact(sourceJar) {
-                type "source"
+                type "sources"
                 conf "runtime"
             }
             artifact(javadocJar) {
@@ -17,18 +18,28 @@ publishing {
                 type "libraries"
                 conf "runtime"
             }
+            components.web.usages.each { usage ->
+                usage.artifacts.each {
+                    artifact(it)
+                }
+            }
         }
         mavenPub(MavenPublication) {
             from components.java
 
             artifact(sourceJar) {
-                classifier "source"
+                classifier "sources"
             }
             artifact(javadocJar) {
                 classifier "javadoc"
             }
             artifact(librariesZip) {
                 classifier "libraries"
+            }
+            components.web.usages.each { usage ->
+                usage.artifacts.each {
+                    artifact(it)
+                }
             }
         }
     }
@@ -47,7 +58,7 @@ artifactory {
             password = publish_venturetech_password
         }
         defaults {
-            publications('ivyPub', 'mavenPub')
+            publications('ivyPub','mavenPub')
             properties = [
                 'status'      : version.status, 'release.status': version.status,
                 'build.status': version.status, 'commit': gitinfo.commit,
