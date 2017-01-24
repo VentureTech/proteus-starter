@@ -11,6 +11,13 @@
 
 package com.example.app.login.social.service;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import net.proteusframework.core.locale.NamedObject;
+import net.proteusframework.core.locale.TextSource;
+import net.proteusframework.core.locale.TextSources;
+
 /**
  * A Social Login Provider
  *
@@ -19,7 +26,7 @@ package com.example.app.login.social.service;
  * @author Alan Holt (aholt@venturetech.net)
  * @since 1/19/17
  */
-public class SocialLoginProvider
+public class SocialLoginProvider implements NamedObject
 {
     private final String _displayName;
     private final String _programmaticName;
@@ -54,5 +61,19 @@ public class SocialLoginProvider
     public String getProgrammaticName()
     {
         return _programmaticName;
+    }
+
+    @Nonnull
+    @Override
+    public TextSource getName()
+    {
+        return TextSources.createText(getDisplayName());
+    }
+
+    @Nullable
+    @Override
+    public TextSource getDescription()
+    {
+        return null;
     }
 }

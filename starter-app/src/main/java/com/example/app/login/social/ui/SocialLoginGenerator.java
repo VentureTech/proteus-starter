@@ -13,6 +13,7 @@ package com.example.app.login.social.ui;
 
 import com.example.app.login.social.service.SocialLoginProvider;
 import com.example.app.login.social.service.SocialLoginService;
+import com.example.app.support.ui.UIPreferences;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -39,10 +39,12 @@ import net.proteusframework.cms.controller.CmsResponse;
 import net.proteusframework.cms.controller.LinkUtil;
 import net.proteusframework.cms.controller.ProcessChain;
 import net.proteusframework.cms.controller.RenderChain;
+import net.proteusframework.core.GloballyUniqueStringGenerator;
+import net.proteusframework.core.notification.HTMLNotificationRenderer;
+import net.proteusframework.core.notification.Notification;
 import net.proteusframework.internet.http.Link;
 import net.proteusframework.internet.http.RequestError;
 import net.proteusframework.internet.http.ResponseURL;
-import net.proteusframework.ui.miwt.component.composite.Message;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static net.proteusframework.core.StringFactory.isEmptyString;
@@ -60,12 +62,19 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
 
     private static final String PARAM_CALLBACK = "callback";
 
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection") //Autowired In.
     @Autowired private List<SocialLoginService> _loginServices;
     @Autowired private PrincipalDAO _principalDAO;
     @Autowired private LibraryDAO _libraryDAO;
+    @Autowired private UIPreferences _uiPreferences;
 
     private Renderer<SocialLoginElement> _socialLoginRenderer;
-    private List<Message> _messages = new ArrayList<>();
+
+    @Override
+    public String getIdentity(CmsRequest<SocialLoginElement> request)
+    {
+        return GloballyUniqueStringGenerator.getUniqueString();
+    }
 
     @Override
     public void preRenderProcess(CmsRequest<SocialLoginElement> request, CmsResponse response, ProcessChain chain)
@@ -90,10 +99,11 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
                     //Construct the callback URI
                     final ResponseURL callbackURL = response.createURL(true);
                     callbackURL.addParameter(PARAM_CALLBACK, true);
-                    Link callbackLink = callbackURL.getExternalLink();
+                    callbackURL.setAbsolute(true);
 
                     SocialLoginParams params = new SocialLoginParams(
-                        callbackLink.getURIAsString(), cb.getMode(), _messages::add, providers);
+                        callbackURL.getURL(true),
+                        cb.getMode(), selectedService, _uiPreferences::addMessage, providers);
 
                     //Check if we are in a callback
                     if(request.getParameter(PARAM_CALLBACK) != null)
@@ -103,6 +113,12 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
                             //If we're linking, we just stay on the page we did the link from.
                             if(params.getMode() == SocialLoginMode.Login)
                                 handleLoginSuccess(cb, request, response);
+                            else if(params.getMode() == SocialLoginMode.Link)
+                                handleLinkSuccess(params, request, response);
+                        }
+                        else
+                        {
+                            clearURLParams(params, request, response);
                         }
                     }
 
@@ -111,6 +127,21 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
                     _socialLoginRenderer.preRenderProcess(request, response, chain);
                 }
             });
+    }
+
+    private void clearURLParams(SocialLoginParams params, CmsRequest<SocialLoginElement> request, CmsResponse response)
+    {
+        ResponseURL redirect = response.createURL();
+        request.getParameterMap().keySet().stream()
+            .filter(k -> !params.getLoginService().getURLParametersToRemoveAfterCallback().contains(k))
+            .filter(k -> !Objects.equals(k, PARAM_CALLBACK))
+            .forEach(k -> redirect.addParameter(k, request.getParameter(k)));
+        response.redirect(redirect);
+    }
+
+    private void handleLinkSuccess(SocialLoginParams params, CmsRequest<SocialLoginElement> request, CmsResponse response)
+    {
+        clearURLParams(params, request, response);
     }
 
     private void handleLoginSuccess(SocialLoginContentBuilder cb, CmsRequest<SocialLoginElement> request, CmsResponse response)
@@ -216,6 +247,17 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
     {
         super.render(request, response, chain);
 
+        if(isEmptyString(request.getParameter(PARAM_CALLBACK)))
+        {
+            List<Notification> notifications = _uiPreferences.consumeMessages();
+            if(!notifications.isEmpty())
+            {
+                new HTMLNotificationRenderer(request, response.getContentWriter())
+                    .withRenderXHTML(request.isRequestForXmlContent())
+                    .withStandardWrappingElement()
+                    .render(notifications);
+            }
+        }
         if(_socialLoginRenderer != null)
             _socialLoginRenderer.render(request, response, chain);
     }

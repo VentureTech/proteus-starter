@@ -59,4 +59,10 @@ public interface SocialLoginService extends NamedObject
      * @return the identifier
      */
     String getServiceIdentifier();
+
+    /**
+     * Get a list of URL parameter names that should be removed from the redirect URL after the login service successfully links.
+     * @return url parameter names
+     */
+    List<String> getURLParametersToRemoveAfterCallback();
 }
