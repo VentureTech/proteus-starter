@@ -12,13 +12,14 @@
 package com.example.app.login.social.ui;
 
 import com.example.app.login.social.service.SocialLoginProvider;
+import com.example.app.login.social.service.SocialLoginService;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.UnmodifiableIterator;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-import net.proteusframework.ui.miwt.component.composite.Message;
+import net.proteusframework.core.notification.Notification;
 
 /**
  * Parameters used to construct Social Login UIs
@@ -30,23 +31,26 @@ public class SocialLoginParams
 {
     private final String _callbackURI;
     private final SocialLoginMode _mode;
-    private final Consumer<Message> _messageAcceptor;
+    private final Consumer<Notification> _messageAcceptor;
     private final ImmutableList<SocialLoginProvider> _loginProviders;
+    private final SocialLoginService _loginService;
 
     /**
      * Instantiates a new Social login params.
      *
      * @param callbackURI the callback uri
      * @param mode the mode
+     * @param loginService the login service
      * @param messageAcceptor the message acceptor
      * @param providers the providers
      */
-    public SocialLoginParams(String callbackURI, SocialLoginMode mode,
-        Consumer<Message> messageAcceptor, List<SocialLoginProvider> providers)
+    public SocialLoginParams(String callbackURI, SocialLoginMode mode, SocialLoginService loginService,
+        Consumer<Notification> messageAcceptor, List<SocialLoginProvider> providers)
     {
         _callbackURI = callbackURI;
         _mode = mode;
         _messageAcceptor = messageAcceptor;
+        _loginService = loginService;
         if(providers != null)
             _loginProviders = ImmutableList.copyOf(providers);
         else
@@ -107,8 +111,18 @@ public class SocialLoginParams
      *
      * @return the message acceptor
      */
-    public Consumer<Message> getMessageAcceptor()
+    public Consumer<Notification> getMessageAcceptor()
     {
         return _messageAcceptor;
+    }
+
+    /**
+     * Gets login service.
+     *
+     * @return the login service
+     */
+    public SocialLoginService getLoginService()
+    {
+        return _loginService;
     }
 }

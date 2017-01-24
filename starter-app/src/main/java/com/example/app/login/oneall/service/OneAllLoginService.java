@@ -11,12 +11,15 @@
 
 package com.example.app.login.oneall.service;
 
+import edu.emory.mathcs.backport.java.util.Collections;
+
 import com.example.app.login.oneall.model.OneAllDAO;
 import com.example.app.login.social.service.SocialLoginProvider;
 import com.example.app.login.social.service.SocialLoginService;
 import com.example.app.login.social.ui.SocialLoginElement;
 import com.example.app.login.social.ui.SocialLoginMode;
 import com.example.app.login.social.ui.SocialLoginParams;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -118,59 +121,66 @@ public class OneAllLoginService implements SocialLoginService
             @Override
             public void preRenderProcess(CmsRequest<SocialLoginElement> request, CmsResponse response, ProcessChain chain)
             {
-                request.getDataProviderContainer().registerDataProvider(new JavaScriptInitProvider(
-                    "var oneall_subdomain = '" + _subdomain + "';\n"
-                    + "\n"
-                    + "/* The library is loaded asynchronously */\n"
-                    + "var oa = document.createElement('script');\n"
-                    + "oa.type = 'text/javascript'; oa.async = true;\n"
-                    + "oa.src = '//' + oneall_subdomain + '.api.oneall.com/socialize/library.js';\n"
-                    + "var s = document.getElementsByTagName('script')[0];\n"
-                    + "s.parentNode.insertBefore(oa, s);"));
+                if(isConfigured())
+                {
+                    request.getDataProviderContainer().registerDataProvider(new JavaScriptInitProvider(
+                        "var oneall_subdomain = '" + _subdomain + "';\n"
+                        + "\n"
+                        + "/* The library is loaded asynchronously */\n"
+                        + "var oa = document.createElement('script');\n"
+                        + "oa.type = 'text/javascript'; oa.async = true;\n"
+                        + "oa.src = '//' + oneall_subdomain + '.api.oneall.com/socialize/library.js';\n"
+                        + "var s = document.getElementsByTagName('script')[0];\n"
+                        + "s.parentNode.insertBefore(oa, s);"));
+                }
             }
 
             @Override
             public List<NDE> getNDEs()
             {
-                return null;
+                return Collections.emptyList();
             }
 
             @Override
             public void render(CmsRequest<SocialLoginElement> request, CmsResponse response, RenderChain chain) throws IOException
             {
-                String modeString = getModeString(loginParams.getMode());
-                EntityUtilWriter pw = response.getContentWriter();
-                pw.append("<div id='oneall_social_login'></div>");
-                pw.append("<script type=\"text/javascript\">\n")
-                    .append('\n')
-                    .append("\t/* Embeds the buttons into the container oneall_social_login */\n")
-                    .append("  var _oneall = _oneall || [];\n" + "  _oneall.push(['")
-                    .append(modeString)
-                    .append("', 'set_providers', ")
-                    .append(loginParams.getLoginProvidersString())
-                    .append("]);\n")
-                    .append("  _oneall.push(['")
-                    .append(modeString)
-                    .append("', 'set_callback_uri', '")
-                    .append(loginParams.getCallbackURI())
-                    .append("']);\n")
-                    .append("  _oneall.push(['")
-                    .append(modeString)
-                    .append("', 'do_render_ui', 'oneall_social_login']);\n")
-                    .append(String.valueOf('\n'));
-                if(loginParams.getMode() == SocialLoginMode.Link)
+                if(isConfigured())
                 {
-                    String userToken = getUserTokenForCurrentUser(request);
-                    if(!StringFactory.isEmptyString(userToken))
+                    String modeString = getModeString(loginParams.getMode());
+                    EntityUtilWriter pw = response.getContentWriter();
+                    pw.append("<div id='oneall_social_login'></div>");
+                    pw.append("<script type=\"text/javascript\">\n")
+                        .append('\n')
+                        .append("\t/* Embeds the buttons into the container oneall_social_login */\n")
+                        .append("  var _oneall = _oneall || [];\n" + "  _oneall.push(['")
+                        .append(modeString)
+                        .append("', 'set_providers', ")
+                        .append(loginParams.getLoginProvidersString())
+                        .append("]);\n")
+                        .append("  _oneall.push(['")
+                        .append(modeString)
+                        .append("', 'set_callback_uri', '")
+                        .append(loginParams.getCallbackURI())
+                        .append("']);\n");
+                    if (loginParams.getMode() == SocialLoginMode.Link)
                     {
-                        pw.append("  _oneall.push(['")
-                            .append(modeString)
-                            .append("', 'set_user_token', '")
-                            .append(userToken)
-                            .append("']);\n");
+                        String userToken = getUserTokenForCurrentUser(request);
+                        if (!StringFactory.isEmptyString(userToken))
+                        {
+                            pw.append("  _oneall.push(['")
+                                .append(modeString)
+                                .append("', 'set_user_token', '")
+                                .append(userToken)
+                                .append("']);\n");
+                        }
                     }
+                    pw
+                        .append("  _oneall.push(['")
+                        .append(modeString)
+                        .append("', 'do_render_ui', 'oneall_social_login']);\n")
+                        .append(String.valueOf('\n'));
+                    pw.append("</script>");
                 }
-                pw.append("</script>");
             }
         };
     }
@@ -195,7 +205,7 @@ public class OneAllLoginService implements SocialLoginService
         String reqURL = _apiEndpoint + "/providers.json";
         try
         {
-            String responseString = getResponseFromAPI(reqURL, "GET").get();
+            String responseString = sendAPIRequest(reqURL, "GET").get();
             if(!StringFactory.isEmptyString(responseString))
             {
                 Gson gson = new GsonBuilder().create();
@@ -218,43 +228,48 @@ public class OneAllLoginService implements SocialLoginService
     @Override
     public boolean handleLoginCallback(Request request, Response response, SocialLoginParams loginParams)
     {
-        String connectionToken;
-        if(!StringFactory.isEmptyString((connectionToken = request.getParameter(PARAM_CONNECTION_TOKEN))))
+        if(isConfigured())
         {
-            String reqURL = _apiEndpoint + "/connections/" + connectionToken + ".json";
-            try
+            String connectionToken;
+            if (!StringFactory.isEmptyString((connectionToken = request.getParameter(PARAM_CONNECTION_TOKEN))))
             {
-                String responseString = getResponseFromAPI(reqURL, "GET").get();
-                if(!StringFactory.isEmptyString(responseString))
+                String reqURL = _apiEndpoint + "/connections/" + connectionToken + ".json";
+                try
                 {
-                    Gson gson = new GsonBuilder().create();
-                    APIConnectionsResponseWrapper res = gson.fromJson(responseString, APIConnectionsResponseWrapper.class);
-                    if(Objects.equals(res.response.request.status.flag, "success"))
+                    String responseString = sendAPIRequest(reqURL, "GET").get();
+                    if (!StringFactory.isEmptyString(responseString))
                     {
-                        String userToken = res.response.result.data.user.user_token;
-                        Principal toLogin = _oneAllDAO.getPrincipalForUserToken(userToken,
-                            request.getHostname().getDomain(),
-                            request.getHostname().getSite().getDomain());
-                        if(loginParams.getMode() == SocialLoginMode.Link)
-                            return doLink(loginParams, userToken, toLogin);
-                        if(loginParams.getMode() == SocialLoginMode.Login)
-                            return doLogin(loginParams, toLogin);
+                        Gson gson = new GsonBuilder().create();
+                        APIConnectionsResponseWrapper res = gson.fromJson(responseString, APIConnectionsResponseWrapper.class);
+                        if (Objects.equals(res.response.request.status.flag, "success"))
+                        {
+                            String userToken = res.response.result.data.user.user_token;
+
+                            Principal toLogin = _oneAllDAO.getPrincipalForUserToken(userToken,
+                                request.getHostname().getDomain(),
+                                request.getHostname().getSite().getDomain());
+                            if (loginParams.getMode() == SocialLoginMode.Link)
+                                return doLink(loginParams, userToken, toLogin);
+                            if (loginParams.getMode() == SocialLoginMode.Login)
+                                return doLogin(loginParams, userToken, toLogin);
+                        }
                     }
                 }
+                catch (InterruptedException | ExecutionException e)
+                {
+                    _logger.error("Error occurred while recieving response from OneAll API:", e);
+                }
             }
-            catch (InterruptedException | ExecutionException e)
+            else
             {
-                _logger.error("Error occurred while recieving response from OneAll API:", e);
+                loginParams.getMessageAcceptor().accept(Message.error(ERROR_NO_CONNECTION_TOKEN_RECEIVED()));
             }
-        }
-        else
-        {
-            loginParams.getMessageAcceptor().accept(Message.error(ERROR_NO_CONNECTION_TOKEN_RECEIVED()));
         }
         return false;
     }
 
-    private boolean doLogin(SocialLoginParams loginParams, @Nullable Principal toLogin)
+    private boolean doLogin(SocialLoginParams loginParams, String userToken, @Nullable Principal toLogin)
+        throws ExecutionException, InterruptedException
     {
         if(toLogin != null)
         {
@@ -262,6 +277,9 @@ public class OneAllLoginService implements SocialLoginService
                 toLogin.getSSOCredentials(SSOType.other, "oneall"));
             return true;
         }
+        //If no user exists in our system, instruct OneAll to delete the user that it created.
+        sendAPIRequest(_apiEndpoint + "/users/" + userToken + ".json?confirm_deletion=true", "DELETE");
+
         loginParams.getMessageAcceptor().accept(Message.error(
             ERROR_USER_DOES_NOT_EXIST_FOR_USER_TOKEN(), ERROR_DETAILS_USER_DOES_NOT_EXIST_FOR_USER_TOKEN()));
         return false;
@@ -292,13 +310,19 @@ public class OneAllLoginService implements SocialLoginService
     }
 
     @Override
+    public List<String> getURLParametersToRemoveAfterCallback()
+    {
+        return ImmutableList.of("connection_token", "oa_social_login_token", "identity_vault_key", "oa_action");
+    }
+
+    @Override
     public String getServiceIdentifier()
     {
         return SERVICE_IDENTIFIER;
     }
 
     @Nullable
-    private Future<String> getResponseFromAPI(@Nullable String urlString, @Nullable final String method)
+    private Future<String> sendAPIRequest(@Nullable String urlString, @Nullable final String method)
     {
         return _executor.executorService().submit(() -> {
             String requestMethod = method;

@@ -11,6 +11,7 @@
 
 package com.example.app.login.oneall.model;
 
+import com.example.app.login.oneall.service.OneAllLoginService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Query;
@@ -55,7 +56,7 @@ public class OneAllDAO extends DAOHelper
     @Nullable
     public Principal getPrincipalForUserToken(String userToken, AuthenticationDomain... domains)
     {
-        return _principalDAO.getPrincipalBySSO(SSOType.other, userToken, "oneall", domains);
+        return _principalDAO.getPrincipalBySSO(SSOType.other, userToken, OneAllLoginService.SERVICE_IDENTIFIER, domains);
     }
 
     /**
@@ -79,7 +80,7 @@ public class OneAllDAO extends DAOHelper
             Query query = getSession().createQuery(hql.toString());
             query.setParameter("ssoType", SSOType.other);
             query.setParameter("principalId", principal.getId());
-            query.setParameter("otherType", "oneall");
+            query.setParameter("otherType", OneAllLoginService.SERVICE_IDENTIFIER);
             for (AuthenticationDomain ad : domains)
             {
                 if(ad == null) continue;
@@ -103,7 +104,7 @@ public class OneAllDAO extends DAOHelper
         if(hasOneAllCredential(principal)) return;
         SSOCredentials ssoCred = new SSOCredentials();
         ssoCred.setSSOType(SSOType.other);
-        ssoCred.setOtherType("oneall");
+        ssoCred.setOtherType(OneAllLoginService.SERVICE_IDENTIFIER);
         ssoCred.setSSOId(userToken);
         principal.getCredentials().add(ssoCred);
         try
@@ -132,7 +133,7 @@ public class OneAllDAO extends DAOHelper
             {
                 final SSOCredentials ssoCredentials = (SSOCredentials) c;
                 if(ssoCredentials.getSSOType() == SSOType.other
-                   && Objects.equals(ssoCredentials.getOtherType(), "oneall")) return true;
+                   && Objects.equals(ssoCredentials.getOtherType(), OneAllLoginService.SERVICE_IDENTIFIER)) return true;
             }
         }
         return false;

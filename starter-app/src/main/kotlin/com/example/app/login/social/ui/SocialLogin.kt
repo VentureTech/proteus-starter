@@ -33,42 +33,42 @@ class SocialLogin(id: String) : Identifiable(id), Content {
     override val javaScriptPaths = mutableListOf<String>()
     override var parent: Any? = null
 
-    private var landingPage: Page? = null
-    private var scriptedRedirect: Script? = null
-    private var scriptedRedirectParameters = ArrayListMultimap.create<String, Any>()
-    private var overrideDynamicReturnPage: Boolean = false
-    private var loginService: String? = null
-    private var providers = mutableListOf<String>()
-    private var mode: SocialLoginMode? = null
+    private var _landingPage: Page? = null
+    private var _scriptedRedirect: Script? = null
+    private var _scriptedRedirectParameters = ArrayListMultimap.create<String, Any>()
+    private var _overrideDynamicReturnPage: Boolean = false
+    private var _loginService: String? = null
+    private var _providers = mutableListOf<String>()
+    private var _mode: SocialLoginMode? = null
 
     fun landingPage(landingPageId: String) {
         getSite().siteConstructedCallbacks.add{ site ->
-            landingPage = site.getExistingPage(landingPageId)
+            _landingPage = site.getExistingPage(landingPageId)
         }
     }
 
     fun scriptedRedirect(file: String) {
-        scriptedRedirect = Script(ScriptType.LoginRedirect, file)
+        _scriptedRedirect = Script(ScriptType.LoginRedirect, file)
     }
 
     fun scriptedRedirectParam(parameterName: String, parameterValue: Any) {
-        scriptedRedirectParameters.put(parameterName, parameterValue)
+        _scriptedRedirectParameters.put(parameterName, parameterValue)
     }
 
-    fun overrideDynamicReturn(overRide: Boolean) = {
-        overrideDynamicReturnPage = overRide
+    fun overrideDynamicReturn(overRide: Boolean) {
+        _overrideDynamicReturnPage = overRide
     }
 
-    fun loginService(serviceIdentifier: String) = {
-        loginService = serviceIdentifier
+    fun loginService(serviceIdentifier: String) {
+        _loginService = serviceIdentifier
     }
 
-    fun provider(providerIdentifier: String) = {
-        providers.add(providerIdentifier)
+    fun provider(providerIdentifier: String) {
+        _providers.add(providerIdentifier)
     }
 
-    fun mode(loginmode: SocialLoginMode) = {
-        mode = loginmode
+    fun mode(loginmode: SocialLoginMode) {
+        _mode = loginmode
     }
 
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
@@ -81,14 +81,14 @@ class SocialLogin(id: String) : Identifiable(id), Content {
     override fun isModified(helper: ContentHelper, contentElement: ContentElement): Boolean {
         val builder = SocialLoginContentBuilder.load(contentElement.publishedData[helper.getCmsSite().primaryLocale], false)
         updateBuilder(builder, helper)
-        return builder.isDirty //FIXME: I Think this is wrong.
+        return builder.isDirty
     }
 
     private fun updateBuilder(builder: SocialLoginContentBuilder, helper: ContentHelper) {
-        val lpToCheck = landingPage
+        val lpToCheck = _landingPage
         if(lpToCheck != null)
             builder.landingPage = helper.getCMSLink(lpToCheck)
-        val redirect = scriptedRedirect
+        val redirect = _scriptedRedirect
         if(redirect != null) {
             @Suppress("UNCHECKED_CAST")
             val library = helper.createLibrary(id, redirect.file, redirect.type.modelName) as Library<ScriptableRedirectType>?
@@ -101,15 +101,15 @@ class SocialLogin(id: String) : Identifiable(id), Content {
                 } else {
                     builder.scriptedRedirectInstance = lc.id
                 }
-                helper.setScriptParameters(lc, scriptedRedirectParameters)
+                helper.setScriptParameters(lc, _scriptedRedirectParameters)
                 helper.saveLibraryConfiguration(lc)
             }
         } else {
             builder.scriptedRedirectInstance = 0
         }
-        builder.isOverrideDynamicReturnPage = overrideDynamicReturnPage
-        builder.loginServiceIdentifier = loginService
-        builder.providerProgrammaticNames = providers
-        builder.mode = mode
+        builder.isOverrideDynamicReturnPage = _overrideDynamicReturnPage
+        builder.loginServiceIdentifier = _loginService
+        builder.providerProgrammaticNames = _providers
+        builder.mode = _mode
     }
 }
