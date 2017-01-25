@@ -62,6 +62,16 @@ public class UIPreferences
     }
 
     /**
+     * Gets a copy of the list of messages.
+     *
+     * @return the messages
+     */
+    public List<Notification> getMessages()
+    {
+        return new ArrayList<>(_messages);
+    }
+
+    /**
      * Get a stored Integer within UIPreferences
      *
      * @param key the Key to retrieve
