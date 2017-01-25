@@ -238,6 +238,7 @@ public class OneAllLoginService implements SocialLoginService
         return DESCRIPTION();
     }
 
+    @SuppressFBWarnings("NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD")
     @Override
     public List<SocialLoginProvider> getSupportedProviders()
     {
@@ -261,6 +262,7 @@ public class OneAllLoginService implements SocialLoginService
         return _supportedProviders;
     }
 
+    @SuppressFBWarnings("NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD")
     @Override
     public boolean handleLoginCallback(Request request, Response response, SocialLoginParams loginParams)
     {
@@ -299,6 +301,7 @@ public class OneAllLoginService implements SocialLoginService
         return false;
     }
 
+    @SuppressFBWarnings("NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD")
     private boolean doLogin(SocialLoginParams loginParams, String userToken, @Nullable Principal toLogin,
         Request request, String identityToken)
     {
