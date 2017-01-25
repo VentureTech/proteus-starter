@@ -31,7 +31,6 @@ import net.proteusframework.cms.controller.ProcessChain
 import net.proteusframework.cms.controller.RenderChain
 import net.proteusframework.core.locale.TextSource
 import net.proteusframework.core.spring.ApplicationContextUtils
-import net.proteusframework.ui.management.ApplicationFunction
 import net.proteusframework.ui.management.ApplicationRegistry
 import org.springframework.beans.factory.annotation.Autowired
 /**
@@ -100,10 +99,7 @@ class AppFunctionMenuGenerator extends AbstractScriptGenerator
         def pw = response.getContentWriter()
         if(permissionCheck.checkPermissionsForCurrent(request))
         {
-            ApplicationFunction func = _applicationRegistry.getApplicationFunctionByName(
-                permissionCheck.applicationFunctionName)
-            def link = _applicationRegistry.createLink(request, response, func, [:])
-            def url = response.createURL(link).getURL(false)
+            def url = permissionCheck.createResponseURL(request, response, _applicationRegistry).getURL(true)
             pw.append('<li class="link ' + classname + '" data-path="/user">')
             pw.append('<a').appendEscapedAttribute('href', url)
             pw.append(' class="link menuitemlabel"><span>')
