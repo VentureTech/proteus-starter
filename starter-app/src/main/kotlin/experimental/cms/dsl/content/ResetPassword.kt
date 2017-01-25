@@ -33,7 +33,7 @@ class ResetPassword(id: String): Identifiable(id), Content {
 
     fun loginPage(existingPageId: String) {
         getSite().siteConstructedCallbacks.add({site ->
-            val page = site._getExistingPage(existingPageId)
+            val page = site.getExistingPage(existingPageId)
             loginPage = page
         })
     }

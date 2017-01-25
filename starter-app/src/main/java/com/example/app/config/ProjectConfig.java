@@ -162,7 +162,19 @@ public class ProjectConfig implements ApplicationListener<ContextRefreshedEvent>
     @LocationQualifier(orm_location)
     public String ormLocationSchedule()
     {
-        return "classpath*:com/example/app/mode/schedule/**/*.hbm.xml";
+        return "classpath*:com/example/app/model/schedule/**/*.hbm.xml";
+    }
+
+    /**
+     * Scan com.example for HBM XML files.
+     *
+     * @return bean.
+     */
+    @Bean
+    @LocationQualifier(orm_location)
+    public  String ormLocationSocialLogin()
+    {
+        return "classpath*:com/example/app/login/social/ui/**/*.hbm.xml";
     }
 
     /**

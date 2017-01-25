@@ -268,7 +268,7 @@ class Page(id: String, override val site: Site, override var path: String = "",
      */
     fun authenticationPage(authenticationPageId: String) {
         site.siteConstructedCallbacks.add({ site ->
-            authenticationPage = site._getExistingPage(authenticationPageId)
+            authenticationPage = site.getExistingPage(authenticationPageId)
         })
     }
 
