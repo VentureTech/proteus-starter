@@ -39,12 +39,12 @@ import net.proteusframework.cms.controller.CmsResponse;
 import net.proteusframework.cms.controller.LinkUtil;
 import net.proteusframework.cms.controller.ProcessChain;
 import net.proteusframework.cms.controller.RenderChain;
-import net.proteusframework.core.GloballyUniqueStringGenerator;
 import net.proteusframework.core.notification.HTMLNotificationRenderer;
 import net.proteusframework.core.notification.Notification;
 import net.proteusframework.internet.http.Link;
 import net.proteusframework.internet.http.RequestError;
 import net.proteusframework.internet.http.ResponseURL;
+import net.proteusframework.internet.http.Scope;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static net.proteusframework.core.StringFactory.isEmptyString;
@@ -70,10 +70,13 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
 
     private Renderer<SocialLoginElement> _socialLoginRenderer;
 
-    @Override
-    public String getIdentity(CmsRequest<SocialLoginElement> request)
+    /**
+     * Instantiates a new Social login generator.
+     */
+    public SocialLoginGenerator()
     {
-        return GloballyUniqueStringGenerator.getUniqueString();
+        super();
+        setScope(Scope.REQUEST);
     }
 
     @Override
@@ -100,7 +103,7 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
                     final ResponseURL callbackURL = response.createURL(true);
                     callbackURL.addParameter(PARAM_CALLBACK, true);
                     callbackURL.setAbsolute(true);
-
+                    request.getSession(Scope.SESSION).initialize();
                     SocialLoginParams params = new SocialLoginParams(
                         callbackURL,
                         cb.getMode(), selectedService, _uiPreferences::addMessage, cb, providers);
