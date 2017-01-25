@@ -12,6 +12,7 @@
 package com.example.app.config.automation.site.profile.basic
 
 import com.example.app.config.ProjectInformation
+import com.example.app.config.automation.site.profile.basic.ProfileBasicDSL.Companion.SITE_FRONTEND
 import com.example.app.login.oneall.service.OneAllLoginService
 import com.example.app.login.social.ui.SocialLogin
 import com.example.app.login.social.ui.SocialLoginMode
@@ -25,7 +26,8 @@ private val appName = ProjectInformation.APPLICATION_NAME
 @Profile("automation")
 @Component
 open class ProfileBasicOneAllDSL :
-    AppDefinition("Profile Basic - OneAll", version = 1, siteId = "$appName Frontend", dependency = "Profile Basic", init = {
+    AppDefinition(DEFINITION_NAME, version = 1, siteId = SITE_FRONTEND,
+        dependency = ProfileBasicDSL.DEFINITION_NAME, init = {
     page("Login", "/login") {
         template("Login")
         content("Body", SocialLogin("OneAll Social Login")) {
@@ -52,4 +54,8 @@ open class ProfileBasicOneAllDSL :
             mode(SocialLoginMode.Link)
         }
     }
-})
+}) {
+    companion object {
+        internal const val DEFINITION_NAME = "${ProfileBasicDSL.DEFINITION_NAME} - OneAll"
+    }
+}
