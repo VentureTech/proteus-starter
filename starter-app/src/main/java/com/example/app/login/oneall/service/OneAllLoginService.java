@@ -12,6 +12,7 @@
 package com.example.app.login.oneall.service;
 
 import edu.emory.mathcs.backport.java.util.Collections;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import com.example.app.login.oneall.model.OneAllDAO;
 import com.example.app.login.social.service.SocialLoginProvider;
@@ -482,6 +483,11 @@ public class OneAllLoginService implements SocialLoginService
     }
 
     //CHECKSTYLE:OFF
+    @SuppressFBWarnings({
+        "NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
+        "UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD",
+        "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"
+    })
     public static class APIStatus
     {
         public String flag;
@@ -489,6 +495,11 @@ public class OneAllLoginService implements SocialLoginService
         public String info;
     }
 
+    @SuppressFBWarnings({
+        "NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
+        "UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD",
+        "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"
+    })
     public static class APIRequest
     {
         public String date;
@@ -497,6 +508,11 @@ public class OneAllLoginService implements SocialLoginService
     }
 
     @SuppressWarnings("InstanceVariableNamingConvention")
+    @SuppressFBWarnings({
+        "NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
+        "UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD",
+        "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"
+    })
     public static class APIConnectionsResponseWrapper
     {
         public static class APIConnectionsResponse
@@ -542,6 +558,11 @@ public class OneAllLoginService implements SocialLoginService
     }
 
     @SuppressWarnings("InstanceVariableNamingConvention")
+    @SuppressFBWarnings({
+        "NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
+        "UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD",
+        "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"
+    })
     public static class APIProvidersResponseWrapper
     {
         public static class APIProvidersResponse
@@ -601,6 +622,11 @@ public class OneAllLoginService implements SocialLoginService
     }
 
     @SuppressWarnings("InstanceVariableNamingConvention")
+    @SuppressFBWarnings({
+        "NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
+        "UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD",
+        "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"
+    })
     public static class APISSOSessionResponseWrapper
     {
         public static class APISSOSessionResponse
