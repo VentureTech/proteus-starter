@@ -64,6 +64,7 @@ import net.proteusframework.ui.miwt.component.composite.Message;
 import net.proteusframework.ui.miwt.component.composite.editor.BooleanValueEditor;
 import net.proteusframework.users.model.Principal;
 import net.proteusframework.users.model.SSOType;
+import net.proteusframework.users.model.dao.AuthenticationDomainList;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static com.example.app.login.oneall.service.OneAllLoginService.SERVICE_IDENTIFIER;
@@ -279,8 +280,9 @@ public class OneAllLoginService implements SocialLoginService
                         String identityToken = res.response.result.data.user.identity.identity_token;
 
                         Principal toLogin = _oneAllDAO.getPrincipalForUserToken(userToken,
-                            request.getHostname().getDomain(),
-                            request.getHostname().getSite().getDomain());
+                            AuthenticationDomainList.createDomainList(
+                                request.getHostname().getDomain(),
+                                request.getHostname().getSite().getDomain()));
                         if (loginParams.getMode() == SocialLoginMode.Link)
                             return doLink(loginParams, userToken, toLogin);
                         if (loginParams.getMode() == SocialLoginMode.Login)
@@ -323,7 +325,7 @@ public class OneAllLoginService implements SocialLoginService
             }
             return true;
         }
-        if(_oneAllDAO.getPrincipalForUserToken(userToken) == null)
+        if(_oneAllDAO.getPrincipalForUserToken(userToken, AuthenticationDomainList.emptyDomainList()) == null)
         {
             //If no user exists in our system, instruct OneAll to delete the user that it created.
             sendAPIRequest(_apiEndpoint + "/users/" + userToken + ".json?confirm_deletion=true", "DELETE");
@@ -461,8 +463,8 @@ public class OneAllLoginService implements SocialLoginService
         Principal current = _principalDAO.getCurrentPrincipal();
         if(current != null)
         {
-            return _oneAllDAO.getUserTokenForPrincipal(current,
-                request.getHostname().getDomain(), request.getHostname().getSite().getDomain());
+            return _oneAllDAO.getUserTokenForPrincipal(current, AuthenticationDomainList.createDomainList(
+                request.getHostname().getDomain(), request.getHostname().getSite().getDomain()));
         }
         return null;
     }

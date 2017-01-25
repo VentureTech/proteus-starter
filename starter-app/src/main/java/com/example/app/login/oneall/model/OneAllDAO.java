@@ -18,6 +18,7 @@ import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
@@ -28,6 +29,7 @@ import net.proteusframework.users.model.Credentials;
 import net.proteusframework.users.model.Principal;
 import net.proteusframework.users.model.SSOCredentials;
 import net.proteusframework.users.model.SSOType;
+import net.proteusframework.users.model.dao.AuthenticationDomainList;
 import net.proteusframework.users.model.dao.NonUniqueCredentialsException;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
@@ -49,25 +51,27 @@ public class OneAllDAO extends DAOHelper
      * Gets principal for user token.
      *
      * @param userToken the user token
-     * @param domains the domains.  If null or empty, will return any principal within the system that is linked to the given token
+     * @param domains the domains.  If empty, will return any principal within the system that is linked to the given token
      *
      * @return the principal for user token
      */
     @Nullable
-    public Principal getPrincipalForUserToken(String userToken, AuthenticationDomain... domains)
+    public Principal getPrincipalForUserToken(@Nonnull String userToken, @Nonnull AuthenticationDomainList domains)
     {
-        if(domains != null && domains.length > 0)
+        if(!domains.isEmpty())
         {
             return _principalDAO.getPrincipalBySSO(SSOType.other, userToken, OneAllLoginService.SERVICE_IDENTIFIER, domains);
         }
         else
         {
-            StringBuilder hql = new StringBuilder();
-            hql.append("select p from ").append(Principal.class.getName()).append(" p inner join p.credentials cred ")
-                .append(" where cred.SSOType = :ssoType and cred.SSOId = :ssoId and ");
-            hql.append("cred.otherType = :otherType");
+            final String queryString =
+                "select p from Principal p \n"
+                + "inner join p.credentials cred \n"
+                + "where cred.SSOType = :ssoType \n"
+                + "and cred.SSOId = :ssoId \n"
+                + "and cred.otherType = :otherType";
             return doInTransaction(session -> {
-                Query query = getSession().createQuery(hql.toString());
+                Query query = getSession().createQuery(queryString);
                 query.setParameter("ssoType", SSOType.other);
                 query.setString("otherType", OneAllLoginService.SERVICE_IDENTIFIER);
                 query.setString("ssoId", userToken);
@@ -86,16 +90,18 @@ public class OneAllDAO extends DAOHelper
      * @return the user token for principal
      */
     @Nullable
-    public String getUserTokenForPrincipal(Principal principal, AuthenticationDomain... domains)
+    public String getUserTokenForPrincipal(Principal principal, @Nonnull AuthenticationDomainList domains)
     {
-        assert domains != null;
-        StringBuilder hql = new StringBuilder();
-        hql.append("select cred from ").append(Principal.class.getName()).append(" p inner join p.credentials cred ")
-            .append(" inner join p.authenticationDomains auth ")
-            .append(" where auth.id = :authId and cred.SSOType = :ssoType and p.id = :principalId and ");
-        hql.append("cred.otherType = :otherType");
+        final String queryString =
+            "select cred from Principal p \n"
+               + "inner join p.credentials cred \n"
+               + "inner join p.authenticationDomains auth \n"
+               + "where auth.id = :authId \n"
+               + "and cred.SSOType = :ssoType \n"
+               + "and p.id = :principalId \n"
+               + "and cred.otherType = :otherType";
         return doInTransaction(session -> {
-            Query query = getSession().createQuery(hql.toString());
+            Query query = getSession().createQuery(queryString);
             query.setParameter("ssoType", SSOType.other);
             query.setParameter("principalId", principal.getId());
             query.setParameter("otherType", OneAllLoginService.SERVICE_IDENTIFIER);
