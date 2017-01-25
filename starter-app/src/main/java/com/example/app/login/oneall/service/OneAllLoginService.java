@@ -481,6 +481,7 @@ public class OneAllLoginService implements SocialLoginService
         }
     }
 
+    //CHECKSTYLE:OFF
     public static class APIStatus
     {
         public String flag;
@@ -627,4 +628,5 @@ public class OneAllLoginService implements SocialLoginService
 
         public APISSOSessionResponse response;
     }
+    //CHECKSTYLE:ON
 }
