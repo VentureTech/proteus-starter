@@ -18,9 +18,12 @@ import com.example.app.profile.ui.company.CompanyUIPermissionCheck;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 
 import net.proteusframework.core.spring.ApplicationContextUtils;
 import net.proteusframework.internet.http.Request;
+import net.proteusframework.internet.http.Response;
+import net.proteusframework.internet.http.ResponseURL;
 import net.proteusframework.internet.http.Site;
 import net.proteusframework.ui.management.ApplicationFunction;
 import net.proteusframework.ui.management.ApplicationFunctionContext;
@@ -137,5 +140,20 @@ public interface ApplicationFunctionPermissionCheck
             return registeredLinkDAO.getRegisteredLink(site, appFunction, functionContext) != null;
         }
         return false;
+    }
+
+    /**
+     * Create a ResponseURL for the ApplicationFunction that this Permission Check is for.
+     * By Default, will just create a URL with no URL Parameters.
+     * @param request the current Request
+     * @param response the current Response
+     * @param applicationRegistry the ApplicationRegistry
+     * @return ResponseURL
+     */
+    default ResponseURL createResponseURL(
+        @Nonnull Request request, @Nonnull Response response, @Nonnull ApplicationRegistry applicationRegistry)
+    {
+        return response.createURL(applicationRegistry.createLink(request, response,
+            applicationRegistry.getApplicationFunctionByName(getApplicationFunctionName()), Collections.emptyMap()));
     }
 }

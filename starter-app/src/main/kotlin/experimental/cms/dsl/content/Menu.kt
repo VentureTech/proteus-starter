@@ -62,7 +62,7 @@ internal class MenuItemBuilderImpl(val menu: Menu, val item: MenuItem) : MenuIte
 
     override fun page(label: String, existingPageId: String, init: MenuItemBuilder.() -> Unit) {
         menu.getSite().siteConstructedCallbacks.add({site ->
-            val page = site._getExistingPage(existingPageId)
+            val page = site.getExistingPage(existingPageId)
             val link = Link(URI.create(page.path))
             val menuItem = item.addEntry(label, link)
             val builder = MenuItemBuilderImpl(menu, menuItem).apply(init)
@@ -110,7 +110,7 @@ class Menu(id: String): Identifiable(id), Content, MenuBuilder {
 
     override fun page(label: String, existingPageId: String, init: MenuItemBuilder.() -> Unit) {
         getSite().siteConstructedCallbacks.add({site ->
-            val page = site._getExistingPage(existingPageId)
+            val page = site.getExistingPage(existingPageId)
             val link = Link(URI.create(page.path))
             val menuItem = builder.addEntry(label, link)
             val builder = MenuItemBuilderImpl(this, menuItem).apply(init)
