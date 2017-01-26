@@ -24,7 +24,7 @@ catch(ignored) {
     // Properties not supported for some job types
 }
 
-node({
+node('!master'){
     try
     {
         echo("Change Author Email => ${env.CHANGE_AUTHOR_EMAIL}")
@@ -89,10 +89,10 @@ node({
         }
     }
     stash excludes: '**/.git,**/.git/**,**/compiletime-aspects/**,**/runtime-aspects/**,**/build/gradle/libs/*.war', name: 'StarterAppFiles', useDefaultExcludes: false
-})
+}
 stage('Tests') {
     parallel(["Unit Tests": {
-        node {
+        node('!master') {
             //        stage 'Unit Tests'
             def jdkHome = tool 'JDK 8'
             unstash 'StarterAppFiles'
@@ -100,7 +100,7 @@ stage('Tests') {
                 withEnv(["JAVA_HOME=$jdkHome"]) {
                     // Run the build
                     ansiColor('css') {
-                        sh "./gradlew -d test $gradleOptions"
+                        sh "./gradlew test $gradleOptions"
                     }
                 }
                 junit(allowEmptyResults: true, healthScaleFactor: 2.0, keepLongStdio: true,
@@ -111,7 +111,7 @@ stage('Tests') {
         }
     }, "Integration Tests": {
 
-        node {
+        node('!master') {
             //        stage 'Integration Tests'
             def jdkHome = tool 'JDK 8'
             unstash 'StarterAppFiles'
@@ -119,7 +119,7 @@ stage('Tests') {
                 withEnv(["JAVA_HOME=$jdkHome"]) {
                     // Run the build
                     ansiColor('css') {
-                        sh "./gradlew -d test -PtestGroups=integration $gradleOptions"
+                        sh "./gradlew test -PtestGroups=integration $gradleOptions"
                     }
                 }
                 junit(allowEmptyResults: true, healthScaleFactor: 4.0, keepLongStdio: true,
@@ -131,7 +131,7 @@ stage('Tests') {
     }, failFast: true])
 }
 stage('Static Analysis') {
-    parallel(["Coding Conventions": { node {
+    parallel(["Coding Conventions": { node('!master') {
         def jdkHome = tool 'JDK 8'
         unstash 'StarterAppFiles'
         dir('starter-app') {
@@ -147,7 +147,7 @@ stage('Static Analysis') {
 
         }
     }},
-    "Code Quality": { node {
+    "Code Quality": { node('!master') {
         def jdkHome = tool 'JDK 8'
         unstash 'StarterAppFiles'
         dir('starter-app') {
@@ -217,7 +217,7 @@ if (currentBuild.result == 'SUCCESS')
                             'publish artifacts', name: 'publish_venturetech_username'],
                              [$class: 'PasswordParameterDefinition', defaultValue: '', description:  'Password' +
                                  ' publish artifacts', name: 'publish_venturetech_password']]
-                node ('!master') {
+                node('!master') {
                     def jdkHome = tool 'JDK 8'
                     unstash 'StarterAppFiles'
 
@@ -232,7 +232,7 @@ if (currentBuild.result == 'SUCCESS')
                                 def additionalArgs = $/artifactoryPublish -Ppublish_venturetech_username=${
                                     params.publish_venturetech_username
                                 } -Ppublish_venturetech_password=${params.publish_venturetech_password}/$
-                                sh "./gradlew -d $gradleOptions $additionalArgs"
+                                sh "./gradlew $gradleOptions $additionalArgs"
                             }
                         }
                     }
@@ -251,7 +251,7 @@ if (currentBuild.result == 'SUCCESS')
                             "(<${env.JOB_URL}|Open>)"
                     //noinspection LongLine
                     input id: 'Deploy', message: 'Deploy build to QA Server?', ok: 'Deploy'
-                    node {
+                    node('!master') {
                         def jdkHome = tool 'JDK 8'
                         unstash 'StarterAppFiles'
 
