@@ -65,10 +65,10 @@ import static net.proteusframework.cms.support.ImageFileUtil.getScaledDimension;
 @I18NFile(
     symbolPrefix = "com.example.app.profile.model.company.CompanyModelExtension",
     i18n = {
-        @I18N(symbol = "Email Address Usage Instructions", l10n = @L10N("{0}'s Email Address")),
-        @I18N(symbol = "Phone Number Usage Instructions", l10n = @L10N("{0}'s Phone Number")),
+        @I18N(symbol = "Email Address Usage Instructions", l10n = @L10N("{Company:0}'s Email Address")),
+        @I18N(symbol = "Phone Number Usage Instructions", l10n = @L10N("{Company:0}'s Phone Number")),
         @I18N(symbol = "Image Usage Instructions", l10n = @L10N("Image")),
-        @I18N(symbol = "Instructions Name", l10n = @L10N("{0} Name")),
+        @I18N(symbol = "Instructions Name", l10n = @L10N("{Company:0} Name")),
         @I18N(symbol = "Linked-In Usage Instructions", l10n = @L10N("LinkedIn URL")),
         @I18N(symbol = "Twitter Usage Instructions", l10n = @L10N("Twitter URL")),
         @I18N(symbol = "Facebook Usage Instructions", l10n = @L10N("Facebook URL")),

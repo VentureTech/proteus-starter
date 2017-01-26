@@ -119,14 +119,12 @@ import static net.proteusframework.core.locale.TextSources.createText;
         @I18N(symbol = "Label Email Template", l10n = @L10N("Email Template")),
         @I18N(symbol = "Label Preview", l10n = @L10N("Email Preview")),
         @I18N(symbol = "Label Email Template Variables", l10n = @L10N("Email Template Variables")),
-        @I18N(symbol = "Label Add {0} Recipients", l10n = @L10N("Add {0} Recipients")),
         @I18N(symbol = "Instructions Add Recipient", l10n =
-        @L10N("Enter the email address of the recipient(s) or add a user/role for a {0} User")),
+        @L10N("Enter the email address of the recipient(s) or add a user/role for a {Profile:0} User")),
         @I18N(symbol = "Action Add Recipient", l10n = @L10N("Add Email Recipient")),
         @I18N(symbol = "Action Update Preview", l10n = @L10N("Update Preview")),
         @I18N(symbol = "Title Variables", l10n = @L10N("Variables")),
-        @I18N(symbol = "Disjunction", l10n = @L10N("OR")),
-        @I18N(symbol = "Membership Receipient FMT", l10n = @L10N("{0} ({1}) <{2}>"))
+        @I18N(symbol = "Disjunction", l10n = @L10N("OR"))
     }
 )
 @Configurable

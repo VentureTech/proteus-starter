@@ -80,8 +80,9 @@ import static net.proteusframework.core.locale.TextSources.createText;
 @I18NFile(
     symbolPrefix = "com.example.app.profile.model.membership.Membership",
     i18n = {
-        @I18N(symbol = "Name", l10n = @L10N("{0} ({1})")),
-        @I18N(symbol = "Description", l10n = @L10N("{0} assigned as {1} in {2} ({3})"))
+        @I18N(symbol = "Name", l10n = @L10N("{User.Name:0} ({MembershipType:1})")),
+        @I18N(symbol = "Description", l10n =
+            @L10N("{User.Name:0} assigned as {MembershipType:1} in {Profile:2} ({ProfileType:3})"))
     }
 )
 public class Membership extends AbstractAuditableEntity<Integer> implements NamedObject
