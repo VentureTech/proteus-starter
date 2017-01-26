@@ -27,7 +27,6 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.ContextStartedEvent;
 
 import net.proteusframework.core.hibernate.HibernateSessionHandler;
-import net.proteusframework.core.locale.JDBCLocaleSource;
 
 /**
  * Configuration that provides MembershipTypes.
@@ -49,8 +48,6 @@ public class MembershipTypeProvider implements ApplicationListener<ApplicationCo
     private ProfileTypeProvider _profileTypeProvider;
     @Autowired
     private MembershipOperationProvider _mop;
-    @Autowired
-    private JDBCLocaleSource _localeSource;
 
     private boolean _initialized;
 
@@ -74,7 +71,7 @@ public class MembershipTypeProvider implements ApplicationListener<ApplicationCo
                 initialize();
                 _initialized = true;
             }
-            catch (Exception e)
+            catch (Throwable e)
             {
                 _logger.fatal("MembershipTypeProvider failed to initialize.", e);
             }
