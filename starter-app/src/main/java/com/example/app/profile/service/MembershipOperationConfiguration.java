@@ -184,4 +184,18 @@ public class MembershipOperationConfiguration implements MembershipOperationProv
         return _profileDAO.getMembershipOperationOrNew("viewClient",
             () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "View Client"));
     }
+
+    @Override
+    public MembershipOperation modifyLocation()
+    {
+        return _profileDAO.getMembershipOperationOrNew("modifyLocation",
+            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "Modify Location"));
+    }
+
+    @Override
+    public MembershipOperation viewLocation()
+    {
+        return _profileDAO.getMembershipOperationOrNew("viewLocation",
+            () -> LocalizedObjectKey.getLocalizedObjectKey(_localeSource, Locale.ENGLISH, null, "View Location"));
+    }
 }

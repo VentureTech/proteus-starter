@@ -15,6 +15,7 @@ import com.example.app.profile.model.Profile;
 import com.example.app.profile.model.ProfileType;
 import com.example.app.profile.model.client.Client;
 import com.example.app.profile.model.company.Company;
+import com.example.app.profile.model.location.Location;
 import com.example.app.profile.model.membership.Membership;
 import com.example.app.profile.model.resource.Resource;
 import com.example.app.profile.model.user.User;
@@ -699,6 +700,19 @@ public class AppUtil implements Serializable
         Hibernate.initialize(value.getLogo());
         initialize(value.getPrimaryLocation());
         value.getLocations().forEach(AppUtil::initialize);
+    }
+
+    /**
+     * Initialize.
+     *
+     * @param value the value
+     */
+    public static void initialize(Location value)
+    {
+        initialize((Profile)value);
+        Hibernate.initialize(value.getAddress());
+        Hibernate.initialize(value.getEmailAddress());
+        Hibernate.initialize(value.getPhoneNumber());
     }
 
     /**

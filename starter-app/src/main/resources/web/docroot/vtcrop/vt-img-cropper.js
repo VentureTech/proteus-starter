@@ -172,9 +172,9 @@
       if (dnd) { dnd.destroy(); }
       dnd = new w.cms.file.DnD(fileInput, $dropZone.get(0));
 
-      $img.each(function(){
-        if (this.complete) $img.load();
-      });
+      // $img.each(function(){
+      //   if (this.complete) $img.load();
+      // });
 
       $img.attr('id', fileInput.id + "-picture");
 

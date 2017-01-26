@@ -14,7 +14,9 @@ package com.example.app.profile.model.location;
 import com.example.app.profile.model.ProfileTypeProvider;
 import com.example.app.profile.model.client.Client;
 import com.example.app.profile.model.client.ClientStatus;
+import com.example.app.support.service.AppUtil;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Repository;
@@ -25,6 +27,7 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import net.proteusframework.core.hibernate.dao.DAOHelper;
 import net.proteusframework.core.hibernate.model.SoftDeleteEntity;
@@ -45,8 +48,8 @@ public final class LocationDAO extends DAOHelper implements Serializable
      */
     private static final long serialVersionUID = -1864046652465972120L;
 
-    @Autowired
-    private transient ProfileTypeProvider _profileTypeProvider;
+    @Autowired private transient ProfileTypeProvider _profileTypeProvider;
+    @Autowired private transient AppUtil _appUtil;
 
     /**
      * Delete the given Locations from the database
@@ -160,16 +163,32 @@ public final class LocationDAO extends DAOHelper implements Serializable
      * Save the given Location into the database
      *
      * @param location the location to save
+     *
+     * @return the location
      */
-    public void saveLocation(Location location)
+    public Location saveLocation(Location location)
     {
-        doInTransaction(session -> {
-
-            if (location.getProfileType() == null)
-                location.setProfileType(_profileTypeProvider.location());
-
-            session.saveOrUpdate(location);
-        });
+        BiConsumer<Location, Session> presave = (toSave, session) -> {
+            if(toSave.getProfileType() == null)
+                toSave.setProfileType(_profileTypeProvider.location());
+            if(toSave.getRepository().getId() == null || toSave.getRepository().getId() == 0)
+                toSave.getRepository().setName(_appUtil.copyLocalizedObjectKey(toSave.getName()));
+        };
+        if(isAttached(location))
+        {
+            return doInTransaction(session -> {
+                presave.accept(location, session);
+                session.saveOrUpdate(location);
+                return location;
+            });
+        }
+        else
+        {
+            return doInTransaction(session -> {
+                presave.accept(location, session);
+                return (Location)session.merge(location);
+            });
+        }
     }
 
     /**
