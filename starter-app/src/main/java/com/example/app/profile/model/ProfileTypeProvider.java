@@ -73,7 +73,7 @@ public class ProfileTypeProvider implements ApplicationListener<ApplicationConte
                 initialize();
                 _initialized = true;
             }
-            catch (Exception e)
+            catch (Throwable e)
             {
                 _logger.fatal("ProfileTypeProvider failed to initialize.", e);
             }
