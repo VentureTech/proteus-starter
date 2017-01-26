@@ -88,7 +88,7 @@ node({
                   healthy: '', high: 'FIXME', low: '', normal: 'TODO', pattern: 'src/**/*.java', unHealthy: ''])
         }
     }
-    stash excludes: '**/compiletime-aspects/**,**/runtime-aspects/**,**/build/gradle/libs/*.war', name: 'StarterAppFiles'
+    stash excludes: '**/.git,**/.git/**,**/compiletime-aspects/**,**/runtime-aspects/**,**/build/gradle/libs/*.war', name: 'StarterAppFiles', useDefaultExcludes: false
 })
 stage('Quality Assurance') {
     parallel(["Unit Tests": { node {
@@ -206,7 +206,7 @@ if (currentBuild.result == 'SUCCESS')
                             'publish artifacts', name: 'publish_venturetech_username'],
                              [$class: 'PasswordParameterDefinition', defaultValue: '', description:  'Password' +
                                  ' publish artifacts', name: 'publish_venturetech_password']]
-                node {
+                node ('!master') {
                     def jdkHome = tool 'JDK 8'
                     unstash 'StarterAppFiles'
 
