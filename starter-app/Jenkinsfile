@@ -90,10 +90,8 @@ node({
     }
     stash excludes: '**/compiletime-aspects/**,**/runtime-aspects/**,**/build/gradle/libs/*.war', name: 'StarterAppFiles'
 })
-stage('Tests') {
-    parallel(["Unit Tests": {
-        node {
-            //        stage 'Unit Tests'
+stage('Quality Assurance') {
+    parallel(["Unit Tests": { node {
             def jdkHome = tool 'JDK 8'
             unstash 'StarterAppFiles'
             dir('starter-app') {
@@ -108,11 +106,7 @@ stage('Tests') {
                     testResults: '**/build/gradle/test-results/**/TEST*.xml')
 
             }
-        }
-    }, "Integration Tests": {
-
-        node {
-            //        stage 'Integration Tests'
+    }}, "Integration Tests": { node {
             def jdkHome = tool 'JDK 8'
             unstash 'StarterAppFiles'
             dir('starter-app') {
@@ -127,11 +121,7 @@ stage('Tests') {
                     testResults: '**/build/gradle/test-results/**/TEST*.xml')
 
             }
-        }
-    }, failFast: true])
-}
-stage('Static Analysis') {
-    parallel(["Coding Conventions": { node {
+    }}, "Coding Conventions": { node {
         def jdkHome = tool 'JDK 8'
         unstash 'StarterAppFiles'
         dir('starter-app') {
@@ -141,13 +131,12 @@ stage('Static Analysis') {
                     sh "./gradlew checkstyleMain $gradleOptions"
                 }
             }
-            step([$class         : 'CheckStylePublisher', canComputeNew: true, defaultEncoding: 'UTF-8', failedTotalAll: '25',
+            step([$class: 'CheckStylePublisher', canComputeNew: true, defaultEncoding: 'UTF-8', failedTotalAll: '25',
                   failedTotalHigh: '2', failedTotalNormal: '25', healthy: '5', pattern: '**/build/gradle/reports/checkstyle/*.xml',
-                  unHealthy      : '100', unstableTotalAll: '10', unstableTotalHigh: '2', unstableTotalNormal: '10'])
+                  unHealthy: '100', unstableTotalAll: '10', unstableTotalHigh: '2', unstableTotalNormal: '10'])
 
         }
-    }},
-    "Code Quality": { node {
+    }}, "Code Quality": { node {
         def jdkHome = tool 'JDK 8'
         unstash 'StarterAppFiles'
         dir('starter-app') {
@@ -162,7 +151,7 @@ stage('Static Analysis') {
                   includePattern: '', pattern: '**/build/gradle/reports/findbugs/*.xml', thresholdLimit: 'normal',
                   unHealthy: '50', unstableTotalAll: '5', unstableTotalHigh: '2', unstableTotalNormal: '5'])
         }
-    }}])
+    }}, failFast: true])
 }
 
 node {
