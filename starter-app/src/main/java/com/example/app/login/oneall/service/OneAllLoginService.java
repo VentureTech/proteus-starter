@@ -429,7 +429,8 @@ public class OneAllLoginService implements SocialLoginService
 
                     try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream())))
                     {
-                        while((line = br.readLine()) != null) {
+                        while((line = br.readLine()) != null)
+                        {
                             sb.append(line);
                         }
                     }
