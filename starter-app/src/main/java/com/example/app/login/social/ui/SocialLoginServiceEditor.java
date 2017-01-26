@@ -19,17 +19,15 @@ import net.proteusframework.ui.miwt.component.composite.editor.ValueEditor;
 /**
  * Wrapper Class Defining An Additional Editor Field For {@link SocialLoginEditor}
  *
- * @param <V> the type of the value being edited
- *
  * @author Alan Holt (aholt@venturetech.net)
  * @since 1 /24/17
  */
-public class SocialLoginServiceEditor<V>
+public class SocialLoginServiceEditor
 {
     private final String _property;
-    private final ValueEditor<V> _editor;
-    private final Function<V, String> _valueToString;
-    private final Function<String, V> _stringToValue;
+    private final ValueEditor<Object> _editor;
+    private final Function<Object, String> _valueToString;
+    private final Function<String, Object> _stringToValue;
 
     /**
      * Instantiates a new Social login service editor.
@@ -39,11 +37,12 @@ public class SocialLoginServiceEditor<V>
      * @param valueToString conversion function for converting the value into a string for persistence
      * @param stringToValue conversion function for converting the string back into the value from persistence
      */
-    public SocialLoginServiceEditor(@Nonnull String property, @Nonnull ValueEditor<V> editor,
-        @Nonnull Function<V, String> valueToString, @Nonnull Function<String, V> stringToValue)
+    @SuppressWarnings("unchecked")
+    public SocialLoginServiceEditor(@Nonnull String property, @Nonnull ValueEditor<?> editor,
+        @Nonnull Function<Object, String> valueToString, @Nonnull Function<String, Object> stringToValue)
     {
         _property = property;
-        _editor = editor;
+        _editor = (ValueEditor<Object>) editor;
         _valueToString = valueToString;
         _stringToValue = stringToValue;
     }
@@ -65,7 +64,7 @@ public class SocialLoginServiceEditor<V>
      * @return the editor
      */
     @Nonnull
-    public ValueEditor<V> getEditor()
+    public ValueEditor<Object> getEditor()
     {
         return _editor;
     }
@@ -76,7 +75,7 @@ public class SocialLoginServiceEditor<V>
      * @return the value to string
      */
     @Nonnull
-    public Function<V, String> getValueToString()
+    public Function<Object, String> getValueToString()
     {
         return _valueToString;
     }
@@ -87,7 +86,7 @@ public class SocialLoginServiceEditor<V>
      * @return the string to value
      */
     @Nonnull
-    public Function<String, V> getStringToValue()
+    public Function<String, Object> getStringToValue()
     {
         return _stringToValue;
     }

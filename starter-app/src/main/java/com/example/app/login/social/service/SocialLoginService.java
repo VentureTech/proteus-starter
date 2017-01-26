@@ -72,7 +72,6 @@ public interface SocialLoginService extends NamedObject
      * Create a list of SocialLoginServiceEditors to be used when configuring {@link SocialLoginElement}
      * @return editors
      */
-    @SuppressWarnings("rawtypes")
     @Nonnull
     List<SocialLoginServiceEditor> createEditors();
 }

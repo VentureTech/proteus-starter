@@ -44,6 +44,7 @@ import net.proteusframework.ui.miwt.component.composite.CustomCellRenderer;
 import net.proteusframework.ui.miwt.component.composite.editor.BooleanValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.ComboBoxValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.ListComponentValueEditor;
+import net.proteusframework.ui.miwt.component.composite.editor.ValueEditor;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
 
 import static com.example.app.login.social.ui.SocialLoginEditorLOK.*;
@@ -81,10 +82,9 @@ public class SocialLoginEditor extends ContentBuilderBasedEditor<SocialLoginCont
     private ComboBoxValueEditor<SocialLoginMode> _modeSelector;
     private LinkSelector _landingPageSelector;
     private BooleanValueEditor _overrideDynamicReturn;
-    private LibraryConfigurationForm<ScriptableRedirectType> _scriptedRedirectSelector = null;
+    private LibraryConfigurationForm<ScriptableRedirectType> _scriptedRedirectSelector;
 
     private final Container _loginServiceEditorWrapper = of("login-service-editors");
-    @SuppressWarnings("rawtypes")
     private List<SocialLoginServiceEditor> _loginServiceEditors;
 
     /**
@@ -144,13 +144,25 @@ public class SocialLoginEditor extends ContentBuilderBasedEditor<SocialLoginCont
             _loginServiceEditors = ls != null ? ls.createEditors() : Collections.emptyList();
             _loginServiceEditorWrapper.removeAllComponents();
             _loginServiceEditors.stream().map(SocialLoginServiceEditor::getEditor).forEach(_loginServiceEditorWrapper::add);
-            _loginServiceEditors.forEach(editor -> editor.getEditor().setValue(
-                    editor.getStringToValue().apply(getBuilder().getProperty(editor.getProperty(), null))));
+            _loginServiceEditors.forEach(editor ->
+            {
+                String property = getBuilder().getProperty(editor.getProperty(), null);
+                Object value = editor.getStringToValue().apply(property);
+                ValueEditor<Object> valueEditor = editor.getEditor();
+                valueEditor.setValue(value);
+            });
         });
 
-        _loginServiceEditors.stream().map(SocialLoginServiceEditor::getEditor).forEach(_loginServiceEditorWrapper::add);
-        _loginServiceEditors.forEach(editor -> editor.getEditor().setValue(
-            editor.getStringToValue().apply(getBuilder().getProperty(editor.getProperty(), null))));
+        _loginServiceEditors.stream()
+            .map(SocialLoginServiceEditor::getEditor)
+            .forEach(_loginServiceEditorWrapper::add);
+        _loginServiceEditors.forEach(editor ->
+        {
+            String property = getBuilder().getProperty(editor.getProperty(), null);
+            ValueEditor<Object> valueEditor = editor.getEditor();
+            Object value = editor.getStringToValue().apply(property);
+            valueEditor.setValue(value);
+        });
 
         _providerSelector = new ListComponentValueEditor<>(LABEL_PROVIDERS(), availableProviders, selectedProviders);
         _providerSelector.setRequiredValueValidator();
@@ -217,6 +229,6 @@ public class SocialLoginEditor extends ContentBuilderBasedEditor<SocialLoginCont
             getBuilder().setScriptedRedirectInstance(0L);
         }
         _loginServiceEditors.forEach(editor -> getBuilder().setProperty(editor.getProperty(),
-            (String)editor.getValueToString().apply(editor.getEditor().commitValue())));
+            editor.getValueToString().apply(editor.getEditor().commitValue())));
     }
 }
