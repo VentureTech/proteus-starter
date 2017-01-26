@@ -50,7 +50,6 @@ import net.proteusframework.cms.controller.CmsRequest;
 import net.proteusframework.cms.controller.CmsResponse;
 import net.proteusframework.cms.controller.ProcessChain;
 import net.proteusframework.cms.controller.RenderChain;
-import net.proteusframework.core.StringFactory;
 import net.proteusframework.core.config.ExecutorConfig;
 import net.proteusframework.core.io.EntityUtilWriter;
 import net.proteusframework.core.locale.TextSource;
@@ -70,6 +69,7 @@ import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static com.example.app.login.oneall.service.OneAllLoginService.SERVICE_IDENTIFIER;
 import static com.example.app.login.oneall.service.OneAllLoginServiceLOK.*;
+import static net.proteusframework.core.StringFactory.isEmptyString;
 import static net.proteusframework.users.model.AuthenticationMethodSecurityLevel.SHARED_SECRET;
 
 /**
@@ -120,10 +120,10 @@ public class OneAllLoginService implements SocialLoginService
     @Autowired private PrincipalDAO _principalDAO;
     @Autowired private ExecutorConfig _executor;
     @Autowired private OneAllDAO _oneAllDAO;
-    @Value("${oneall.subdomain}") String _subdomain;
-    @Value("${oneall.public.key}") String _publicKey;
-    @Value("${oneall.private.key}") String _privateKey;
-    @Value("${oneall.api.endpoint}") String _apiEndpoint;
+    @Value("${oneall.subdomain:#{null}}") String _subdomain;
+    @Value("${oneall.public.key:#{null}}") String _publicKey;
+    @Value("${oneall.private.key:#{null}}") String _privateKey;
+    @Value("${oneall.api.endpoint:#{null}}") String _apiEndpoint;
 
     private final List<SocialLoginProvider> _supportedProviders = new ArrayList<>();
 
@@ -180,7 +180,7 @@ public class OneAllLoginService implements SocialLoginService
                     if (loginParams.getMode() == SocialLoginMode.Link)
                     {
                         String userToken = getUserTokenForCurrentUser(request);
-                        if (!StringFactory.isEmptyString(userToken))
+                        if (!isEmptyString(userToken))
                         {
                             pw.append("_oneall.push(['")
                                 .append(modeString)
@@ -204,7 +204,7 @@ public class OneAllLoginService implements SocialLoginService
                         pw.append("<script async=\"async\" type=\"text/javascript\">\n")
                             .append('\n')
                             .append("var _oneall = _oneall || [];\n");
-                        if(StringFactory.isEmptyString(ssoToken))
+                        if(isEmptyString(ssoToken))
                         {
                             pw.append("_oneall.push(['single_sign_on', 'set_callback_uri', '")
                                 .append(callbackURL)
@@ -244,7 +244,7 @@ public class OneAllLoginService implements SocialLoginService
     {
         String reqURL = _apiEndpoint + "/providers.json";
         String responseString = safeSendAPIRequest(reqURL, "GET");
-        if(!StringFactory.isEmptyString(responseString))
+        if(!isEmptyString(responseString))
         {
             Gson gson = new GsonBuilder().create();
             APIProvidersResponseWrapper response = gson.fromJson(responseString, APIProvidersResponseWrapper.class);
@@ -269,11 +269,11 @@ public class OneAllLoginService implements SocialLoginService
         if(isConfigured())
         {
             String connectionToken;
-            if (!StringFactory.isEmptyString((connectionToken = request.getParameter(PARAM_CONNECTION_TOKEN))))
+            if (!isEmptyString((connectionToken = request.getParameter(PARAM_CONNECTION_TOKEN))))
             {
                 String reqURL = _apiEndpoint + "/connections/" + connectionToken + ".json";
                 String responseString = safeSendAPIRequest(reqURL, "GET");
-                if (!StringFactory.isEmptyString(responseString))
+                if (!isEmptyString(responseString))
                 {
                     Gson gson = new GsonBuilder().create();
                     APIConnectionsResponseWrapper res = gson.fromJson(responseString, APIConnectionsResponseWrapper.class);
@@ -316,7 +316,7 @@ public class OneAllLoginService implements SocialLoginService
                 //And insert the sso token into the session
                 String reqURL = _apiEndpoint + "/sessions/identities/" + identityToken + ".json";
                 String responseString = safeSendAPIRequest(reqURL, "PUT");
-                if(!StringFactory.isEmptyString(responseString))
+                if(!isEmptyString(responseString))
                 {
                     Gson gson = new GsonBuilder().create();
                     APISSOSessionResponseWrapper res = gson.fromJson(responseString, APISSOSessionResponseWrapper.class);
@@ -381,7 +381,7 @@ public class OneAllLoginService implements SocialLoginService
     {
         BooleanValueEditor ssoEnabledValueEditor = new BooleanValueEditor(LABEL_SSO_ENABLED(), null);
         ssoEnabledValueEditor.addClassName(PROP_SSO_ENABLED);
-        SocialLoginServiceEditor<Boolean> sSOEnabledEditor = new SocialLoginServiceEditor<>(
+        SocialLoginServiceEditor sSOEnabledEditor = new SocialLoginServiceEditor(
             PROP_SSO_ENABLED, ssoEnabledValueEditor, String::valueOf, Boolean::valueOf);
         return Collections.singletonList(sSOEnabledEditor);
     }
@@ -407,7 +407,7 @@ public class OneAllLoginService implements SocialLoginService
             String requestMethod = method;
             if(requestMethod == null) requestMethod = "GET";
 
-            if(isConfigured() && !StringFactory.isEmptyString(urlString))
+            if(isConfigured() && !isEmptyString(urlString))
             {
                 try
                 {
@@ -446,10 +446,10 @@ public class OneAllLoginService implements SocialLoginService
 
     private boolean isConfigured()
     {
-        boolean isConfigured = !StringFactory.isEmptyString(_publicKey)
-            && !StringFactory.isEmptyString(_privateKey)
-            && !StringFactory.isEmptyString(_subdomain)
-            && !StringFactory.isEmptyString(_apiEndpoint);
+        boolean isConfigured = !isEmptyString(_publicKey)
+            && !isEmptyString(_privateKey)
+            && !isEmptyString(_subdomain)
+            && !isEmptyString(_apiEndpoint);
         if(!isConfigured)
         {
             _logger.warn("OneAll is not configured.  Should include the following values within properties file or environment:\n"
@@ -486,6 +486,7 @@ public class OneAllLoginService implements SocialLoginService
     }
 
     //CHECKSTYLE:OFF
+    @SuppressWarnings("unused")
     @SuppressFBWarnings({
         "NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
         "UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD",
@@ -498,6 +499,7 @@ public class OneAllLoginService implements SocialLoginService
         public String info;
     }
 
+    @SuppressWarnings("unused")
     @SuppressFBWarnings({
         "NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
         "UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD",
@@ -510,7 +512,7 @@ public class OneAllLoginService implements SocialLoginService
         public APIStatus status;
     }
 
-    @SuppressWarnings("InstanceVariableNamingConvention")
+    @SuppressWarnings({"InstanceVariableNamingConvention", "unused"})
     @SuppressFBWarnings({
         "NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
         "UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD",
@@ -518,37 +520,12 @@ public class OneAllLoginService implements SocialLoginService
     })
     public static class APIConnectionsResponseWrapper
     {
+        @SuppressWarnings("unused")
         public static class APIConnectionsResponse
         {
+            @SuppressWarnings("unused")
             public static class APIConnectionsResult
             {
-                public static class APIConnectionsData
-                {
-                    public static class APIConnection
-                    {
-                        public String connection_token;
-                        public String date;
-                        public String plugin;
-                    }
-
-                    public static class APIConnectionUser
-                    {
-                        public static class APIConnectionIdentity
-                        {
-                            public String identity_token;
-                            public String provider;
-                            public String id;
-                            public String displayName;
-                        }
-
-                        public String user_token;
-                        public String date;
-                        public APIConnectionIdentity identity;
-                    }
-
-                    public APIConnection connection;
-                    public APIConnectionUser user;
-                }
                 public APIStatus status;
                 public APIConnectionsData data;
             }
@@ -560,7 +537,44 @@ public class OneAllLoginService implements SocialLoginService
         public APIConnectionsResponse response;
     }
 
-    @SuppressWarnings("InstanceVariableNamingConvention")
+    @SuppressWarnings({"InstanceVariableNamingConvention", "unused"})
+    @SuppressFBWarnings({
+        "NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
+        "UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD",
+        "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"
+    })
+    public static class APIConnectionsData
+    {
+        @SuppressWarnings("unused")
+        public static class APIConnection
+        {
+            public String connection_token;
+            public String date;
+            public String plugin;
+        }
+
+        @SuppressWarnings("unused")
+        public static class APIConnectionUser
+        {
+            @SuppressWarnings("unused")
+            public static class APIConnectionIdentity
+            {
+                public String identity_token;
+                public String provider;
+                public String id;
+                public String displayName;
+            }
+
+            public String user_token;
+            public String date;
+            public APIConnectionIdentity identity;
+        }
+
+        public APIConnection connection;
+        public APIConnectionUser user;
+    }
+
+    @SuppressWarnings({"InstanceVariableNamingConvention", "unused"})
     @SuppressFBWarnings({
         "NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
         "UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD",
@@ -568,49 +582,15 @@ public class OneAllLoginService implements SocialLoginService
     })
     public static class APIProvidersResponseWrapper
     {
+        @SuppressWarnings("unused")
         public static class APIProvidersResponse
         {
+            @SuppressWarnings("unused")
             public static class APIProvidersResult
             {
+                @SuppressWarnings("unused")
                 public static class APIProvidersData
                 {
-                    public static class APIProviders
-                    {
-                        public static class APIProvider
-                        {
-                            public static class APIProviderConfiguration
-                            {
-                                public static class APIProviderConsumerKeys
-                                {
-                                    public String consumer_id;
-                                    public String consumer_key;
-                                    public String consumer_secret;
-                                }
-
-                                public Boolean is_required;
-                                public Boolean is_completed;
-                            }
-
-                            public String name;
-                            public String key;
-                            public Boolean is_configurable;
-                            public APIProviderConfiguration configuration;
-
-                            /**
-                             * Is configured boolean.
-                             *
-                             * @return the boolean
-                             */
-                            public boolean isConfigured()
-                            {
-                                return !is_configurable || (!configuration.is_required || configuration.is_completed);
-                            }
-                        }
-
-                        public Integer count;
-                        public List<APIProvider> entries;
-                    }
-
                     public APIProviders providers;
                 }
 
@@ -624,7 +604,53 @@ public class OneAllLoginService implements SocialLoginService
         public APIProvidersResponse response;
     }
 
-    @SuppressWarnings("InstanceVariableNamingConvention")
+    @SuppressWarnings({"InstanceVariableNamingConvention", "unused"})
+    @SuppressFBWarnings({
+        "NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
+        "UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD",
+        "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"
+    })
+    public static class APIProviders
+    {
+        @SuppressWarnings("unused")
+        public static class APIProvider
+        {
+            @SuppressWarnings("unused")
+            public static class APIProviderConfiguration
+            {
+                @SuppressWarnings("unused")
+                public static class APIProviderConsumerKeys
+                {
+                    public String consumer_id;
+                    public String consumer_key;
+                    public String consumer_secret;
+                }
+
+                public Boolean is_required;
+                public Boolean is_completed;
+            }
+
+            public String name;
+            public String key;
+            public Boolean is_configurable;
+            public APIProviderConfiguration configuration;
+
+            /**
+             * Is configured boolean.
+             *
+             * @return the boolean
+             */
+            public boolean isConfigured()
+            {
+                return !is_configurable || (!configuration.is_required || configuration.is_completed);
+            }
+        }
+
+        public Integer count;
+        public List<APIProvider> entries;
+    }
+
+    @SuppressWarnings({"InstanceVariableNamingConvention", "unused"})
     @SuppressFBWarnings({
         "NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
         "UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD",
@@ -632,12 +658,16 @@ public class OneAllLoginService implements SocialLoginService
     })
     public static class APISSOSessionResponseWrapper
     {
+        @SuppressWarnings("unused")
         public static class APISSOSessionResponse
         {
+            @SuppressWarnings("unused")
             public static class APISSOSessionResult
             {
+                @SuppressWarnings("unused")
                 public static class APISSOSessionData
                 {
+                    @SuppressWarnings("unused")
                     public static class APISSOSession
                     {
                         public String sso_session_token;
