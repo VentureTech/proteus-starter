@@ -100,7 +100,7 @@ stage('Tests') {
                 withEnv(["JAVA_HOME=$jdkHome"]) {
                     // Run the build
                     ansiColor('css') {
-                        sh "./gradlew test $gradleOptions"
+                        sh "./gradlew -i test $gradleOptions"
                     }
                 }
                 junit(allowEmptyResults: true, healthScaleFactor: 2.0, keepLongStdio: true,
@@ -119,7 +119,7 @@ stage('Tests') {
                 withEnv(["JAVA_HOME=$jdkHome"]) {
                     // Run the build
                     ansiColor('css') {
-                        sh "./gradlew test -PtestGroups=integration $gradleOptions"
+                        sh "./gradlew -i test -PtestGroups=integration $gradleOptions"
                     }
                 }
                 junit(allowEmptyResults: true, healthScaleFactor: 4.0, keepLongStdio: true,
@@ -232,7 +232,7 @@ if (currentBuild.result == 'SUCCESS')
                                 def additionalArgs = $/artifactoryPublish -Ppublish_venturetech_username=${
                                     params.publish_venturetech_username
                                 } -Ppublish_venturetech_password=${params.publish_venturetech_password}/$
-                                sh "./gradlew $gradleOptions $additionalArgs"
+                                sh "./gradlew -i $gradleOptions $additionalArgs"
                             }
                         }
                     }
