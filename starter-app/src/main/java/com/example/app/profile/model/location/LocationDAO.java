@@ -142,24 +142,6 @@ public final class LocationDAO extends DAOHelper implements Serializable
     }
 
     /**
-     * Save the given Location by merging it.
-     *
-     * @param location the location to merge
-     *
-     * @return the merged location (persistent)
-     */
-    public Location mergeLocation(Location location)
-    {
-        return doInTransaction(session -> {
-
-            if (location.getProfileType() == null)
-                location.setProfileType(_profileTypeProvider.location());
-
-            return (Location) session.merge(location);
-        });
-    }
-
-    /**
      * Save the given Location into the database
      *
      * @param location the location to save
