@@ -174,6 +174,9 @@ public class CompanyLocationManagement extends AbstractLocationManagement
                     return CommonButtonText.DELETE_CONFIRM;
                 else return null;
             });
+        final boolean canModify = _permissionCheck.checkCanCurrentUserModify(Event.getRequest());
+        navigationColumn.setIncludeEdit(canModify);
+        navigationColumn.setIncludeDelete(canModify);
         navigationColumn.configure()
             .usingDataColumnTableRow(URLProperties.LOCATION)
             .withSourceComponent(this);

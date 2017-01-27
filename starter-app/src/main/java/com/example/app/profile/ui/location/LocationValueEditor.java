@@ -54,23 +54,23 @@ public class LocationValueEditor extends CompositeValueEditor<Location>
         addEditorForProperty(() -> {
             AddressValueEditorConfig cfg = new AddressValueEditorConfig();
             return new AddressValueEditor(cfg);
-        }, Location.ADDRESS_PROP);
+        }, Location::getName, Location::setName);
 
         addEditorForProperty(() -> {
             EmailAddressValueEditorConfig cfg = new EmailAddressValueEditorConfig();
             return new EmailAddressValueEditor(cfg);
-        }, Location.EMAIL_ADDRESS_PROP);
+        }, Location::getAddress, Location::setAddress);
 
         addEditorForProperty(() -> {
             PhoneNumberValueEditorConfig cfg = new PhoneNumberValueEditorConfig();
             return new PhoneNumberValueEditor(cfg);
-        }, Location.PHONE_NUMBER_PROP);
+        }, Location::getPhoneNumber, Location::setPhoneNumber);
 
         addEditorForProperty(() -> {
             ComboBoxValueEditor<LocationStatus> editor = new ComboBoxValueEditor<>(CommonColumnText.STATUS,
                 AppUtil.nullFirst(EnumSet.allOf(LocationStatus.class)), null);
             editor.setRequiredValueValidator();
             return editor;
-        }, Location.STATUS_PROP);
+        }, Location::getStatus, Location::setStatus);
     }
 }

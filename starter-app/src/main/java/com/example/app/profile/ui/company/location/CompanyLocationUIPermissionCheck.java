@@ -61,7 +61,7 @@ public class CompanyLocationUIPermissionCheck implements ApplicationFunctionPerm
         if(functionExists(_appUtil.getSite(), request, _applicationRegistry, _registeredLinkDAO))
         {
             Company company = _uiService.getSelectedCompany();
-            return _profileDAO.canOperate(user, company, AppUtil.UTC, _mop.viewLocation());
+            return _profileDAO.canOperate(user, company, AppUtil.UTC, _mop.viewLocation()) || checkCanUserModify(request, user);
         }
         return false;
     }
