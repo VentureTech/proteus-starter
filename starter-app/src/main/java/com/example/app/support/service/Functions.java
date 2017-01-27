@@ -34,6 +34,8 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 import net.proteusframework.core.Pair;
+import net.proteusframework.ui.miwt.component.Component;
+import net.proteusframework.ui.miwt.component.Container;
 
 /**
  * Class Containing Functional Interfaces that work similarly to {@link Function}
@@ -117,6 +119,25 @@ public class Functions
          * @return the a
          */
         A apply(Object... args);
+    }
+
+    /**
+     * Shorthand function for {@link Optional#ofNullable(Object)}
+     * <br><br>
+     * Reasoning:  {@link Optional#ofNullable(Object)} is a stupid long method name for something as simple as creating an Optional.
+     * <br>
+     * Also, static importing Optional will cause collisions with
+     * {@link Optional#of(Object)} and {@link Container#of(Component...)}, so just static import this method and enjoy having to
+     * type less letters to do the same thing!
+     *
+     * @param <V> the value type
+     * @param value the value
+     *
+     * @return an Optional
+     */
+    public static <V> Optional<V> opt(@Nullable V value)
+    {
+        return Optional.ofNullable(value);
     }
 
     /**

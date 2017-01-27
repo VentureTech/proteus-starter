@@ -9,7 +9,7 @@
  * into with I2RD.
  */
 
-package com.example.app.profile.ui.client;
+package com.example.app.profile.ui.company.location;
 
 import com.example.app.profile.model.ProfileDAO;
 import com.example.app.profile.model.company.Company;
@@ -32,13 +32,13 @@ import net.proteusframework.ui.management.link.RegisteredLinkDAO;
 import net.proteusframework.users.model.Principal;
 
 /**
- * Provides methods for checking permission to view the Client Management Pages
+ * Service for determining page access for Company Location UIs
  *
  * @author Alan Holt (aholt@venturetech.net)
- * @since 1/12/17
+ * @since 1/26/17
  */
 @Service
-public class ClientManagementPermissionCheck implements ApplicationFunctionPermissionCheck
+public class CompanyLocationUIPermissionCheck implements ApplicationFunctionPermissionCheck
 {
     @Autowired private ProfileUIService _uiService;
     @Autowired private ProfileDAO _profileDAO;
@@ -49,54 +49,53 @@ public class ClientManagementPermissionCheck implements ApplicationFunctionPermi
     @Autowired private AppUtil _appUtil;
 
     @Override
+    public boolean checkPermissions(@Nonnull Request request, @Nullable Principal principal)
+    {
+        //We Use User
+        return false;
+    }
+
+    @Override
     public boolean checkPermissions(@Nonnull Request request, @Nullable User user)
     {
         if(functionExists(_appUtil.getSite(), request, _applicationRegistry, _registeredLinkDAO))
         {
             Company company = _uiService.getSelectedCompany();
-
-            return _profileDAO.canOperate(user, company, AppUtil.UTC, _mop.viewClient()) || checkCanUserModify(request, user);
+            return _profileDAO.canOperate(user, company, AppUtil.UTC, _mop.viewLocation()) || checkCanUserModify(request, user);
         }
         return false;
     }
 
     @Override
-    public boolean checkPermissions(@Nonnull Request request, @Nullable Principal principal)
-    {
-        return false; //We just use the User
-    }
-
-    @Override
     public String getApplicationFunctionName()
     {
-        return ApplicationFunctions.Client.MANAGEMENT;
+        return ApplicationFunctions.Company.Location.MANAGEMENT;
     }
 
     /**
-     * Check if the given User can modify Clients for the selected Company
+     * Check can user modify boolean.
      *
      * @param request the request
      * @param user the user
      *
-     * @return true if the given user has permission to modify Clients
+     * @return the boolean
      */
     public boolean checkCanUserModify(@Nonnull Request request, @Nullable User user)
     {
         if(functionExists(_appUtil.getSite(), request, _applicationRegistry, _registeredLinkDAO))
         {
             Company company = _uiService.getSelectedCompany();
-
-            return _profileDAO.canOperate(user, company, AppUtil.UTC, _mop.modifyClient());
+            return _profileDAO.canOperate(user, company, AppUtil.UTC, _mop.modifyLocation());
         }
         return false;
     }
 
     /**
-     * Check if the current User can modify Clients for the selected Company
+     * Check can current user modify boolean.
      *
      * @param request the request
      *
-     * @return true if the current user has permission to modify Clients
+     * @return the boolean
      */
     public boolean checkCanCurrentUserModify(@Nonnull Request request)
     {

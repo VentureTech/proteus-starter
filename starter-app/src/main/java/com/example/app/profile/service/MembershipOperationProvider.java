@@ -112,4 +112,18 @@ public interface MembershipOperationProvider
      * @return a MembershipOperation
      */
     MembershipOperation viewClient();
+
+    /**
+     * Get the "Modify Location" MembershipOperation, or create it, if it has not been created yet.
+     *
+     * @return a MembershipOperation
+     */
+    MembershipOperation modifyLocation();
+
+    /**
+     * Get the "View Location" MembershipOperation, or create it, if it has not been created yet.
+     *
+     * @return a MembershipOperation
+     */
+    MembershipOperation viewLocation();
 }

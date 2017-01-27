@@ -93,6 +93,25 @@ public final class ApplicationFunctions
             private Resource(){}
         }
 
+        /**
+         * Static class defining Application Functions for {@link com.example.app.profile.model.location.Location}s on a
+         * Company
+         *
+         * @author Alan Holt (aholt@venturetech.net)
+         */
+        @SuppressWarnings("InnerClassFieldHidesOuterClassField")
+        public static final class Location
+        {
+            /** The constant MANAGEMENT. */
+            public static final String MANAGEMENT = "Company Location Management";
+            /** The constant EDIT. */
+            public static final String EDIT = "Company Location Editor";
+            /** The constant VIEW. */
+            public static final String VIEW = "Company Location Viewer";
+
+            private Location(){}
+        }
+
         private Company(){}
     }
 

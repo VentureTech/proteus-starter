@@ -15,6 +15,7 @@ import com.example.app.profile.service.SelectedCompanyTermProvider
 import com.example.app.profile.ui.UIText
 import com.example.app.profile.ui.client.ClientManagementPermissionCheck
 import com.example.app.profile.ui.company.CompanyUIPermissionCheck
+import com.example.app.profile.ui.company.location.CompanyLocationUIPermissionCheck
 import com.example.app.profile.ui.company.resource.CompanyResourcePermissionCheck
 import com.example.app.profile.ui.user.MyAccountPermissionCheck
 import com.example.app.profile.ui.user.UserManagementPermissionCheck
@@ -49,6 +50,7 @@ class AppFunctionMenuGenerator extends AbstractScriptGenerator
     @Autowired MyAccountPermissionCheck _myAccountPermissionCheck
     @Autowired CompanyResourcePermissionCheck _companyResourcePermissionCheck
     @Autowired ClientManagementPermissionCheck _clientManagementPermissionCheck
+    @Autowired CompanyLocationUIPermissionCheck _companyLocationUIPermissionCheck
     @Autowired SelectedCompanyTermProvider _terms
     @Autowired ApplicationRegistry _applicationRegistry
 
@@ -86,6 +88,7 @@ class AppFunctionMenuGenerator extends AbstractScriptGenerator
         appendLink(request, response, _clientManagementPermissionCheck, "client-management", _terms.clients())
         appendLink(request, response, _userManagementPermissionCheck, "user-management", UIText.USERS())
         appendLink(request, response, _companyResourcePermissionCheck, "resource-management", UIText.RESOURCES())
+        appendLink(request, response, _companyLocationUIPermissionCheck, "location-management", _terms.locations())
         appendLink(request, response, _textManagementPermissionCheck, "text-management", TextManagementText.MENU_ITEM_NAME())
 
         pw.append('</ul>')

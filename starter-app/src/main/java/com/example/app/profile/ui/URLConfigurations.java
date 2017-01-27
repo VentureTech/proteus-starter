@@ -64,6 +64,22 @@ public class URLConfigurations
             private Resource(){}
         }
 
+        /**
+         * Defined URL Configurations for Company Location UIs
+         *
+         * @author Alan Holt (aholt@venturetech.net)
+         */
+        @SuppressWarnings("InnerClassFieldHidesOuterClassField")
+        public static final class Location
+        {
+            /** The constant EDIT. */
+            public static final String EDIT = "Company Location Edit URL Config";
+            /** The constant VIEW. */
+            public static final String VIEW = "Company Location View URL Config";
+
+            private Location(){}
+        }
+
         private Company(){}
     }
 
@@ -79,6 +95,22 @@ public class URLConfigurations
 
         /** URL Config for Viewing a Client */
         public static final String VIEW = "Client View URL Config";
+
+        /**
+         * Defined URL Configurations for Company Location UIs
+         *
+         * @author Alan Holt (aholt@venturetech.net)
+         */
+        @SuppressWarnings("InnerClassFieldHidesOuterClassField")
+        public static final class Location
+        {
+            /** The constant EDIT. */
+            public static final String EDIT = "Client Location Edit URL Config";
+            /** The constant VIEW. */
+            public static final String VIEW = "Client Location View URL Config";
+
+            private Location(){}
+        }
 
         private Client(){}
     }

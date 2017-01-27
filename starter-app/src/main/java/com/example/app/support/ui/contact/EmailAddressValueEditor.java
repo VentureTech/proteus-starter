@@ -226,9 +226,9 @@ public class EmailAddressValueEditor extends CompositeValueEditor<EmailAddress>
                 TextEditor editor = new TextEditor(LABEL_EMAIL(), null);
                 editor.addClassName("email");
                 editor.setInputType(Field.InputType.email);
-                editor.setValueValidator(EmailValidator.custom(ERROR_MESSAGE_EMAIL_NOT_VALID(),
-                    getRequiredFields().contains(EmailAddressField.email))
+                editor.setValueValidator(EmailValidator.custom(ERROR_MESSAGE_EMAIL_NOT_VALID(), false)
                     .withNotificationSourceSetter((validator, component, notification) -> notification.setSource(editor)));
+                editor.setRequiredValueValidator();
                 return editor;
             };
         }

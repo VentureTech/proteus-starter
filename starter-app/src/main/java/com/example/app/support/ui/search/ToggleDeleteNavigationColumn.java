@@ -37,6 +37,7 @@ public class ToggleDeleteNavigationColumn extends NavigationLinkColumn
 {
     private Function<Object, TextSource> _toggleTextExtractor = o -> CommonButtonText.DELETE;
     private Function<Object, String> _toggleHtmlClassExtractor = o -> "delete";
+    private Function<Object, TextSource> _toggleConfirmTextExtractor = o -> CommonButtonText.DELETE_CONFIRM;
 
     @Override
     public TableCellRenderer getTableCellRenderer(SearchUI searchUI)
@@ -56,6 +57,7 @@ public class ToggleDeleteNavigationColumn extends NavigationLinkColumn
             public Component getTableCellRendererComponent(Table table, Object value, boolean isSelected, boolean hasFocus, int row,
                 int column)
             {
+                delete.getButtonDisplay().setConfirmText(getToggleConfirmTextExtractor().apply(value));
                 delete.getButtonDisplay().setLabel(getToggleTextExtractor().apply(value));
                 delete.setClassName(getToggleHtmlClassExtractor().apply(value));
 
@@ -147,6 +149,41 @@ public class ToggleDeleteNavigationColumn extends NavigationLinkColumn
     public ToggleDeleteNavigationColumn withToggleHtmlClassExtractor(Function<Object,String> toggleHtmlClassExtractor)
     {
         setToggleHtmlClassExtractor(toggleHtmlClassExtractor);
+        return this;
+    }
+
+    /**
+     * Gets toggle confirm text extractor.
+     *
+     * @return the toggle confirm text extractor
+     */
+    public Function<Object, TextSource> getToggleConfirmTextExtractor()
+    {
+        return _toggleConfirmTextExtractor;
+    }
+
+    /**
+     * Sets toggle confirm text extractor.
+     *
+     * @param toggleConfirmTextExtractor the toggle confirm text extractor
+     */
+    public void setToggleConfirmTextExtractor(
+        Function<Object, TextSource> toggleConfirmTextExtractor)
+    {
+        _toggleConfirmTextExtractor = toggleConfirmTextExtractor;
+    }
+
+    /**
+     * Set the {@link #_toggleConfirmTextExtractor toggleConfirmTextExtractor} property
+     * returning this.
+     *
+     * @param toggleConfirmTextExtractor the toggleConfirmTextExtractor.
+     * @return this.
+     * @see #setToggleConfirmTextExtractor(Function)
+     */
+    public ToggleDeleteNavigationColumn withToggleConfirmTextExtractor(Function<Object,TextSource> toggleConfirmTextExtractor)
+    {
+        setToggleConfirmTextExtractor(toggleConfirmTextExtractor);
         return this;
     }
 }

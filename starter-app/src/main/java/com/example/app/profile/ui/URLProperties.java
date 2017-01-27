@@ -94,6 +94,10 @@ public final class URLProperties
     /** Path Info for URL Property resources */
     public static final String RESOURCES_PATH_INFO = '/' + RESOURCES + "-{" + RESOURCES + '}';
 
+    /** URL Property: location */
+    public static final String LOCATION = "location";
+    /** Path Info for URL Property location */
+    public static final String LOCATION_PATH_INFO = '/' + LOCATION + "-{" + LOCATION + '}';
 
     private URLProperties()
     {
