@@ -7,15 +7,20 @@ test {
         else
             includeGroups 'unit'
         excludeGroups 'manual'
+
+        parallel = "classes"
+        threadCount = 6
     }
 
     if(!project.hasProperty("testGroups"))
         maxParallelForks = 4
 
+    enableAssertions = true
+    
     ignoreFailures = true
 
     minHeapSize = "128m"
-    maxHeapSize = "512m"
+    maxHeapSize = "2048m"
 
     jvmArgs '-Duser.timezone=Etc/UTC'
 
