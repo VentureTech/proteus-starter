@@ -27,10 +27,12 @@ class DeployUtil
 
     AmazonSQSClient client;
     Project project;
+    String proteusInstallName
 
-    DeployUtil(Project project, String id, String secret)
+    DeployUtil(Project project, String id, String secret, String proteusInstallName)
     {
         this.project = project;
+        this.proteusInstallName = proteusInstallName
         client = new AmazonSQSClient(new BasicAWSCredentials(id, secret))
         println("Creating deploy utility for $id")
     }
@@ -40,7 +42,8 @@ class DeployUtil
         def version = project.findProperty('app_version').replace('-SNAPSHOT', '')
         client.sendMessage(
             project.findProperty(DEPLOY_QUEUE),
-            $/{"action": "auto-deploy", data: {"context": "${deploymentContext}", "version": "$version"}/$
+            $/{"proteus_install_name": "${proteusInstallName}"" "action": "auto-deploy", data: {"context": "${deploymentContext}", 
+"version": "$version"}/$
         )
     }
 }

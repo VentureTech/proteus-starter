@@ -250,7 +250,8 @@ if (currentBuild.result == 'SUCCESS')
                         message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be deployed to QA for testing.\n" +
                             "(<${env.JOB_URL}|Open>)"
                     //noinspection LongLine
-                    input id: 'Deploy', message: 'Deploy build to QA Server?', ok: 'Deploy'
+                    def params = input id: 'Deploy', message: 'Deploy build to Server?', ok: 'Deploy', parameters: [choice(choices: ['starter-app-qa', 'starter-app-release'], description: '', name: 'proteus_install_name')]
+
                     node('!master') {
                         def jdkHome = tool 'JDK 8'
                         unstash 'StarterAppFiles'
@@ -264,7 +265,7 @@ if (currentBuild.result == 'SUCCESS')
                                     ansiColor('css') {
                                         //noinspection LongLine
                                         echo "Deploying artifacts"
-                                        def additionalArgs = "autoDeploy -Paws_id=${env.aws_id} -Paws_secret=${env.aws_secret}"
+                                        def additionalArgs = "autoDeploy -Paws_id=${env.aws_id} -Paws_secret=${env.aws_secret} -Pproteus_install_name=${params.proteus_install_name}"
                                         sh "./gradlew $gradleOptions $additionalArgs"
                                     }
                                 }
