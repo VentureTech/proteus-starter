@@ -20,6 +20,7 @@ import com.example.app.profile.ui.ApplicationFunctions
 import experimental.cms.dsl.AppDefinition
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
+import java.net.URL
 
 private val appName = ProjectInformation.APPLICATION_NAME
 
@@ -37,7 +38,6 @@ open class ProfileBasicOneAllDSL :
             scriptedRedirectParam("Default Redirect Page", "/dashboard")
             loginService(OneAllLoginService.SERVICE_IDENTIFIER)
             provider("google")
-            provider("facebook")
             mode(SocialLoginMode.Login)
             //You can enable SSO by uncommenting the line below:
 //            additionalProperty(OneAllLoginService.PROP_SSO_ENABLED, "true")
@@ -50,12 +50,55 @@ open class ProfileBasicOneAllDSL :
             htmlClass = "oneall-link"
             loginService(OneAllLoginService.SERVICE_IDENTIFIER)
             provider("google")
-            provider("facebook")
             mode(SocialLoginMode.Link)
         }
     }
 }) {
     companion object {
         internal const val DEFINITION_NAME = "${ProfileBasicDSL.DEFINITION_NAME} - OneAll"
+    }
+}
+
+@Profile("automation")
+@Component
+open class ProteusBackendOneAllDSL :
+    AppDefinition(DEFINITION_NAME, version = 1, siteId = SITE_BACKEND, init = {
+
+    libraryResources(URL("https://repo.venturetech.net/artifactory/vt-snapshot-local/" +
+        "com/example/starter-app/\${LATEST}/starter-app-\${LATEST}-libraries.zip"))
+
+    page("Dashboard", "/config/dashboard") { }
+
+    page("Login", "/account/login") {
+        template("Login")
+        content("Primary Content", SocialLogin("OneAll Social Login")) {
+            htmlClass = "oneall-social-login"
+            landingPage("Dashboard")
+            scriptedRedirect("StarterSiteRedirectScript.groovy")
+            scriptedRedirectParam("Default Redirect Page", "/config/dashboard")
+            loginService(OneAllLoginService.SERVICE_IDENTIFIER)
+            provider("google")
+            mode(SocialLoginMode.Login)
+            //You can enable SSO by uncommenting the line below:
+            additionalProperty(OneAllLoginService.PROP_SSO_ENABLED, "true")
+        }
+    }
+
+    page("My Preferences", "/account/preferences") {
+        template("Neptune - Protected - No Primary Content Styles")
+        content("Primary Content", SocialLogin("OneAll Social Link")) {
+            htmlClass = "oneall-link"
+            loginService(OneAllLoginService.SERVICE_IDENTIFIER)
+            provider("google")
+            mode(SocialLoginMode.Link)
+        }
+    }
+
+    hostname("\${proteus.install.name}-admin.\${base.domain}", "Dashboard")
+}) {
+    companion object {
+        internal const val DEFINITION_NAME = "Proteus Backend - OneAll"
+        internal const val SITE_BACKEND = "Administration site, backend, " +
+            "for managing content for this installation of Proteus Framework."
     }
 }

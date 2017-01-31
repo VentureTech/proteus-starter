@@ -14,9 +14,12 @@ package com.example.app.login.social.ui;
 import com.example.app.login.social.service.SocialLoginProvider;
 import com.example.app.login.social.service.SocialLoginService;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.UnmodifiableIterator;
 
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import net.proteusframework.core.notification.Notification;
@@ -94,13 +97,18 @@ public class SocialLoginParams
     /**
      * Gets login providers string.
      *
+     * @param excludes the excludes
+     *
      * @return the login providers string
      */
-    public String getLoginProvidersString()
+    public String getLoginProvidersString(@Nullable List<String> excludes)
     {
+        final List<String> excl = excludes != null ? excludes : Collections.emptyList();
         StringBuilder sb = new StringBuilder();
         sb.append('[');
-        final UnmodifiableIterator<SocialLoginProvider> lpiter = getLoginProviders().iterator();
+        final Iterator<SocialLoginProvider> lpiter = getLoginProviders().stream()
+            .filter(lp -> !excl.contains(lp.getProgrammaticName()))
+            .iterator();
         lpiter.forEachRemaining(lp -> {
             sb.append('\'').append(lp.getProgrammaticName()).append('\'');
             if(lpiter.hasNext())
@@ -108,6 +116,29 @@ public class SocialLoginParams
         });
         sb.append(']');
         return sb.toString();
+    }
+
+    /**
+     * Gets login providers string.
+     *
+     * @return the login providers string
+     */
+    public String getLoginProvidersString()
+    {
+        return getLoginProvidersString(null);
+    }
+
+    /**
+     * Gets provider for programmatic name.
+     *
+     * @param programmaticName the programmatic name
+     *
+     * @return the provider for programmatic name
+     */
+    public SocialLoginProvider getProviderForProgrammaticName(String programmaticName)
+    {
+        return getLoginProviders().stream().filter(slp -> Objects.equals(slp.getProgrammaticName(), programmaticName))
+            .findFirst().orElseGet(() -> new SocialLoginProvider(programmaticName, programmaticName));
     }
 
     /**

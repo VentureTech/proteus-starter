@@ -11,6 +11,7 @@
 
 package com.example.app.login.oneall.service;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
 import edu.emory.mathcs.backport.java.util.Collections;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -28,42 +29,55 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import net.proteusframework.cms.component.generator.Renderer;
 import net.proteusframework.cms.controller.CmsRequest;
 import net.proteusframework.cms.controller.CmsResponse;
 import net.proteusframework.cms.controller.ProcessChain;
 import net.proteusframework.cms.controller.RenderChain;
+import net.proteusframework.core.StringFactory;
 import net.proteusframework.core.config.ExecutorConfig;
 import net.proteusframework.core.io.EntityUtilWriter;
+import net.proteusframework.core.locale.LocalizedObjectKey;
 import net.proteusframework.core.locale.TextSource;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
+import net.proteusframework.data.http.URLGenerator;
 import net.proteusframework.internet.http.Request;
 import net.proteusframework.internet.http.Response;
+import net.proteusframework.internet.http.ResponseURL;
 import net.proteusframework.internet.http.Scope;
+import net.proteusframework.internet.http.resource.ClassPathResourceLibrary;
+import net.proteusframework.internet.http.resource.ClassPathResourceLibraryHelper;
+import net.proteusframework.internet.http.resource.FactoryResource;
+import net.proteusframework.internet.http.resource.FactoryResourceConfiguration;
 import net.proteusframework.internet.http.resource.html.NDE;
 import net.proteusframework.ui.miwt.component.composite.Message;
 import net.proteusframework.ui.miwt.component.composite.editor.BooleanValueEditor;
+import net.proteusframework.ui.miwt.util.CommonButtonText;
 import net.proteusframework.users.model.Principal;
-import net.proteusframework.users.model.SSOType;
 import net.proteusframework.users.model.dao.AuthenticationDomainList;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
@@ -98,7 +112,19 @@ import static net.proteusframework.users.model.AuthenticationMethodSecurityLevel
             l10n = @L10N("In order to link to a social network, you will have to log in first.")),
         @I18N(symbol = "Label SSO Enabled",
             description = "",
-            l10n = @L10N("SSO Enabled"))
+            l10n = @L10N("SSO Enabled")),
+        @I18N(symbol = "Info Successfully Linked FMT",
+            description = "{0:SocialLoginProvider#getDisplayName}",
+            l10n = @L10N("Successfully Linked {0}")),
+        @I18N(symbol = "Confirm Unlink FMT",
+            description = "{0:SocialLoginProvider#getDisplayName}",
+            l10n = @L10N("Are you sure you want to unlink {0}?")),
+        @I18N(symbol = "Unlink",
+            description = "",
+            l10n = @L10N("Unlink")),
+        @I18N(symbol = "Successfully Unlinked FMT", 
+            description = "{0:SocialLoginProvider#getDisplayName}", 
+            l10n = @L10N("Successfully Unlinked {0}"))
     }
 )
 @Service(SERVICE_IDENTIFIER)
@@ -113,6 +139,8 @@ public class OneAllLoginService implements SocialLoginService
     public static final String PROP_SSO_ENABLED = "sso-enabled";
     /** The constant PARAM_SSO_CALLBACK */
     public static final String PARAM_SSO_CALLBACK = "sso-callback";
+    /** The constant PARAM_UNLINK. */
+    public static final String PARAM_UNLINK = "oneall-unlink";
 
     private static final Pattern NEWLINE_PATTERN = Pattern.compile("[\n\r]");
     private static final String PARAM_CONNECTION_TOKEN = "connection_token";
@@ -120,6 +148,8 @@ public class OneAllLoginService implements SocialLoginService
     @Autowired private PrincipalDAO _principalDAO;
     @Autowired private ExecutorConfig _executor;
     @Autowired private OneAllDAO _oneAllDAO;
+    @Autowired private ClassPathResourceLibraryHelper _classPathResourceLibraryHelper;
+    @Autowired private URLGenerator _urlGenerator;
     @Value("${oneall.subdomain:#{null}}") String _subdomain;
     @Value("${oneall.public.key:#{null}}") String _publicKey;
     @Value("${oneall.private.key:#{null}}") String _privateKey;
@@ -135,24 +165,85 @@ public class OneAllLoginService implements SocialLoginService
             @Override
             public void preRenderProcess(CmsRequest<SocialLoginElement> request, CmsResponse response, ProcessChain chain)
             {
-                //Do Nothing.
+                unlinkIfSpecified(request, response, loginParams);
             }
 
             @SuppressWarnings("unchecked")
             @Override
             public List<NDE> getNDEs()
             {
-                return Collections.emptyList();
+                return Collections.singletonList(OneAllNDELibrary.ProviderCSS.getNDE());
             }
 
+            @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
             @Override
             public void render(CmsRequest<SocialLoginElement> request, CmsResponse response, RenderChain chain) throws IOException
             {
                 if(isConfigured())
                 {
-                    String modeString = getModeString(loginParams.getMode());
+                    final FactoryResourceConfiguration providersIconsConfig = new FactoryResourceConfiguration(
+                        _classPathResourceLibraryHelper.createResource(
+                            "social/login/oneall/oneall-provider-icons.png"));
+                    providersIconsConfig.setExpireInterval(30L, ChronoUnit.DAYS);
+                    final String providerIconsURL = _urlGenerator.createURL(providersIconsConfig).getLink().getURIAsString();
                     EntityUtilWriter pw = response.getContentWriter();
-                    pw.append("<div id='oneall_social_login'></div>");
+                    if(loginParams.getMode() == SocialLoginMode.Link)
+                    {
+                        pw.append("<div class=\"oneall-providers-unlink\">");
+                        Principal currentPrincipal = _principalDAO.getCurrentPrincipal();
+                        List<String> registeredProviderProgs = _oneAllDAO.getRegisteredProviders(currentPrincipal);
+                        List<SocialLoginProvider> registeredProviders = loginParams.getLoginProviders().stream()
+                            .filter(rp -> registeredProviderProgs.stream()
+                                .anyMatch(rpp -> Objects.equals(rpp, rp.getProgrammaticName())))
+                            .collect(Collectors.toList());
+                        ResponseURL responseURL = response.createURL();
+                        registeredProviders.forEach(rp -> {
+                            final String url = responseURL.getURL(true);
+                            final String confirmText = CONFIRM_UNLINK_FMT(rp.getDisplayName())
+                                .getText(request.getLocaleContext()).toString();
+                            final String okText = CommonButtonText.YES.getText(request.getLocaleContext()).toString();
+                            final String cancelText = CommonButtonText.NO.getText(request.getLocaleContext()).toString();
+                            final String unlinkText = UNLINK().getText(request.getLocaleContext()).toString();
+                            pw.append("<form class=\"oneall\" method=\"GET\"").appendEscapedAttribute("action", url)
+                                .append("onSubmit=\""
+                                        + "if(event.target.hasAttribute('data-confirmed')) {"
+                                        + "return true;"
+                                        + "}"
+                                        + "event.preventDefault();"
+                                        + "if(miwt && miwt.confirm) { "
+                                        + "miwt.confirm('" + confirmText + "', '" + okText + "', '" + cancelText + "', function(c){"
+                                        + "if(c) {"
+                                        + "event.target.setAttribute('data-confirmed', c);"
+                                        + "event.target.submit();"
+                                        + '}'
+                                        + "});"
+                                        + "} else {"
+                                        + "var c = confirm('" + confirmText + "');"
+                                        + "if(c) {"
+                                        + "event.target.setAttribute('data-confirmed', c);"
+                                        + "event.target.submit();"
+                                        + '}'
+                                        + "} return false;"
+                                        + '"')
+                                .append('>');
+                            pw.append("<span class=\"content\">");
+                            pw.append("<span class=\"providers\">");
+                            pw.append("<span class=\"provider\">");
+                            pw.append("<input type=\"hidden\" name=\"").append(PARAM_UNLINK).append('"')
+                                .appendEscapedAttribute("value", rp.getProgrammaticName()).append('>');
+                            pw.append("<button type=\"submit\"")
+                                .append(" class=\"button button-" + rp.getProgrammaticName() + '"')
+                                .append(" style=\"background-image: url('" + providerIconsURL + "')\"")
+                                .append(" title=\"" + unlinkText + ' ' + rp.getDisplayName() + '"')
+                                .append("></button>");
+                            pw.append("</span>");
+                            pw.append("</span>");
+                            pw.append("</span>");
+                            pw.append("</form>");
+                        });
+                        pw.append("</div>");
+                    }
+                    pw.append("<div id=\"oneall-providers-login\"'></div>");
                     pw.append("<script async=\"async\" type=\"text/javascript\">\n")
                         //Setup OneAll Library
                         .append("var oneall_subdomain = '").append(_subdomain).append("';\n")
@@ -167,37 +258,31 @@ public class OneAllLoginService implements SocialLoginService
                         .append('\n')
                         .append("\t/* Embeds the buttons into the container oneall_social_login */\n")
                         .append("var _oneall = _oneall || [];\n")
-                        .append("_oneall.push(['")
-                        .append(modeString)
-                        .append("', 'set_providers', ")
-                        .append(loginParams.getLoginProvidersString())
-                        .append("]);\n")
-                        .append("_oneall.push(['")
-                        .append(modeString)
-                        .append("', 'set_callback_uri', '")
+                        .append("_oneall.push(['social_login', 'set_callback_uri', '")
                         .append(loginParams.getCallbackURL().getURL(true))
                         .append("']);\n");
+
+                    pw.append("_oneall.push(['social_login', 'set_providers', ");
                     if (loginParams.getMode() == SocialLoginMode.Link)
                     {
-                        String userToken = getUserTokenForCurrentUser(request);
-                        if (!isEmptyString(userToken))
-                        {
-                            pw.append("_oneall.push(['")
-                                .append(modeString)
-                                .append("', 'set_user_token', '")
-                                .append(userToken)
-                                .append("']);\n");
-                        }
+                        Principal currentPrincipal = _principalDAO.getCurrentPrincipal();
+                        List<String> registeredProviders = _oneAllDAO.getRegisteredProviders(currentPrincipal);
+                        //Need to add only providers that user has not linked yet.
+                        pw.append(loginParams.getLoginProvidersString(registeredProviders));
+                    }
+                    else
+                    {
+                        pw.append(loginParams.getLoginProvidersString());
                     }
                     pw
-                        .append("_oneall.push(['")
-                        .append(modeString)
-                        .append("', 'do_render_ui', 'oneall_social_login']);\n")
+                        .append("]);\n")
+                        .append("_oneall.push(['social_login', 'do_render_ui', 'oneall-providers-login']);\n")
                         .append(String.valueOf('\n'));
                     pw.append("</script>");
 
                     if(Boolean.valueOf(loginParams.getContentBuilder().getProperty(PROP_SSO_ENABLED, "false")))
                     {
+
                         String ssoToken = request.getSession(Scope.SESSION).getString(SESSION_KEY_SSO_TOKEN, null);
                         String callbackURL = loginParams.getCallbackURL().addParameter(PARAM_SSO_CALLBACK, true).getURL(true);
 
@@ -222,6 +307,21 @@ public class OneAllLoginService implements SocialLoginService
                 }
             }
         };
+    }
+
+    private void unlinkIfSpecified(CmsRequest<SocialLoginElement> request, CmsResponse response, SocialLoginParams loginParams)
+    {
+        String unlinkProvider = request.getParameter(PARAM_UNLINK);
+        Principal principal = _principalDAO.getCurrentPrincipal();
+        if(isEmptyString(unlinkProvider) || principal == null) return;
+        _oneAllDAO.deleteOneAllCredential(principal, unlinkProvider);
+        ResponseURL redirect = response.createURL();
+        request.getParameterMap().keySet().stream()
+            .filter(k -> !Objects.equals(k, PARAM_UNLINK))
+            .forEach(k -> redirect.addParameter(k, request.getParameter(k)));
+        loginParams.getMessageAcceptor().accept(Message.info(SUCCESSFULLY_UNLINKED_FMT(
+            loginParams.getProviderForProgrammaticName(unlinkProvider).getDisplayName())));
+        response.redirect(redirect);
     }
 
     @Nonnull
@@ -281,15 +381,16 @@ public class OneAllLoginService implements SocialLoginService
                     {
                         String userToken = res.response.result.data.user.user_token;
                         String identityToken = res.response.result.data.user.identity.identity_token;
+                        String provider = res.response.result.data.user.identity.provider;
 
-                        Principal toLogin = _oneAllDAO.getPrincipalForUserToken(userToken,
+                        Principal toLogin = _oneAllDAO.getPrincipalForUserToken(userToken, provider,
                             AuthenticationDomainList.createDomainList(
                                 request.getHostname().getDomain(),
                                 request.getHostname().getSite().getDomain()));
                         if (loginParams.getMode() == SocialLoginMode.Link)
-                            return doLink(loginParams, userToken, toLogin);
+                            return doLink(loginParams, userToken, toLogin, provider);
                         if (loginParams.getMode() == SocialLoginMode.Login)
-                            return doLogin(loginParams, userToken, toLogin, request, identityToken);
+                            return doLogin(loginParams, userToken, toLogin, request, identityToken, provider);
                     }
                 }
             }
@@ -303,12 +404,12 @@ public class OneAllLoginService implements SocialLoginService
 
     @SuppressFBWarnings("NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD")
     private boolean doLogin(SocialLoginParams loginParams, String userToken, @Nullable Principal toLogin,
-        Request request, String identityToken)
+        Request request, String identityToken, String provider)
     {
         if(toLogin != null)
         {
             _principalDAO.authenticatePrincipalProgrammatically(toLogin, SHARED_SECRET,
-                toLogin.getSSOCredentials(SSOType.other, SERVICE_IDENTIFIER));
+                toLogin.getOpenAuthCredentials(SERVICE_IDENTIFIER, provider));
             if(Boolean.valueOf(loginParams.getContentBuilder().getProperty(PROP_SSO_ENABLED, "false"))
                 && !Boolean.valueOf(request.getParameter(PARAM_SSO_CALLBACK, "false")))
             {
@@ -329,25 +430,24 @@ public class OneAllLoginService implements SocialLoginService
             }
             return true;
         }
-        if(_oneAllDAO.getPrincipalForUserToken(userToken, AuthenticationDomainList.emptyDomainList()) == null)
-        {
-            //If no user exists in our system, instruct OneAll to delete the user that it created.
-            sendAPIRequest(_apiEndpoint + "/users/" + userToken + ".json?confirm_deletion=true", "DELETE");
-        }
 
         loginParams.getMessageAcceptor().accept(Message.error(
             ERROR_USER_DOES_NOT_EXIST_FOR_USER_TOKEN(), ERROR_DETAILS_USER_DOES_NOT_EXIST_FOR_USER_TOKEN()));
         return false;
     }
 
-    private boolean doLink(SocialLoginParams loginParams, String userToken, @Nullable Principal toLogin)
+    private boolean doLink(SocialLoginParams loginParams, String userToken, @Nullable Principal toLogin, String providerProg)
     {
+        SocialLoginProvider provider = loginParams.getLoginProviders().stream()
+            .filter(p -> Objects.equals(p.getProgrammaticName(), providerProg)).findFirst()
+            .orElseGet(() -> new SocialLoginProvider(providerProg, providerProg));
         Principal current = _principalDAO.getCurrentPrincipal();
         if(current != null && (toLogin == null || Objects.equals(toLogin.getId(), current.getId())))
         {
-            _oneAllDAO.createOneAllCredential(current, userToken);
+            _oneAllDAO.createOneAllCredential(current, userToken, provider.getProgrammaticName());
             _principalDAO.authenticatePrincipalProgrammatically(current, SHARED_SECRET,
-                current.getSSOCredentials(SSOType.other, SERVICE_IDENTIFIER));
+                current.getOpenAuthCredentials(SERVICE_IDENTIFIER, provider.getProgrammaticName()));
+            loginParams.getMessageAcceptor().accept(Message.info(INFO_SUCCESSFULLY_LINKED_FMT(provider.getDisplayName())));
             return true;
         }
         if(current == null)
@@ -462,27 +562,95 @@ public class OneAllLoginService implements SocialLoginService
         return isConfigured;
     }
 
-    @Nullable
-    private String getUserTokenForCurrentUser(Request request)
+    public static enum OneAllNDELibrary implements ClassPathResourceLibrary
     {
-        Principal current = _principalDAO.getCurrentPrincipal();
-        if(current != null)
-        {
-            return _oneAllDAO.getUserTokenForPrincipal(current, AuthenticationDomainList.createDomainList(
-                request.getHostname().getDomain(), request.getHostname().getSite().getDomain()));
-        }
-        return null;
-    }
+        ProviderCSS("social/login/oneall/oneall-providers.css", "text/css")
+        ;
 
-    private static String getModeString(SocialLoginMode mode)
-    {
-        switch(mode)
+        @Component
+        static class OneAllImageLibraryInjector
         {
-            case Link:
-                return "social_link";
-            case Login:
-            default:
-                return "social_login";
+            @Autowired private ClassPathResourceLibraryHelper _classPathResourceLibraryHelper;
+
+            @PostConstruct
+            public void postConstruct()
+            {
+                for(OneAllNDELibrary img : EnumSet.allOf(OneAllNDELibrary.class))
+                {
+                    img.setLibraryHelper(_classPathResourceLibraryHelper);
+                }
+            }
+        }
+
+        private final String _classPath;
+        private final List<ClassPathResourceLibrary> _dependencies;
+        private final String _contentType;
+
+        @SuppressWarnings("NonFinalFieldInEnum")
+        private ClassPathResourceLibraryHelper _classPathResourceLibraryHelper;
+
+        @SuppressWarnings("unchecked")
+        OneAllNDELibrary(String classPath, String contentType, ClassPathResourceLibrary... dependencies)
+        {
+            _classPath = classPath;
+            _contentType = contentType;
+            _dependencies = dependencies != null && dependencies.length > 0
+                ? Arrays.asList(dependencies)
+                : Collections.emptyList();
+        }
+
+        private ClassPathResourceLibraryHelper getLibraryHelper()
+        {
+            return _classPathResourceLibraryHelper;
+        }
+
+        private void setLibraryHelper(ClassPathResourceLibraryHelper libraryHelper)
+        {
+            _classPathResourceLibraryHelper = libraryHelper;
+        }
+
+        @Override
+        public FactoryResource getResource()
+        {
+            return getLibraryHelper().createResource(this);
+        }
+
+        @Nullable
+        @Override
+        public NDE getNDE()
+        {
+            return getLibraryHelper().createNDE(this, true);
+        }
+
+        @Override
+        public String getContentType()
+        {
+            return _contentType;
+        }
+
+        @Override
+        public String getClassPath()
+        {
+            return _classPath;
+        }
+
+        @Override
+        public List<? extends ClassPathResourceLibrary> getDependancies()
+        {
+            return _dependencies;
+        }
+
+        @Nullable
+        @Override
+        public LocalizedObjectKey getDescription()
+        {
+            return null;
+        }
+
+        @Override
+        public String getName()
+        {
+            return StringFactory.getBasename(_classPath);
         }
     }
 

@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -45,6 +46,7 @@ import net.proteusframework.internet.http.Link;
 import net.proteusframework.internet.http.RequestError;
 import net.proteusframework.internet.http.ResponseURL;
 import net.proteusframework.internet.http.Scope;
+import net.proteusframework.internet.http.resource.html.NDE;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static net.proteusframework.core.StringFactory.isEmptyString;
@@ -80,6 +82,16 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
     }
 
     @Override
+    public List<NDE> getNDEs()
+    {
+        if(_socialLoginRenderer != null)
+        {
+            return _socialLoginRenderer.getNDEs();
+        }
+        else return Collections.emptyList();
+    }
+
+    @Override
     public void preRenderProcess(CmsRequest<SocialLoginElement> request, CmsResponse response, ProcessChain chain)
     {
         super.preRenderProcess(request, response, chain);
@@ -101,6 +113,11 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
                 {
                     //Construct the callback URI
                     final ResponseURL callbackURL = response.createURL(true);
+                    String paramRetUrl;
+                    if((paramRetUrl = request.getParameter(LoginBean.PARM_RETURN_URL)) != null)
+                    {
+                        callbackURL.addParameter(LoginBean.PARM_RETURN_URL, paramRetUrl);
+                    }
                     callbackURL.addParameter(PARAM_CALLBACK, true);
                     callbackURL.setAbsolute(true);
                     request.getSession(Scope.SESSION).initialize();
