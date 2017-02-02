@@ -39,8 +39,6 @@ open class ProfileBasicOneAllDSL :
             loginService(OneAllLoginService.SERVICE_IDENTIFIER)
             provider("google")
             mode(SocialLoginMode.Login)
-            //You can enable SSO by uncommenting the line below:
-//            additionalProperty(OneAllLoginService.PROP_SSO_ENABLED, "true")
         }
     }
 
@@ -74,13 +72,9 @@ open class ProteusBackendOneAllDSL :
         content("Primary Content", SocialLogin("OneAll Social Login")) {
             htmlClass = "oneall-social-login"
             landingPage("Dashboard")
-            scriptedRedirect("StarterSiteRedirectScript.groovy")
-            scriptedRedirectParam("Default Redirect Page", "/config/dashboard")
             loginService(OneAllLoginService.SERVICE_IDENTIFIER)
             provider("google")
             mode(SocialLoginMode.Login)
-            //You can enable SSO by uncommenting the line below:
-            additionalProperty(OneAllLoginService.PROP_SSO_ENABLED, "true")
         }
     }
 

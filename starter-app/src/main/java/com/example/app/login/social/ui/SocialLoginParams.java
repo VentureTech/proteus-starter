@@ -101,13 +101,13 @@ public class SocialLoginParams
      *
      * @return the login providers string
      */
-    public String getLoginProvidersString(@Nullable List<String> excludes)
+    public String getLoginProvidersString(@Nullable List<SocialLoginProvider> excludes)
     {
-        final List<String> excl = excludes != null ? excludes : Collections.emptyList();
+        final List<SocialLoginProvider> excl = excludes != null ? excludes : Collections.emptyList();
         StringBuilder sb = new StringBuilder();
         sb.append('[');
         final Iterator<SocialLoginProvider> lpiter = getLoginProviders().stream()
-            .filter(lp -> !excl.contains(lp.getProgrammaticName()))
+            .filter(lp -> excl.stream().noneMatch(e -> Objects.equals(e.getProgrammaticName(), lp.getProgrammaticName())))
             .iterator();
         lpiter.forEachRemaining(lp -> {
             sb.append('\'').append(lp.getProgrammaticName()).append('\'');
