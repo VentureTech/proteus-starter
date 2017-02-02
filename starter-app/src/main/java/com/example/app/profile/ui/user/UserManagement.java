@@ -23,6 +23,7 @@ import com.example.app.profile.model.user.UserPosition;
 import com.example.app.profile.service.MembershipOperationProvider;
 import com.example.app.profile.service.ProfileUIService;
 import com.example.app.profile.ui.ApplicationFunctions;
+import com.example.app.profile.ui.UIText;
 import com.example.app.profile.ui.URLProperties;
 import com.example.app.support.service.ContactUtil;
 import com.example.app.support.ui.Application;
@@ -40,10 +41,11 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
-import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelHistoryContainer;
+import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelContainer;
 
 import net.proteusframework.cms.category.CmsCategory;
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
+import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.ConcatTextSource;
 import net.proteusframework.core.locale.TextSource;
 import net.proteusframework.core.locale.TextSources;
@@ -58,8 +60,10 @@ import net.proteusframework.ui.management.ApplicationFunction;
 import net.proteusframework.ui.management.ParsedRequest;
 import net.proteusframework.ui.management.URLConfigPropertyConverter;
 import net.proteusframework.ui.management.nav.NavigationAction;
+import net.proteusframework.ui.miwt.HistoryImpl;
 import net.proteusframework.ui.miwt.component.ComboBox;
 import net.proteusframework.ui.miwt.component.Dialog;
+import net.proteusframework.ui.miwt.component.Label;
 import net.proteusframework.ui.miwt.component.composite.CustomCellRenderer;
 import net.proteusframework.ui.miwt.data.SimpleListModel;
 import net.proteusframework.ui.miwt.event.ActionListener;
@@ -119,7 +123,7 @@ import static com.example.app.profile.ui.user.UserManagementLOK.*;
     sessionName = Application.SESSION,
     name = ApplicationFunctions.User.MANAGEMENT,
     description = "UI for managing Users")
-public class UserManagement extends MIWTPageElementModelHistoryContainer implements SearchUIOperationHandler
+public class UserManagement extends MIWTPageElementModelContainer implements SearchUIOperationHandler
 {
     private static class UserPositionConstraint extends SimpleConstraint
     {
@@ -175,11 +179,12 @@ public class UserManagement extends MIWTPageElementModelHistoryContainer impleme
         options.getEntityActions().add(_addAction);
 
         options.addSearchSupplier(searchSupplier);
-        options.setHistory(getHistory());
+        options.setHistory(new HistoryImpl());
 
         _searchUI = new SearchUIImpl(options);
 
-        setDefaultComponent(of("search-wrapper user-search", _searchUI));
+        add(of("text", new Label(UIText.USERS()).withHTMLElement(HTMLElement.h1)));
+        add(of("search-wrapper user-search", _searchUI));
 
         setBuilderSupplierAndAddActionAvailability();
 

@@ -36,6 +36,7 @@ import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelContainer;
 import com.i2rd.hr.miwt.PhoneNumberCellRenderer;
 
 import net.proteusframework.cms.category.CmsCategory;
+import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
@@ -48,6 +49,7 @@ import net.proteusframework.ui.management.nav.NavigationAction;
 import net.proteusframework.ui.management.nav.config.CurrentURLPropertyValueResolver;
 import net.proteusframework.ui.management.nav.config.PropertyValueResolverParameter;
 import net.proteusframework.ui.miwt.HistoryImpl;
+import net.proteusframework.ui.miwt.component.Label;
 import net.proteusframework.ui.miwt.data.SortOrder;
 import net.proteusframework.ui.miwt.event.Event;
 import net.proteusframework.ui.miwt.util.CommonActions;
@@ -190,6 +192,7 @@ public class ClientManagement extends MIWTPageElementModelContainer implements S
             .setSearchOnPageLoad(true)
             .setHistory(new HistoryImpl());
 
+        add(of("text", new Label(_terms.clients()).withHTMLElement(HTMLElement.h1)));
         add(new SearchUIImpl(options).addClassName("search-wrapper"));
     }
 
