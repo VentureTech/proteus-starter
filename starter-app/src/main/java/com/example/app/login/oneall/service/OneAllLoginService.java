@@ -460,7 +460,7 @@ public class OneAllLoginService implements SocialLoginService
     {
         final ServletSession session = request.getSession(Scope.SESSION);
         session.setString(SESSION_KEY_IDENTITY_TOKEN, identityToken);
-        session.setString(LoginLogoutHelper.SESSION_KEY_LOGOUT_CALLBACK, OneAllSSOLogoutCallback.class.getName());
+        session.setObject(LoginLogoutHelper.SESSION_KEY_LOGOUT_CALLBACK, OneAllSSOLogoutCallback.class);
     }
 
     private boolean createSSOSession(Request request, String identityToken)
