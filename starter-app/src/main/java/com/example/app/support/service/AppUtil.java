@@ -108,6 +108,10 @@ public class AppUtil implements Serializable
 {
     /** Preferences Key For The Profile Site. */
     public static final String PREF_KEY_PROFILE_SITE = "ProfileSite.Id";
+    /** Preferences Key for the Frontend Access Role */
+    public static final String PREF_KEY_FRONTEND_ROLE = "Frontend.Role.ProgrammaticId";
+    /** Preferences Key for the Admin Access Role */
+    public static final String PREF_KEY_ADMIN_ROLE = "Admin.Role.ProgrammaticId";
     /** UTC. */
     public static final TimeZone UTC = TimeZone.getTimeZone(ZoneOffset.UTC);
     /** Logger. */
@@ -136,10 +140,6 @@ public class AppUtil implements Serializable
     @Autowired
     private transient EntityRetriever _entityRetriever;
 
-    @Value("${frontend-access-role}")
-    private String _frontEndRoleProgId;
-    @Value("${admin-access-role}")
-    private String _adminRoleProgId;
     @Value("${system.sender}")
     private String _systemSender;
     @Autowired @Qualifier("localeSource")
@@ -926,9 +926,13 @@ public class AppUtil implements Serializable
      */
     public Role getFrontEndAccessRole()
     {
-        return ofNullable(_roleDAO.getRoleByProgrammaticName(_frontEndRoleProgId))
+        String frontEndRoleProgId = Preferences.systemRoot().get(PREF_KEY_FRONTEND_ROLE, null);
+        if(StringFactory.isEmptyString(frontEndRoleProgId)) throw new IllegalStateException(
+            "Frontend Role Programmatic Id should be defined in Preferences.systemRoot "
+            + "with the key: " + PREF_KEY_FRONTEND_ROLE);
+        return ofNullable(_roleDAO.getRoleByProgrammaticName(frontEndRoleProgId))
             .orElseThrow(() -> new IllegalStateException(
-                "Front End Role could not be foundfor programmatic id: " + _frontEndRoleProgId));
+                "Front End Role could not be foundfor programmatic id: " + frontEndRoleProgId));
     }
 
     /**
@@ -938,9 +942,13 @@ public class AppUtil implements Serializable
      */
     public Role getAdminAccessRole()
     {
-        return ofNullable(_roleDAO.getRoleByProgrammaticName(_adminRoleProgId))
+        String adminRoleProgId = Preferences.systemRoot().get(PREF_KEY_ADMIN_ROLE, null);
+        if(StringFactory.isEmptyString(adminRoleProgId)) throw new IllegalStateException(
+            "Admin Role Programmatic Id should be defined in Preferences.systemRoot "
+            + "with the key: " + PREF_KEY_ADMIN_ROLE);
+        return ofNullable(_roleDAO.getRoleByProgrammaticName(adminRoleProgId))
             .orElseThrow(() -> new IllegalStateException(
-                "Admin Role could not be found for programmatic id: " + _adminRoleProgId));
+                "Admin Role could not be found for programmatic id: " + adminRoleProgId));
     }
 
     /**

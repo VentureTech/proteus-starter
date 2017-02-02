@@ -47,6 +47,8 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
     /** Internal Use. */
     internal var sitePreferenceKey: String = ""
     /** Internal Use. */
+    internal var systemPreferences = mutableMapOf<String, String>()
+    /** Internal Use. */
     internal var webResources: URL? = null
     /** Internal Use. */
     internal var libraryResources: URL? = null
@@ -196,6 +198,15 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
     fun storeSitePreference(key: String) {
         if(key.isBlank()) throw IllegalArgumentException("Key must be specified")
         sitePreferenceKey = key
+    }
+
+    /**
+     * Provide a [java.util.prefs.Preferences] key to store the given value.
+     * @param the key. Must follow [java.util.prefs.Preferences] constraints like key length.
+     */
+    fun systemPref(key: String, value: String) {
+        if(key.isBlank()) throw IllegalArgumentException("Key must be specified")
+        systemPreferences[key] = value
     }
 
     /**
