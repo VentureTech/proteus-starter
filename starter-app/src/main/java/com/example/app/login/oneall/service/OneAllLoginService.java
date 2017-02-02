@@ -465,6 +465,7 @@ public class OneAllLoginService implements SocialLoginService
         session.setObject(LoginLogoutHelper.SESSION_KEY_LOGOUT_CALLBACK, OneAllSSOLogoutCallback.class);
     }
 
+    @SuppressFBWarnings("NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD")
     private boolean createSSOSession(Request request, String identityToken)
     {
         //If SSO Is Enabled for this Social Login component, then we instantiate a new SSO Session
@@ -754,7 +755,8 @@ public class OneAllLoginService implements SocialLoginService
     {
         @Autowired private OneAllLoginService _loginService;
         @Value("${oneall.api.endpoint:#{null}}") String _apiEndpoint;
-        
+
+        @SuppressFBWarnings("NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD")
         @Override
         public void doCallback(HttpServletRequest request, HttpServletResponse response)
         {
