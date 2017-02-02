@@ -56,6 +56,8 @@ import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.i2rd.util.Environment;
+
 import net.proteusframework.cms.component.generator.Renderer;
 import net.proteusframework.cms.controller.CmsRequest;
 import net.proteusframework.cms.controller.CmsResponse;
@@ -165,6 +167,7 @@ public class OneAllLoginService implements SocialLoginService
     @Autowired private OneAllDAO _oneAllDAO;
     @Autowired private ClassPathResourceLibraryHelper _classPathResourceLibraryHelper;
     @Autowired private URLGenerator _urlGenerator;
+    @Autowired private Environment _environment;
     @Value("${oneall.subdomain:#{null}}") String _subdomain;
     @Value("${oneall.public.key:#{null}}") String _publicKey;
     @Value("${oneall.private.key:#{null}}") String _privateKey;
@@ -625,6 +628,11 @@ public class OneAllLoginService implements SocialLoginService
      */
     public boolean isConfigured()
     {
+        if(isEmptyString(_privateKey))
+        {
+            _privateKey = _environment.getProperty("oneall.private.key",
+                _environment.getProperty("oneall_private_key"));
+        }
         boolean isConfigured = !isEmptyString(_publicKey)
             && !isEmptyString(_privateKey)
             && !isEmptyString(_subdomain)
