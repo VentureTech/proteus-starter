@@ -39,7 +39,14 @@ open class ProfileBasicDSL : AppDefinition(DEFINITION_NAME, version = 1, siteId 
     webResources(URL("https://repo.venturetech.net/artifactory/simple/vt-snapshot-local/" +
         "com/example/starter-app-webdev/\${LATEST}/starter-app-webdev-\${LATEST}.zip"))
 
+    val frontendRoleProgId = "frontend_user"
+    val adminRoleProgId = "proteus_admin"
+    role("Frontend User", frontendRoleProgId, "Frontend User")
+    role("Proteus Admin", adminRoleProgId, "Proteus Admin")
+
     storeSitePreference(AppUtil.PREF_KEY_PROFILE_SITE)
+    systemPref(AppUtil.PREF_KEY_FRONTEND_ROLE, frontendRoleProgId)
+    systemPref(AppUtil.PREF_KEY_ADMIN_ROLE, adminRoleProgId)
 
     template("Login") {
         javaScript("vendor/jquery.min.js")
@@ -164,7 +171,7 @@ match an existing user account, then an email message will be sent with addition
 
     page("Dashboard", "/dashboard") {
         template("Frontend")
-        permission("Frontend Access", "\${admin-access-role}")
+        permission("Frontend Access", adminRoleProgId)
         authenticationPage("Login")
         content("Body", Text("Dashboard Heading")) {
             htmlContent = "<h1>Dashboard</h1>"
@@ -185,7 +192,7 @@ match an existing user account, then an email message will be sent with addition
      )) {
         page(appFunction, path) {
             template("Frontend")
-            permission("Frontend Access")
+            permission("Frontend Access", frontendRoleProgId)
             authenticationPage("Login")
 
             content("Body", ApplicationFunction(appFunction)) {

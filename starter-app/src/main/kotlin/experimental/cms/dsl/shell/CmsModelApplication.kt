@@ -378,11 +378,17 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         currentWebRoot = FileSystemDirectory.getRootDirectory(cmsSite)
         createNDEs(cmsSite, cmsSite, siteModel)
         session.flush()
+        val systemRoot = Preferences.systemRoot()
+        var needsFlush = false
         if(siteModel.sitePreferenceKey.isNotBlank()) {
-            val systemRoot = Preferences.systemRoot()
             systemRoot.putLong(siteModel.sitePreferenceKey, cmsSite.id)
-            systemRoot.flush()
+            needsFlush = true
         }
+        siteModel.systemPreferences.entries.forEach {
+            systemRoot.put(it.key, it.value)
+            needsFlush = true
+        }
+        if(needsFlush) systemRoot.flush()
         return cmsSite
     }
 

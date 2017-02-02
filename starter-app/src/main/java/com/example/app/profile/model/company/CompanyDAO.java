@@ -32,7 +32,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.jetbrains.annotations.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
@@ -97,7 +96,6 @@ public class CompanyDAO extends DAOHelper implements Serializable
     @Autowired private transient MembershipOperationConfiguration _mop;
     @Autowired private transient CmsFrontendDAO _cmsFrontendDAO;
     @Autowired private transient FileSystemDAO _fileSystemDAO;
-    @Value("${admin-access-role}") private String _adminRoleProgId;
     @Autowired private transient EntityRetriever _er;
 
     private FileSaver<Company> _webImageSaver;
@@ -527,7 +525,7 @@ public class CompanyDAO extends DAOHelper implements Serializable
                                     + "WHERE r.programmaticName = :adminRolePN")
                     .setCacheRegion(UsersCacheRegions.ROLE_QUERY)
                     .setCacheable(true)
-                    .setParameter("adminRolePN", _adminRoleProgId)
+                    .setParameter("adminRolePN", _appUtil.getAdminAccessRole().getProgrammaticName())
                 .list();
             for (Principal admin : admins)
             {

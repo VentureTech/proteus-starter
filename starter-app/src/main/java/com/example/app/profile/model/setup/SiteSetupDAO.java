@@ -11,8 +11,9 @@
 
 package com.example.app.profile.model.setup;
 
+import com.example.app.support.service.AppUtil;
 import com.example.app.support.service.EntityIdCollector;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 
@@ -33,8 +34,7 @@ import net.proteusframework.users.model.Principal;
 @Lazy
 public class SiteSetupDAO extends DAOHelper
 {
-
-    @Value("${admin-access-role}") private String _adminRoleProgId;
+    @Autowired private AppUtil _appUtil;
 
     /**
      * Needs setup boolean.
@@ -63,7 +63,7 @@ public class SiteSetupDAO extends DAOHelper
                                     + "WHERE r.programmaticName = :adminRolePN")
                     .setCacheRegion(UsersCacheRegions.ROLE_QUERY)
                     .setCacheable(true)
-                    .setParameter("adminRolePN", _adminRoleProgId)
+                    .setParameter("adminRolePN", _appUtil.getAdminAccessRole().getProgrammaticName())
                     .list();
             @SuppressWarnings("unchecked")
             List<Principal> adminsWithUser = (List<Principal>)
