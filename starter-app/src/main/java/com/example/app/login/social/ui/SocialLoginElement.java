@@ -11,6 +11,9 @@
 
 package com.example.app.login.social.ui;
 
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+
 import javax.annotation.Nullable;
 
 import net.proteusframework.cms.PageElement;
@@ -41,6 +44,7 @@ import static com.example.app.login.social.ui.SocialLoginElementLOK.COMPONENT_NA
 )
 @PageElementModelConfiguration(name = COMPONENT_NAME_SYMBOL, editor = SocialLoginEditor.class)
 @Categorized(category = CmsCategory.UserManagement)
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class SocialLoginElement extends AbstractContentElement
 {
     private static final long serialVersionUID = -5001773997078155399L;
