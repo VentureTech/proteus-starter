@@ -12,6 +12,7 @@
 package com.example.app.login.social.service;
 
 import com.example.app.login.social.ui.SocialLoginElement;
+import com.example.app.login.social.ui.SocialLoginGenerator.LoginResult;
 import com.example.app.login.social.ui.SocialLoginParams;
 import com.example.app.login.social.ui.SocialLoginServiceEditor;
 
@@ -54,7 +55,7 @@ public interface SocialLoginService extends NamedObject
      * @param loginParams the login parameters
      * @return boolean flag.  True if the callback resulted in the user being logged in.  False otherwise
      */
-    boolean handleLoginCallback(Request request, Response response, SocialLoginParams loginParams);
+    LoginResult handleLoginCallback(Request request, Response response, SocialLoginParams loginParams);
 
     /**
      * Get the identifier for this service

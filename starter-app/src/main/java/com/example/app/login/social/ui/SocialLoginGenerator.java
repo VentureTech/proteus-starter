@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -39,12 +40,14 @@ import net.proteusframework.cms.controller.CmsResponse;
 import net.proteusframework.cms.controller.LinkUtil;
 import net.proteusframework.cms.controller.ProcessChain;
 import net.proteusframework.cms.controller.RenderChain;
+import net.proteusframework.core.io.EntityUtilWriter;
 import net.proteusframework.core.notification.HTMLNotificationRenderer;
 import net.proteusframework.core.notification.Notification;
 import net.proteusframework.internet.http.Link;
 import net.proteusframework.internet.http.RequestError;
 import net.proteusframework.internet.http.ResponseURL;
 import net.proteusframework.internet.http.Scope;
+import net.proteusframework.internet.http.resource.html.NDE;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
 import static net.proteusframework.core.StringFactory.isEmptyString;
@@ -60,7 +63,19 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
 {
     private static final Logger _logger = LogManager.getLogger(SocialLoginGenerator.class);
 
+    public static enum LoginResult
+    {
+        /** Standard Success Result.  Instructs the {@link SocialLoginGenerator} to perform the redirect as normal */
+        SUCCESS_DO_REDIRECT,
+        /** Instructs the {@link SocialLoginGenerator} to perform the redirect using javascript, after the page has loaded.
+         * This is done because in some cases, some javascript must be executed against a Social Login service api post-login. */
+        SUCCESS_DO_REDIRECT_JAVASCRIPT,
+        /** Pretty self-explanatory */
+        FAIL
+    }
+
     private static final String PARAM_CALLBACK = "callback";
+    private static final String PROP_JS_REDIRECT = "social-login-js-redirect";
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection") //Autowired In.
     @Autowired private List<SocialLoginService> _loginServices;
@@ -77,6 +92,16 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
     {
         super();
         setScope(Scope.REQUEST);
+    }
+
+    @Override
+    public List<NDE> getNDEs()
+    {
+        if(_socialLoginRenderer != null)
+        {
+            return _socialLoginRenderer.getNDEs();
+        }
+        else return Collections.emptyList();
     }
 
     @Override
@@ -101,6 +126,12 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
                 {
                     //Construct the callback URI
                     final ResponseURL callbackURL = response.createURL(true);
+                    String paramRetUrl;
+                    if((paramRetUrl = request.getParameter(LoginBean.PARM_RETURN_URL)) != null
+                       && !Objects.equals(paramRetUrl, "/"))
+                    {
+                        callbackURL.addParameter(LoginBean.PARM_RETURN_URL, paramRetUrl);
+                    }
                     callbackURL.addParameter(PARAM_CALLBACK, true);
                     callbackURL.setAbsolute(true);
                     request.getSession(Scope.SESSION).initialize();
@@ -111,13 +142,15 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
                     //Check if we are in a callback
                     if(request.getParameter(PARAM_CALLBACK) != null)
                     {
-                        if(selectedService.handleLoginCallback(request, response, params))
+                        LoginResult loginResult;
+                        if((loginResult = selectedService.handleLoginCallback(request, response, params)) != LoginResult.FAIL)
                         {
                             if(params.getMode() == SocialLoginMode.Login)
-                                handleLoginSuccess(params, request, response);
+                                handleLoginSuccess(params, request, response, loginResult);
                             else if(params.getMode() == SocialLoginMode.Link)
-                                handleLinkSuccess(params, request, response);
-                            return;
+                                handleLinkSuccess(params, request, response, loginResult);
+                            if(loginResult == LoginResult.SUCCESS_DO_REDIRECT)
+                                return;
                         }
                         else
                         {
@@ -134,20 +167,31 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
 
     private void clearURLParams(SocialLoginParams params, CmsRequest<SocialLoginElement> request, CmsResponse response)
     {
+        response.redirect(getClearedURL(params, request, response));
+    }
+
+    private ResponseURL getClearedURL(SocialLoginParams params, CmsRequest<SocialLoginElement> request, CmsResponse response)
+    {
         ResponseURL redirect = response.createURL();
         request.getParameterMap().keySet().stream()
             .filter(k -> !params.getLoginService().getURLParametersToRemoveAfterCallback().contains(k))
             .filter(k -> !Objects.equals(k, PARAM_CALLBACK))
             .forEach(k -> redirect.addParameter(k, request.getParameter(k)));
-        response.redirect(redirect);
+        return redirect;
     }
 
-    private void handleLinkSuccess(SocialLoginParams params, CmsRequest<SocialLoginElement> request, CmsResponse response)
+    private void handleLinkSuccess(SocialLoginParams params, CmsRequest<SocialLoginElement> request, CmsResponse response,
+        LoginResult loginResult)
     {
-        clearURLParams(params, request, response);
+        ResponseURL cleared = getClearedURL(params, request, response);
+        if(loginResult == LoginResult.SUCCESS_DO_REDIRECT)
+            response.redirect(cleared);
+        else if(loginResult == LoginResult.SUCCESS_DO_REDIRECT_JAVASCRIPT)
+            _uiPreferences.setStoredObject(PROP_JS_REDIRECT, cleared.getURL(true));
     }
 
-    private void handleLoginSuccess(SocialLoginParams params, CmsRequest<SocialLoginElement> request, CmsResponse response)
+    private void handleLoginSuccess(SocialLoginParams params, CmsRequest<SocialLoginElement> request, CmsResponse response,
+        LoginResult loginResult)
     {
         ResponseURL redirect;
         //Respect the dynamic return page first
@@ -157,8 +201,10 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
         //Finally, use the specified landing page
         redirect = redirect != null ? redirect : getLandingPage(params.getContentBuilder(), response);
 
-        if(redirect != null)
+        if(redirect != null && loginResult == LoginResult.SUCCESS_DO_REDIRECT)
             response.redirect(redirect);
+        else if(redirect != null && loginResult == LoginResult.SUCCESS_DO_REDIRECT_JAVASCRIPT)
+            _uiPreferences.setStoredObject(PROP_JS_REDIRECT, redirect.getURL(true));
         else
             response.sendError(RequestError.FORBIDDEN,
                 request.getLocaleContext().getLocalizedText(LoginRenderer.REDIRECT_ERROR).getText());
@@ -263,5 +309,14 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
         }
         if(_socialLoginRenderer != null)
             _socialLoginRenderer.render(request, response, chain);
+
+        _uiPreferences.getStoredObject(PROP_JS_REDIRECT).map(String::valueOf).ifPresent(jsRedirectUrl -> {
+            EntityUtilWriter pw = response.getContentWriter();
+            pw.append("<script type=\"application/javascript\">");
+            //noinspection StringConcatenationInsideStringBufferAppend
+            pw.append("window.onload = function() { window.location = '" + jsRedirectUrl + "'; };");
+            pw.append("</script>");
+            _uiPreferences.setStoredObject(PROP_JS_REDIRECT, null);
+        });
     }
 }

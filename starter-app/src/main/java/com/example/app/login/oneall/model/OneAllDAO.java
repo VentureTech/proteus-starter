@@ -20,15 +20,14 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Objects;
+import java.util.Collections;
+import java.util.List;
 
 import net.proteusframework.core.hibernate.dao.DAOHelper;
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.users.model.AuthenticationDomain;
-import net.proteusframework.users.model.Credentials;
+import net.proteusframework.users.model.OpenAuthCredentials;
 import net.proteusframework.users.model.Principal;
-import net.proteusframework.users.model.SSOCredentials;
-import net.proteusframework.users.model.SSOType;
 import net.proteusframework.users.model.dao.AuthenticationDomainList;
 import net.proteusframework.users.model.dao.NonUniqueCredentialsException;
 import net.proteusframework.users.model.dao.PrincipalDAO;
@@ -48,33 +47,56 @@ public class OneAllDAO extends DAOHelper
     @Autowired private EntityRetriever _er;
 
     /**
+     * Gets registered providers.
+     *
+     * @param principal the principal
+     *
+     * @return the registered providers
+     */
+    public List<String> getRegisteredProviders(@Nullable Principal principal)
+    {
+        if(principal == null) return Collections.emptyList();
+        return doInTransaction(session -> {
+            return session.createQuery("SELECT distinct cred.openAuthSubType FROM Principal p\n"
+                                       + "inner join p.credentials cred\n"
+                                       + "where cred.openAuthType = :openAuthType\n"
+                                       + "and p.id = :principalId")
+                .setParameter("openAuthType", OneAllLoginService.SERVICE_IDENTIFIER)
+                .setParameter("principalId", principal.getId())
+                .list();
+        });
+    }
+
+    /**
      * Gets principal for user token.
      *
      * @param userToken the user token
+     * @param provider the provider
      * @param domains the domains.  If empty, will return any principal within the system that is linked to the given token
      *
      * @return the principal for user token
      */
     @Nullable
-    public Principal getPrincipalForUserToken(@Nonnull String userToken, @Nonnull AuthenticationDomainList domains)
+    public Principal getPrincipalForUserToken(@Nonnull String userToken, @Nonnull String provider, @Nonnull
+        AuthenticationDomainList domains)
     {
         if(!domains.isEmpty())
         {
-            return _principalDAO.getPrincipalBySSO(SSOType.other, userToken, OneAllLoginService.SERVICE_IDENTIFIER, domains);
+            return _principalDAO.getPrincipalByOpenAuth(OneAllLoginService.SERVICE_IDENTIFIER, userToken, provider, domains);
         }
         else
         {
             final String queryString =
                 "select p from Principal p \n"
                 + "inner join p.credentials cred \n"
-                + "where cred.SSOType = :ssoType \n"
-                + "and cred.SSOId = :ssoId \n"
-                + "and cred.otherType = :otherType";
+                + "where cred.openAuthType = :openAuthType \n"
+                + "and cred.openAuthId = :openAuthId \n"
+                + "and cred.openAuthSubType = :openAuthSubType";
             return doInTransaction(session -> {
                 Query query = getSession().createQuery(queryString);
-                query.setParameter("ssoType", SSOType.other);
-                query.setString("otherType", OneAllLoginService.SERVICE_IDENTIFIER);
-                query.setString("ssoId", userToken);
+                query.setParameter("openAuthType", OneAllLoginService.SERVICE_IDENTIFIER);
+                query.setString("openAuthSubType", provider);
+                query.setString("openAuthId", userToken);
                 query.setMaxResults(1);
                 return (Principal) query.uniqueResult();
             });
@@ -85,33 +107,34 @@ public class OneAllDAO extends DAOHelper
      * Gets user token for principal.
      *
      * @param principal the principal
+     * @param provider the provider
      * @param domains the domains
      *
      * @return the user token for principal
      */
     @Nullable
-    public String getUserTokenForPrincipal(Principal principal, @Nonnull AuthenticationDomainList domains)
+    public String getUserTokenForPrincipal(Principal principal, String provider, @Nonnull AuthenticationDomainList domains)
     {
         final String queryString =
             "select cred from Principal p \n"
                + "inner join p.credentials cred \n"
                + "inner join p.authenticationDomains auth \n"
                + "where auth.id = :authId \n"
-               + "and cred.SSOType = :ssoType \n"
+               + "and cred.openAuthType = :openAuthType \n"
                + "and p.id = :principalId \n"
-               + "and cred.otherType = :otherType";
+               + "and cred.openAuthSubType = :openAuthSubType";
         return doInTransaction(session -> {
             Query query = getSession().createQuery(queryString);
-            query.setParameter("ssoType", SSOType.other);
+            query.setParameter("openAuthType", OneAllLoginService.SERVICE_IDENTIFIER);
             query.setParameter("principalId", principal.getId());
-            query.setParameter("otherType", OneAllLoginService.SERVICE_IDENTIFIER);
+            query.setParameter("openAuthSubType", provider);
             for (AuthenticationDomain ad : domains)
             {
                 if(ad == null) continue;
                 query.setLong("authId", ad.getId());
-                SSOCredentials creds = (SSOCredentials) query.uniqueResult();
+                OpenAuthCredentials creds = (OpenAuthCredentials) query.uniqueResult();
                 if(creds != null)
-                    return creds.getSSOId();
+                    return creds.getOpenAuthId();
             }
             return null;
         });
@@ -122,15 +145,16 @@ public class OneAllDAO extends DAOHelper
      *
      * @param principal the principal
      * @param userToken the user token
+     * @param provider the provider
      */
-    public void createOneAllCredential(Principal principal, String userToken)
+    public void createOneAllCredential(Principal principal, String userToken, String provider)
     {
-        if(hasOneAllCredential(principal)) return;
-        SSOCredentials ssoCred = new SSOCredentials();
-        ssoCred.setSSOType(SSOType.other);
-        ssoCred.setOtherType(OneAllLoginService.SERVICE_IDENTIFIER);
-        ssoCred.setSSOId(userToken);
-        principal.getCredentials().add(ssoCred);
+        if(hasOneAllCredential(principal, provider)) return;
+        OpenAuthCredentials cred = new OpenAuthCredentials();
+        cred.setOpenAuthType(OneAllLoginService.SERVICE_IDENTIFIER);
+        cred.setOpenAuthSubType(provider);
+        cred.setOpenAuthId(userToken);
+        principal.getCredentials().add(cred);
         try
         {
             _principalDAO.savePrincipal(principal);
@@ -142,24 +166,34 @@ public class OneAllDAO extends DAOHelper
     }
 
     /**
+     * Delete one all credential.
+     *
+     * @param principal the principal
+     * @param provider the provider
+     */
+    public void deleteOneAllCredential(Principal principal, String provider)
+    {
+        OpenAuthCredentials creds = principal.getOpenAuthCredentials(OneAllLoginService.SERVICE_IDENTIFIER, provider);
+        if(creds != null)
+        {
+            doInTransaction(session -> {
+                principal.getCredentials().remove(creds);
+                session.saveOrUpdate(principal);
+                session.delete(creds);
+            });
+        }
+    }
+
+    /**
      * Has one all credential boolean.
      *
      * @param principal the principal
+     * @param provider the provider
      *
      * @return the boolean
      */
-    public boolean hasOneAllCredential(Principal principal)
+    public boolean hasOneAllCredential(Principal principal, String provider)
     {
-        for(Credentials c : principal.getCredentials())
-        {
-            c = _er.narrowProxyIfPossible(c);
-            if(c instanceof SSOCredentials)
-            {
-                final SSOCredentials ssoCredentials = (SSOCredentials) c;
-                if(ssoCredentials.getSSOType() == SSOType.other
-                   && Objects.equals(ssoCredentials.getOtherType(), OneAllLoginService.SERVICE_IDENTIFIER)) return true;
-            }
-        }
-        return false;
+        return principal.getOpenAuthCredentials(OneAllLoginService.SERVICE_IDENTIFIER, provider) != null;
     }
 }

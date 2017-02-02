@@ -12,6 +12,10 @@
 package com.example.app.config.automation
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
+import net.proteusframework.core.automation.DataConversion
+import net.proteusframework.core.automation.SQLDataConversion
+import net.proteusframework.core.automation.TaskQualifier
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Lazy
 import org.springframework.context.annotation.Profile
@@ -29,6 +33,28 @@ class ProjectDataConversion1
 {
     /** IDENTIFIER constant for LDP data conversions */
     private static final String IDENTIFIER = 'starter-app'
+
+    /**
+     * Set names on some of the Proteus Backend pages.
+     * This is only intended for use with projects that have been created using the proteus snapshot.  Hopefully, the site_id is
+     * valid for other installs.
+     * 2017.01.06 at 22:13 UTC
+     * @return Bean.
+     */
+    @TaskQualifier(TaskQualifier.Type.data_conversion)
+    @Bean
+    DataConversion dataConversion_201701300931()
+    {
+        def stmts = [
+            $/update page p set name='Dashboard' from pageelementpath pep where pep.site_id=4 AND pep.path=
+'config/dashboard' AND pep.pageelementpath_id=p.pageelementpath_id/$,
+            $/update page p set name='Login' from pageelementpath pep where pep.site_id=4 AND pep.path=
+'account/login' AND pep.pageelementpath_id=p.pageelementpath_id/$,
+            $/update page p set name='My Preferences' from pageelementpath pep where pep.site_id=4 AND pep.path=
+'account/preferences' AND pep.pageelementpath_id=p.pageelementpath_id/$
+        ]
+        new SQLDataConversion(IDENTIFIER, "Fix Backend Page Names", 201701300931, false, null, null, null, stmts)
+    }
 
     /**
      * Data conversion #1

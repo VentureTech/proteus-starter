@@ -24,7 +24,7 @@ import net.proteusframework.users.model.CredentialPolicyLevel
  * Box model
  */
 class Box(id: String, var boxType: BoxDescriptor = BoxDescriptor.COLUMN,
-          var defaultContentArea: PageProperties.Type = PageProperties.Type.page,
+          var defaultContentArea: PageProperties.Type? = PageProperties.Type.page,
           var wrappingContainerCount: Short = 0,
           override var htmlId: String="", override var htmlClass: String="")
     : IdentifiableParent<Box>(id), HTMLClass, HTMLIdentifier {
