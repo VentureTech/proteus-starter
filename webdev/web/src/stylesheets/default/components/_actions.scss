@@ -3,41 +3,20 @@
 @import "../../../../../bower_components/bootstrap/scss/buttons";
 
 .actions .btn {
-	margin-right:4px;
-}
-.actions .btn, .procedure-navigation .btn, .recipients .btn {
 	@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border);
+	cursor: pointer;
+
+	+ .btn {
+		margin-left: 4px;
+	}
 
 	&.save, &.add, &.finish-button, &.save_exit, &.confirm, &.engagement-completed {
 		@include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
 	}
 
 	&.delete, &.remove, &.cancel, &.cancel-button, &.reschedule {
-		background: $color-white;
-		color: $color-app-red;
-		border-color: $color-app-red;
-
-		&:hover {
-			background: $color-app-red;
-			border-color: $color-app-red;
-			color: $color-white;
-		}
-
+		@include button-variant($color-app-red, $color-white, $color-app-red);
 	}
-
-}
-
-.btn {
-
-	&.engagement-completed {
-		@include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
-		display: block;
-	}
-
-	&.go, &.back-home {
-		@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border);
-	}
-
 }
 
 .action-column .btn {

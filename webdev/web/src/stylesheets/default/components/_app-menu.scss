@@ -19,10 +19,21 @@
 		margin-right: 2rem;
 		padding: .75rem 0;
 
+		@include media-breakpoint-up(lg) {
+			flex: 1 0 auto;
+			justify-content: flex-start;
+			max-width: 13rem;
+			margin-right: 1rem;
+		}
+
 		a {
 			display: block;
 			//min-width: 12rem;
 			//max-width: 14rem;
+
+			@include media-breakpoint-up(lg) {
+				width: 100%;
+			}
 		}
 
 		.fa.fa-bars {
@@ -31,6 +42,15 @@
 			font-weight: 300;
 			font-size: 1.5rem;
 			cursor: pointer;
+
+			@include media-breakpoint-up(lg) {
+				display: none;
+			}
+		}
+
+		img {
+			max-width: 100%;
+			height: auto;
 		}
 
 	}
@@ -49,6 +69,25 @@
 		width: 0;
 		overflow: hidden;
 
+		@include media-breakpoint-up(lg) {
+			flex: 2 1 75%;
+			align-items: center;
+			display: flex;
+			flex-flow: row nowrap;
+			height: auto;
+			min-width: 0;
+			background: transparent;
+			position: relative;
+			top: auto;
+			right: auto;
+			overflow: visible;
+			width: auto;
+
+			> div.menu:not(.logout) {
+				padding: 0 0 0 2rem;
+			}
+		}
+
 		.sidebar-open & {
 			width: auto;
 			min-width: 50%;
@@ -65,6 +104,11 @@
 		width: 100%;
 		height: 100%;
 
+		@include media-breakpoint-up(lg) {
+			align-self: center;
+			width: auto;
+		}
+
 		ul.menubeanh li, ul.menubeanh-persistent li {
 			float: none;
 		}
@@ -76,6 +120,14 @@
 			flex-flow: column nowrap;
 			text-align: right;
 			height: 100%;
+			margin-bottom: 0;
+			padding: 0;
+
+			@include media-breakpoint-up(lg) {
+				flex-flow: row nowrap;
+				text-align: center;
+				justify-content: space-between;
+			}
 
 			> li {
 				align-self: flex-end;
@@ -84,6 +136,12 @@
 				border-top: 3px solid transparent;
 				display: flex;
 				flex: 1 0 auto;
+				list-style: none;
+
+				@include media-breakpoint-up(lg) {
+					align-self: center;
+					width: auto;
+				}
 
 				+ li {
 					margin-left: 0;
@@ -109,6 +167,10 @@
 					flex: 1 0 auto;
 					justify-content: center;
 
+					@include media-breakpoint-up(lg) {
+						padding: 0 5px;
+					}
+
 					> span {
 						align-self: center;
 						&::before {
@@ -128,9 +190,22 @@
 					z-index: 999;
 					display: block;
 					position: relative;
+					padding: 0;
+
+					@include media-breakpoint-up(lg) {
+						width: 13rem;
+						border-right: none;
+						border-bottom: 3px solid $color-app-yellow;
+						background: $body-bg;
+						box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+						display: none;
+						position: absolute;
+						text-align: left;
+					}
 
 					li {
 						line-height: 2;
+						list-style: none;
 
 						a {
 							line-height: 1;
@@ -191,8 +266,17 @@
 		max-width: 8rem;
 		padding-right: 10px;
 
+		@include media-breakpoint-up(lg) {
+			padding-right: 0;
+		}
+
 		> ul.menu {
 			justify-content: flex-end;
+
+			@include media-breakpoint-up(lg) {
+				text-align: right;
+				justify-content: flex-end;
+			}
 
 			> li.mi-parent {
 				cursor: pointer;
@@ -213,7 +297,7 @@
 					ul.menu-t2 {
 						display: block;
 						right: 0;
-						top: 50px;
+						top: 100%;
 					}
 
 				}
@@ -228,11 +312,12 @@
 
 #header .company-selector {
 	position: relative;
-	left: 1rem;
 	font-size: .75rem;
 	cursor: pointer;
-	width: 9rem;
-	top: 20px;
+	display: flex;
+	flex: 0 1 auto;
+	max-width: 10rem;
+	align-items: center;
 
 	.toggler-wrapper {
 		display: block;
@@ -262,7 +347,6 @@
 			font-size: .75rem;
 		}
 	}
-
 }
 
 #header .selected-logo {
@@ -270,7 +354,7 @@
 	left: 1rem;
 	top: .75rem;
 	font-size: .75rem;
-	width: 9rem;
+	width: 8.5rem !important;
 	text-align: right;
 }
 
@@ -293,104 +377,4 @@
 			font-size: 1.25rem;
 		}
 	}
-}
-
-@media (min-width: 1024px) {
-
-	#header {
-
-		.logo-con {
-			flex: 1 0 auto;
-			justify-content: flex-start;
-			max-width: 9rem;
-			margin-right: 1rem;
-
-			a {
-				width: 100%;
-			}
-
-			.fa.fa-bars {
-				display: none;
-			}
-
-		}
-
-		.nav-profile-con {
-			flex: 2 1 75%;
-			align-items: center;
-			display: flex;
-			flex-flow: row nowrap;
-			height: auto;
-			min-width: 0;
-			background: transparent;
-			position: relative;
-			top: auto;
-			right: auto;
-			overflow: visible;
-			width: auto;
-
-			> div.menu:not(.logout) {
-				padding: 0 0 0 1.5rem;
-			}
-
-		}
-
-		div.menu {
-			align-self: center;
-			width: auto;
-
-			> ul.menu {
-				flex-flow: row nowrap;
-				text-align: center;
-				justify-content: space-between;
-
-				> li {
-					align-self: center;
-					width: auto;
-
-					> a.menuitemlabel {
-						padding: 0 5px;
-					}
-
-					&.mi-active > a, > a:hover {
-						background: transparent;
-						color: $color-app-grey;
-					}
-
-					ul {
-						width: 13rem;
-						border-right: none;
-						border-bottom: 3px solid $color-app-yellow;
-						background: $body-bg;
-						box-shadow: 0 3px 5px rgba(0,0,0,0.1);
-						display: none;
-						position: absolute;
-						text-align: left;
-					}
-
-					&.over {
-
-						ul {
-							display: block;
-						}
-
-					}
-
-				}
-
-			}
-
-			&.logout {
-
-				> ul.menu{
-					text-align: right;
-					justify-content: flex-end;
-				}
-
-			}
-
-		}
-
-	}
-
 }
