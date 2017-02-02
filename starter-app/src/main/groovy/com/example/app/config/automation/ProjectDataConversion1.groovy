@@ -35,7 +35,9 @@ class ProjectDataConversion1
     private static final String IDENTIFIER = 'starter-app'
 
     /**
-     * Add Note.
+     * Set names on some of the Proteus Backend pages.
+     * This is only intended for use with projects that have been created using the proteus snapshot.  Hopefully, the site_id is
+     * valid for other installs.
      * 2017.01.06 at 22:13 UTC
      * @return Bean.
      */
@@ -44,9 +46,12 @@ class ProjectDataConversion1
     DataConversion dataConversion_201701300931()
     {
         def stmts = [
-            $/update page set name = 'Dashboard' where page_id = 169/$,
-            $/update page set name = 'Login' where page_id = 166/$,
-            $/update page set name = 'My Preferences' where page_id = 185/$
+            $/update page p set name='Dashboard' from pageelementpath pep where pep.site_id=4 AND pep.path=
+'config/dashboard' AND pep.pageelementpath_id=p.pageelementpath_id/$,
+            $/update page p set name='Login' from pageelementpath pep where pep.site_id=4 AND pep.path=
+'account/login' AND pep.pageelementpath_id=p.pageelementpath_id/$,
+            $/update page p set name='My Preferences' from pageelementpath pep where pep.site_id=4 AND pep.path=
+'account/preferences' AND pep.pageelementpath_id=p.pageelementpath_id/$
         ]
         new SQLDataConversion(IDENTIFIER, "Fix Backend Page Names", 201701300931, false, null, null, null, stmts)
     }
