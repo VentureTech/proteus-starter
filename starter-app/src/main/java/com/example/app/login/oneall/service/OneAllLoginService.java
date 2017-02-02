@@ -649,22 +649,26 @@ public class OneAllLoginService implements SocialLoginService
         return isConfigured;
     }
 
+    /**
+     * NDEs for OneAll
+     * @author Alan Holt (aholt@venturetech.net)
+     */
     public static enum OneAllNDELibrary implements ClassPathResourceLibrary
     {
         ProviderCSS("social/login/oneall/oneall-providers.css", "text/css")
         ;
 
         @Component
-        static class OneAllImageLibraryInjector
+        static class OneAllNDELibraryInjector
         {
             @Autowired private ClassPathResourceLibraryHelper _classPathResourceLibraryHelper;
 
             @PostConstruct
             public void postConstruct()
             {
-                for(OneAllNDELibrary img : EnumSet.allOf(OneAllNDELibrary.class))
+                for(OneAllNDELibrary lib : EnumSet.allOf(OneAllNDELibrary.class))
                 {
-                    img.setLibraryHelper(_classPathResourceLibraryHelper);
+                    lib.setLibraryHelper(_classPathResourceLibraryHelper);
                 }
             }
         }
