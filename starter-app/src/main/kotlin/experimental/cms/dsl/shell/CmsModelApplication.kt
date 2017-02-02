@@ -388,7 +388,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
 
     private fun createRoles(siteModel: Site, site: CmsSite) {
         if(siteModel.roles.isEmpty()) return
-        val client = session.createQuery("FROM Org2Site WHERE site = :site")
+        val client = session.createQuery("SELECT organization FROM Org2Site o2s WHERE o2s.site = :site")
             .setEntity("site", site)
             .uniqueResult() as Organization
         val query = session.createQuery("FROM Role WHERE programmaticName = :programmaticName")
