@@ -108,6 +108,7 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
     public void preRenderProcess(CmsRequest<SocialLoginElement> request, CmsResponse response, ProcessChain chain)
     {
         super.preRenderProcess(request, response, chain);
+        request.getSession(Scope.SESSION).initialize();
 
         SocialLoginContentBuilder cb = SocialLoginContentBuilder.load(request.getPageElementData(),
             SocialLoginContentBuilder.class, true);
@@ -134,7 +135,6 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
                     }
                     callbackURL.addParameter(PARAM_CALLBACK, true);
                     callbackURL.setAbsolute(true);
-                    request.getSession(Scope.SESSION).initialize();
                     SocialLoginParams params = new SocialLoginParams(
                         callbackURL,
                         cb.getMode(), selectedService, _uiPreferences::addMessage, cb, providers);
