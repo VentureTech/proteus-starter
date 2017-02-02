@@ -43,4 +43,12 @@
 
 .tab-container {
 	@include style-tab-elements;
+
+	.search-wrapper .entity-actions {
+		margin-top: 0;
+
+		.menu-component {
+			margin-right: 0;
+		}
+	}
 }

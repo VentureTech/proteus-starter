@@ -17,10 +17,10 @@
 
 	input,
 	textarea {
-		border: 1px solid #B7B7B5;
-		padding: 2px 5px;
-		margin: 2px;
-		border-radius: $border-radius-lg;
+		border: 1px solid #aaa;
+		padding: 6px 8px 5px;
+		font-size: 1rem;
+		line-height: 1.15;
 	}
 
 	input:focus,
@@ -36,8 +36,6 @@
 		text-transform: uppercase;
 		text-decoration: none;
 		white-space: nowrap;
-		box-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8) inset,
-		-1px -1px 0 rgba(0, 0, 0, 0.05) inset;
 	}
 
 }
@@ -64,8 +62,14 @@ input[type=number]{
 	}
 	.prop > label {
 		display: block;
-		font-weight: 400;
+		font-weight: 500;
 		user-select: none;
+
+		&::after {
+			content: ':';
+			padding-left: 3px;
+			display: inline-block;
+		}
 	}
 	.prop > label.tbl {
 		display: inline-block;
@@ -73,6 +77,7 @@ input[type=number]{
 	}
 	.prop > .val {
 		display: inline-block;
+		font-weight: 300;
 	}
 
 	header .actions, footer .actions {
@@ -111,7 +116,7 @@ input[type=number]{
 
 .prop-viewer,
 .prop-editor {
-	padding: .5rem;
+	padding: 1rem;
 }
 
 .prop-viewer {
@@ -126,6 +131,9 @@ input[type=number]{
 }
 
 .prop-editor {
+	background-color: #fff;
+	border: 1px solid #ddd;
+
 	.prop {
 		input[type=text],
 		input[type=email],

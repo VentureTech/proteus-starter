@@ -34,13 +34,14 @@
    ========================================================================== */
 .search-bar {
 	margin: 10px 0;
-	padding: 10px;
-	//background-color: #F9F9F7;
-	//border: 1px dotted #CBC8B9;
+	padding: 10px 0;
 
 	input[type="text"] {
 		border: 1px solid #aaa;
-		border-radius: $border-radius-lg;
+		padding: 6px 8px 5px;
+		font-size: .9rem;
+		line-height: 1;
+		//border-radius: $border-radius-lg;
 	}
 
 }
@@ -51,6 +52,10 @@
 	margin: 5px;
 	padding: 5px;
 
+	&:first-of-type {
+		padding-left: 0;
+		margin-left: 0;
+	}
 }
 
 .search-bar .constraint label {
@@ -62,6 +67,10 @@
 .search-bar .search-actions {
 	display: inline-block;
 	padding: 10px;
+
+	.btn {
+		@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-border-radius-sm);
+	}
 }
 
 .constraint-input-conjunction {
@@ -73,7 +82,7 @@
 .search-wrapper .entity-actions,
 .search .entity-actions {
 	float: right;
-	margin-top:-1rem;
+	margin-top: -3.25rem;
 	margin-bottom: 1rem;
 }
 
