@@ -29,6 +29,7 @@ import com.example.app.profile.service.resource.ResourceCategoryLabelProvider;
 import com.example.app.profile.service.resource.ResourceTagsLabelProvider;
 import com.example.app.profile.service.resource.ResourceTypeService;
 import com.example.app.profile.ui.ApplicationFunctions;
+import com.example.app.profile.ui.UIText;
 import com.example.app.profile.ui.URLProperties;
 import com.example.app.support.service.AppUtil;
 import com.example.app.support.ui.Application;
@@ -42,10 +43,11 @@ import java.util.Optional;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
-import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelHistoryContainer;
+import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelContainer;
 
 import net.proteusframework.cms.category.CmsCategory;
 import net.proteusframework.cms.label.Label;
+import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.ConcatTextSource;
 import net.proteusframework.core.locale.LocalizedNamedObjectComparator;
 import net.proteusframework.core.locale.TextSources;
@@ -60,6 +62,7 @@ import net.proteusframework.ui.management.ApplicationFunction;
 import net.proteusframework.ui.management.ParsedRequest;
 import net.proteusframework.ui.management.URLConfigPropertyConverter;
 import net.proteusframework.ui.management.nav.NavigationDestination;
+import net.proteusframework.ui.miwt.HistoryImpl;
 import net.proteusframework.ui.miwt.component.Component;
 import net.proteusframework.ui.miwt.component.Container;
 import net.proteusframework.ui.miwt.component.Menu;
@@ -123,7 +126,7 @@ import static com.example.app.support.service.AppUtil.nullFirst;
     sessionName = Application.SESSION,
     name = ApplicationFunctions.Company.Resource.MANAGEMENT,
     description = "UI for managing Company Resources")
-public class CompanyResourceManagement extends MIWTPageElementModelHistoryContainer implements SearchUIOperationHandler
+public class CompanyResourceManagement extends MIWTPageElementModelContainer implements SearchUIOperationHandler
 {
     private static class ResourceCategoryComboBoxConstraint extends ComboBoxConstraint
     {
@@ -206,11 +209,12 @@ public class CompanyResourceManagement extends MIWTPageElementModelHistoryContai
         });
 
         options.addSearchSupplier(searchSupplier);
-        options.setHistory(getHistory());
+        options.setHistory(new HistoryImpl());
 
         _searchUI = new SearchUIImpl(options);
 
-        setDefaultComponent(of("search-wrapper resource-repo-item-search", of("entity-actions actions", _addMenu), _searchUI));
+        add(of("text", new net.proteusframework.ui.miwt.component.Label(UIText.RESOURCES()).withHTMLElement(HTMLElement.h1)));
+        add(of("search-wrapper resource-repo-item-search", of("entity-actions actions", _addMenu), _searchUI));
 
         setBuilderSupplierAndAddActionAvailability(_currentUser);
     }

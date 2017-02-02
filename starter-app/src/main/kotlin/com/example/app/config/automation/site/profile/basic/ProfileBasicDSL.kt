@@ -104,12 +104,15 @@ open class ProfileBasicDSL : AppDefinition(DEFINITION_NAME, version = 1, siteId 
         content("Header", ScriptedGenerator("Company Selector")) {
             script("CompanySelectorScript.groovy")
         }
-        content("Header", ScriptedGenerator("Top Menu")) {
-            script("AppFunctionMenuScript.groovy")
-        }
-        content("Header", Logout("Logout")) {
-            htmlClass = "menu"
-            htmlId = "logout"
+        content("Header", Composite("Nav/Profile container")) {
+            htmlClass = "nav-profile-con"
+            content(ScriptedGenerator("Top Menu")) {
+                script("AppFunctionMenuScript.groovy")
+            }
+            content(Logout("Logout")) {
+                htmlClass = "menu"
+                htmlId = "logout"
+            }
         }
         content("Footer", "Global Footer")
     }
