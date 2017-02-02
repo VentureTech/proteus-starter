@@ -638,11 +638,13 @@ public class OneAllLoginService implements SocialLoginService
             && !isEmptyString(_apiEndpoint);
         if(!isConfigured)
         {
-            _logger.warn("OneAll is not configured.  Should include the following values within properties file or environment:\n"
-                         + "oneall.subdomain\n"
-                         + "oneall.public.key\n"
-                         + "oneall.private.key\n"
-                         + "oneall.api.endpoint");
+            _logger.warn("OneAll is not configured.  Should include the following values within properties file:\n"
+                         + "\toneall.subdomain\n"
+                         + "\toneall.public.key\n"
+                         + "\toneall.private.key\n"
+                         + "\toneall.api.endpoint\n\n"
+                         + "You can include the private key as an environment variable:\n"
+                         + "\toneall_private_key");
         }
         return isConfigured;
     }
