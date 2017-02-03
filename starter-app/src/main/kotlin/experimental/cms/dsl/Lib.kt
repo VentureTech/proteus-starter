@@ -241,7 +241,7 @@ interface ContentHelper : PlaceholderHelper {
                 IOException::class.java)
             return sw.toString()
         } catch (e: IOException) {
-            logger.warn("Unable to parse HTML.", e)
+            logger.error("Unable to parse HTML.", e)
         } finally {
             linkTagConverter.destroy()
             skipTagListener.destroy()
