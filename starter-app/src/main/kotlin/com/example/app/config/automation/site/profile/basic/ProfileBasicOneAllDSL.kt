@@ -18,6 +18,9 @@ import com.example.app.login.social.ui.SocialLogin
 import com.example.app.login.social.ui.SocialLoginMode
 import com.example.app.profile.ui.ApplicationFunctions
 import experimental.cms.dsl.AppDefinition
+import experimental.cms.dsl.content.Composite
+import experimental.cms.dsl.content.HTML
+import experimental.cms.dsl.content.Text
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import java.net.URL
@@ -69,13 +72,40 @@ open class ProteusBackendOneAllDSL :
 
     page("Login", "/account/login") {
         template("Login")
-        content("Primary Content", SocialLogin("OneAll Social Login")) {
-            htmlClass = "oneall-social-login"
-            landingPage("Dashboard")
-            loginService(OneAllLoginService.SERVICE_IDENTIFIER)
-            provider("google")
-            mode(SocialLoginMode.Login)
+        content("Primary Content", Text("Proteus Logo - Login Process")) {
+            htmlContent = """<div><img alt="Proteus Framework"
+            src="/_resources/dyn/files/1059150z219b19a5/_fn/proteus-white-text.png" width="225" /></div>"""
+            htmlClass = "site-logo"
         }
+        content("Primary Content", Composite("Login process container")) {
+            htmlClass = "login-process"
+
+            content(SocialLogin("Social Login")) {
+                htmlClass = "social-login"
+                landingPage("Dashboard")
+                loginService(OneAllLoginService.SERVICE_IDENTIFIER)
+                provider("google")
+                mode(SocialLoginMode.Login)
+            }
+        }
+        content("Primary Content", Text("Downloads")) {
+            htmlContent = """<h2>Download</h2>
+
+<ul>
+    <li><a href="/_resources/dyn/files/1062206z27680b5d/_fn/Proteus101.pdf" target="_blank">Proteus 101 Guide</a>&nbsp;(PDF)</li>
+    <li><a href="/_resources/dyn/files/1062205zbe615ae7/_fn/Proteus101.epub" target="_blank">Proteus 101 Guide</a>&nbsp;(EPUB)</li>
+</ul>
+"""
+            htmlClass = "downloadables"
+        }
+        content("Primary Content", HTML("Shared Copyright")) {
+            htmlContent = """<div class="product">Product of
+            <a href="http://www.venturetech.net" target="_blank" class="venturetech">
+            <span class="text">VentureTech</span></a></div>
+<div class="made">Made in <span class="nebraska" title="Nebraska">Nebraska</span></div>"""
+            htmlClass = "copyright"
+        }
+        content("Primary Content", SocialLogin("OneAll Social Login")).remove()
     }
 
     page("My Preferences", "/account/preferences") {

@@ -303,6 +303,7 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
             {
                 new HTMLNotificationRenderer(request, response.getContentWriter())
                     .withRenderXHTML(request.isRequestForXmlContent())
+                    .withRenderDetails(true)
                     .withStandardWrappingElement()
                     .render(notifications);
             }

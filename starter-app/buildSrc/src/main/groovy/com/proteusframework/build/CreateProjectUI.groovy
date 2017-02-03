@@ -19,6 +19,7 @@ import javax.swing.*
 import javax.swing.border.EmptyBorder
 import javax.swing.border.TitledBorder
 import java.awt.*
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.CompletableFuture
 import java.util.function.Supplier
 import java.util.regex.Pattern
@@ -86,6 +87,10 @@ class CreateProjectUI
                         })
 
                     }
+                    hbox {
+                        label('Create Database? ')
+                        checkBox(id: 'create_db_chk')
+                    }
                     hbox(border: new TitledBorder(new EmptyBorder(20, 10, 20, 10), 'Next Steps')) {
                         textArea(id:'instructions', enabled: false, disabledTextColor: Color.BLACK)
                         updateInstructions()
@@ -140,6 +145,7 @@ class CreateProjectUI
                 bean(model, appGroup: bind {app_group.text})
                 bean(model, appName: bind {app_name.text})
                 bean(model, copyDemo: bind {copy_demo.selected})
+                bean(model, createDB: bind {create_db_chk.selected})
             }
         }
         return _future
@@ -267,18 +273,31 @@ To run the demo code, you will need to update your ProjectConfig.'''
         def groupDir = model.appGroup.replace('.', slash)
         def packageSuppression = packageName.replace('.', '[\\/]')
 
+        def dbName = "${model.appName}-dev" as String
+        def dbUser = "${model.appName}-user" as String
+
         println "appGroup = ${model.appGroup}"
         println "appName = ${model.appName}"
         println "copyDemo = ${model.copyDemo}"
         println "destinationDirectory = ${model.destinationDirectory}"
         println "sourceProjectDir = ${project.projectDir}"
         println "package name = ${packageName}"
+        println "database name = ${dbName}"
+        println "database user = ${dbUser}"
 
 
         File baseDir = new File(model.destinationDirectory, model.appName);
         if(!baseDir.exists() && !baseDir.mkdirs()){
             swing.optionPane().showMessageDialog(swing.ui, 'Unable to create directory: ' + baseDir,
                 "Unable To Create Project", JOptionPane.ERROR_MESSAGE)
+        }
+        if(model.createDB) {
+            def errors = createDatabase(dbName, dbUser, model)
+            if(errors)
+            {
+                swing.optionPane().showMessageDialog(swing.ui, errors.join('\n'),
+                    'Errors creating database: ', JOptionPane.ERROR_MESSAGE)
+            }
         }
         try
         {
@@ -356,7 +375,14 @@ derby.log
                 [preDir    : {if (skipDirs.contains(it.name)) return SKIP_SUBTREE}], {f ->
                 if(f.isFile() && !skipFiles.contains(f.name)) {
                     def content = f.getText('UTF-8')
-                    def updatedContent = content.replaceAll('com[.]example[.]app', packageName)
+                    def updatedContent = content
+                    if(model.createDB) {
+                        if(f.name == 'default.properties') {
+                            updatedContent = content.replaceAll('starter-app-dev', dbName)
+                                .replaceAll('starter-app-user', dbUser)
+                        }
+                    }
+                    updatedContent = content.replaceAll('com[.]example[.]app', packageName)
                         .replaceAll('com/example/app', packageDir)
                         .replaceAll(Pattern.quote("com[\\/]example[\\/]app"), packageSuppression)
                         .replaceAll('starter-app', model.appName)
@@ -506,4 +532,58 @@ bower_components/
         true
     }
 
+    String consumeProcessOutput(Process process) {
+        def baos = new ByteArrayOutputStream()
+        def ps = new PrintStream(baos)
+        process.consumeProcessOutput(System.out, ps)
+        process.waitFor()
+        return new String(baos.toByteArray(), StandardCharsets.UTF_8)
+    }
+
+    def createDatabase(String dbName, String dbUser, ProjectModel model)
+    {
+        def envp = System.getenv().collect({k, v -> "${k}=${v}"})
+        def createUser = '/usr/bin/createuser'
+        def createDb = '/usr/bin/createdb'
+        def pgRestore = '/usr/bin/pg_restore'
+        def errors = []
+        if(new File(createUser).canExecute()
+            && new File(createDb).canExecute()
+            && new File(pgRestore).canExecute()) {
+            def command = [createUser, '-s', dbUser]
+            def process = command.execute(envp, model.destinationDirectory)
+            def error = consumeProcessOutput(process)
+            if(error) errors.push(error)
+            if(error && !error.contains('already exists'))
+                return errors
+            command = [createDb, dbName]
+            process = command.execute(envp, model.destinationDirectory)
+            error = consumeProcessOutput(process)
+            if(error) {
+                errors.push(error)
+                return errors
+            }
+
+            def artifactory = new ArtifactoryDownloader()
+            try
+            {
+                def bootstrapdbFile = artifactory.downloadFile(artifactory.getArtifactoryCredentials(),
+                    new URL("https://repo.venturetech"
+                        + ".net/artifactory/vt-release-local/net/proteusframework/proteusframework-bootstrapdb/0.17"
+                        + ".0/proteusframework-bootstrapdb-0.17.0-20160526182335.pgdump"), '.pgdump')
+                command = [pgRestore, '-x', '-O', '-Fc', '-d', dbName, bootstrapdbFile.absolutePath]
+                process = command.execute(envp, model.destinationDirectory)
+                error = consumeProcessOutput(process)
+                if(error) errors.push(error)
+                if(!bootstrapdbFile.delete()) errors.push("Warning: Unable to delete: ${bootstrapdbFile.absolutePath}")
+            }
+            catch(Throwable e)
+            {
+                errors.push(e.message)
+            }
+        } else {
+            errors.push('Unable to execute Postgres executables for creating database.')
+        }
+        return errors
+    }
 }
