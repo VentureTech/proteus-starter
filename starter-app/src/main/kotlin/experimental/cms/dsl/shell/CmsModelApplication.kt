@@ -322,20 +322,19 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         }
         if(emailTemplate.id == 0L) {
             emailTemplate.programmaticName = emailTemplateModel.programmaticName
-            emailTemplate.from = emailTemplateModel.from
-            emailTemplate.replyTo = emailTemplateModel.replyTo
-            emailTemplate.to = emailTemplateModel.to
-            emailTemplate.cc = emailTemplateModel.cc
-            emailTemplate.bcc = emailTemplateModel.bcc
-            emailTemplate.subject = emailTemplateModel.subject
-            emailTemplate.isAdvancedEditingMode = true
-            emailTemplate.htmlBody = emailTemplateModel.htmlContent
-            emailTemplate.lastModUser = principalDAO.currentPrincipal
             emailTemplate.createUser = principalDAO.currentPrincipal
             emailTemplate.isApproved = true
-            emailTemplateDAO.save(emailTemplate)
+            emailTemplate.isAdvancedEditingMode = true
         }
-
+        emailTemplate.from = emailTemplateModel.from
+        emailTemplate.replyTo = emailTemplateModel.replyTo
+        emailTemplate.to = emailTemplateModel.to
+        emailTemplate.cc = emailTemplateModel.cc
+        emailTemplate.bcc = emailTemplateModel.bcc
+        emailTemplate.subject = emailTemplateModel.subject
+        emailTemplate.htmlBody = convertXHTML(emailTemplateModel.htmlContent)
+        emailTemplate.lastModUser = principalDAO.currentPrincipal
+        emailTemplateDAO.save(emailTemplate)
     }
 
     private fun addContentChildren(ctrList: MutableSet<Content>, ctr: Content) {
