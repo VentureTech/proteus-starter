@@ -23,7 +23,6 @@ import experimental.cms.dsl.content.HTML
 import experimental.cms.dsl.content.Text
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
-import java.net.URL
 
 private val appName = ProjectInformation.APPLICATION_NAME
 
@@ -64,9 +63,6 @@ open class ProfileBasicOneAllDSL :
 @Component
 open class ProteusBackendOneAllDSL :
     AppDefinition(DEFINITION_NAME, version = 1, siteId = SITE_BACKEND, init = {
-
-    libraryResources(URL("https://repo.venturetech.net/artifactory/vt-snapshot-local/" +
-        "com/example/starter-app/\${LATEST}/starter-app-\${LATEST}-libraries.zip"))
 
     page("Dashboard", "/config/dashboard") { }
 
