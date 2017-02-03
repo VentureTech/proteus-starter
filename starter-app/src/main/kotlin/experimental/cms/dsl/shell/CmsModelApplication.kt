@@ -268,7 +268,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
                 }
             }
             val dataSource = FileDataSource(tempFile)
-            val upload = UploadRequest(dir, dataSource, FileSystemEntityCreateMode.overwrite,
+            val upload = UploadRequest(dir, dataSource, FileSystemEntityCreateMode.overwrite_ifmodified,
                 EnumSet.of(ZipFileOption.preserve_directories, ZipFileOption.unzip))
             fileManagerDAO.createFiles(dir, listOf(upload), messages)
             if(!tempFile.delete()) logger.info("Unable to delete ${tempFile.absolutePath}")
