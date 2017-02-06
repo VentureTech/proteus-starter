@@ -28,6 +28,7 @@ import net.proteusframework.ui.miwt.component.composite.CustomCellRenderer;
 import net.proteusframework.ui.miwt.component.composite.editor.ComboBoxValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.CompositeValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.LocalizedTextEditor;
+import net.proteusframework.ui.miwt.component.composite.editor.TemplateCompositeValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.ValueEditor;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
@@ -172,6 +173,23 @@ public class CommonEditorFields
             textEditor.setRequiredValueValidator();
             textEditor.addClassName("name");
             textEditor.getValueComponent().setMaxChars(255);
+            return textEditor;
+        }, "name");
+    }
+
+    /**
+     * Add a name editor.
+     *
+     * @param compositeValueEditor the composite editor.
+     */
+    public static void addNameEditor(TemplateCompositeValueEditor<? extends NamedObject> compositeValueEditor)
+    {
+        compositeValueEditor.addEditorForProperty(() -> {
+            LocalizedTextEditor textEditor = new LocalizedTextEditor(NAME, null);
+            textEditor.setRequiredValueValidator();
+            textEditor.addClassName("name");
+            textEditor.getValueComponent().setMaxChars(255);
+            textEditor.setComponentName("property-name");
             return textEditor;
         }, "name");
     }
