@@ -213,7 +213,8 @@ public class CompanyResourceManagement extends MIWTPageElementModelContainer imp
 
         _searchUI = new SearchUIImpl(options);
 
-        add(of("text", new net.proteusframework.ui.miwt.component.Label(UIText.RESOURCES()).withHTMLElement(HTMLElement.h1)));
+        add(new net.proteusframework.ui.miwt.component.Label(UIText.RESOURCES())
+            .withHTMLElement(HTMLElement.h1).addClassName("page-header"));
         add(of("search-wrapper resource-repo-item-search", of("entity-actions actions", _addMenu), _searchUI));
 
         setBuilderSupplierAndAddActionAvailability(_currentUser);

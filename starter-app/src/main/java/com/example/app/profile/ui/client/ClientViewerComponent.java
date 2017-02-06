@@ -145,8 +145,8 @@ public class ClientViewerComponent extends MIWTPageElementModelContainer
             _uiPreferences.setStoredInteger(getSelectedTabProp(), e.getFirstIndex()));
 
         TextSource viewClient = ConcatTextSource.create(CommonButtonText.VIEW, _terms.client()).withSpaceSeparator();
-        add(of("text", new Label(ConcatTextSource.create(viewClient, client.getName()).withSeparator(": "))
-            .withHTMLElement(HTMLElement.h1)));
+        add(new Label(ConcatTextSource.create(viewClient, client.getName()).withSeparator(": "))
+            .withHTMLElement(HTMLElement.h1).addClassName("page-header"));
         add(of("actions nav-actions", new PushButton(backAction)));
         add(tabs);
     }

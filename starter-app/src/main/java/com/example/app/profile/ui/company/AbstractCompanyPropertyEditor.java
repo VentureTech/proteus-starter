@@ -278,10 +278,10 @@ public abstract class AbstractCompanyPropertyEditor extends MIWTPageElementModel
             .map(Company::getName)
             .map(name -> (TextSource)name)
             .orElse(CommonButtonText.NEW);
-        moveToTop(of("text", new Label(isNew
+        moveToTop(new Label(isNew
             ? editCompany
             : ConcatTextSource.create(editCompany, companyName).withSeparator(": "))
-            .withHTMLElement(HTMLElement.h1)));
+            .withHTMLElement(HTMLElement.h1).addClassName("page-header"));
     }
 
     /**

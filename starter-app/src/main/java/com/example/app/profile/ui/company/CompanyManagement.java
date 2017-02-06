@@ -225,7 +225,7 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
 
         SearchUIImpl searchUI = new SearchUIImpl(options);
 
-        add(of("text", new Label(_terms.companies()).withHTMLElement(HTMLElement.h1)));
+        add(new Label(_terms.companies()).withHTMLElement(HTMLElement.h1).addClassName("page-header"));
         add(of("search-wrapper company-search", searchUI));
     }
 

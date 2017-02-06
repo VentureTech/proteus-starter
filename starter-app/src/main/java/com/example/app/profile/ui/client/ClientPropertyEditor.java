@@ -185,10 +185,10 @@ public class ClientPropertyEditor extends MIWTPageElementModelPropertyEditor<Cli
             .map(n -> (TextSource)n)
             .orElse(CommonButtonText.NEW);
 
-        moveToTop(of("text", new Label(isNew
+        moveToTop(new Label(isNew
             ? editClient
             : ConcatTextSource.create(editClient, clientName).withSeparator(": "))
-            .withHTMLElement(HTMLElement.h1)));
+            .withHTMLElement(HTMLElement.h1).addClassName("page-header"));
     }
 
     private void setProfileTypeIfNeeded(Client client)
