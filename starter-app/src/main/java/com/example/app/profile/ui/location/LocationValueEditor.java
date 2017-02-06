@@ -54,12 +54,12 @@ public class LocationValueEditor extends CompositeValueEditor<Location>
         addEditorForProperty(() -> {
             AddressValueEditorConfig cfg = new AddressValueEditorConfig();
             return new AddressValueEditor(cfg);
-        }, Location::getName, Location::setName);
+        }, Location::getAddress, Location::setAddress);
 
         addEditorForProperty(() -> {
             EmailAddressValueEditorConfig cfg = new EmailAddressValueEditorConfig();
             return new EmailAddressValueEditor(cfg);
-        }, Location::getAddress, Location::setAddress);
+        }, Location::getEmailAddress, Location::setEmailAddress);
 
         addEditorForProperty(() -> {
             PhoneNumberValueEditorConfig cfg = new PhoneNumberValueEditorConfig();
