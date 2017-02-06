@@ -12,6 +12,8 @@ div.pager-top {
 	margin-top: $spacer-y;
 	margin-bottom: $spacer-y;
 	@include border-radius();
+	width: 100%;
+	text-align: center;
 }
 
 .pages.page {
@@ -55,12 +57,52 @@ div.pager-top {
 	}
 }
 
+.mp-controls {
+	.control {
+		&::before {
+			padding-right: 4px;
+			margin-top: -4px;
+		}
+
+		&::after {
+			padding-left: 4px;
+			margin-top: -4px;
+		}
+	}
+
+	.prev {
+		&::before {
+			@include glyphAdd('\f104', 1rem, inherit);
+		}
+	}
+
+	.first {
+		&::before {
+			@include glyphAdd('\f100', 1rem, inherit);
+		}
+	}
+
+	.next {
+		&::after {
+			@include glyphAdd('\f105', 1rem, inherit);
+		}
+	}
+
+	.last {
+		&::after {
+			@include glyphAdd('\f101', 1rem, inherit)
+		}
+	}
+}
+
 .pager .controls{
 	display: inline-block;
 }
+
 .pager .next-controls{
 	margin-left:4px;
 }
+
 .pager .prev-controls{
 	margin-right:4px;
 }
