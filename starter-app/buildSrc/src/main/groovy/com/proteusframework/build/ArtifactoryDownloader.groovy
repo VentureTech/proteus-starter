@@ -22,19 +22,16 @@ class ArtifactoryDownloader {
     static class ArtifactoryCredentials {
         final String username
         final String password
-        final URL serverUrl
         final String encoded
 
         /**
          * Constructs a new ArtifactoryCredentials object.
          * @param username the username for Artifactory
          * @param password the password for Artifactory
-         * @param serverUrl the server URL for Artifactory
          */
-        ArtifactoryCredentials(String username, String password, URL serverUrl) {
+        ArtifactoryCredentials(String username, String password) {
             this.username = username
             this.password = password
-            this.serverUrl = serverUrl
 
             def encoding = Base64.encoder.encodeToString("${this.username}:${this.password}".bytes)
             this.encoded = "Basic ${encoding}"
@@ -58,16 +55,10 @@ class ArtifactoryDownloader {
         gradleProperties.withInputStream { properties.load(it) }
         def username = properties["repo_venturetech_username"] as String
         def password = properties["repo_venturetech_password"] as String
-        def serverUrl = properties["publish_venturetech_url"] as String
-        if(!serverUrl)
-            serverUrl = properties["local_repo"] as String
-        if(!serverUrl)
-            throw new IllegalStateException("Artifactory Server URL should be included in ${gradleProperties.path} file with key "
-                + "names: 'publish_venturetech_url' or 'local_repo'")
         if(!username || !password)
             throw new IllegalStateException("Username and Password must be included in ${gradleProperties.path} file with key "
                 + "names: 'repo_venturetech_username' and 'repo_venturetech_password'")
-        return new ArtifactoryCredentials(username, password, new URL(serverUrl))
+        return new ArtifactoryCredentials(username, password)
     }
 
     /**
@@ -82,7 +73,7 @@ class ArtifactoryDownloader {
         file.deleteOnExit()
         println("Downloading ${resolvedUrl.toExternalForm()}")
         def connection = resolvedUrl.openConnection()
-        setAuthority(connection, resolvedUrl, credentials)
+        setAuthority(connection, credentials)
         connection.inputStream.withCloseable { ins ->
             file.withOutputStream { ous ->
                 copyStream(ins, ous)
@@ -90,10 +81,8 @@ class ArtifactoryDownloader {
         return file
     }
 
-    private setAuthority(URLConnection connection, URL url, ArtifactoryCredentials credentials) {
-        if(url.host == credentials.serverUrl.host && credentials.encoded) {
-            connection.setRequestProperty("Authorization", credentials.encoded)
-        }
+    private setAuthority(URLConnection connection, ArtifactoryCredentials credentials) {
+        connection.setRequestProperty("Authorization", credentials.encoded)
     }
 
     private int copyStream(InputStream source, OutputStream dest) throws IOException {
@@ -123,7 +112,7 @@ class ArtifactoryDownloader {
         if(urlString.contains("\${LATEST}")) {
             def metaDataURL = new URL(urlString.substring(0, urlString.indexOf("\${LATEST}")) + "maven-metadata.xml")
             def connection = metaDataURL.openConnection()
-            setAuthority(connection, metaDataURL, credentials)
+            setAuthority(connection, credentials)
             def version = ''
             connection.inputStream.withCloseable {
                 def dbf = DocumentBuilderFactory.newInstance()
