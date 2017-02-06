@@ -20,11 +20,14 @@ import com.i2rd.hr.miwt.AddressCellRenderer;
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.ui.miwt.component.Container;
 import net.proteusframework.ui.miwt.component.Label;
+import net.proteusframework.ui.miwt.component.template.FileSystemTemplateDataSource;
+import net.proteusframework.ui.miwt.component.template.TemplateContainer;
 import net.proteusframework.users.model.EmailAddress;
 import net.proteusframework.users.model.PhoneNumber;
 
 import static com.example.app.support.service.Functions.opt;
 import static net.proteusframework.core.locale.TextSources.createText;
+import static net.proteusframework.ui.miwt.component.Container.of;
 import static net.proteusframework.ui.miwt.util.CommonColumnText.*;
 
 /**
@@ -34,7 +37,7 @@ import static net.proteusframework.ui.miwt.util.CommonColumnText.*;
  * @since 1/26/17
  */
 @Configurable
-public class LocationValueViewer extends Container
+public class LocationValueViewer extends TemplateContainer
 {
     @Autowired private EntityRetriever _er;
 
@@ -45,7 +48,8 @@ public class LocationValueViewer extends Container
      */
     public LocationValueViewer()
     {
-        super();
+        super(new FileSystemTemplateDataSource("LocationValueViewer.xml"));
+        setComponentName("LocationValueViewer");
     }
 
     /**
@@ -97,17 +101,24 @@ public class LocationValueViewer extends Container
         removeAllComponents();
 
         final Container nameCon = of("prop name", NAME, new Label(getLocation().getName()));
+        nameCon.setComponentName("property-name");
         final Container addressCon = of("prop address", ADDRESS, new AddressCellRenderer(getLocation().getAddress()));
+        addressCon.setComponentName("property-address");
         final Container emailCon = of("prop email", EMAIL, new Label(createText(
             opt(getLocation().getEmailAddress()).map(EmailAddress::getEmail).orElse(""))));
+        emailCon.setComponentName("property-email");
         final Container phoneCon = of("prop phone", PHONE, new Label(createText(
             opt(getLocation().getPhoneNumber()).map(PhoneNumber::toExternalForm).orElse(""))));
+        phoneCon.setComponentName("property-phone");
         final Container statusCon = of("prop status", STATUS, new Label(getLocation().getStatus().getName()));
+        statusCon.setComponentName("property-status");
 
         add(nameCon);
         add(addressCon);
         add(emailCon);
         add(phoneCon);
         add(statusCon);
+
+        applyTemplate();
     }
 }
