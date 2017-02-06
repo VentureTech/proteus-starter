@@ -63,6 +63,10 @@ public class SocialLoginGenerator extends GeneratorImpl<SocialLoginElement>
 {
     private static final Logger _logger = LogManager.getLogger(SocialLoginGenerator.class);
 
+    /**
+     * Login Result.
+     * @author Alan Holt (aholt@venturetech.net)
+     */
     public static enum LoginResult
     {
         /** Standard Success Result.  Instructs the {@link SocialLoginGenerator} to perform the redirect as normal */

@@ -53,6 +53,7 @@ public class OneAllDAO extends DAOHelper
      *
      * @return the registered providers
      */
+    @SuppressWarnings("unchecked")
     public List<String> getRegisteredProviders(@Nullable Principal principal)
     {
         if(principal == null) return Collections.emptyList();
