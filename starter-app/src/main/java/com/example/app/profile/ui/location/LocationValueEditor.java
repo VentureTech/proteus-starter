@@ -25,7 +25,8 @@ import com.example.app.support.ui.contact.PhoneNumberValueEditor.PhoneNumberValu
 import java.util.EnumSet;
 
 import net.proteusframework.ui.miwt.component.composite.editor.ComboBoxValueEditor;
-import net.proteusframework.ui.miwt.component.composite.editor.CompositeValueEditor;
+import net.proteusframework.ui.miwt.component.composite.editor.TemplateCompositeValueEditor;
+import net.proteusframework.ui.miwt.component.template.FileSystemTemplateDataSource;
 import net.proteusframework.ui.miwt.util.CommonColumnText;
 
 /**
@@ -34,14 +35,16 @@ import net.proteusframework.ui.miwt.util.CommonColumnText;
  * @author Alan Holt (aholt@venturetech.net)
  * @since 1/25/17
  */
-public class LocationValueEditor extends CompositeValueEditor<Location>
+public class LocationValueEditor extends TemplateCompositeValueEditor<Location>
 {
     /**
      * Instantiates a new Location value editor.
      */
     public LocationValueEditor()
     {
-        super(Location.class);
+        super(Location.class,
+            new FileSystemTemplateDataSource("LocationValueEditor.xml"));
+        setComponentName("LocationValueEditor");
     }
 
     @Override
@@ -53,24 +56,33 @@ public class LocationValueEditor extends CompositeValueEditor<Location>
 
         addEditorForProperty(() -> {
             AddressValueEditorConfig cfg = new AddressValueEditorConfig();
-            return new AddressValueEditor(cfg);
+            final AddressValueEditor editor = new AddressValueEditor(cfg);
+            editor.setComponentName("property-address");
+            return editor;
         }, Location::getAddress, Location::setAddress);
 
         addEditorForProperty(() -> {
             EmailAddressValueEditorConfig cfg = new EmailAddressValueEditorConfig();
-            return new EmailAddressValueEditor(cfg);
+            final EmailAddressValueEditor editor = new EmailAddressValueEditor(cfg);
+            editor.setComponentName("property-email-address");
+            return editor;
         }, Location::getEmailAddress, Location::setEmailAddress);
 
         addEditorForProperty(() -> {
             PhoneNumberValueEditorConfig cfg = new PhoneNumberValueEditorConfig();
-            return new PhoneNumberValueEditor(cfg);
+            final PhoneNumberValueEditor editor = new PhoneNumberValueEditor(cfg);
+            editor.setComponentName("property-phone-number");
+            return editor;
         }, Location::getPhoneNumber, Location::setPhoneNumber);
 
         addEditorForProperty(() -> {
             ComboBoxValueEditor<LocationStatus> editor = new ComboBoxValueEditor<>(CommonColumnText.STATUS,
                 AppUtil.nullFirst(EnumSet.allOf(LocationStatus.class)), null);
             editor.setRequiredValueValidator();
+            editor.setComponentName("property-status");
             return editor;
         }, Location::getStatus, Location::setStatus);
+
+        applyTemplate();
     }
 }
