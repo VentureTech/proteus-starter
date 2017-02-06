@@ -192,7 +192,7 @@ public class ClientManagement extends MIWTPageElementModelContainer implements S
             .setSearchOnPageLoad(true)
             .setHistory(new HistoryImpl());
 
-        add(of("text", new Label(_terms.clients()).withHTMLElement(HTMLElement.h1)));
+        add(new Label(_terms.clients()).withHTMLElement(HTMLElement.h1).addClassName("page-header"));
         add(new SearchUIImpl(options).addClassName("search-wrapper"));
     }
 

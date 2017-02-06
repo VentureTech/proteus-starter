@@ -183,7 +183,7 @@ public class UserManagement extends MIWTPageElementModelContainer implements Sea
 
         _searchUI = new SearchUIImpl(options);
 
-        add(of("text", new Label(UIText.USERS()).withHTMLElement(HTMLElement.h1)));
+        add(new Label(UIText.USERS()).withHTMLElement(HTMLElement.h1).addClassName("page-header"));
         add(of("search-wrapper user-search", _searchUI));
 
         setBuilderSupplierAndAddActionAvailability();

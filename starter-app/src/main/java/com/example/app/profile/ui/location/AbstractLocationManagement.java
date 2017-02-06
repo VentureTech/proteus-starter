@@ -131,7 +131,7 @@ public abstract class AbstractLocationManagement extends MIWTPageElementModelCon
 
         SearchUIImpl searchUI = new SearchUIImpl(options);
 
-        add(of("text", new Label(getPageTitle()).withHTMLElement(HTMLElement.h1)));
+        add(new Label(getPageTitle()).withHTMLElement(HTMLElement.h1).addClassName("page-header"));
         add(of("search-wrapper location-search", searchUI));
     }
 

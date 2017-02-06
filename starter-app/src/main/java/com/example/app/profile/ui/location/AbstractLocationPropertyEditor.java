@@ -146,6 +146,6 @@ public abstract class AbstractLocationPropertyEditor extends MIWTPageElementMode
 
         setPersistenceActions(save, cancel);
 
-        moveToTop(of("text", new Label(getPageTitle()).withHTMLElement(HTMLElement.h1)));
+        moveToTop(new Label(getPageTitle()).withHTMLElement(HTMLElement.h1).addClassName("page-header"));
     }
 }

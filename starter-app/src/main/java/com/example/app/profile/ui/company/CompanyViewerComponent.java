@@ -206,8 +206,8 @@ public class CompanyViewerComponent extends MIWTPageElementModelContainer
             _uiPreferences.setStoredInteger(getSelectedTabProp(), e.getFirstIndex()));
 
         TextSource viewCompany = ConcatTextSource.create(CommonButtonText.VIEW, _terms.company()).withSpaceSeparator();
-        add(of("text", new Label(ConcatTextSource.create(viewCompany, _company.getName()).withSeparator(": "))
-            .withHTMLElement(HTMLElement.h1)));
+        add(new Label(ConcatTextSource.create(viewCompany, _company.getName()).withSeparator(": "))
+            .withHTMLElement(HTMLElement.h1).addClassName("page-header"));
         add(of("actions nav-actions", new PushButton(backAction)));
         add(tabs);
     }
