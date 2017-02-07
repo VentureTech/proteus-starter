@@ -231,6 +231,12 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             hostnames.forEach { hostnamesString.append(it.name).append("\n") }
             logger.info(hostnamesString.toString())
         }
+        if(siteModel.errorPages.isNotEmpty()) {
+            siteModel.errorPages.entries.forEach {
+                site.errorPageMap[it.key] = getOrCreatePagePass1(site, it.value)
+            }
+            cmsBackendDAO.saveSite(site)
+        }
     }
 
     @SuppressFBWarnings("DE_MIGHT_IGNORE")
