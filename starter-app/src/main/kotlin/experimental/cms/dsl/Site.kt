@@ -14,6 +14,7 @@ package experimental.cms.dsl
 import com.i2rd.cms.dao.CmsSiteDefinitionDAO
 import net.proteusframework.core.spring.ApplicationContextUtils
 import net.proteusframework.email.EmailConfigType
+import net.proteusframework.internet.http.RequestError
 import org.apache.logging.log4j.LogManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -74,6 +75,8 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
     internal lateinit var parent: AppDefinition
     /** Internal Use. */
     internal val siteConstructedCallbacks = mutableListOf<(Site) -> Unit>()
+    /** Internal Use. */
+    internal val errorPages = mutableMapOf<RequestError, Page>()
 
 
     /**
@@ -286,6 +289,21 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
         return page
     }
 
+    private fun errorPageExample() {
+        errorPage(RequestError.FORBIDDEN, page("404", "/404") {
+            template("ExistingTemplate")
+        })
+    }
+
+    /**
+     * Add a page as an error page to the site.
+     * @param error the error
+     * @param page the page
+     * @sample errorPageExample
+     */
+    fun errorPage(error: RequestError, page: Page) {
+        errorPages.put(error, page)
+    }
 
     /**
      * Add a template to the site.

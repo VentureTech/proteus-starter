@@ -167,7 +167,7 @@ class Template(id: String, override val site: Site, override var layout: Layout 
      * @param existingId existing layout's identifier.
      */
     fun layout(existingId: String): Unit {
-        layout = site.layouts.filter({ it.id == existingId }).first()
+        layout = site._getExistingLayout(existingId)
     }
 
     override fun toString(): String {
