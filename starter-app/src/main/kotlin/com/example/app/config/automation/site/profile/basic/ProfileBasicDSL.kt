@@ -81,7 +81,7 @@ open class ProfileBasicDSL : AppDefinition(DEFINITION_NAME, version = 1, siteId 
             }
         }
         content("Header", HTML("Logo & Menu Toggle")){
-            htmlContent = """<a href="/" style="width: 12rem;"><img src="application-logo.png" alt="logo" class="logo"/>
+            htmlContent = """<a href="/"><img src="application-logo.png" alt="logo" class="logo"/>
 </a><div class="fa fa-bars"></div>"""
             htmlClass = "logo-con"
         }
