@@ -18,7 +18,6 @@ import net.proteusframework.email.EmailConfigType
  * DSL Model of an [net.proteusframework.email.EmailTemplate]
  * @author Russ Tennant (russ@venturetech.net)
  */
-
 class EmailTemplate <T:EmailConfigType<*>>
 (val type: Class<T>, val name: String, val programmaticName: String) : Identifiable (programmaticName) {
     var from: String = ""

@@ -18,6 +18,7 @@ import experimental.cms.dsl.*
 import net.proteusframework.cms.PageElementModelImpl
 import net.proteusframework.cms.component.ContentElement
 import net.proteusframework.email.EmailTemplate
+import net.proteusframework.email.config.ContentElementEmailConfig
 
 /**
  * Reset Password Content.
@@ -41,7 +42,7 @@ class ResetPassword(id: String): Identifiable(id), Content {
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
         val contentElement = existing?:ResetPasswordBean()
         val builder = ResetPasswordBeanContentBuilder()
-        updateBuilder(builder, helper)
+        updateBuilder(contentElement, builder, helper)
         helper.assignToSite(PageElementModelImpl.StandardIdentifier(ResetPasswordBean::class.java).toIdentifier())
         return ContentInstance(contentElement, builder.content)
     }
@@ -49,17 +50,21 @@ class ResetPassword(id: String): Identifiable(id), Content {
     override fun isModified(helper: ContentHelper, contentElement: ContentElement): Boolean {
         val dataSet = contentElement.publishedData[helper.getCmsSite().primaryLocale] ?: return false
         val builder = ResetPasswordBeanContentBuilder.load(dataSet, false)
-        updateBuilder(builder, helper)
+        updateBuilder(contentElement, builder, helper)
         return builder.isDirty
     }
 
-    private fun updateBuilder(builder: ResetPasswordBeanContentBuilder, helper: ContentHelper) {
+    private fun updateBuilder(contentElement: ContentElement,
+        builder: ResetPasswordBeanContentBuilder, helper: ContentHelper) {
         builder.authenticationMeans = authenticationMeans
         builder.isOverrideDynamicReturn = ignoreDynamicReturnPath
         builder.loginLink = helper.getCMSLink(loginPage)
         if(emailTemplate.isNotBlank()) {
             val template: EmailTemplate? = helper.getEmailTemplate(emailTemplate)
             builder.emailTemplate = template
+            val emailConfig = template?.emailConfig
+            if(emailConfig is ContentElementEmailConfig)
+                emailConfig.contentElement = contentElement
         }
     }
 
