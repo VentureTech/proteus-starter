@@ -31,7 +31,6 @@ import net.proteusframework.data.filesystem.FileSystemEntityCreateMode;
 import net.proteusframework.data.filesystem.http.FileEntityFileItem;
 import net.proteusframework.data.filesystem.http.FileItemByteSource;
 
-import static com.i2rd.cms.backend.FileMetaData.clearVolatileMetaData;
 
 /**
  * Utility class for defining a method of saving an image on a given Entity.
@@ -108,7 +107,6 @@ public class FileSaver<E>
                 request.setCreateMode(FileSystemEntityCreateMode.overwrite);
 
                 currFile = _fileSystemDAO.store(request);
-                clearVolatileMetaData(currFile);
             }
             else
             {
@@ -142,7 +140,6 @@ public class FileSaver<E>
             FileEntityFileItem fileItem = new FileEntityFileItem(file);
             FileEntity copy = _fileSystemDAO.copy(file, _getDirectory.apply(value, fileItem),
                 _getFileName.apply(value, fileItem), null, FileSystemEntityCreateMode.overwrite);
-            clearVolatileMetaData(copy);
             value = _setFile.apply(value, copy);
         }
         value = _saveValue.apply(value);
