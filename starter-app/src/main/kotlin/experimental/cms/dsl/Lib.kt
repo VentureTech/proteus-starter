@@ -311,4 +311,5 @@ class FileDataSource(val jfile: java.io.File): FileSystemEntityDataSource {
 
 }
 
-data class AppFunctionPage(val appFunctionName: String, val path: String, val htmlClassName: String)
+data class AppFunctionPage(val appFunctionName: String, val path: String, val htmlClassName: String,
+    val cssPaths: List<String> = listOf())

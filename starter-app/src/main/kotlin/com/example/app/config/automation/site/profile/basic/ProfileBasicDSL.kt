@@ -181,7 +181,7 @@ match an existing user account, then an email message will be sent with addition
         }
     }
 
-    for((appFunction, path, htmlClassName) in listOf(
+    for((appFunction, path, htmlClassName, cssPaths) in listOf(
         AppFunctionPage(Company.MANAGEMENT, "/\${folder.company}/manage",
             "company-management"),
         AppFunctionPage(Company.VIEW, "/\${folder.company}/view/*", "company-viewer"),
@@ -190,14 +190,15 @@ match an existing user account, then an email message will be sent with addition
         AppFunctionPage(User.MANAGEMENT, "/user/manage", "user-management"),
         AppFunctionPage(User.VIEW, "/user/view/*", "user-viewer"),
         AppFunctionPage(User.EDIT, "/user/edit/*", "user-editor"),
-        AppFunctionPage(User.MY_ACCOUNT_VIEW, "/account/my-profile", "my-profile"),
-        AppFunctionPage(User.MY_ACCOUNT_EDIT, "/account/my-profile/edit/*", "my-profile-edit")
+        AppFunctionPage(User.MY_ACCOUNT_VIEW, "/account/my-profile", "my-profile", listOf("page--user-profile.min.css")),
+        AppFunctionPage(User.MY_ACCOUNT_EDIT, "/account/my-profile/edit/*", "my-profile-edit",
+            listOf("page--user-profile.min.css"))
      )) {
         page(appFunction, path) {
             template("Frontend")
             permission("Frontend Access", frontendRoleProgId)
             authenticationPage("Login")
-
+            cssPaths.forEach { css(it) }
             content("Body", ApplicationFunction(appFunction)) {
                 htmlClass = htmlClassName
             }
