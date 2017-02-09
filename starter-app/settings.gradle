@@ -14,7 +14,25 @@ settings.rootProject.name = "${app_name}"
 settings.gradle.projectsLoaded( {
     props.each({it.test(settings)})
 
-    settings.gradle.rootProject.ext.hasLocalRepo = settings.hasProperty('local_repo');
+    def hasLocalRepo = settings.hasProperty('local_repo')
+    if(hasLocalRepo) {
+        def repoHost = new URL(settings.getProperty('local_repo')).getHost()
+        if(new File('/bin/ping').canExecute())
+        {
+            def baseDir = settings.gradle.rootProject.rootDir
+            def envp = System.getenv().collect({k, v -> "${k}=${v}"})
+            def isMac = System.getProperty('os.name', '').toLowerCase().contains('mac')
+            def command = isMac ? ['/bin/ping', '-q', '-W', '250', '-c', '1', repoHost] :
+                ['/bin/ping', '-q', '-w', '0.25', '-c', '1', repoHost]
+            def process = command.execute(envp, baseDir)
+            process.consumeProcessOutput(System.out, System.err)
+            if(process.waitFor() != 0) {
+                hasLocalRepo = false
+            }
+        }
+    }
+    println "Has Local Repo? $hasLocalRepo"
+    settings.gradle.rootProject.ext.hasLocalRepo = hasLocalRepo;
     settings.gradle.rootProject.ext.repoReleaseURL = "${repo_venture_tech_url}/release"
     settings.gradle.rootProject.ext.repoSnapshotURL = "${repo_venture_tech_url}/snapshot"
     settings.gradle.rootProject.ext.warTaskSpecified = gradle.startParameter.taskNames.any {it == 'war'}
@@ -24,5 +42,6 @@ settings.gradle.projectsLoaded( {
     settings.gradle.rootProject.ext.isEclipse = System.getProperties().containsKey('eclipse.product')
     settings.gradle.rootProject.ext.compileLibraries = settings.hasProperty('compile_libraries') ||
         settings.gradle.rootProject.ext.isIDEA;
+    
 })
 
