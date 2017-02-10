@@ -91,6 +91,31 @@ configurations.all {
             {
                 details.useVersion '1.4.+'
             }
+            // Thanks BIRT
+            if (details.requested.group == 'org.eclipse.scout.sdk.deps')
+            {
+                switch (details.requested.name)
+                {
+                    case 'org.eclipse.core.runtime':
+                        details.useVersion('3.12.0.v20160606-1342'); break;
+                    case 'org.eclipse.core.contenttype':
+                        details.useVersion('3.5.100.v20160418-1621');break;
+                    case 'org.eclipse.core.expressions':
+                        details.useVersion('3.5.100.v20160418-1621'); break;
+                    case 'org.eclipse.equinox.preferences':
+                        details.useVersion('3.6.0.v20160120-1756'); break;
+                    case 'org.eclipse.core.filesystem':
+                        details.useVersion('1.6.0.v20160503-1608'); break;
+                    case 'org.eclipse.equinox.common':
+                        details.useVersion('3.8.0.v20160509-1230'); break;
+                    case 'org.eclipse.equinox.registry':
+                        details.useVersion('3.6.100.v20160223-2218'); break;
+                    case 'org.eclipse.osgi':
+                        details.useVersion('3.11.0.v20160603-1336'); break;
+                    case 'org.eclipse.core.jobs':
+                        details.useVersion('3.8.0.v20160509-0411'); break;
+                }
+            }
         }
         // cache dynamic versions for ...
 //        cacheDynamicVersionsFor 0, 'seconds'
