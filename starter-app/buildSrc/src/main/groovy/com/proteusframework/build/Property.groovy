@@ -27,7 +27,12 @@ class Property
         def res = true
         if (!settings.hasProperty(name))
         {
-            if (required)
+            def envValue = System.getenv().get(name)
+            if(envValue)
+            {
+                settings.gradle.rootProject.ext[name] = envValue
+            }
+            else if (required)
             {
                 println "Missing property: ${toString()}"
                 res = false
