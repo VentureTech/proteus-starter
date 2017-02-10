@@ -34,6 +34,9 @@ import net.proteusframework.core.locale.TextSource
 import net.proteusframework.core.spring.ApplicationContextUtils
 import net.proteusframework.ui.management.ApplicationRegistry
 import org.springframework.beans.factory.annotation.Autowired
+
+import static net.proteusframework.core.locale.TextSources.createText
+
 /**
  * Scripted Menu for the Starter Site.
  * <br><br>
@@ -82,18 +85,47 @@ class AppFunctionMenuGenerator extends AbstractScriptGenerator
         cw.addClassAttribute('app-menu-wrapper menu')
         cw.open()
 
-        pw.append('<ul class="nav app-menu menubeanh menu">')
+        pw.append('<ul class="nav app-menu menubeanh menu menu-t1">')
 
+        appendHardLink('/dashboard', createText('Dashboard'), 'dashboard', response)
         appendLink(request, response, _companiesPermissionCheck, "company-management", _terms.companies())
         appendLink(request, response, _clientManagementPermissionCheck, "client-management", _terms.clients())
         appendLink(request, response, _userManagementPermissionCheck, "user-management", UIText.USERS())
-        appendLink(request, response, _companyResourcePermissionCheck, "resource-management", UIText.RESOURCES())
         appendLink(request, response, _companyLocationUIPermissionCheck, "location-management", _terms.locations())
+        beginMenuT2(createText('Config'), 'config', response)
         appendLink(request, response, _textManagementPermissionCheck, "text-management", TextManagementText.MENU_ITEM_NAME())
-
+        appendLink(request, response, _companyResourcePermissionCheck, "resource-management", UIText.RESOURCES())
+        closeMenuT2(response)
         pw.append('</ul>')
 
         cw.close()
+    }
+
+    def beginMenuT2(TextSource labelText, String classname, CmsResponse response)
+    {
+        def pw = response.getContentWriter()
+        pw.append('<li class="mi mi-parent ' + classname + '">')
+            .append('<div class="menuitemlabel"><span class="mil">')
+            .appendEscapedData(labelText)
+            .append('</span></div>')
+            .append('<ul class="menu menu-t2 menubeanh">')
+    }
+
+    def closeMenuT2(CmsResponse response)
+    {
+        def pw = response.getContentWriter()
+        pw.append('</ul></li>')
+    }
+
+    def appendHardLink(String path, TextSource labelText, String classname, CmsResponse response)
+    {
+        def url = response.createURL(path).getURL(true)
+        def pw = response.getContentWriter()
+        pw.append('<li class="link mi ' + classname + '" data-path="' + path + '">')
+        pw.append('<a').appendEscapedAttribute('href', url)
+        pw.append(' class="link menuitemlabel"><span>')
+            .appendEscapedData(labelText)
+            .append('</span></a></li>')
     }
 
     private void appendLink(CmsRequest request, CmsResponse response,
@@ -103,7 +135,7 @@ class AppFunctionMenuGenerator extends AbstractScriptGenerator
         if(permissionCheck.checkPermissionsForCurrent(request))
         {
             def url = permissionCheck.createResponseURL(request, response, _applicationRegistry).getURL(true)
-            pw.append('<li class="link ' + classname + '" data-path="/user">')
+            pw.append('<li class="link mi ' + classname + '" data-path="/user">')
             pw.append('<a').appendEscapedAttribute('href', url)
             pw.append(' class="link menuitemlabel"><span>')
                 .appendEscapedData(displayText)
