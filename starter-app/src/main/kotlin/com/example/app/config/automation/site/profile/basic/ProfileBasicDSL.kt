@@ -157,6 +157,7 @@ open class ProfileBasicDSL : AppDefinition(DEFINITION_NAME, version = 1, siteId 
 
     page("Password Reset", "/password-reset") {
         template("Login")
+        css("pages/page--login.min.css")
         content("Body", Composite("Reset Password Group")) {
             htmlClass = "retrieve-password-con"
             content(HTML("Reset Password Instructions")) {
