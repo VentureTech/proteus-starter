@@ -1,15 +1,19 @@
 import com.proteusframework.build.GitInfo
+import org.gradle.authentication.http.BasicAuthentication
 
 buildscript {
     ext.kotlin_version = version_kotlin
     repositories {
         if(hasLocalRepo){ maven { url = local_repo } }
         maven {
+            url repoReleaseURL
             credentials {
                 username "${repo_venturetech_username}"
                 password "${repo_venturetech_password?:''}"
             }
-            url repoReleaseURL
+            authentication {
+                basic(BasicAuthentication)
+            }
         }
     }
     dependencies {
@@ -29,18 +33,24 @@ repositories {
     if(hasLocalRepo){ maven { url = local_repo } }
     maven { url 'http://dl.bintray.com/kotlin/kotlin-eap-1.1' }
     maven {
+        url repoReleaseURL
         credentials {
             username repo_venturetech_username
             password repo_venturetech_password
         }
-        url repoReleaseURL
+        authentication {
+            basic(BasicAuthentication)
+        }
     }
     maven {
+        url repoSnapshotURL
         credentials {
             username repo_venturetech_username
             password repo_venturetech_password
         }
-        url repoSnapshotURL
+        authentication {
+            basic(BasicAuthentication)
+        }
     }
     maven {
         url "https://dl.bintray.com/kotlin/exposed"
