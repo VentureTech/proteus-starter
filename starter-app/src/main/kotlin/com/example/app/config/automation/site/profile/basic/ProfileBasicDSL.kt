@@ -12,6 +12,9 @@
 package com.example.app.config.automation.site.profile.basic
 
 import com.example.app.config.ProjectInformation
+import com.example.app.login.oneall.service.OneAllLoginService
+import com.example.app.login.social.ui.SocialLogin
+import com.example.app.login.social.ui.SocialLoginMode
 import com.example.app.profile.ui.ApplicationFunctions.*
 import com.example.app.support.service.AppUtil
 import com.i2rd.cms.bean.ResetPasswordBean.AuthenticationMeans.EMAIL_ONLY
@@ -82,11 +85,17 @@ open class ProfileBasicDSL : AppDefinition(DEFINITION_NAME, version = 1, siteId 
                 boxType = FOOTER
             }
         }
-        content("Header", HTML("Logo & Menu Toggle")){
-            htmlContent = """<a href="/"><img src="application-logo.png" alt="logo" class="logo"/>
-</a><div class="fa fa-bars"></div>"""
+
+        content("Header", HTML("Logo")){
+            htmlContent = """<a href="/"><img src="application-logo.png" alt="logo" class="logo"/></a>"""
             htmlClass = "logo-con"
         }
+        content("Header", HTML("Logo & Menu Toggle")){
+            htmlContent = """< a href="/"><img src="application-logo.png" alt="logo" class="logo"/>
+</a><div class="fa fa-bars"></div>"""
+            htmlClass = "logo-con"
+        }.remove()
+
         content("Footer", Text("Global Footer")){
             htmlContent = "<p>$appName | &copy; 2016</p>"
         }
@@ -102,7 +111,18 @@ open class ProfileBasicDSL : AppDefinition(DEFINITION_NAME, version = 1, siteId 
         css("templates/template--base.min.css")
         css("templates/font-awesome.min.css")
         layout("Header, Body, Footer")
-        content("Header", "Logo & Menu Toggle")
+
+        content("Header", "Logo")
+        content("Header", HTML("Hamburger")){
+            htmlContent = """<div class="hamburger">
+  <span class="bar top"></span>
+  <span class="bar middle"></span>
+  <span class="bar bottom"></span>
+</div>"""
+            htmlClass = "hamburger-con"
+        }
+        content("Header", HTML("Logo & Menu Toggle")).remove()
+
         content("Header", ScriptedGenerator("Company Selector")) {
             script("CompanySelectorScript.groovy")
         }
@@ -140,7 +160,18 @@ open class ProfileBasicDSL : AppDefinition(DEFINITION_NAME, version = 1, siteId 
                 scriptedRedirect("ScriptableRedirect/StarterSiteRedirectScript.groovy")
                 scriptedRedirectParam("Default Redirect Page", "/dashboard")
             }
+            content(SocialLogin("Social Login")) {
+                htmlClass = "oneall-social-login"
+                landingPage("Dashboard")
+                scriptedRedirect("StarterSiteRedirectScript.groovy")
+                scriptedRedirectParam("Default Redirect Page", "/dashboard")
+                loginService(OneAllLoginService.SERVICE_IDENTIFIER)
+                provider("google")
+                mode(SocialLoginMode.Login)
+                additionalProperty(OneAllLoginService.PROP_SSO_ENABLED, "true")
+            }
         }
+        content("Body", SocialLogin("OneAll Social Login")).remove()
     }
 
     emailTemplate(ContentElementEmailConfigType::class.java, "Reset Password", "default-reset-password") {
@@ -204,6 +235,14 @@ match an existing user account, then an email message will be sent with addition
             cssPaths.forEach { css(it) }
             content("Body", ApplicationFunction(appFunction)) {
                 htmlClass = htmlClassName
+            }
+            if(appFunction == User.MY_ACCOUNT_VIEW) {
+                content("Body", SocialLogin("OneAll Link")) {
+                    htmlClass = "oneall-link"
+                    loginService(OneAllLoginService.SERVICE_IDENTIFIER)
+                    provider("google")
+                    mode(SocialLoginMode.Link)
+                }
             }
         }
     }

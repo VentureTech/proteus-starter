@@ -17,6 +17,7 @@ import com.example.app.profile.model.repository.ResourceRepositoryItem;
 import com.example.app.profile.model.user.User;
 import com.example.app.profile.model.user.UserDAO;
 import com.example.app.profile.service.MembershipOperationProvider;
+import com.example.app.profile.ui.repository.ResourceRepositoryItemValueViewer;
 import com.example.app.support.service.ApplicationFunctionPermissionCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -127,5 +128,7 @@ public abstract class AbstractProfileResourcePropertyViewer extends MIWTPageElem
         User currentUser = _userDAO.getAssertedCurrentUser();
         Repository repo = _repositoryDAO.getOwnerOfRepositoryItem(value);
         _canEdit = _repositoryDAO.canOperate(currentUser, repo, timeZone, _mop.modifyRepositoryResources());
+
+        setValueViewer(new ResourceRepositoryItemValueViewer(value));
     }
 }
