@@ -160,24 +160,24 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Gradle: com.amazonaws:jmespath-java:1.11.86">
+      <library name="Gradle: com.amazonaws:jmespath-java:1.11.87">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/jmespath-java/1.11.86/83144db2e9105a2bd41f79f0361d72b2cc1215b8/jmespath-java-1.11.86.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/jmespath-java/1.11.87/78255d6658a08b3ecdb7e8819c989f61f52b90ff/jmespath-java-1.11.87.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/jmespath-java/1.11.86/99ee0d492969d86f86f760bee09eb4c892528f01/jmespath-java-1.11.86-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/jmespath-java/1.11.87/586ea456a2f88c44cde956b059e833abe9411e9f/jmespath-java-1.11.87-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Gradle: com.amazonaws:aws-java-sdk-core:1.11.86">
+      <library name="Gradle: com.amazonaws:aws-java-sdk-core:1.11.87">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-core/1.11.86/8f2cbb544f2ffb1ee14dac0c4ea6df89398b69c8/aws-java-sdk-core-1.11.86.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-core/1.11.87/a838674942269cc1235f011ba760346f24f8e11c/aws-java-sdk-core-1.11.87.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-core/1.11.86/3c5bb094398ec3cebd1ef29846c2ccd650fd2ca9/aws-java-sdk-core-1.11.86-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-core/1.11.87/518809a160726d397413388524666d76272f4032/aws-java-sdk-core-1.11.87-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -204,13 +204,13 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Gradle: com.amazonaws:aws-java-sdk-sqs:1.11.86">
+      <library name="Gradle: com.amazonaws:aws-java-sdk-sqs:1.11.87">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-sqs/1.11.86/a64fc041de4fa65d71bfc5ecd346ff99eb0bca53/aws-java-sdk-sqs-1.11.86.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-sqs/1.11.87/465603ffbb13b64478a900052095d4a9d6bfc7ef/aws-java-sdk-sqs-1.11.87.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-sqs/1.11.86/639bf9c673370b15590200cfe61fb3b757365b72/aws-java-sdk-sqs-1.11.86-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-sqs/1.11.87/95de1ebed69ac4be7b2c73189d6281152bcd60a/aws-java-sdk-sqs-1.11.87-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -225,15 +225,17 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: groovy-all-2.4.7">
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/wrapper/dists/gradle-3.3-all/55gk2rcmfc6p2dg9u9ohc3hw9/gradle-3.3/lib/groovy-all-2.4.7.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
+    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpclient:4.5.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.6.6" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.6.6" level="project" />
+    <orderEntry type="library" name="Gradle: joda-time:joda-time:2.8.1" level="project" />
+    <orderEntry type="library" name="Gradle: net.java.dev.jna:jna:3.4.0" level="project" />
+    <orderEntry type="library" name="Gradle: net.java.dev.jna:platform:3.4.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.6.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.6.6" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpcore:4.4.4" level="project" />
+    <orderEntry type="library" name="Gradle: commons-codec:commons-codec:1.9" level="project" />
+    <orderEntry type="library" name="Gradle: commons-logging:commons-logging:1.2" level="project" />
     <orderEntry type="module-library">
       <library name="Gradle: gradle-api-3.3">
         <CLASSES>
@@ -243,16 +245,14 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="Gradle: commons-logging:commons-logging:1.2" level="project" />
-    <orderEntry type="library" name="Gradle: commons-codec:commons-codec:1.9" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpcore:4.4.4" level="project" />
-    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.6.6" level="project" />
-    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.6.0" level="project" />
-    <orderEntry type="library" name="Gradle: net.java.dev.jna:platform:3.4.0" level="project" />
-    <orderEntry type="library" name="Gradle: net.java.dev.jna:jna:3.4.0" level="project" />
-    <orderEntry type="library" name="Gradle: joda-time:joda-time:2.8.1" level="project" />
-    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.6.6" level="project" />
-    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.6.6" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpclient:4.5.2" level="project" />
+    <orderEntry type="module-library">
+      <library name="Gradle: groovy-all-2.4.7">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/wrapper/dists/gradle-3.3-all/55gk2rcmfc6p2dg9u9ohc3hw9/gradle-3.3/lib/groovy-all-2.4.7.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

@@ -2,8 +2,10 @@
 .gradle/
 .apt_generated/
 .apt_generated_tests/
-/build/
-/buildSrc/build
+/build/gradle/
+/build/idea/
+/build/kotlin-build/
+/buildSrc/build/
 /compiletime-aspects/
 /runtime-aspects/
 
