@@ -49,6 +49,7 @@ import net.proteusframework.cms.support.HTMLPageElementUtil.populateBeanBoxLists
 import net.proteusframework.core.StringFactory.trimSlashes
 import net.proteusframework.core.hibernate.HibernateSessionHelper
 import net.proteusframework.core.hibernate.dao.DAOHelper
+import net.proteusframework.core.html.MetaInformation
 import net.proteusframework.core.io.StreamUtils
 import net.proteusframework.core.locale.LocaleContext
 import net.proteusframework.core.locale.LocaleSource
@@ -382,6 +383,18 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         currentSite = cmsSite
         currentWebRoot = FileSystemDirectory.getRootDirectory(cmsSite)
         createNDEs(cmsSite, cmsSite, siteModel)
+
+        val miMap = cmsSite.metaInformation.associateBy { it.name }
+        for(meta in siteModel.meta)
+        {
+            var mi = miMap[meta.name]
+            if(mi == null){
+                mi = MetaInformation(meta.type.keyType, meta.name, meta.value)
+                cmsSite.metaInformation.add(mi)
+            } else {
+                mi.content = meta.value
+            }
+        }
         session.flush()
         val systemRoot = Preferences.systemRoot()
         var needsFlush = false

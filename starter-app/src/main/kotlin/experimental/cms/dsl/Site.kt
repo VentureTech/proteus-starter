@@ -48,7 +48,9 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
     /** Internal Use. */
     internal var sitePreferenceKey: String = ""
     /** Internal Use. */
-    internal var systemPreferences = mutableMapOf<String, String>()
+    internal val systemPreferences = mutableMapOf<String, String>()
+    /** Internal Use. */
+    internal val meta = mutableListOf<Meta>()
     /** Internal Use. */
     internal var webResources: URL? = null
     /** Internal Use. */
@@ -196,7 +198,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
 
     /**
      * Provide a [java.util.prefs.Preferences] key to store the [net.proteusframework.cms.CmsSite.getId].
-     * @param the key. Must follow [java.util.prefs.Preferences] constraints like key length.
+     * @param key the key. Must follow [java.util.prefs.Preferences] constraints like key length.
      */
     fun storeSitePreference(key: String) {
         if(key.isBlank()) throw IllegalArgumentException("Key must be specified")
@@ -205,11 +207,22 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
 
     /**
      * Provide a [java.util.prefs.Preferences] key to store the given value.
-     * @param the key. Must follow [java.util.prefs.Preferences] constraints like key length.
+     * @param key the key. Must follow [java.util.prefs.Preferences] constraints like key length.
+     * @param value the value.
      */
     fun systemPref(key: String, value: String) {
         if(key.isBlank()) throw IllegalArgumentException("Key must be specified")
         systemPreferences[key] = value
+    }
+
+    /**
+     * Add meta data to the site.
+     * @param name the name or http-equiv based on the type specified.
+     * @param value the value.
+     * @param type the type.
+     */
+    fun meta(name: String, value: String, type: MetaType = MetaType.NAME) {
+        meta.add(Meta(name, value, type))
     }
 
     /**

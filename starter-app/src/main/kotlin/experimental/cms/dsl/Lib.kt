@@ -25,6 +25,7 @@ import net.proteusframework.core.StringFactory.trimSlashes
 import net.proteusframework.core.html.Element
 import net.proteusframework.core.html.EntityUtil
 import net.proteusframework.core.html.HTMLElement
+import net.proteusframework.core.html.MetaInformation
 import net.proteusframework.core.mail.support.MimeTypeUtility
 import net.proteusframework.core.xml.*
 import net.proteusframework.data.filesystem.FileSystemEntity
@@ -288,7 +289,7 @@ interface ContentHelper : PlaceholderHelper {
 }
 
 
-class FileDataSource(val jfile: java.io.File): FileSystemEntityDataSource {
+internal class FileDataSource(val jfile: java.io.File): FileSystemEntityDataSource {
     override fun getLength(): Long = jfile.length()
 
     override fun getFile(): File? = jfile
@@ -310,6 +311,14 @@ class FileDataSource(val jfile: java.io.File): FileSystemEntityDataSource {
     override fun getInputStream(): InputStream = jfile.inputStream()
 
 }
+
+enum class MetaType(val keyType: MetaInformation.KeyType) {
+    HTTP_EQUIV(MetaInformation.KeyType.HTTP_EQUIV),
+    NAME(MetaInformation.KeyType.HTTP_EQUIV);
+
+
+}
+internal data class Meta(val name: String, val value: String, val type: MetaType)
 
 data class AppFunctionPage(val appFunctionName: String, val path: String, val htmlClassName: String,
     val cssPaths: List<String> = listOf())

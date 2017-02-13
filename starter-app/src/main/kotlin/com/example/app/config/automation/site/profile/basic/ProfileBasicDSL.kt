@@ -47,6 +47,8 @@ open class ProfileBasicDSL : AppDefinition(DEFINITION_NAME, version = 1, siteId 
     storeSitePreference(AppUtil.PREF_KEY_PROFILE_SITE)
     systemPref(AppUtil.PREF_KEY_FRONTEND_ROLE, frontendRoleProgId)
     systemPref(AppUtil.PREF_KEY_ADMIN_ROLE, adminRoleProgId)
+    meta("viewport", "width=device-width, initial-scale=1.0, minimal-u")
+    meta("apple-mobile-web-app-capable", "yes")
 
     template("Login") {
         javaScript("vendor/jquery.min.js")
