@@ -7,6 +7,7 @@
       <name>org.apache.logging.log4j.core.Logger</name>
       <name>org.eclipse.datatools</name>
       <name>sun.io</name>
+      <name>sun.net</name>
     </excluded-names>
   </component>
 </project>
