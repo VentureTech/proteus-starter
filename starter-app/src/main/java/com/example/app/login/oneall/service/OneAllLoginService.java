@@ -84,6 +84,7 @@ import net.proteusframework.internet.http.resource.FactoryResource;
 import net.proteusframework.internet.http.resource.FactoryResourceConfiguration;
 import net.proteusframework.internet.http.resource.html.NDE;
 import net.proteusframework.ui.miwt.component.composite.Message;
+import net.proteusframework.ui.miwt.component.composite.editor.BooleanValueEditor;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
 import net.proteusframework.users.model.Principal;
 import net.proteusframework.users.model.dao.AuthenticationDomainList;
@@ -308,32 +309,32 @@ public class OneAllLoginService implements SocialLoginService
                         .append(String.valueOf('\n'));
                     pw.append("</script>");
 
-//                    if(Boolean.valueOf(loginParams.getContentBuilder().getProperty(PROP_SSO_ENABLED, "false")))
-//                    {
-//
-//                        String ssoToken = request.getSession(Scope.SESSION).getString(SESSION_KEY_SSO_TOKEN, null);
-//
-//                        pw.append("<script async=\"async\" type=\"text/javascript\">\n")
-//                            .append('\n')
-//                            .append("var _oneall = _oneall || [];\n");
-//                        if(!isEmptyString(ssoToken))
-//                        {
-//                            pw.append("_oneall.push(['single_sign_on', 'do_register_sso_session', '")
-//                                .append(ssoToken)
-//                                .append("']);\n");
-//                        }
-//                        else if(loginParams.getMode() == SocialLoginMode.Login
-//                            && !Boolean.valueOf(request.getParameter(PARAM_SSO_CALLBACK, "false")))
-//                        {
-//                            String callbackURL = loginParams.getCallbackURL().addParameter(PARAM_SSO_CALLBACK, true).getURL(true);
-//
-//                            pw.append("_oneall.push(['single_sign_on', 'set_callback_uri', '")
-//                                .append(callbackURL)
-//                                .append("']);\n")
-//                                .append("_oneall.push(['single_sign_on', 'do_check_for_sso_session']);\n");
-//                        }
-//                        pw.append("</script>");
-//                    }
+                    if(Boolean.valueOf(loginParams.getContentBuilder().getProperty(PROP_SSO_ENABLED, "false")))
+                    {
+
+                        String ssoToken = request.getSession(Scope.SESSION).getString(SESSION_KEY_SSO_TOKEN, null);
+
+                        pw.append("<script async=\"async\" type=\"text/javascript\">\n")
+                            .append('\n')
+                            .append("var _oneall = _oneall || [];\n");
+                        if(!isEmptyString(ssoToken))
+                        {
+                            pw.append("_oneall.push(['single_sign_on', 'do_register_sso_session', '")
+                                .append(ssoToken)
+                                .append("']);\n");
+                        }
+                        else if(loginParams.getMode() == SocialLoginMode.Login
+                            && !Boolean.valueOf(request.getParameter(PARAM_SSO_CALLBACK, "false")))
+                        {
+                            String callbackURL = loginParams.getCallbackURL().addParameter(PARAM_SSO_CALLBACK, true).getURL(true);
+
+                            pw.append("_oneall.push(['single_sign_on', 'set_callback_uri', '")
+                                .append(callbackURL)
+                                .append("']);\n")
+                                .append("_oneall.push(['single_sign_on', 'do_check_for_sso_session']);\n");
+                        }
+                        pw.append("</script>");
+                    }
                 }
             }
         };
@@ -440,16 +441,16 @@ public class OneAllLoginService implements SocialLoginService
         {
             _principalDAO.authenticatePrincipalProgrammatically(toLogin, SHARED_SECRET,
                 toLogin.getOpenAuthCredentials(SERVICE_IDENTIFIER, provider));
-//            if(Boolean.valueOf(loginParams.getContentBuilder().getProperty(PROP_SSO_ENABLED, "false")))
-//            {
-//                if(!Boolean.valueOf(request.getParameter(PARAM_SSO_CALLBACK, "false"))
-//                   && createSSOSession(request, identityToken))
-//                    return LoginResult.SUCCESS_DO_REDIRECT_JAVASCRIPT;
-//                if(Boolean.valueOf(request.getParameter(PARAM_SSO_CALLBACK, "false")))
-//                {
-//                    registerSSOLogoutCallback(request, identityToken);
-//                }
-//            }
+            if(Boolean.valueOf(loginParams.getContentBuilder().getProperty(PROP_SSO_ENABLED, "false")))
+            {
+                if(!Boolean.valueOf(request.getParameter(PARAM_SSO_CALLBACK, "false"))
+                   && createSSOSession(request, identityToken))
+                    return LoginResult.SUCCESS_DO_REDIRECT_JAVASCRIPT;
+                if(Boolean.valueOf(request.getParameter(PARAM_SSO_CALLBACK, "false")))
+                {
+                    registerSSOLogoutCallback(request, identityToken);
+                }
+            }
             return LoginResult.SUCCESS_DO_REDIRECT;
         }
 
@@ -500,11 +501,11 @@ public class OneAllLoginService implements SocialLoginService
             _principalDAO.authenticatePrincipalProgrammatically(current, SHARED_SECRET,
                 current.getOpenAuthCredentials(SERVICE_IDENTIFIER, provider.getProgrammaticName()));
             loginParams.getMessageAcceptor().accept(Message.info(INFO_SUCCESSFULLY_LINKED_FMT(provider.getDisplayName())));
-//            if(Boolean.valueOf(loginParams.getContentBuilder().getProperty(PROP_SSO_ENABLED, "false"))
-//                && !Boolean.valueOf(request.getParameter(PARAM_SSO_CALLBACK, "false")))
-//            {
-//                if(createSSOSession(request, identityToken)) return LoginResult.SUCCESS_DO_REDIRECT_JAVASCRIPT;
-//            }
+            if(Boolean.valueOf(loginParams.getContentBuilder().getProperty(PROP_SSO_ENABLED, "false"))
+                && !Boolean.valueOf(request.getParameter(PARAM_SSO_CALLBACK, "false")))
+            {
+                if(createSSOSession(request, identityToken)) return LoginResult.SUCCESS_DO_REDIRECT_JAVASCRIPT;
+            }
             return LoginResult.SUCCESS_DO_REDIRECT;
         }
         if(current == null)
@@ -536,12 +537,12 @@ public class OneAllLoginService implements SocialLoginService
     @Override
     public List<SocialLoginServiceEditor> createEditors()
     {
-//        BooleanValueEditor ssoEnabledValueEditor = new BooleanValueEditor(LABEL_SSO_ENABLED(), null);
-//        ssoEnabledValueEditor.addClassName(PROP_SSO_ENABLED);
-//        SocialLoginServiceEditor sSOEnabledEditor = new SocialLoginServiceEditor(
-//            PROP_SSO_ENABLED, ssoEnabledValueEditor, String::valueOf, Boolean::valueOf);
-//        return Collections.singletonList(sSOEnabledEditor);
-        return Collections.emptyList();
+        BooleanValueEditor ssoEnabledValueEditor = new BooleanValueEditor(LABEL_SSO_ENABLED(), null);
+        ssoEnabledValueEditor.addClassName(PROP_SSO_ENABLED);
+        SocialLoginServiceEditor sSOEnabledEditor = new SocialLoginServiceEditor(
+            PROP_SSO_ENABLED, ssoEnabledValueEditor, String::valueOf, Boolean::valueOf);
+        return Collections.singletonList(sSOEnabledEditor);
+//        return Collections.emptyList();
     }
 
     /**

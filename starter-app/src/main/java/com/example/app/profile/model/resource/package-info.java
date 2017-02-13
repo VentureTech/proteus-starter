@@ -14,4 +14,10 @@
  *
  * @since 1/6/17
  */
+@TypeDefs(
+    @TypeDef(name = ResourceTypeUserType.TYPEDEF, typeClass = ResourceTypeUserType.class, defaultForType = ResourceType.class)
+)
 package com.example.app.profile.model.resource;
+
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
