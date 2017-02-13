@@ -51,8 +51,6 @@ public class NotePropertyEditor extends PropertyEditor<Note>
     {
         super.init();
 
-        Closer closer = this.new Closer();
-
         ReflectiveAction save = CommonActions.SAVE.defaultAction();
         save.setActionListener(ev -> {
             if (persist(input -> {
@@ -62,12 +60,12 @@ public class NotePropertyEditor extends PropertyEditor<Note>
                 return Boolean.TRUE;
             }))
             {
-                closer.actionPerformed(ev);
+                close();
             }
         });
 
         ReflectiveAction cancel = CommonActions.CANCEL.defaultAction();
-        cancel.setActionListener(closer);
+        cancel.setActionListener(this.new Closer());
 
         setPersistenceActions(save, cancel);
     }
