@@ -58,7 +58,7 @@ public class NoteValueEditor extends CompositeValueEditor<Note>
             }
             editor.addClassName("note-content");
             return editor;
-        }, Note.CONTENT_COLUMN_PROP);
+        }, Note::getContent, Note::setContent);
 
 
     }
