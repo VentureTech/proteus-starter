@@ -197,21 +197,15 @@ public class CompanyDAO extends DAOHelper implements Serializable
                 session.save(domain);
             }
         };
-        if(isAttached(company))
-        {
-            return doInTransaction(session -> {
-                presave.accept(company, session);
+        return doInTransaction(session -> {
+            Company retVal = company;
+            presave.accept(company, session);
+            if(isAttached(company))
                 session.saveOrUpdate(company);
-                return company;
-            });
-        }
-        else
-        {
-            return doInTransaction(session -> {
-                presave.accept(company, session);
-                return (Company)session.merge(company);
-            });
-        }
+            else
+                retVal = (Company) session.merge(company);
+            return retVal;
+        });
     }
 
     /**
