@@ -17,9 +17,18 @@ import com.example.app.login.social.ui.SocialLogin
 import com.example.app.login.social.ui.SocialLoginMode
 import com.example.app.profile.ui.ApplicationFunctions.*
 import com.example.app.support.service.AppUtil
+import com.i2rd.cms.bean.ResetPasswordBean.AuthenticationMeans.EMAIL_ONLY
+import com.i2rd.cms.visibility.AuthenticationCondition
 import experimental.cms.dsl.AppDefinition
 import experimental.cms.dsl.AppFunctionPage
 import experimental.cms.dsl.content.*
+import net.proteusframework.cms.component.page.PageProperties.Type.page
+import net.proteusframework.cms.component.page.PageProperties.Type.page_template
+import net.proteusframework.cms.component.page.layout.BoxDescriptor.*
+import net.proteusframework.email.config.ContentElementEmailConfigType
+import net.proteusframework.users.model.AuthenticationMethodSecurityLevel.SHARED_IDENTIFIER
+import org.springframework.context.annotation.Profile
+import org.springframework.stereotype.Component
 import java.net.URL
 
 private val appName = ProjectInformation.APPLICATION_NAME
