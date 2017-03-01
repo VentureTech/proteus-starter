@@ -271,11 +271,11 @@ org.jboss.logging:jboss-logging-annotations:1.2.0.Beta1
 org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.0.0.Final
 org.jboss:jandex:1.1.0.Final
 org.jetbrains.exposed:exposed:0.7.6
-org.jetbrains.kotlin:kotlin-annotation-processing:1.1.0-rc-91
-org.jetbrains.kotlin:kotlin-reflect:1.1.0-rc-91
-org.jetbrains.kotlin:kotlin-stdlib:1.1.0-rc-91
-org.jetbrains.kotlin:kotlin-stdlib-jre7:1.1.0-rc-91
-org.jetbrains.kotlin:kotlin-stdlib-jre8:1.1.0-rc-91
+org.jetbrains.kotlin:kotlin-annotation-processing:1.1.0
+org.jetbrains.kotlin:kotlin-reflect:1.1.0
+org.jetbrains.kotlin:kotlin-stdlib:1.1.0
+org.jetbrains.kotlin:kotlin-stdlib-jre7:1.1.0
+org.jetbrains.kotlin:kotlin-stdlib-jre8:1.1.0
 org.jetbrains.spek:spek-api:1.0.89
 org.jetbrains.spek:spek-junit-platform-engine:1.0.89
 org.jetbrains:annotations:13.0
