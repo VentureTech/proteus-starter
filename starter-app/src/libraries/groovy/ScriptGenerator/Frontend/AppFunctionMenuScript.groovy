@@ -47,6 +47,20 @@ import static net.proteusframework.core.locale.TextSources.createText
 @CompileStatic
 class AppFunctionMenuGenerator extends AbstractScriptGenerator
 {
+    static class LinkInfo
+    {
+        ApplicationFunctionPermissionCheck permissionCheck
+        String className
+        TextSource displayText
+
+        LinkInfo(ApplicationFunctionPermissionCheck permissionCheck, String className, TextSource displayText)
+        {
+            this.permissionCheck = permissionCheck
+            this.className = className
+            this.displayText = displayText
+        }
+    }
+
     @Autowired TextManagementPermissionCheck _textManagementPermissionCheck
     @Autowired CompanyUIPermissionCheck _companiesPermissionCheck
     @Autowired UserManagementPermissionCheck _userManagementPermissionCheck
@@ -88,17 +102,31 @@ class AppFunctionMenuGenerator extends AbstractScriptGenerator
         pw.append('<ul class="nav app-menu menubeanh menu menu-t1">')
 
         appendHardLink('/dashboard', createText('Dashboard'), 'dashboard', response)
-        appendLink(request, response, _companiesPermissionCheck, "company-management", _terms.companies())
-        appendLink(request, response, _clientManagementPermissionCheck, "client-management", _terms.clients())
-        appendLink(request, response, _userManagementPermissionCheck, "user-management", UIText.USERS())
-        appendLink(request, response, _companyLocationUIPermissionCheck, "location-management", _terms.locations())
-        beginMenuT2(createText('Config'), 'config', response)
-        appendLink(request, response, _textManagementPermissionCheck, "text-management", TextManagementText.MENU_ITEM_NAME())
-        appendLink(request, response, _companyResourcePermissionCheck, "resource-management", UIText.RESOURCES())
-        closeMenuT2(response)
+        def managerMenu = [
+            new LinkInfo(_userManagementPermissionCheck, "user-management", UIText.USERS()),
+            new LinkInfo(_clientManagementPermissionCheck, "client-management", _terms.clients()),
+            new LinkInfo(_companyLocationUIPermissionCheck, "location-management", _terms.locations()),
+            new LinkInfo(_companyResourcePermissionCheck, "resource-management", UIText.RESOURCES())
+        ] as List<LinkInfo>
+        renderMenuT2(request, response, createText('Manage'), 'manage', managerMenu)
+        def configMenu = [
+            new LinkInfo(_companiesPermissionCheck, "company-management", _terms.companies()),
+            new LinkInfo(_textManagementPermissionCheck, "text-management", TextManagementText.MENU_ITEM_NAME())
+        ] as List<LinkInfo>
+        renderMenuT2(request, response, createText('Config'), 'config', configMenu)
         pw.append('</ul>')
 
         cw.close()
+    }
+
+    def renderMenuT2(CmsRequest request, CmsResponse response, TextSource labelText, String classname, List<LinkInfo> links)
+    {
+        if(links.find {link -> link.permissionCheck.checkPermissionsForCurrent(request)})
+        {
+            beginMenuT2(labelText, classname, response)
+            links.each {link -> appendLink(request, response, link)}
+            closeMenuT2(response)
+        }
     }
 
     def beginMenuT2(TextSource labelText, String classname, CmsResponse response)
@@ -126,6 +154,11 @@ class AppFunctionMenuGenerator extends AbstractScriptGenerator
         pw.append(' class="link menuitemlabel"><span>')
             .appendEscapedData(labelText)
             .append('</span></a></li>')
+    }
+
+    private void  appendLink(CmsRequest request, CmsResponse response, LinkInfo linkInfo)
+    {
+        appendLink(request, response, linkInfo.permissionCheck, linkInfo.className, linkInfo.displayText)
     }
 
     private void appendLink(CmsRequest request, CmsResponse response,
