@@ -46,8 +46,20 @@ class CreateProjectUI
         this.project = project
     }
 
+    def getBaseDir()
+    {
+        project.findProperty('project_base_dir')
+    }
+
     def start()
     {
+        def baseDir = getBaseDir()
+        if(baseDir != null)
+        {
+            String baseDirS = String.valueOf(baseDir)
+            File baseDirF = new File(baseDirS)
+            model.destinationDirectory = baseDirF
+        }
         URL resource = getClass().getResource('proteus-logo.png')
         assert resource != null
         def icon = new ImageIcon(resource)
@@ -73,17 +85,19 @@ class CreateProjectUI
                     }
                     hbox {
                         label('Destination Directory: ')
-                        textField(id: 'directory', disabledTextColor: Color.BLACK, enabled: false)
+                        textField(id: 'directory', disabledTextColor: Color.BLACK, enabled: false,
+                            text: model.destinationDirectory != null ? model.destinationDirectory.absolutePath : '')
                         button(text: '...', actionPerformed: {
                             fileChooser(id: 'destination_directory', fileSelectionMode: DIRECTORIES_ONLY,
                                 multiSelectionEnabled: false,
                                 selectedFile: model.destinationDirectory,
-                                acceptAllFileFilterUsed: false, actionPerformed: {ev ->
-                                def fc = ev.source as JFileChooser
-                                model.destinationDirectory = fc.selectedFile
-                                if (model.destinationDirectory != null)
-                                    swing.directory.text = model.destinationDirectory.getName()
-                                }).showDialog(swing.ui, 'Select')
+                                acceptAllFileFilterUsed: false,
+                                actionPerformed: { ev ->
+                                    def fc = ev.source as JFileChooser
+                                    model.destinationDirectory = fc.selectedFile
+                                    if (model.destinationDirectory != null)
+                                        swing.directory.text = model.destinationDirectory.absolutePath
+                                    }).showDialog(swing.ui, 'Select')
                         })
 
                     }
