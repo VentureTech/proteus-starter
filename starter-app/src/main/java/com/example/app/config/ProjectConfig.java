@@ -21,6 +21,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -32,6 +33,7 @@ import com.i2rd.hibernate.util.LocationQualifier;
 
 import net.proteusframework.config.ProteusWebAppConfig;
 import net.proteusframework.core.locale.xml.StaticKeyDataConfig;
+import net.proteusframework.data.locale.TextChangeUpdatePredicate;
 
 import static com.i2rd.hibernate.util.LocationQualifier.Type.entity_location;
 import static com.i2rd.hibernate.util.LocationQualifier.Type.orm_location;
@@ -178,6 +180,18 @@ public class ProjectConfig implements ApplicationListener<ContextRefreshedEvent>
     }
 
     /**
+     * Bean.
+     *
+     * @return bean.
+     */
+    @Bean
+    @Lazy
+    public TextChangeUpdatePredicate textChangeUpdatePredicate()
+    {
+        return new TextChangeUpdatePredicate();
+    }
+
+    /**
      * Static key config.
      *
      * @return bean.
@@ -188,6 +202,7 @@ public class ProjectConfig implements ApplicationListener<ContextRefreshedEvent>
         StaticKeyDataConfig config = new StaticKeyDataConfig();
         config.addScanPackage("com.example.app");
         config.setUpdate(true);
+        config.setUpdatePredicate(textChangeUpdatePredicate());
         return config;
     }
 
