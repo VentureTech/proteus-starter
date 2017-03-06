@@ -8,6 +8,7 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 // doesn't currently work
 //apply plugin: 'aspectj-weave'
+//apply plugin: 'org.hibernate.orm'
 
 // Intellij IDEA
 apply plugin: 'idea'

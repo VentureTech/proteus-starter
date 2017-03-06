@@ -25,8 +25,6 @@ import com.example.app.support.service.AppUtil;
 import com.example.app.support.ui.Application;
 import com.example.app.support.ui.search.SearchUIHelper;
 import com.example.app.support.ui.search.ToggleDeleteNavigationColumn;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.EnumSet;
@@ -98,9 +96,8 @@ import static net.proteusframework.ui.search.PropertyConstraint.Operator.like;
     description = "Provides a UI for managing Clients",
     configurationMethod = "configure"
 )
-public class ClientManagement extends MIWTPageElementModelContainer implements SearchUIOperationHandler
+public class ClientManagement extends MIWTPageElementModelContainer implements SearchUIOperationHandler<Client>
 {
-    private static final Logger _logger = LogManager.getLogger(ClientManagement.class);
 
     private static class AddClientPropertyValueResolver extends CurrentURLPropertyValueResolver
     {
@@ -145,7 +142,7 @@ public class ClientManagement extends MIWTPageElementModelContainer implements S
     }
 
     @Override
-    public void handle(SearchUIOperationContext context)
+    public void handle(SearchUIOperationContext<Client> context)
     {
         Client val = context.getData();
         if(val != null)
@@ -175,7 +172,7 @@ public class ClientManagement extends MIWTPageElementModelContainer implements S
         super.init();
 
         SearchModelImpl searchModel = createSearchModel();
-        SearchSupplierImpl searchSupplier = createSearchSupplier();
+        SearchSupplierImpl<Client> searchSupplier = createSearchSupplier();
 
         searchSupplier.setSearchModel(searchModel);
 
@@ -186,24 +183,24 @@ public class ClientManagement extends MIWTPageElementModelContainer implements S
         addAction.setPropertyValueResolver(new AddClientPropertyValueResolver());
         addAction.setEnabled(_permissionCheck.checkCanCurrentUserModify(Event.getRequest()));
 
-        final SearchUIImpl.Options options = new SearchUIImpl.Options("Client Search")
+        final SearchUIImpl.Options<Client> options = new SearchUIImpl.Options<Client>("Client Search")
             .addEntityAction(addAction)
             .addSearchSupplier(searchSupplier)
             .setSearchOnPageLoad(true)
             .setHistory(new HistoryImpl());
 
         add(new Label(_terms.clients()).withHTMLElement(HTMLElement.h1).addClassName("page-header"));
-        add(new SearchUIImpl(options).addClassName("search-wrapper"));
+        add(new SearchUIImpl<Client>(options).addClassName("search-wrapper"));
     }
 
-    private SearchSupplierImpl createSearchSupplier()
+    private SearchSupplierImpl<Client> createSearchSupplier()
     {
-        SearchSupplierImpl ss = new SearchSupplierImpl();
+        SearchSupplierImpl<Client> ss = new SearchSupplierImpl<>();
         ss.setName(UIText.SEARCH_SUPPLIER_NAME_FMT(_terms.client()));
         ss.setDescription(UIText.SEARCH_SUPPLIER_DESCRIPTION_FMT(_terms.client()));
         ss.setSearchUIOperationHandler(this);
         ss.setBuilderSupplier(() -> {
-            QLBuilderImpl b = new QLBuilderImpl(Client.class, "client");
+            QLBuilderImpl<Client> b = new QLBuilderImpl<>(Client.class, "client");
             b.appendCriteria(Client.COMPANY_PROP, eq, _uiService.getSelectedCompany());
             b.setProjection("client");
             return b;
@@ -223,13 +220,13 @@ public class ClientManagement extends MIWTPageElementModelContainer implements S
         return sm;
     }
 
-    private static void _updateOrderBy(final QLBuilder builder, final SortOrder order, final String path)
+    private static void _updateOrderBy(final QLBuilder<?> builder, final SortOrder order, final String path)
     {
         final String dir = _formatOrder(order);
         builder.setOrderBy("nullif(%s.%s, '') %s nulls last", builder.getAlias(), path, dir);
     }
 
-    private static void _updatePhoneOrderBy(final QLBuilder builder, final SortOrder order, final String path)
+    private static void _updatePhoneOrderBy(final QLBuilder<?> builder, final SortOrder order, final String path)
     {
         final String dir = _formatOrder(order);
         builder.setOrderBy("nullif(getphoneastrimmedtext(%s.%s), '') %s nulls last", builder.getAlias(), path, dir);

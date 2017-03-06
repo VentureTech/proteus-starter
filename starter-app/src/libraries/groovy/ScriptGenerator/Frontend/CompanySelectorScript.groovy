@@ -86,8 +86,8 @@ class CompanySelectorGenerator extends AbstractScriptGenerator
             return
         _currentCompany = _uiService.getSelectedCompany()
         _companies = (_currentUser != null
-            ? _companyDAO.getActiveCompanies(_currentUser)
-            : _companyDAO.getActiveCompanies(_currentPrincipal))
+            ? _companyDAO.getActiveCompaniesReadOnly(_currentUser)
+            : _companyDAO.getActiveCompaniesReadOnly(_currentPrincipal))
         if (!_companies.contains(_currentCompany) && _currentCompany != null)
         {
             _companies.add(0, _currentCompany)

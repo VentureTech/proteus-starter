@@ -95,6 +95,14 @@ public class ProfileDAO extends DAOHelper implements Serializable
     private transient Boolean _updateMemberships;
 
     /**
+     * Instantiates a new Profile dao.
+     */
+    public ProfileDAO()
+    {
+        super();
+    }
+
+    /**
      * Returns a boolean flag on whether or not the given User can perform the given MembershipOperations on the given Profile
      *
      * @param user the User, may be null
@@ -131,7 +139,7 @@ public class ProfileDAO extends DAOHelper implements Serializable
             return false;
         final Date now = convertForPersistence(getZonedDateTimeForComparison(timeZone));
         Preconditions.checkArgument(operations.length > 0);
-        final Query query = getSession().createQuery(
+        final org.hibernate.query.Query<Number> query = getSession().createQuery(
             "SELECT COUNT(m) FROM Membership m INNER JOIN m.profile p\n"
             + " INNER JOIN m.operations  op\n"
             + " WHERE m.user = :user\n"
@@ -140,13 +148,13 @@ public class ProfileDAO extends DAOHelper implements Serializable
             + " AND (m.startDate IS NULL OR m.startDate <= :today)\n"
             + " AND (m.endDate IS NULL OR m.endDate >= :today)\n"
             + " GROUP BY m\n"
-            + "  HAVING COUNT(op) = :operationCount");
+            + "  HAVING COUNT(op) = :operationCount", Number.class);
         query.setCacheable(true).setCacheRegion(ProjectCacheRegions.PROFILE_QUERY);
         query.setParameter("user", user);
         query.setParameterList("profiles", profiles);
         query.setParameterList("operations", operations);
         query.setParameter("today", now);
-        query.setInteger("operationCount", operations.length);
+        query.setParameter("operationCount", operations.length);
         return Optional.ofNullable(((Number) query.uniqueResult()))
             .map(Number::intValue)
             .map(i -> i > 0)
@@ -171,7 +179,7 @@ public class ProfileDAO extends DAOHelper implements Serializable
         if (user == null || profileType == null) return false;
         Preconditions.checkArgument(operations.length > 0);
         final Date now = convertForPersistence(getZonedDateTimeForComparison(timeZone));
-        final Query query = getSession().createQuery(
+        final org.hibernate.query.Query<Number> query = getSession().createQuery(
             "SELECT COUNT(m) FROM Membership m INNER JOIN m.profile p INNER JOIN p.profileType pt\n"
             + " INNER JOIN m.operations  op\n"
             + " WHERE m.user = :user\n"
@@ -180,13 +188,13 @@ public class ProfileDAO extends DAOHelper implements Serializable
             + " AND (m.startDate IS NULL OR m.startDate <= :today)\n"
             + " AND (m.endDate IS NULL OR m.endDate >= :today)\n"
             + " GROUP BY m\n"
-            + "  HAVING COUNT(op) = :operationCount");
+            + "  HAVING COUNT(op) = :operationCount", Number.class);
         query.setCacheable(true).setCacheRegion(ProjectCacheRegions.PROFILE_QUERY);
         query.setParameter("user", user);
         query.setParameter("profileTypeId", profileType.getId());
         query.setParameterList("operations", operations);
         query.setParameter("today", now);
-        query.setInteger("operationCount", operations.length);
+        query.setParameter("operationCount", operations.length);
         return Optional.ofNullable(((Number) query.uniqueResult()))
             .map(Number::intValue)
             .map(i -> i > 0)
@@ -449,6 +457,7 @@ public class ProfileDAO extends DAOHelper implements Serializable
         return Optional.ofNullable((MembershipOperation) getSession().createQuery(
             "FROM MembershipOperation WHERE programmaticIdentifier = :programmaticIdentifier")
             .setParameter("programmaticIdentifier", programmaticIdentifier)
+            .setReadOnly(true)
             .setCacheable(true).setCacheRegion(ProjectCacheRegions.MEMBER_QUERY)
             .setMaxResults(1)
             .uniqueResult());
@@ -467,6 +476,7 @@ public class ProfileDAO extends DAOHelper implements Serializable
     {
         try
         {
+            HibernateUtil.getInstance().setEntityReadOnly(membershipOperation, false);
             return doInTransaction(session -> {
                 session.saveOrUpdate(membershipOperation);
                 return membershipOperation;
@@ -488,7 +498,7 @@ public class ProfileDAO extends DAOHelper implements Serializable
      *
      * @return a QLBuilder
      */
-    public QLBuilder getMembershipQLBuilder()
+    public QLBuilder<Membership> getMembershipQLBuilder()
     {
         return getMembershipQLBuilder(null);
     }
@@ -500,9 +510,9 @@ public class ProfileDAO extends DAOHelper implements Serializable
      *
      * @return a QLBuilder
      */
-    public QLBuilder getMembershipQLBuilder(@Nullable QLResolverOptions options)
+    public QLBuilder<Membership> getMembershipQLBuilder(@Nullable QLResolverOptions options)
     {
-        return new QLBuilderImpl(Membership.class, "membershipAlias")
+        return new QLBuilderImpl<>(Membership.class, "membershipAlias")
             .setQLResolverOptions(options);
     }
 
@@ -1168,8 +1178,9 @@ public class ProfileDAO extends DAOHelper implements Serializable
         final Date now = convertForPersistence(getZonedDateTimeForComparison(timeZone));
         QLResolverOptions options = new QLResolverOptions();
         options.setCacheRegion(ProjectCacheRegions.PROFILE_QUERY);
-        return ((Long) getMembershipQLBuilder(options)
+        return getMembershipQLBuilder(options)
             .setProjection("count(*)")
+                .changeRelationClass(Number.class)
             .startGroup(JunctionOperator.AND)
             .appendCriteria(Membership.PROFILE_PROP, eq, profile)
             .appendCriteria(USER_PROP, eq, user)
@@ -1184,7 +1195,7 @@ public class ProfileDAO extends DAOHelper implements Serializable
             .endGroup()
             .getQueryResolver().createQuery(getSession())
             .setCacheable(true).setCacheRegion(ProjectCacheRegions.PROFILE_QUERY)
-            .uniqueResult()) > 0;
+            .uniqueResult().longValue() > 0;
     }
 
     /**

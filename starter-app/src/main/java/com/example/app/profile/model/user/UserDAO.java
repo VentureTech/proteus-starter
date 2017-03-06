@@ -17,6 +17,7 @@ import com.example.app.support.service.FileSaver;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.FlushMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.intellij.lang.annotations.Language;
@@ -47,10 +48,12 @@ import net.proteusframework.data.filesystem.FileSystemDAO;
 import net.proteusframework.ui.search.QLBuilder;
 import net.proteusframework.ui.search.QLBuilderImpl;
 import net.proteusframework.ui.search.QLResolverOptions;
+import net.proteusframework.users.config.UsersCacheRegions;
 import net.proteusframework.users.model.AuthenticationDomain;
 import net.proteusframework.users.model.Contact;
 import net.proteusframework.users.model.Principal;
 import net.proteusframework.users.model.PrincipalStatus;
+import net.proteusframework.users.model.Role;
 import net.proteusframework.users.model.dao.AuthenticationDomainList;
 import net.proteusframework.users.model.dao.PrincipalDAO;
 
@@ -92,6 +95,14 @@ public class UserDAO extends DAOHelper implements Serializable
     @Autowired
     protected transient PrincipalDAO _principalDAO;
     private FileSaver<User> _userImageSaver;
+
+    /**
+     * Instantiates a new User dao.
+     */
+    public UserDAO()
+    {
+        super();
+    }
 
     /**
      * Delete the given user from the database
@@ -144,7 +155,7 @@ public class UserDAO extends DAOHelper implements Serializable
     @Nullable
     public User getCurrentUser()
     {
-        return getUserForPrincipal(_principalDAO.getCurrentPrincipal());
+        return getUserForPrincipalReadOnly(_principalDAO.getCurrentPrincipal());
     }
 
     /**
@@ -170,6 +181,61 @@ public class UserDAO extends DAOHelper implements Serializable
 
         return authDomains;
     }
+
+    /**
+     * Gets role by programmatic name.
+     *
+     * @param roleProgId the role prog id
+     *
+     * @return the role by programmatic name
+     */
+    public Optional<Role> getRoleByProgrammaticName(String roleProgId)
+    {
+        if (isEmptyString(roleProgId))
+        {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(
+        doInTransaction(session -> {
+            session.setHibernateFlushMode(FlushMode.MANUAL);
+            return
+            session.createQuery("FROM Role WHERE programmaticName = :pn", Role.class)
+                .setParameter("pn", roleProgId)
+                .setReadOnly(true)
+                .setCacheable(true)
+                .setCacheRegion(UsersCacheRegions.ROLE_QUERY)
+                .setMaxResults(1)
+                .uniqueResult();
+        }));
+    }
+
+
+    /**
+     * User has role test.
+     *
+     * @param user the user
+     * @param role the role
+     *
+     * @return the boolean
+     */
+    public boolean userHasRole(User user, Role role)
+    {
+        return
+        doInTransaction(session -> {
+            session.setHibernateFlushMode(FlushMode.MANUAL);
+            Number number = (Number) session.createQuery(
+                "SELECT COUNT(DISTINCT p) FROM Principal p INNER JOIN p.children r WHERE r = :role AND p = :user")
+                .setParameter("user", user.getPrincipal())
+                .setParameter("role", role)
+                .setReadOnly(true)
+                .setCacheable(true)
+                .setCacheRegion(UsersCacheRegions.ROLE_QUERY)
+                .setMaxResults(1)
+                .uniqueResult();
+            return number != null && number.longValue() > 0;
+        });
+    }
+
 
     /**
      * Gets users by email address.
@@ -218,7 +284,7 @@ public class UserDAO extends DAOHelper implements Serializable
         if (isEmptyString(emailAddressOrUsername))
             return Optional.empty();
         final Principal login = _principalDAO.getPrincipalByLogin(emailAddressOrUsername, null);
-        return Optional.ofNullable(getUserForPrincipal(login, status));
+        return Optional.ofNullable(getUserForPrincipalReadOnly(login, status));
     }
 
     /**
@@ -230,20 +296,27 @@ public class UserDAO extends DAOHelper implements Serializable
      * @return a User, or null if none exists for the given Principal
      */
     @Nullable
-    public User getUserForPrincipal(@Nullable Principal principal, @Nullable PrincipalStatus... status)
+    public User getUserForPrincipalReadOnly(@Nullable Principal principal, @Nullable PrincipalStatus... status)
     {
         if (principal == null) return null;
-        String queryString = "SELECT u FROM User u INNER JOIN u.principal p WHERE p = :principal";
+        String queryString = "SELECT u FROM User u INNER JOIN FETCH u.principal p WHERE p = :principal";
         final boolean hasStatus = status != null && status.length > 0;
         if (hasStatus)
             queryString += " AND p.status IN (:status)";
-        final Query query = getSession().createQuery(queryString);
-        query.setCacheable(true);
-        query.setCacheRegion(ProjectCacheRegions.MEMBER_QUERY);
-        query.setParameter("principal", principal);
-        if (hasStatus)
-            query.setParameterList("status", status);
-        return (User) query.uniqueResult();
+        final String queryStringFinal = queryString;
+        return
+        doInTransaction(session -> {
+            session.setHibernateFlushMode(FlushMode.MANUAL);
+            org.hibernate.query.Query<User> query = session.createQuery(queryStringFinal, User.class);
+            query.setReadOnly(true);
+            query.setCacheable(true);
+            query.setCacheRegion(ProjectCacheRegions.MEMBER_QUERY);
+            query.setParameter("principal", principal);
+            if (hasStatus)
+                query.setParameterList("status", status);
+            return query.uniqueResult();
+        });
+
     }
 
     /**

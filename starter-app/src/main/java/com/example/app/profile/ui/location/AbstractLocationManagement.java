@@ -15,7 +15,6 @@ import com.example.app.profile.model.location.Location;
 import com.example.app.profile.model.location.LocationStatus;
 import com.example.app.profile.service.SelectedCompanyTermProvider;
 import com.example.app.support.service.AppUtil;
-import com.google.common.base.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -59,7 +58,8 @@ import static net.proteusframework.core.locale.TextSources.EMPTY;
  * @since 1 /25/17
  */
 @Configurable
-public abstract class AbstractLocationManagement extends MIWTPageElementModelContainer implements SearchUIOperationHandler
+public abstract class AbstractLocationManagement extends MIWTPageElementModelContainer
+    implements SearchUIOperationHandler<Location>
 {
     @Autowired protected SelectedCompanyTermProvider _terms;
 
@@ -78,14 +78,7 @@ public abstract class AbstractLocationManagement extends MIWTPageElementModelCon
      *
      * @return the ql builder
      */
-    protected abstract QLBuilder createQLBuilder();
-
-    /**
-     * Create row extractor function.
-     *
-     * @return the function
-     */
-    protected abstract Function<Object, Object> createRowExtractor();
+    protected abstract QLBuilder<Location> createQLBuilder();
 
     /**
      * Create entity actions list.
@@ -120,16 +113,15 @@ public abstract class AbstractLocationManagement extends MIWTPageElementModelCon
     {
         super.init();
 
-        final SearchSupplierImpl searchSupplier = createSearchSupplier();
-        SearchUIImpl.Options options = new SearchUIImpl.Options("Location Index");
+        final SearchSupplierImpl<Location> searchSupplier = createSearchSupplier();
+        SearchUIImpl.Options<Location> options = new SearchUIImpl.Options<>("Location Index");
         options.setSearchOnPageLoad(true);
-        options.setRowExtractor(createRowExtractor());
 
         createEntityActions().forEach(ea -> options.getEntityActions().add(ea));
         options.addSearchSupplier(searchSupplier);
         options.setHistory(new HistoryImpl());
 
-        SearchUIImpl searchUI = new SearchUIImpl(options);
+        SearchUIImpl<Location> searchUI = new SearchUIImpl<>(options);
 
         add(new Label(getPageTitle()).withHTMLElement(HTMLElement.h1).addClassName("page-header"));
         add(of("search-wrapper location-search", searchUI));
@@ -140,11 +132,11 @@ public abstract class AbstractLocationManagement extends MIWTPageElementModelCon
      *
      * @return the search supplier
      */
-    protected SearchSupplierImpl createSearchSupplier()
+    protected SearchSupplierImpl<Location> createSearchSupplier()
     {
         SearchModelImpl searchModel = createSearchModel();
 
-        SearchSupplierImpl searchSupplier = new SearchSupplierImpl();
+        SearchSupplierImpl<Location> searchSupplier = new SearchSupplierImpl<>();
         searchSupplier.setName(SEARCH_SUPPLIER_NAME_FMT(_terms.location()));
         searchSupplier.setDescription(SEARCH_SUPPLIER_DESCRIPTION_FMT(_terms.location()));
         searchSupplier.setSearchModel(searchModel);

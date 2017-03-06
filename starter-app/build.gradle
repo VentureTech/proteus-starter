@@ -4,6 +4,7 @@ import org.gradle.authentication.http.BasicAuthentication
 buildscript {
     ext.kotlin_version = version_kotlin
     repositories {
+        mavenLocal()
         if(hasLocalRepo){ maven { url = local_repo } }
         maven {
             url repoReleaseURL
@@ -24,12 +25,13 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-noarg:$kotlin_version"
+//        classpath "org.hibernate:hibernate-gradle-plugin:${version_hibernate}"
 //        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0-M2'
     }
 
 }
 repositories {
-//    mavenLocal()
+    mavenLocal()
     if(hasLocalRepo){ maven { url = local_repo } }
     maven {
         url repoReleaseURL

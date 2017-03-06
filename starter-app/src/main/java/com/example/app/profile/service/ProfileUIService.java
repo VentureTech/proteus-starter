@@ -28,6 +28,8 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.annotation.Nonnull;
 import java.util.Optional;
 
+import com.i2rd.hibernate.util.HibernateUtil;
+
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.internet.http.Hostname;
 import net.proteusframework.internet.http.SiteContext;
@@ -66,14 +68,17 @@ public class ProfileUIService
         {
             //Get the Company from the hostname of the Request.
             Hostname hostname = _siteContext.getRequestedHostname();
-            _selectedCompany = _companyDAO.getCompanyForHostname(hostname);
+            _selectedCompany = _companyDAO.getCompanyForHostnameReadOnly(hostname);
             if(_selectedCompany == null)
                 _logger.error("Unable to determine Company for hostname: " + hostname.getName());
             return _selectedCompany;
         }
         else
         {
-            return _er.reattachIfNecessary(_selectedCompany);
+            Company company = _er.reattachIfNecessary(_selectedCompany);
+            if(company != _selectedCompany)
+                HibernateUtil.getInstance().setEntityReadOnly(company, true);
+            return company;
         }
     }
 

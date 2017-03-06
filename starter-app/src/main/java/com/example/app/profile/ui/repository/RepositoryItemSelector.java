@@ -66,7 +66,9 @@ import static net.proteusframework.core.locale.TextSources.createText;
  * @author Alan Holt (aholt@venturetech.net)
  * @since 2/18/16 11:01 AM
  */
-public abstract class RepositoryItemSelector<RI extends RepositoryItem> extends Container implements SearchUIOperationHandler
+public abstract class RepositoryItemSelector<RI extends RepositoryItem>
+    extends Container
+    implements SearchUIOperationHandler<RI>
 {
     /** Bound property fired when a repository item is selected */
     public static final String PROP_SELECTED_REPO_ITEM = "selected-repository-item";
@@ -101,7 +103,7 @@ public abstract class RepositoryItemSelector<RI extends RepositoryItem> extends 
     private List<Action> _entityActions;
     private boolean _autoSelectFirst;
     private boolean _forceSelectFirst;
-    private SearchUIImpl _searchUI;
+    private SearchUIImpl<RI> _searchUI;
 
     /**
      *   Instantiates a new instance of RepositoryItemSelector
@@ -183,7 +185,7 @@ public abstract class RepositoryItemSelector<RI extends RepositoryItem> extends 
      *   Get the builder supplier for the Search Supplier
      *   @return the builder supplier
      */
-    protected abstract Supplier<QLBuilder> getBuilderSupplier();
+    protected abstract Supplier<QLBuilder<RI>> getBuilderSupplier();
 
     /**
      *   Get the term used to describe the Repository Items being selected from
@@ -231,16 +233,6 @@ public abstract class RepositoryItemSelector<RI extends RepositoryItem> extends 
     protected Consumer<Object> getIsSelectedSetter()
     {
         return (obj) -> {};
-    }
-
-    /**
-     *   Get the row extractor to be used by this selector
-     *   By default, no logic is applied in the row extractor
-     *   @return row extractor
-     */
-    protected Function<Object, Object> getRowExtractor()
-    {
-        return (obj) -> obj;
     }
 
     /**
@@ -359,7 +351,7 @@ public abstract class RepositoryItemSelector<RI extends RepositoryItem> extends 
      *
      * @return the search ui
      */
-    protected SearchUIImpl getSearchUI()
+    protected SearchUIImpl<RI> getSearchUI()
     {
         return _searchUI;
     }
@@ -381,7 +373,7 @@ public abstract class RepositoryItemSelector<RI extends RepositoryItem> extends 
         removeAllComponents();
 
         final SearchModelImpl searchModel = new SearchModelImpl();
-        final SearchSupplierImpl searchSupplier = new SearchSupplierImpl();
+        final SearchSupplierImpl<RI> searchSupplier = new SearchSupplierImpl<>();
 
         searchModel.setName("Repository Item Selector");
         searchModel.setDisplayName(createText(SEARCH_MODEL_NAME_FMT(), getRepoItemTerm()));
@@ -411,25 +403,24 @@ public abstract class RepositoryItemSelector<RI extends RepositoryItem> extends 
         searchSupplier.setSearchModel(searchModel);
         searchSupplier.setSearchUIOperationHandler(this);
         searchSupplier.setBuilderSupplier(() -> {
-            QLBuilder builder = getBuilderSupplier().get();
+            QLBuilder<RI> builder = getBuilderSupplier().get();
             if(getForceSelectFirstAndReset() || (isAutoSelectFirst() && !getIsSelectedChecker().apply(null)))
             {
-                List<Object> results = builder.getQueryResolver().list();
+                List<RI> results = builder.getQueryResolver().list();
                 if(!results.isEmpty())
                 {
-                    RI val = (RI)getRowExtractor().apply(results.get(0));
+                    RI val = results.get(0);
                     selectRepoItem(_searchUI, val);
                 }
             }
             return builder;
         });
 
-        SearchUIImpl.Options options = createSearchUIOptions();
+        SearchUIImpl.Options<RI> options = createSearchUIOptions();
         options.getTableDisplay().setVisibleRows(8);
         options.setSearchOnPageLoad(true);
         options.addSearchSupplier(searchSupplier);
         options.setEntityActions(getEntityActions());
-        options.setRowExtractor((obj) -> getRowExtractor().apply(obj));
         if(getMode() == SHORT)
         {
             options.setSearchActions(Collections.emptyList());
@@ -447,9 +438,9 @@ public abstract class RepositoryItemSelector<RI extends RepositoryItem> extends 
      * @return the search ui options.
      */
     @Nonnull
-    protected SearchUIImpl.Options createSearchUIOptions()
+    protected SearchUIImpl.Options<RI> createSearchUIOptions()
     {
-        SearchUIImpl.Options options = new SearchUIImpl.Options("Repository Item Selector");
+        SearchUIImpl.Options<RI> options = new SearchUIImpl.Options<>("Repository Item Selector");
         options.setHistory(new HistoryImpl());
         options.setTableDisplay(new TableDisplay());
         return options;
@@ -468,7 +459,7 @@ public abstract class RepositoryItemSelector<RI extends RepositoryItem> extends 
     }
 
     @Override
-    public void handle(SearchUIOperationContext context)
+    public void handle(SearchUIOperationContext<RI> context)
     {
         RI data = context.getData();
         switch(context.getOperation())
@@ -481,7 +472,7 @@ public abstract class RepositoryItemSelector<RI extends RepositoryItem> extends 
         }
     }
 
-    private void selectRepoItem(SearchUI searchUI, @Nullable RI data)
+    private void selectRepoItem(SearchUI<RI> searchUI, @Nullable RI data)
     {
         if(validForSelection(data))
         {

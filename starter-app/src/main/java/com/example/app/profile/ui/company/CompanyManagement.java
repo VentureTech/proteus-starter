@@ -50,11 +50,11 @@ import net.proteusframework.ui.miwt.component.composite.CustomCellRenderer;
 import net.proteusframework.ui.miwt.event.Event;
 import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.ui.miwt.util.CommonColumnText;
+import net.proteusframework.ui.search.LocalizedObjectKeyQLOrderBy;
 import net.proteusframework.ui.search.NavigationLinkColumn;
 import net.proteusframework.ui.search.PropertyConstraint;
 import net.proteusframework.ui.search.QLBuilder;
 import net.proteusframework.ui.search.QLBuilderImpl;
-import net.proteusframework.ui.search.QLOrderByImpl;
 import net.proteusframework.ui.search.SearchModelImpl;
 import net.proteusframework.ui.search.SearchResultColumnImpl;
 import net.proteusframework.ui.search.SearchSupplierImpl;
@@ -95,16 +95,18 @@ import static net.proteusframework.core.locale.TextSources.EMPTY;
     name = ApplicationFunctions.Company.MANAGEMENT,
     description = "Company Management"
 )
-public class CompanyManagement extends MIWTPageElementModelContainer implements SearchUIOperationHandler
+public class CompanyManagement extends MIWTPageElementModelContainer implements SearchUIOperationHandler<Company>
 {
     private class CustomNavLinkColumn extends NavigationLinkColumn
     {
         @Override
         public TableCellRenderer getTableCellRenderer(SearchUI searchUI)
         {
-            final SearchUIOperationHandler handler = searchUI.getSearchSupplier().getSearchUIOperationHandler();
+            @SuppressWarnings("unchecked")
+            SearchUI<Company> mySearchUI = searchUI;
+            final SearchUIOperationHandler<Company> handler = mySearchUI.getSearchSupplier().getSearchUIOperationHandler();
             getDeleteAction().setActionListener(ev -> handler
-                .handle(new SearchUIOperationContext(searchUI, SearchUIOperation.delete,
+                .handle(new SearchUIOperationContext<>(mySearchUI, SearchUIOperation.delete,
                     SearchUIOperationContext.DataContext.lead_selection)));
             PushButton deleteButton = new PushButton(getDeleteAction());
             final Container con = new NavLinkColumnTableCellRenderer(deleteButton);
@@ -174,7 +176,7 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
     }
 
     @Override
-    public void handle(SearchUIOperationContext context)
+    public void handle(SearchUIOperationContext<Company> context)
     {
         Company val = context.getData();
         if(val != null)
@@ -203,12 +205,11 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
     {
         super.init();
 
-        final SearchSupplierImpl searchSupplier = getSearchSupplier();
+        final SearchSupplierImpl<Company> searchSupplier = getSearchSupplier();
         searchSupplier.setSearchUIOperationHandler(this);
         searchSupplier.setBuilderSupplier(getQLBuilderSupplier());
-        SearchUIImpl.Options options = new SearchUIImpl.Options("Company Index");
+        SearchUIImpl.Options<Company> options = new SearchUIImpl.Options<>("Company Index");
         options.setSearchOnPageLoad(true);
-        options.setRowExtractor((obj) -> ((Object[])obj)[0]);
 
         NavigationAction addAction = CommonActions.ADD.navAction();
         addAction.configure().toPage(ApplicationFunctions.Company.EDIT);
@@ -223,17 +224,17 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
         options.addSearchSupplier(searchSupplier);
         options.setHistory(new HistoryImpl());
 
-        SearchUIImpl searchUI = new SearchUIImpl(options);
+        SearchUIImpl<Company> searchUI = new SearchUIImpl<>(options);
 
         add(new Label(_terms.companies()).withHTMLElement(HTMLElement.h1).addClassName("page-header"));
         add(of("search-wrapper company-search", searchUI));
     }
 
-    private SearchSupplierImpl getSearchSupplier()
+    private SearchSupplierImpl<Company> getSearchSupplier()
     {
         SearchModelImpl searchModel = getSearchModel();
 
-        SearchSupplierImpl searchSupplier = new SearchSupplierImpl();
+        SearchSupplierImpl<Company> searchSupplier = new SearchSupplierImpl<>();
         searchSupplier.setName(SEARCH_SUPPLIER_NAME_FMT(_terms.company()));
         searchSupplier.setDescription(SEARCH_SUPPLIER_DESCRIPTION_FMT(_terms.company()));
         searchSupplier.setSearchModel(searchModel);
@@ -278,7 +279,7 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
             .withName("name")
             .withTableColumn(new PropertyColumn(Company.class, Company.NAME_COLUMN_PROP)
                 .withColumnName(CommonColumnText.NAME))
-            .withOrderBy(new QLOrderByImpl("companyName")));
+            .withOrderBy(new LocalizedObjectKeyQLOrderBy(this, Company.NAME_COLUMN_PROP)));
 
         searchModel.getResultColumns().add(new SearchResultColumnImpl()
             .withName("address")
@@ -315,14 +316,9 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
         searchModel.setDefaultSortColumn(nameColumn);
     }
 
-    private static Supplier<QLBuilder> getQLBuilderSupplier()
+    private static Supplier<QLBuilder<Company>> getQLBuilderSupplier()
     {
-        return () -> {
-            QLBuilder builder = new QLBuilderImpl(Company.class, "ce");
-            builder.setProjection("distinct " + builder.getAlias() + ", getText(" + builder.getAlias() + '.' + Company
-                .NAME_COLUMN_PROP + ") as companyName");
-            return builder;
-        };
+        return () -> new QLBuilderImpl<>(Company.class, "ce");
     }
 
     @SuppressWarnings("unused") //Used by ApplicationFunction

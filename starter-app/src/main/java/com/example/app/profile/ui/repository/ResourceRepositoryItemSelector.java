@@ -277,12 +277,12 @@ public class ResourceRepositoryItemSelector extends RepositoryItemSelector<Resou
     }
 
     @Override
-    protected Supplier<QLBuilder> getBuilderSupplier()
+    protected Supplier<QLBuilder<ResourceRepositoryItem>> getBuilderSupplier()
     {
         return () -> {
-            QLBuilderImpl builder = new QLBuilderImpl(ResourceRepositoryItem.class, "rriAlias");
+            QLBuilderImpl<ResourceRepositoryItem> builder = new QLBuilderImpl<>(ResourceRepositoryItem.class, "rriAlias");
 
-            builder.setProjection(builder.getAlias());
+            builder.setProjection(builder.getAlias()); // Prevent distinct
 
             builder.appendCriteria("rriAlias.id in(\n"
                                    + "    select rirel.repositoryItem.id\n"

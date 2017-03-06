@@ -11,6 +11,7 @@
 
 package com.example.app.ui;
 
+import com.example.app.model.DemoUserProfile;
 import com.example.app.model.DemoUserProfileDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -55,7 +56,7 @@ import static com.example.app.ui.DemoUserProfileListingLOK.COMPONENT_NAME;
 @ApplicationFunction(applicationName = APPLICATION_NAME, name = USER_PROFILE_LISTING,
     description = "Management UI For UserProfiles"
 )
-public class DemoUserProfileListing extends MIWTPageElementModelContainer implements SearchUIOperationHandler
+public class DemoUserProfileListing extends MIWTPageElementModelContainer implements SearchUIOperationHandler<DemoUserProfile>
 {
 
     /** DAO. */
@@ -89,9 +90,9 @@ public class DemoUserProfileListing extends MIWTPageElementModelContainer implem
     public void init()
     {
         super.init();
-        final SearchSupplierImpl searchSupplier = DemoUserProfileApp.createSearchSupplier();
+        final SearchSupplierImpl<DemoUserProfile> searchSupplier = DemoUserProfileApp.createSearchSupplier();
         searchSupplier.setSearchUIOperationHandler(this);
-        SearchUIImpl.Options options = new SearchUIImpl.Options("User Profile");
+        SearchUIImpl.Options<DemoUserProfile> options = new SearchUIImpl.Options<>("User Profile");
         options.setSearchOnPageLoad(true);
 
         // Add action using Navigation API
@@ -124,7 +125,7 @@ public class DemoUserProfileListing extends MIWTPageElementModelContainer implem
     }
 
     @Override
-    public void handle(SearchUIOperationContext context)
+    public void handle(SearchUIOperationContext<DemoUserProfile> context)
     {
         // Alternatively, you could use a NavigationLinkColumn instead of an ActionColumn.
         switch (context.getOperation())

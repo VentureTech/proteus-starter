@@ -11,9 +11,11 @@
 
 package com.example.app.config;
 
-import net.sf.ehcache.CacheManager;
 
 import org.springframework.stereotype.Component;
+
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import net.proteusframework.core.cache.AbstractCacheRegionsConfiguration;
 
@@ -49,25 +51,15 @@ public class ProjectCacheRegions extends AbstractCacheRegionsConfiguration
     /** Entity query cache region */
     public static final String ENTITY_QUERY = QUERY_PREFIX + '.' + ENTITY_SUFFIX;
 
-
-    /** Max TTI for data cache regions */
-    private static final int MAX_DATA_TTI = 14_400;
-    /** Max TTI for query cache regions */
-    private static final int MAX_QUERY_TTI = 14_400;
-    /** Max entries for data cache regions */
-    private static final int MAX_DATA_ENTRIES = 1000;
-    /** Max entries for query cache regions */
-    private static final int MAX_QUERY_ENTRIES = 300;
-
     @Override
-    public void applyConfiguration(CacheManager manager)
+    public void applyConfiguration(Properties props)
     {
-        setupRegion(manager, PROFILE_DATA, MAX_DATA_TTI, MAX_DATA_ENTRIES);
-        setupRegion(manager, MEMBER_DATA, MAX_DATA_TTI, MAX_DATA_ENTRIES);
-        setupRegion(manager, ENTITY_DATA, MAX_DATA_TTI, MAX_DATA_ENTRIES);
+        setupRegion(props, PROFILE_DATA, 4, TimeUnit.HOURS);
+        setupRegion(props, MEMBER_DATA, 4, TimeUnit.HOURS);
+        setupRegion(props, ENTITY_DATA, 4, TimeUnit.HOURS);
 
-        setupRegion(manager, PROFILE_QUERY, MAX_QUERY_TTI, 500);
-        setupRegion(manager, MEMBER_QUERY, MAX_QUERY_TTI, 500);
-        setupRegion(manager, ENTITY_QUERY, MAX_QUERY_TTI, MAX_QUERY_ENTRIES);
+        setupRegion(props, PROFILE_QUERY, 4, TimeUnit.HOURS);
+        setupRegion(props, MEMBER_QUERY, 4, TimeUnit.HOURS);
+        setupRegion(props, ENTITY_QUERY, 4, TimeUnit.HOURS);
     }
 }

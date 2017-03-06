@@ -13,15 +13,12 @@ package com.example.app.profile.model.user;
 
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
-import net.proteusframework.users.model.AbstractAuditableEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.envers.Audited;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -33,9 +30,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Optional;
+
+import net.proteusframework.users.model.AbstractAuditableEntity;
 
 /**
  * A User Position Entity -- It represents a position held by the user within their client.
@@ -50,7 +50,6 @@ import java.util.Optional;
 })
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = ProjectCacheRegions.ENTITY_DATA)
 @Audited
-@Access(AccessType.FIELD)
 public class UserPosition extends AbstractAuditableEntity<Integer>
 {
     /** the database table name for this entity */
@@ -60,7 +59,7 @@ public class UserPosition extends AbstractAuditableEntity<Integer>
     /** the database column name for the property: user */
     public static final String USER_COLUMN = "user_id";
     /** the property: user */
-    public static final String USER_PROP = "_user";
+    public static final String USER_PROP = "user";
     /** the database column name and property: position */
     public static final String POSITION_COLUMN_PROP = "position";
     /** the database column name and property: startDate */
@@ -74,22 +73,13 @@ public class UserPosition extends AbstractAuditableEntity<Integer>
     /** the ID generator identifier for this entity */
     private static final String GENERATOR = ProjectConfig.PROJECT_SCHEMA + ".user_position_id_seq";
     /** the user that this position belongs to */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = USER_COLUMN, nullable = false)
-    @NotNull
     private User _user;
     /** the position name */
-    @Column(name = POSITION_COLUMN_PROP, nullable = false)
-    @NotNull
     private String _position;
     /** the position start date */
-    @Column(name = START_DATE_COLUMN_PROP)
     private Date _startDate;
     /** the position end date */
-    @Column(name = END_DATE_COLUMN_PROP)
     private Date _endDate;
-    @Column(name = CURRENT_COLUMN_PROP)
-    @NotNull
     private boolean _current;
 
     @Id
@@ -97,7 +87,6 @@ public class UserPosition extends AbstractAuditableEntity<Integer>
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = GENERATOR)
     @SequenceGenerator(name = GENERATOR, sequenceName = GENERATOR)
     @Override
-    @Access(AccessType.PROPERTY)
     public Integer getId()
     {
         return super.getId();
@@ -109,6 +98,7 @@ public class UserPosition extends AbstractAuditableEntity<Integer>
      * @return the end date of this position
      */
     @Nonnull
+    @Transient
     public Optional<Date> getOptionalEndDate()
     {
         return Optional.ofNullable(getEndDate());
@@ -120,6 +110,7 @@ public class UserPosition extends AbstractAuditableEntity<Integer>
      * @return the end date of this position
      */
     @Nullable
+    @Column(name = END_DATE_COLUMN_PROP)
     public Date getEndDate()
     {
         return _endDate;
@@ -140,6 +131,7 @@ public class UserPosition extends AbstractAuditableEntity<Integer>
      *
      * @return the start date of this position
      */
+    @Transient
     @Nonnull
     public Optional<Date> getOptionalStartDate()
     {
@@ -151,6 +143,7 @@ public class UserPosition extends AbstractAuditableEntity<Integer>
      *
      * @return the start date of this position
      */
+    @Column(name = START_DATE_COLUMN_PROP)
     @Nullable
     public Date getStartDate()
     {
@@ -172,7 +165,8 @@ public class UserPosition extends AbstractAuditableEntity<Integer>
      *
      * @return the name of this position
      */
-    @Nonnull
+    @Column(name = POSITION_COLUMN_PROP, nullable = false)
+    @NotNull
     public String getPosition()
     {
         return _position;
@@ -193,7 +187,9 @@ public class UserPosition extends AbstractAuditableEntity<Integer>
      *
      * @return the User that this belongs to
      */
-    @Nonnull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = USER_COLUMN, nullable = false)
+    @NotNull
     public User getUser()
     {
         return _user;
@@ -214,6 +210,7 @@ public class UserPosition extends AbstractAuditableEntity<Integer>
      *
      * @return current flag
      */
+    @Column(name = CURRENT_COLUMN_PROP, nullable = false)
     public boolean isCurrent()
     {
         return _current;

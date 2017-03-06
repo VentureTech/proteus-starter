@@ -84,7 +84,6 @@ dependencies {
 
     // App dependencies
     compile "net.proteusframework:proteusframework-core:${version_proteus}"
-    //compile "net.proteusframework:proteusframework-testing:${version_proteus}"
     compile "net.proteusframework:proteusframework-data:${version_proteus}"
     compile "net.proteusframework:proteusframework-internet:${version_proteus}"
     compile "net.proteusframework:proteusframework-ui:${version_proteus}"
@@ -114,7 +113,6 @@ dependencies {
     compile "org.jetbrains.exposed:exposed:0.7.+"
 
     testCompile "net.proteusframework:proteusframework-core:${version_proteus}"
-    testCompile "net.proteusframework:proteusframework-testing:${version_proteus}"
     testCompile 'org.testng:testng:6.8.13'
     testCompile 'junit:junit:4.11'
     testCompile('org.uncommons:reportng:1.1.2') {

@@ -91,7 +91,7 @@ import static net.proteusframework.ui.search.SearchUIAction.search;
     }
 )
 @Configurable
-public class ResourceSelector extends Container implements SearchUIOperationHandler
+public class ResourceSelector extends Container implements SearchUIOperationHandler<ResourceRepositoryItem>
 {
     private final Repository _repository;
     private final List<Resource> _selection = new ArrayList<>();
@@ -102,7 +102,7 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
     @Autowired private EntityRetriever _er;
     @Autowired private RepositoryDAO _repositoryDAO;
 
-    private Function<SearchUIOperationContext, Void> _onSelect;
+    private Function<SearchUIOperationContext<ResourceRepositoryItem>, Void> _onSelect;
 
     /**
      * Instantiate a new instance of ResourceSelector
@@ -125,20 +125,20 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
     {
         super.init();
 
-        final SearchSupplierImpl searchSupplier = getSearchSupplier();
+        final SearchSupplierImpl<ResourceRepositoryItem> searchSupplier = getSearchSupplier();
         searchSupplier.setSearchUIOperationHandler(this);
-        SearchUIImpl.Options options = new SearchUIImpl.Options("Resource Selector");
+        SearchUIImpl.Options<ResourceRepositoryItem> options = new SearchUIImpl.Options<>("Resource Selector");
         options.setSearchOnPageLoad(true);
         options.addSearchSupplier(searchSupplier);
         options.setHistory(new HistoryImpl());
         _entityActions.forEach(options::addEntityAction);
 
-        SearchUIImpl searchUI = new SearchUIImpl(options);
+        SearchUIImpl<ResourceRepositoryItem> searchUI = new SearchUIImpl<>(options);
 
         add(of("search-wrapper resource-selector-search", searchUI));
     }
 
-    private SearchSupplierImpl getSearchSupplier()
+    private SearchSupplierImpl<ResourceRepositoryItem> getSearchSupplier()
     {
         SearchModelImpl searchModel = new SearchModelImpl();
         searchModel.setName("Resource Selector Search");
@@ -148,15 +148,13 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
 
         addResultColumns(searchModel);
 
-        SearchSupplierImpl searchSupplier = new SearchSupplierImpl();
+        SearchSupplierImpl<ResourceRepositoryItem> searchSupplier = new SearchSupplierImpl<>();
         searchSupplier.setName(SEARCH_SUPPLIER_NAME_FMT(RESOURCE()));
         searchSupplier.setDescription(SEARCH_SUPPLIER_DESCRIPTION_FMT(RESOURCE()));
         searchSupplier.setSearchModel(searchModel);
 
         searchSupplier.setBuilderSupplier(() -> {
-            QLBuilderImpl builder = new QLBuilderImpl(ResourceRepositoryItem.class, "rriAlias");
-
-            builder.setProjection(builder.getAlias());
+            QLBuilderImpl<ResourceRepositoryItem> builder = new QLBuilderImpl<>(ResourceRepositoryItem.class, "rriAlias");
 
             builder.appendCriteria("rriAlias.id in(\n"
                                    + "select rirel.repositoryItem.id\n"
@@ -329,7 +327,7 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
     }
 
     @Override
-    public void handle(SearchUIOperationContext context)
+    public void handle(SearchUIOperationContext<ResourceRepositoryItem> context)
     {
         switch (context.getOperation())
         {
@@ -346,7 +344,7 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
      *
      * @return the OnSelect listener
      */
-    public Function<SearchUIOperationContext, Void> getOnSelect()
+    public Function<SearchUIOperationContext<ResourceRepositoryItem>, Void> getOnSelect()
     {
         if (_onSelect == null)
         {
@@ -369,7 +367,7 @@ public class ResourceSelector extends Container implements SearchUIOperationHand
      *
      * @param onSelect the OnSelect listener
      */
-    public void setOnSelect(Function<SearchUIOperationContext, Void> onSelect)
+    public void setOnSelect(Function<SearchUIOperationContext<ResourceRepositoryItem>, Void> onSelect)
     {
         _onSelect = onSelect;
     }

@@ -12,7 +12,7 @@
 package com.example.app.schedule.hibernate;
 
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StringType;
 import org.hibernate.usertype.UserType;
 
@@ -65,7 +65,7 @@ public class PeriodUserType implements UserType
 
     @Nullable
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
+    public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
         throws HibernateException, SQLException
     {
 
@@ -85,7 +85,7 @@ public class PeriodUserType implements UserType
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session)
+    public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session)
         throws HibernateException, SQLException
     {
         StringType.INSTANCE.nullSafeSet(st, Optional.ofNullable(value).map(Object::toString).orElse(null), index, session);

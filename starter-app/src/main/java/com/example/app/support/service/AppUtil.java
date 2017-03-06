@@ -19,6 +19,7 @@ import com.example.app.profile.model.location.Location;
 import com.example.app.profile.model.membership.Membership;
 import com.example.app.profile.model.resource.Resource;
 import com.example.app.profile.model.user.User;
+import com.example.app.profile.model.user.UserDAO;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -131,6 +132,8 @@ public class AppUtil implements Serializable
 
     @Autowired
     private transient ClassPathResourceLibraryHelper _classPathResourceLibraryHelper;
+    @Autowired
+    private transient UserDAO _userDAO;
     @Autowired
     private transient RoleDAO _roleDAO;
     @Autowired
@@ -946,7 +949,7 @@ public class AppUtil implements Serializable
         if(StringFactory.isEmptyString(adminRoleProgId)) throw new IllegalStateException(
             "Admin Role Programmatic Id should be defined in Preferences.systemRoot "
             + "with the key: " + PREF_KEY_ADMIN_ROLE);
-        return ofNullable(_roleDAO.getRoleByProgrammaticName(adminRoleProgId))
+        return _userDAO.getRoleByProgrammaticName(adminRoleProgId)
             .orElseThrow(() -> new IllegalStateException(
                 "Admin Role could not be found for programmatic id: " + adminRoleProgId));
     }
@@ -960,8 +963,7 @@ public class AppUtil implements Serializable
      */
     public boolean userHasAdminRole(User user)
     {
-        return _principalDAO.getAllRoles(_entityRetriever.reattachIfNecessary(user).getPrincipal())
-            .contains(getAdminAccessRole());
+        return _userDAO.userHasRole(user, getAdminAccessRole());
     }
 
     /**
@@ -973,7 +975,9 @@ public class AppUtil implements Serializable
      */
     public boolean userHasAdminRole(Principal user)
     {
-        return _principalDAO.getAllRoles(_entityRetriever.reattachIfNecessary(user)).contains(getAdminAccessRole());
+        User principal = _userDAO.getUserForPrincipalReadOnly(user);
+        assert principal != null;
+        return userHasAdminRole(principal);
     }
 
     /**

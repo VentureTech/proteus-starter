@@ -15,7 +15,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import com.example.app.profile.service.resource.ResourceTypeService;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StringType;
 import org.hibernate.usertype.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +96,7 @@ public class ResourceTypeUserType implements UserType
     @Override
     @Nullable
     @SuppressFBWarnings(value = "DLS_DEAD_LOCAL_STORE", justification = "written for update later.")
-    public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
+    public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
         throws HibernateException, SQLException
     {
         int index = 0;
@@ -108,7 +108,7 @@ public class ResourceTypeUserType implements UserType
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session)
+    public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session)
         throws HibernateException, SQLException
     {
         if (value == null)

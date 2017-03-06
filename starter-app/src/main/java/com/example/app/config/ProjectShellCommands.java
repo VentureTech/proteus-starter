@@ -110,7 +110,7 @@ public class ProjectShellCommands extends AbstractShellCommands
         if (principal != null)
         {
 
-            User user = _userDAO.getUserForPrincipal(principal);
+            User user = _userDAO.getUserForPrincipalReadOnly(principal);
             if (user == null)
             {
                 user = new User();

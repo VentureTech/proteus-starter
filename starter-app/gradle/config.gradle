@@ -17,3 +17,12 @@ noArg {
     // Generates a hibernate/JPA no-arg constructor for classes with this annotation
     annotation('javax.persistence.Entity')
 }
+
+//hibernate {
+//    enhance {
+//        enableLazyInitialization = false
+//        enableDirtyTracking = true
+//        enableAssociationManagement = false
+//        enableExtendedEnhancement = false
+//    }
+//}

@@ -97,7 +97,7 @@ import static com.example.app.profile.ui.user.UserMembershipManagementLOK.*;
     }
 )
 @Configurable
-public class UserMembershipManagement extends HistoryContainer implements SearchUIOperationHandler
+public class UserMembershipManagement extends HistoryContainer implements SearchUIOperationHandler<Membership>
 {
     @Autowired
     private EntityRetriever _er;
@@ -110,7 +110,7 @@ public class UserMembershipManagement extends HistoryContainer implements Search
 
     private final User _user;
     private final List<Profile> _profiles = new ArrayList<>();
-    private SearchUIImpl _searchUI;
+    private SearchUIImpl<Membership> _searchUI;
 
     /**
      * Instantiate a new instance of UserMembershipManagement
@@ -135,16 +135,16 @@ public class UserMembershipManagement extends HistoryContainer implements Search
     {
         super.init();
 
-        final SearchSupplierImpl searchSupplier = getSearchSupplier();
+        final SearchSupplierImpl<Membership> searchSupplier = getSearchSupplier();
         searchSupplier.setSearchUIOperationHandler(this);
-        SearchUIImpl.Options options = new SearchUIImpl.Options("User Role Management");
+        SearchUIImpl.Options<Membership> options = new SearchUIImpl.Options<>("User Role Management");
         options.setSearchOnPageLoad(true);
 
         options.setSearchActions(Collections.emptyList());
         options.addSearchSupplier(searchSupplier);
         options.setHistory(getHistory());
 
-        _searchUI = new SearchUIImpl(options);
+        _searchUI = new SearchUIImpl<>(options);
 
         Menu menu = new Menu(CommonButtonText.ADD);
         menu.setTooltip(ConcatTextSource.create(CommonButtonText.ADD, MEMBERSHIP()).withSpaceSeparator());
@@ -169,7 +169,7 @@ public class UserMembershipManagement extends HistoryContainer implements Search
     }
 
     @Nonnull
-    private SearchSupplierImpl getSearchSupplier()
+    private SearchSupplierImpl<Membership> getSearchSupplier()
     {
         SearchModelImpl searchModel = new SearchModelImpl();
         searchModel.setName("User Role Search");
@@ -180,7 +180,9 @@ public class UserMembershipManagement extends HistoryContainer implements Search
             @Override
             public TableCellRenderer getTableCellRenderer(SearchUI searchUI)
             {
-                final SearchUIOperationHandler handler = searchUI.getSearchSupplier().getSearchUIOperationHandler();
+                @SuppressWarnings("unchecked")
+                SearchUI<Membership> mySearchUI = searchUI;
+                final SearchUIOperationHandler<Membership> handler = mySearchUI.getSearchSupplier().getSearchUIOperationHandler();
                 Container tcr = (Container) super.getTableCellRenderer(searchUI);
                 if (tcr == null)
                     tcr = new Container();
@@ -204,7 +206,8 @@ public class UserMembershipManagement extends HistoryContainer implements Search
                         return btcr;
                     }
                 };
-                modifyButton.addActionListener(ev -> handler.handle(new SearchUIOperationContext(searchUI, SearchUIOperation.edit,
+                modifyButton.addActionListener(ev -> handler.handle(new SearchUIOperationContext<>(mySearchUI, SearchUIOperation
+                    .edit,
                     SearchUIOperationContext.DataContext.lead_selection)));
 
                 tcr.add(modifyButton);
@@ -248,13 +251,13 @@ public class UserMembershipManagement extends HistoryContainer implements Search
                 })));
         }
 
-        SearchSupplierImpl searchSupplier = new SearchSupplierImpl();
+        SearchSupplierImpl<Membership> searchSupplier = new SearchSupplierImpl<>();
         searchSupplier.setName(UserMembershipManagementLOK.SEARCH_SUPPLIER_NAME_FMT(USER()));
         searchSupplier.setDescription(UserMembershipManagementLOK.SEARCH_SUPPLIER_DESCRIPTION_FMT());
         searchSupplier.setSearchModel(searchModel);
 
         searchSupplier.setBuilderSupplier(() -> {
-            QLBuilder builder = _profileDAO.getMembershipQLBuilder();
+            QLBuilder<Membership> builder = _profileDAO.getMembershipQLBuilder();
             builder.appendCriteria(Membership.USER_PROP, PropertyConstraint.Operator.eq, getUser())
                 .startGroup(JunctionOperator.OR)
                 .appendCriteria(builder.getAlias() + '.' + Membership.PROFILE_PROP + " in (:profiles)")
@@ -329,7 +332,7 @@ public class UserMembershipManagement extends HistoryContainer implements Search
     }
 
     @Override
-    public void handle(SearchUIOperationContext context)
+    public void handle(SearchUIOperationContext<Membership> context)
     {
         Membership mem = context.getData();
         switch (context.getOperation())

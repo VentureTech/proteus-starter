@@ -11,17 +11,14 @@
 
 package com.example.app.config;
 
+import org.hibernate.cfg.AvailableSettings;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import java.util.Properties;
-
-import com.i2rd.hibernate.I2RDNamingStrategy;
-import com.i2rd.hibernate.util.DynamicEntitySessionFactoryBuilder;
+import java.util.Map;
 
 import net.proteusframework.config.ProteusDataConfig;
 
@@ -39,29 +36,15 @@ import net.proteusframework.config.ProteusDataConfig;
 public class ProjectDataConfig extends ProteusDataConfig
 {
 
-    @Override
-    @Bean
-    @DependsOn({RESOURCE_NAME_CACHE_MANAGER})
-    @Primary
-    public DynamicEntitySessionFactoryBuilder sessionFactoryBuilder()
-    {
-        final DynamicEntitySessionFactoryBuilder lsf = new DynamicEntitySessionFactoryBuilder(dataSource());
-
-        lsf.setNamingStrategy(new I2RDNamingStrategy());
-
-        lsf.addProperties(sessionFactoryHibernateProperties());
-        sessionFactorySQLFunctions().entrySet().forEach(e -> lsf.addSqlFunction(e.getKey(), e.getValue()));
-
-        return lsf;
-    }
 
     @Bean
     @Override
-    public Properties sessionFactoryHibernateProperties()
+    public Map<String, Object> sessionFactoryHibernateProperties()
     {
-        final Properties props = super.sessionFactoryHibernateProperties();
+         Map<String, Object> props = super.sessionFactoryHibernateProperties();
 
         props.put("org.hibernate.envers.default_schema", ProjectConfig.ENVERS_SCHEMA);
+        props.put(AvailableSettings.GENERATE_STATISTICS, "true");
 
         return props;
     }

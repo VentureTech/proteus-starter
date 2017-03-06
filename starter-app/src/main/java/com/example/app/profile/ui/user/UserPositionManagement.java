@@ -72,7 +72,7 @@ import static com.example.app.support.service.AppUtil.UTC;
     }
 )
 @Configurable
-public class UserPositionManagement extends HistoryContainer implements SearchUIOperationHandler
+public class UserPositionManagement extends HistoryContainer implements SearchUIOperationHandler<UserPosition>
 {
     private static class CurrentColumnRenderer extends Checkbox
     {
@@ -96,7 +96,7 @@ public class UserPositionManagement extends HistoryContainer implements SearchUI
     private UserDAO _userDAO;
 
     private final User _user;
-    private SearchUIImpl _searchUI;
+    private SearchUIImpl<UserPosition> _searchUI;
     private boolean _canBeModified = true;
 
     /**
@@ -119,9 +119,9 @@ public class UserPositionManagement extends HistoryContainer implements SearchUI
     {
         super.init();
 
-        final SearchSupplierImpl searchSupplier = getSearchSupplier();
+        final SearchSupplierImpl<UserPosition> searchSupplier = getSearchSupplier();
         searchSupplier.setSearchUIOperationHandler(this);
-        SearchUIImpl.Options options = new SearchUIImpl.Options("User Position Management");
+        SearchUIImpl.Options<UserPosition> options = new SearchUIImpl.Options<>("User Position Management");
         options.setSearchOnPageLoad(true);
         options.setSearchActions(Collections.emptyList());
         options.addSearchSupplier(searchSupplier);
@@ -134,13 +134,13 @@ public class UserPositionManagement extends HistoryContainer implements SearchUI
             options.getEntityActions().add(addAction);
         }
 
-        _searchUI = new SearchUIImpl(options);
+        _searchUI = new SearchUIImpl<>(options);
 
         setDefaultComponent(of("search-wrapper user-position-search", _searchUI));
     }
 
     @Nonnull
-    private SearchSupplierImpl getSearchSupplier()
+    private SearchSupplierImpl<UserPosition> getSearchSupplier()
     {
         SearchModelImpl searchModel = new SearchModelImpl();
         searchModel.setName("User Position Search");
@@ -180,13 +180,13 @@ public class UserPositionManagement extends HistoryContainer implements SearchUI
             .withTableCellRenderer(new CurrentColumnRenderer()));
 
 
-        SearchSupplierImpl searchSupplier = new SearchSupplierImpl();
+        SearchSupplierImpl<UserPosition> searchSupplier = new SearchSupplierImpl<>();
         searchSupplier.setName(SEARCH_SUPPLIER_NAME_FMT(USER()));
         searchSupplier.setDescription(SEARCH_SUPPLIER_DESCRIPTION_FMT(USER()));
         searchSupplier.setSearchModel(searchModel);
 
         searchSupplier.setBuilderSupplier(() ->
-            new QLBuilderImpl(UserPosition.class, "positionAlias")
+            new QLBuilderImpl<>(UserPosition.class, "positionAlias")
                 .appendCriteria(UserPosition.USER_PROP, PropertyConstraint.Operator.eq, getUser())
                 .setOrderBy("positionAlias._" + UserPosition.START_DATE_COLUMN_PROP + " ASC"));
 
@@ -248,7 +248,7 @@ public class UserPositionManagement extends HistoryContainer implements SearchUI
     }
 
     @Override
-    public void handle(SearchUIOperationContext context)
+    public void handle(SearchUIOperationContext<UserPosition> context)
     {
         UserPosition uPos = context.getData();
         switch (context.getOperation())

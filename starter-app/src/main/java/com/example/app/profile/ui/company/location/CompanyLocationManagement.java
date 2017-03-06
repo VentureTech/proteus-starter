@@ -21,7 +21,6 @@ import com.example.app.profile.ui.location.AbstractLocationManagement;
 import com.example.app.support.ui.Application;
 import com.example.app.support.ui.search.SearchUIHelper;
 import com.example.app.support.ui.search.ToggleDeleteNavigationColumn;
-import com.google.common.base.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
@@ -42,12 +41,12 @@ import net.proteusframework.ui.miwt.event.Event;
 import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
 import net.proteusframework.ui.search.JoinedQLBuilder;
+import net.proteusframework.ui.search.LocalizedObjectKeyQLOrderBy;
 import net.proteusframework.ui.search.NavigationLinkColumn;
 import net.proteusframework.ui.search.PropertyConstraint;
 import net.proteusframework.ui.search.QLBuilder;
 import net.proteusframework.ui.search.QLBuilderImpl;
 import net.proteusframework.ui.search.QLOrderBy;
-import net.proteusframework.ui.search.QLOrderByImpl;
 import net.proteusframework.ui.search.SearchUIAction;
 import net.proteusframework.ui.search.SearchUIOperation;
 import net.proteusframework.ui.search.SearchUIOperationContext;
@@ -100,7 +99,7 @@ public class CompanyLocationManagement extends AbstractLocationManagement
     }
 
     @Override
-    public void handle(SearchUIOperationContext context)
+    public void handle(SearchUIOperationContext<Location> context)
     {
         Location val = context.getData();
         if(val != null)
@@ -125,20 +124,13 @@ public class CompanyLocationManagement extends AbstractLocationManagement
     }
 
     @Override
-    protected QLBuilder createQLBuilder()
+    protected QLBuilder<Location> createQLBuilder()
     {
-        QLBuilder builder = new QLBuilderImpl(Company.class, "c");
+        QLBuilder<Company> builder = new QLBuilderImpl<>(Company.class, "c");
         builder.appendCriteria("id", PropertyConstraint.Operator.eq, _uiService.getSelectedCompany().getId());
-        JoinedQLBuilder locationJoin = builder.createInnerJoin(Company.LOCATIONS_PROP);
-        locationJoin.setProjection("distinct " + locationJoin.getAlias() + ", "
-                                   + "getText(" + locationJoin.getAlias() + '.' + Location.NAME_COLUMN_PROP + ") as locationName");
+        JoinedQLBuilder<Location> locationJoin = builder.createInnerJoin(Company.LOCATIONS_PROP);
+        locationJoin.setProjection("distinct " + locationJoin.getAlias());
         return locationJoin;
-    }
-
-    @Override
-    protected Function<Object, Object> createRowExtractor()
-    {
-        return obj -> ((Object[])obj)[0];
     }
 
     @Override
@@ -188,7 +180,7 @@ public class CompanyLocationManagement extends AbstractLocationManagement
     @Override
     protected QLOrderBy createNameOrderBy()
     {
-        return new QLOrderByImpl("locationName");
+        return new LocalizedObjectKeyQLOrderBy(this, Location.NAME_COLUMN_PROP);
     }
 
     @Override

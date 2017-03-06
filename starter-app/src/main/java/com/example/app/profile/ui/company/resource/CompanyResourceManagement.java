@@ -126,7 +126,8 @@ import static com.example.app.support.service.AppUtil.nullFirst;
     sessionName = Application.SESSION,
     name = ApplicationFunctions.Company.Resource.MANAGEMENT,
     description = "UI for managing Company Resources")
-public class CompanyResourceManagement extends MIWTPageElementModelContainer implements SearchUIOperationHandler
+public class CompanyResourceManagement extends MIWTPageElementModelContainer
+    implements SearchUIOperationHandler<ResourceRepositoryItem>
 {
     private static class ResourceCategoryComboBoxConstraint extends ComboBoxConstraint
     {
@@ -142,7 +143,7 @@ public class CompanyResourceManagement extends MIWTPageElementModelContainer imp
             if (!shouldReturnConstraintForValue(value))
                 return;
             String paramName = builder.param("category", value);
-            JoinedQLBuilder resource = builder.createInnerJoin(ResourceRepositoryItem.RESOURCE_PROP);
+            JoinedQLBuilder<?> resource = builder.createInnerJoin(ResourceRepositoryItem.RESOURCE_PROP);
             resource.formatCriteria(
                 "%s IN (SELECT catRes FROM Resource as catRes INNER JOIN catRes.tags as cat WHERE cat = %s)",
                 resource.getAlias(), paramName);
@@ -161,7 +162,7 @@ public class CompanyResourceManagement extends MIWTPageElementModelContainer imp
 
     private User _currentUser;
     private Profile _adminProfile;
-    private SearchUIImpl _searchUI;
+    private SearchUIImpl<ResourceRepositoryItem> _searchUI;
     private Menu _addMenu;
     /**
      * Instantiate a new instance of CompanyResourceManagement
@@ -180,9 +181,9 @@ public class CompanyResourceManagement extends MIWTPageElementModelContainer imp
     {
         super.init();
 
-        final SearchSupplierImpl searchSupplier = getSearchSupplier();
+        final SearchSupplierImpl<ResourceRepositoryItem> searchSupplier = getSearchSupplier();
         searchSupplier.setSearchUIOperationHandler(this);
-        SearchUIImpl.Options options = new SearchUIImpl.Options("Resouce Repository Item Management");
+        SearchUIImpl.Options<ResourceRepositoryItem> options = new SearchUIImpl.Options<>("Resouce Repository Item Management");
         options.setSearchOnPageLoad(true);
 
         _addMenu = new Menu(CommonButtonText.ADD);
@@ -211,7 +212,7 @@ public class CompanyResourceManagement extends MIWTPageElementModelContainer imp
         options.addSearchSupplier(searchSupplier);
         options.setHistory(new HistoryImpl());
 
-        _searchUI = new SearchUIImpl(options);
+        _searchUI = new SearchUIImpl<ResourceRepositoryItem>(options);
 
         add(new net.proteusframework.ui.miwt.component.Label(UIText.RESOURCES())
             .withHTMLElement(HTMLElement.h1).addClassName("page-header"));
@@ -221,7 +222,7 @@ public class CompanyResourceManagement extends MIWTPageElementModelContainer imp
     }
 
     @Nonnull
-    private SearchSupplierImpl getSearchSupplier()
+    private SearchSupplierImpl<ResourceRepositoryItem> getSearchSupplier()
     {
         SearchModelImpl searchModel = new SearchModelImpl();
         searchModel.setName("Resource Repository Item Search");
@@ -231,7 +232,7 @@ public class CompanyResourceManagement extends MIWTPageElementModelContainer imp
 
         addResultColumns(searchModel);
 
-        SearchSupplierImpl searchSupplier = new SearchSupplierImpl();
+        SearchSupplierImpl<ResourceRepositoryItem> searchSupplier = new SearchSupplierImpl<>();
         searchSupplier.setName(SEARCH_SUPPLIER_NAME_FMT(RESOURCE(), REPOSITORY()));
         searchSupplier.setDescription(SEARCH_SUPPLIER_DESCRIPTION_FMT(RESOURCE(), REPOSITORY()));
         searchSupplier.setSearchModel(searchModel);
@@ -243,7 +244,7 @@ public class CompanyResourceManagement extends MIWTPageElementModelContainer imp
     {
         assert _searchUI.getSearchSupplier() != null : "Search Supplier was null.  This should not happen.";
         final TimeZone tz = getSession().getTimeZone();
-        ((SearchSupplierImpl) _searchUI.getSearchSupplier()).setBuilderSupplier(getBuilderSupplier());
+        ((SearchSupplierImpl<ResourceRepositoryItem>) _searchUI.getSearchSupplier()).setBuilderSupplier(getBuilderSupplier());
         if (_adminProfile != null)
         {
             if (currentUser == null)
@@ -304,9 +305,13 @@ public class CompanyResourceManagement extends MIWTPageElementModelContainer imp
             public TableCellRenderer getTableCellRenderer(SearchUI searchUI)
             {
                 getDeleteAction().setActionListener(ev ->
-                    handle(
-                        new SearchUIOperationContext(
-                            searchUI, SearchUIOperation.delete, SearchUIOperationContext.DataContext.lead_selection)));
+                {
+                    @SuppressWarnings("unchecked")
+                    SearchUIOperationContext<ResourceRepositoryItem> context =
+                        new SearchUIOperationContext<>((SearchUI<ResourceRepositoryItem>) searchUI,
+                            SearchUIOperation.delete, SearchUIOperationContext.DataContext.lead_selection);
+                    handle(context);
+                });
                 PushButton deleteButton = new PushButton(getDeleteAction());
 
                 Container con = new Container()
@@ -399,6 +404,7 @@ public class CompanyResourceManagement extends MIWTPageElementModelContainer imp
             .withTableColumn(new FixedValueColumn().withColumnName(LABEL_OWNER()))
             .withTableCellRenderer(new CustomCellRenderer(TextSources.EMPTY, input -> {
                 ResourceRepositoryItem rri = (ResourceRepositoryItem) input;
+                assert rri != null;
                 return _repositoryDAO.getOwnerOfRepositoryItem(rri).getName();
             })));
 
@@ -421,10 +427,10 @@ public class CompanyResourceManagement extends MIWTPageElementModelContainer imp
         searchModel.setDefaultSortColumn(nameColumn);
     }
 
-    private Supplier<QLBuilder> getBuilderSupplier()
+    private Supplier<QLBuilder<ResourceRepositoryItem>> getBuilderSupplier()
     {
         return () -> {
-            QLBuilder builder = new QLBuilderImpl(ResourceRepositoryItem.class, "rriAlias");
+            QLBuilder<ResourceRepositoryItem> builder = new QLBuilderImpl<>(ResourceRepositoryItem.class, "rriAlias");
 
             builder.appendCriteria("rriAlias.id in(\n"
                                    + "SELECT rirel.repositoryItem.id\n"
@@ -436,7 +442,6 @@ public class CompanyResourceManagement extends MIWTPageElementModelContainer imp
             builder.putParameter("repoOwnerId", _adminProfile.getId());
             builder.putParameter("owned", RepositoryItemRelationType.owned);
 
-            builder.setProjection(builder.getAlias());
             return builder;
         };
     }
@@ -457,7 +462,7 @@ public class CompanyResourceManagement extends MIWTPageElementModelContainer imp
     }
 
     @Override
-    public void handle(SearchUIOperationContext context)
+    public void handle(SearchUIOperationContext<ResourceRepositoryItem> context)
     {
         switch (context.getOperation())
         {

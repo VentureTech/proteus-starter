@@ -28,6 +28,7 @@ import com.example.app.support.service.AppUtil;
 import com.example.app.support.service.EntityIdCollector;
 import com.example.app.support.service.FileSaver;
 import org.apache.commons.fileupload.FileItem;
+import org.hibernate.FlushMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.jetbrains.annotations.Contract;
@@ -101,6 +102,13 @@ public class CompanyDAO extends DAOHelper implements Serializable
     private FileSaver<Company> _webImageSaver;
     private FileSaver<Company> _emailLogoSaver;
 
+    /**
+     * Instantiates a new Company dao.
+     */
+    public CompanyDAO()
+    {
+        super();
+    }
 
     /**
      * Gets image saver.
@@ -451,6 +459,8 @@ public class CompanyDAO extends DAOHelper implements Serializable
         return doInTransaction(session -> (List<Company>)session.createQuery(
             "SELECT ce FROM Company ce\n"
             + "WHERE ce.status = :active")
+            .setCacheRegion(ProjectCacheRegions.PROFILE_QUERY)
+            .setCacheable(true)
             .setParameter("active", CompanyStatus.Active)
             .list());
     }
@@ -473,9 +483,40 @@ public class CompanyDAO extends DAOHelper implements Serializable
             + "INNER JOIN ce.hostname h\n"
             + "WHERE ce.status = :active\n"
             + "AND h.domain.id IN (:domainIds)")
+            .setCacheable(true)
+            .setCacheRegion(ProjectCacheRegions.PROFILE_QUERY)
             .setParameter("active", CompanyStatus.Active)
             .setParameterList("domainIds", domainIds)
             .list());
+    }
+
+    /**
+     * Gets active companies for a user.
+     * This is all {@link User#getCompanies()} less any
+     * Companies whose hostname authentication domain is not
+     * present on the {@link User#getPrincipal()}.
+     * @param user the user.
+     * @return the active companies for the user.
+     */
+    @SuppressWarnings("unchecked")
+    public List<Company> getActiveCompaniesReadOnly(User user)
+    {
+        List<Long> domainIds = _er.reattachIfNecessary(user.getPrincipal()).getAuthenticationDomains()
+            .stream().map(AuthenticationDomain::getId).collect(new EntityIdCollector<>(() -> 0L));
+        return doInTransaction(session -> {
+            session.setHibernateFlushMode(FlushMode.MANUAL);
+            return (List<Company>) session.createQuery(
+                "SELECT DISTINCT ce FROM Company ce\n"
+                + "INNER JOIN ce.hostname h\n"
+                + "WHERE ce.status = :active\n"
+                + "AND h.domain.id IN (:domainIds)")
+                .setReadOnly(true)
+                .setCacheRegion(ProjectCacheRegions.PROFILE_QUERY)
+                .setCacheable(true)
+                .setParameter("active", CompanyStatus.Active)
+                .setParameterList("domainIds", domainIds)
+                .list();
+        });
     }
 
     /**
@@ -496,9 +537,41 @@ public class CompanyDAO extends DAOHelper implements Serializable
             + "INNER JOIN ce.hostname h\n"
             + "WHERE ce.status = :active\n"
             + "AND h.domain.id IN (:domainIds)")
+            .setCacheRegion(ProjectCacheRegions.PROFILE_QUERY)
+            .setCacheable(true)
             .setParameter("active", CompanyStatus.Active)
             .setParameterList("domainIds", domainIds)
             .list());
+    }
+
+    /**
+     * Gets active companies for a user.
+     * This is all {@link User#getCompanies()} less any
+     * Companies whose hostname authentication domain is not
+     * present on the {@link User#getPrincipal()}.
+     * @param user the user.
+     * @return the active companies for the user.
+     */
+    @SuppressWarnings("unchecked")
+    public List<Company> getActiveCompaniesReadOnly(Principal user)
+    {
+        List<Long> domainIds = _er.reattachIfNecessary(user.getAuthenticationDomains())
+            .stream().map(AuthenticationDomain::getId).collect(new EntityIdCollector<>(() -> 0L));
+        return doInTransaction(session ->
+        {
+            session.setHibernateFlushMode(FlushMode.MANUAL);
+            return session.createQuery(
+                "SELECT DISTINCT ce FROM Company ce\n"
+                + "INNER JOIN ce.hostname h\n"
+                + "WHERE ce.status = :active\n"
+                + "AND h.domain.id IN (:domainIds)")
+                .setReadOnly(true)
+                .setCacheRegion(ProjectCacheRegions.PROFILE_QUERY)
+                .setCacheable(true)
+                .setParameter("active", CompanyStatus.Active)
+                .setParameterList("domainIds", domainIds)
+                .list();
+        });
     }
 
     /**
@@ -645,12 +718,15 @@ public class CompanyDAO extends DAOHelper implements Serializable
      *
      * @return the company for the given hostname, or null, if no Company could be found.
      */
-    public Company getCompanyForHostname(Hostname hostname)
+    public Company getCompanyForHostnameReadOnly(Hostname hostname)
     {
         return doInTransaction(session -> (Company) session.createQuery(
             "SELECT ce FROM Company ce\n"
                         + "WHERE ce.hostname.id = :hostnameId")
             .setParameter("hostnameId", hostname.getId())
+            .setReadOnly(true)
+            .setCacheable(true)
+            .setCacheRegion(ProjectCacheRegions.PROFILE_QUERY)
             .setMaxResults(1)
             .uniqueResult());
     }

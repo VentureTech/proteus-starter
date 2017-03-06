@@ -153,8 +153,8 @@ public class DemoUserProfileApp extends SearchUIApp
      */
     public void setupSearch()
     {
-        SearchSupplierImpl searchSupplier = createSearchSupplier();
-        searchSupplier.setSearchUIOperationHandler(new SearchUIOperationHandlerImpl()
+        SearchSupplierImpl<DemoUserProfile> searchSupplier = createSearchSupplier();
+        searchSupplier.setSearchUIOperationHandler(new SearchUIOperationHandlerImpl<DemoUserProfile>()
         {
             @Override
             public boolean supportsOperation(SearchUIOperation operation)
@@ -174,7 +174,7 @@ public class DemoUserProfileApp extends SearchUIApp
             }
 
             @Override
-            public void handle(SearchUIOperationContext context)
+            public void handle(SearchUIOperationContext<DemoUserProfile> context)
             {
                 switch (context.getOperation())
                 {
@@ -201,12 +201,12 @@ public class DemoUserProfileApp extends SearchUIApp
                 }
             }
         });
-        Options options = new Options("User Profile");
+        Options<DemoUserProfile> options = new Options<>("User Profile");
         ReflectiveAction addAction = CommonActions.ADD.defaultAction();
         addAction.setTarget(this, "addUserProfile");
         options.addEntityAction(addAction);
         options.addSearchSupplier(searchSupplier);
-        SearchUIImpl searchUI = new SearchUIImpl(options);
+        SearchUIImpl<DemoUserProfile> searchUI = new SearchUIImpl<>(options);
         setSearchUI(searchUI);
     }
 
@@ -357,7 +357,7 @@ public class DemoUserProfileApp extends SearchUIApp
      * This supplier has the name, description, and
      * @return a new supplier.
      */
-    static SearchSupplierImpl createSearchSupplier()
+    static SearchSupplierImpl<DemoUserProfile> createSearchSupplier()
     {
         SearchModelImpl searchModel = new SearchModelImpl();
         searchModel.setName("UserProfile Search");
@@ -375,7 +375,7 @@ public class DemoUserProfileApp extends SearchUIApp
                     final String lowerCaseValue = value.toString().toLowerCase();
                     final String valueParamNameStartsWith = builder.param("valueStart", lowerCaseValue + '%');
                     final String valueParamNameContains = builder.param("valueStart", '%' + lowerCaseValue + '%');
-                    final JoinedQLBuilder nameBuilder = builder.createJoin(QLBuilder.JoinType.LEFT, "name", "name");
+                    final JoinedQLBuilder<?> nameBuilder = builder.createJoin(QLBuilder.JoinType.LEFT, "name", "name");
                     nameBuilder.startGroup(JunctionOperator.OR);
                     nameBuilder.formatCriteria("LOWER(%s.first) LIKE %s", nameBuilder.getAlias(), valueParamNameStartsWith);
                     nameBuilder.formatCriteria("LOWER(%s.last) LIKE %s", nameBuilder.getAlias(), valueParamNameStartsWith);
@@ -431,10 +431,10 @@ public class DemoUserProfileApp extends SearchUIApp
         actionColumn.setIncludeCopy(false);
         searchModel.getResultColumns().add(actionColumn);
 
-        SearchSupplierImpl searchSupplier = new SearchSupplierImpl();
+        SearchSupplierImpl<DemoUserProfile> searchSupplier = new SearchSupplierImpl<>();
         searchSupplier.setName(DemoUserProfileAppLOK.SEARCHSUPPLIER_NAME());
         searchSupplier.setDescription(DemoUserProfileAppLOK.SEARCHSUPPLIER_DESCRIPTION());
-        searchSupplier.setBuilderSupplier(() -> new QLBuilderImpl(DemoUserProfile.class, "userProfile"));
+        searchSupplier.setBuilderSupplier(() -> new QLBuilderImpl<>(DemoUserProfile.class, "userProfile"));
         searchSupplier.setSearchModel(searchModel);
 
 
@@ -471,9 +471,9 @@ public class DemoUserProfileApp extends SearchUIApp
      * Delete the requested user profiles.
      * @param context the context.
      */
-    void deleteUserProfiles(SearchUIOperationContext context)
+    void deleteUserProfiles(SearchUIOperationContext<DemoUserProfile> context)
     {
-        final SearchUI searchUI = context.getSearchUI();
+        final SearchUI<DemoUserProfile> searchUI = context.getSearchUI();
         switch (context.getDataContext())
         {
             case new_instance:
@@ -483,14 +483,14 @@ public class DemoUserProfileApp extends SearchUIApp
                     _demoUserProfileDAO.deleteUserProfile(demoUserProfile);
                 break;
             case selection:
-                final QLBuilder selectionQLBuilder = searchUI.getSelectionQLBuilder();
+                final QLBuilder<DemoUserProfile> selectionQLBuilder = searchUI.getSelectionQLBuilder();
                 if(selectionQLBuilder == null)
                     _demoUserProfileDAO.deleteUserProfiles(searchUI.getSelection());
                 else
                     _demoUserProfileDAO.deleteUserProfiles(selectionQLBuilder);
                 break;
             case search:
-                final QLBuilder currentSearchQLBuilder = searchUI.getCurrentSearchQLBuilder();
+                final QLBuilder<DemoUserProfile> currentSearchQLBuilder = searchUI.getCurrentSearchQLBuilder();
                 _demoUserProfileDAO.deleteUserProfiles(currentSearchQLBuilder);
                 _logger.warn("Not viewing all profiles that match search.");
                 break;
@@ -502,7 +502,7 @@ public class DemoUserProfileApp extends SearchUIApp
      * Edit the requested user profiles.
      * @param context the context.
      */
-    void editUserProfiles(SearchUIOperationContext context)
+    void editUserProfiles(SearchUIOperationContext<DemoUserProfile> context)
     {
         switch (context.getDataContext())
         {
@@ -529,7 +529,7 @@ public class DemoUserProfileApp extends SearchUIApp
      * View the requested user profiles.
      * @param context the context.
      */
-    void viewUserProfiles(SearchUIOperationContext context)
+    void viewUserProfiles(SearchUIOperationContext<DemoUserProfile> context)
     {
         switch (context.getDataContext())
         {

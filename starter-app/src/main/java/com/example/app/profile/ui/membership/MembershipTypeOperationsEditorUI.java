@@ -18,13 +18,11 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Nonnull;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import net.proteusframework.core.html.HTMLElement;
-import net.proteusframework.core.locale.LocaleContextSource;
 import net.proteusframework.core.locale.TextSources;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
@@ -38,9 +36,6 @@ import net.proteusframework.ui.miwt.component.Label;
 import net.proteusframework.ui.miwt.component.Table;
 import net.proteusframework.ui.miwt.component.composite.CustomCellRenderer;
 import net.proteusframework.ui.miwt.component.composite.MessageContainer;
-import net.proteusframework.ui.miwt.data.SortOrder;
-import net.proteusframework.ui.search.LocalizedObjectKeyQLOrderBy;
-import net.proteusframework.ui.search.QLBuilder;
 import net.proteusframework.ui.search.QLBuilderImpl;
 import net.proteusframework.ui.search.SearchModelImpl;
 import net.proteusframework.ui.search.SearchResultColumnImpl;
@@ -72,7 +67,7 @@ import static com.example.app.profile.ui.membership.MembershipTypeOperationsEdit
 public class MembershipTypeOperationsEditorUI extends Container
 {
     private final MembershipType _membershipType;
-    private SearchUIImpl _searchUI;
+    private SearchUIImpl<MembershipOperation> _searchUI;
     private final List<MembershipOperation> _selectedOperations = new ArrayList<>();
 
     /**
@@ -106,21 +101,15 @@ public class MembershipTypeOperationsEditorUI extends Container
 
         MessageContainer messages = new MessageContainer(35_000L);
 
-        final SearchSupplierImpl searchSupplier = getSearchSupplier();
-        SearchUIImpl.Options options = new SearchUIImpl.Options("Membership Operation Selector");
+        final SearchSupplierImpl<MembershipOperation> searchSupplier = getSearchSupplier();
+        SearchUIImpl.Options<MembershipOperation> options = new SearchUIImpl.Options<>("Membership Operation Selector");
         options.setSearchOnPageLoad(true);
 
         options.setSearchActions(Collections.emptyList());
         options.addSearchSupplier(searchSupplier);
         options.setHistory(new HistoryImpl());
-        options.setRowExtractor(input -> {
-            if(input.getClass().isArray())
-                return Array.get(input, 0);
-            else
-                return input;
-        });
 
-        _searchUI = new SearchUIImpl(options);
+        _searchUI = new SearchUIImpl<>(options);
 
         Label heading = new Label(MEMBERSHIPTYPE_UI_HEADING_FORMAT(MEMBERSHIP_TYPE(), _membershipType.getName()));
         heading.setHTMLElement(HTMLElement.h3);
@@ -129,7 +118,7 @@ public class MembershipTypeOperationsEditorUI extends Container
     }
 
     @SuppressWarnings("Duplicates")
-    private SearchSupplierImpl getSearchSupplier()
+    private SearchSupplierImpl<MembershipOperation> getSearchSupplier()
     {
         SearchModelImpl searchModel = new SearchModelImpl();
         searchModel.setName("Operations Selector");
@@ -175,32 +164,11 @@ public class MembershipTypeOperationsEditorUI extends Container
             .withTableColumn(new FixedValueColumn().withColumnName(COLUMN_ENABLED()))
             .withTableCellRenderer(actionColumnRenderer));
 
-        SearchSupplierImpl searchSupplier = new SearchSupplierImpl();
+        SearchSupplierImpl<MembershipOperation> searchSupplier = new SearchSupplierImpl<>();
         searchSupplier.setName(OPERATIONS_SEARCH_SUPPLIER_NAME_FMT(MEMBERSHIP_TYPE()));
         searchSupplier.setDescription(OPERATIONS_SEARCH_SUPPLIER_DESCRIPTION_FMT(MEMBERSHIP_TYPE()));
         searchSupplier.setSearchModel(searchModel);
-        searchSupplier.setBuilderSupplier(() -> {
-            final QLBuilderImpl qb = new QLBuilderImpl(MembershipOperation.class, "mopAlias");
-            class MyOrderBy extends LocalizedObjectKeyQLOrderBy
-            {
-                public MyOrderBy(LocaleContextSource localeContextSource,
-                    String lokProperty)
-                {
-                    super(localeContextSource, lokProperty);
-                }
-
-                @Override
-                public String getPrefixedOrderBy(QLBuilder builder)
-                {
-                    return super.getPrefixedOrderBy(builder);
-                }
-            }
-            MyOrderBy orderBy = new MyOrderBy(this, String.format("%s.%s", qb.getAlias(), MembershipOperation.NAME_COLUMN_PROP));
-
-            qb.setProjection("DISTINCT %s, %s", qb.getAlias(), orderBy.getPrefixedOrderBy(qb));
-            orderBy.updateOrderBy(qb, SortOrder.ASCENDING);
-            return qb;
-        });
+        searchSupplier.setBuilderSupplier(() -> new QLBuilderImpl<>(MembershipOperation.class, "mopAlias"));
 
         return searchSupplier;
     }
