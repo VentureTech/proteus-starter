@@ -10,6 +10,7 @@ div.window.dialog /*specificity*/ {
 	border: 1px solid $modal-content-border-color;
 	border-radius: $border-radius-lg;
 	@include box-shadow(0 3px 9px rgba(0,0,0,.5));
+	overflow: hidden;
 	// Remove focus outline from opened modal
 	outline: 0;
 
@@ -40,10 +41,23 @@ div.window.dialog /*specificity*/ {
 		padding: 0 10px;
 
 		.btn { // assuming close - only 1 button currently
-			background-color: lighten($color-app-light-grey, 35%);
+			background-color: transparent;
 			padding: 0 10px 0;
-			border-color: lighten($color-app-light-grey, 10%);
-			color: lighten($color-app-light-grey, 5%);
+			border: none;
+			color: transparent;
+			cursor: pointer;
+			width: 50px;
+			overflow: hidden;
+			text-indent: -2.25ch;
+
+			&::after {
+				@include glyphAdd('\f05c', 1.95rem, $color-grey);
+				font-weight: 300;
+			}
+
+			&:hover::after {
+				color: $color-dark-grey;
+			}
 		}
 
 	}
@@ -52,7 +66,7 @@ div.window.dialog /*specificity*/ {
 		padding: 25px;
 		border: none;
 		background-color: $color-white;
-		color: $color-app-grey;
+		color: $font-default-color;
 		bottom: initial;
 		left: initial;
 		right: initial;
@@ -84,10 +98,17 @@ div.window.dialog /*specificity*/ {
 			margin-left: 0;
 		}
 	}
+
 	.actions.top {
 		border-top: none;
 		border-bottom: 1px solid $modal-footer-border-color;
 		padding: 0 0 15px;
+	}
+
+	.actions.bottom {
+		padding-top: 1.5rem;
+		margin-top: 1.5rem;
+		border-top: 1px solid $color-lightest-grey;
 	}
 
 	&::before {
@@ -100,6 +121,10 @@ div.window.dialog /*specificity*/ {
 		position: fixed;
 		top: 0;
 		left: 0;
+	}
+
+	h1 {
+		font-size: 1.5rem;
 	}
 
 	h2 {
@@ -120,6 +145,18 @@ div.window.dialog /*specificity*/ {
 
 	}
 
+	input[type="file"] {
+		margin: 1rem 0 0;
+		padding: .5rem;
+		background: $color-lightest-grey;
+
+		+ .actions {
+			padding-top: 1.5rem;
+			margin-top: 1.5rem;
+			border-top: 1px solid $color-lightest-grey;
+		}
+	}
+
 	textarea {
 		border: 1px solid lighten($color-app-light-grey, 25%);
 		border-radius: $border-radius-sm;
@@ -134,12 +171,6 @@ div.window.dialog /*specificity*/ {
 			margin-bottom: 0;
 		}
 
-	}
-
-	input[type="text"] {
-		border: 1px solid lighten($color-app-light-grey, 25%);
-		border-radius: $border-radius-sm;
-		padding: 2px 5px;
 	}
 
 	.prop-group.time {
@@ -340,6 +371,17 @@ div.window.dialog /*specificity*/ {
 			width: 100%;
 		}
 
+	}
+
+	&.update-password-dialog {
+		.prop-body {
+			display: flex;
+			justify-content: space-between;
+
+			.prop {
+				text-align: left;
+			}
+		}
 	}
 
 }
