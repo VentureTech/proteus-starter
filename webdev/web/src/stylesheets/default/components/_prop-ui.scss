@@ -89,7 +89,9 @@ input[type=number]{
 		display: inline-block;
 		padding-right: 4px;
 	}
-	.prop > .val {
+
+	.prop > .val,
+	.prop .localizable .val {
 		display: inline-block;
 		font-weight: 300;
 	}
@@ -106,6 +108,7 @@ input[type=number]{
 	.prop {
 		margin-bottom: 1rem;
 		padding: 5px;
+		font-weight: 300;
 		> .actions, .selected-link {
 			.btn {
 				@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-xs, $btn-border-radius-sm);
@@ -140,8 +143,17 @@ input[type=number]{
 
 	.address > span {
 		display: block;
+		font-weight: 300;
 	}
 
+}
+
+.location-view {
+	.prop-body {
+		background-color: $color-white;
+		border: 1px solid $color-lighter-grey;
+		padding: 1rem;
+	}
 }
 
 .prop-editor {
