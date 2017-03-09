@@ -21,6 +21,7 @@ import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
 import net.proteusframework.ui.miwt.component.composite.editor.URIEditor;
+import net.proteusframework.ui.miwt.component.template.FileSystemTemplateDataSource;
 
 /**
  * {@link ResourceValueEditor} for a {@link URIResource}
@@ -43,7 +44,7 @@ class URIResourceEditor extends ResourceValueEditor<URIResource>
      */
     public URIResourceEditor(@Nullable URIResource value)
     {
-        super(URIResource.class, value);
+        super(URIResource.class, value, new FileSystemTemplateDataSource("profile/resource/URIResourceEditor.xml"));
     }
 
     @Override
@@ -52,8 +53,14 @@ class URIResourceEditor extends ResourceValueEditor<URIResource>
         super.init();
 
         addEditorForProperty(
-            () -> new URIEditor(URIResourceEditorLOK.LINK_LABEL(), null),
+            () ->{
+                URIEditor editor = new URIEditor(URIResourceEditorLOK.LINK_LABEL(), null);
+                editor.setComponentName("uri-property");
+                return editor;
+            },
             URIResource::getUri,
             URIResource::setUri);
+
+        applyTemplate();
     }
 }

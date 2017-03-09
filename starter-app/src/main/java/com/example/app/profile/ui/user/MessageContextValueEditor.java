@@ -25,7 +25,9 @@ import net.proteusframework.core.locale.annotation.L10N;
 import net.proteusframework.ui.miwt.component.composite.CustomCellRenderer;
 import net.proteusframework.ui.miwt.component.composite.editor.ComboBoxValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.CompositeValueEditor;
+import net.proteusframework.ui.miwt.component.composite.editor.TemplateCompositeValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
+import net.proteusframework.ui.miwt.component.template.FileSystemTemplateDataSource;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
 
 import static com.example.app.profile.ui.user.MessageContextValueEditorLOK.*;
@@ -45,7 +47,7 @@ import static com.example.app.profile.ui.user.MessageContextValueEditorLOK.*;
         @I18N(symbol = "Label Message Content", l10n = @L10N("Message Content"))
     }
 )
-public class MessageContextValueEditor extends CompositeValueEditor<MessageContext>
+public class MessageContextValueEditor extends TemplateCompositeValueEditor<MessageContext>
 {
 
     private final ContactMethod _initialContactMethod;
@@ -60,7 +62,8 @@ public class MessageContextValueEditor extends CompositeValueEditor<MessageConte
      */
     public MessageContextValueEditor(@Nonnull ContactMethod initialContactMethod)
     {
-        super(MessageContext.class);
+        super(MessageContext.class,
+            new FileSystemTemplateDataSource("profile/user/MessageContextValueEditor.xml"));
 
         _initialContactMethod = initialContactMethod;
         setNewInstanceSupplier(() -> new MessageContext(_initialContactMethod));
@@ -82,11 +85,13 @@ public class MessageContextValueEditor extends CompositeValueEditor<MessageConte
             _emailSubjectEditor.setVisible(selected == ContactMethod.Email);
             _messageContentEditor.getValueComponent().setRichEditor(selected == ContactMethod.Email);
         });
+        _contactMethodSelector.setComponentName("contact-method-selector");
 
         _emailSubjectEditor = new TextEditor(LABEL_SUBJECT(), null);
         _emailSubjectEditor.setRequiredValueValidator();
         _emailSubjectEditor.setDisplayWidth(50);
         _emailSubjectEditor.setVisible(_initialContactMethod == ContactMethod.Email);
+        _emailSubjectEditor.setComponentName("message-subject");
 
         _messageContentEditor = new TextEditor(LABEL_MESSAGE_CONTENT(), null);
         _messageContentEditor.getValueComponent().setRichEditorConfig(CustomCKEditorConfig.minimal.toString());
@@ -94,9 +99,12 @@ public class MessageContextValueEditor extends CompositeValueEditor<MessageConte
         _messageContentEditor.getValueComponent().setDisplayHeight(5);
         _messageContentEditor.getValueComponent().setDisplayWidth(50);
         _messageContentEditor.setRequiredValueValidator();
+        _messageContentEditor.setComponentName("message-content");
 
         addEditorForProperty(() -> _contactMethodSelector, "contactMethod");
         addEditorForProperty(() -> _emailSubjectEditor, "emailSubject");
         addEditorForProperty(() -> _messageContentEditor, "content");
+        
+        applyTemplate();
     }
 }

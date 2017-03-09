@@ -48,7 +48,7 @@ public class LocationValueViewer extends TemplateContainer
      */
     public LocationValueViewer()
     {
-        super(new FileSystemTemplateDataSource("LocationValueViewer.xml"));
+        super(new FileSystemTemplateDataSource("profile/location/LocationValueViewer.xml"));
         setComponentName("LocationValueViewer");
     }
 

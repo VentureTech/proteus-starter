@@ -14,7 +14,6 @@ package com.example.app.profile.ui.client;
 import com.example.app.profile.model.client.Client;
 import com.example.app.profile.model.client.ClientStatus;
 import com.example.app.profile.model.location.Location;
-import com.example.app.profile.service.SelectedCompanyTermProvider;
 import com.example.app.support.service.AppUtil;
 import com.example.app.support.ui.CommonEditorFields;
 import com.example.app.support.ui.contact.AddressValueEditor;
@@ -41,10 +40,12 @@ import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
 import net.proteusframework.core.notification.Notifiable;
 import net.proteusframework.data.filesystem.http.FileEntityFileItem;
+import net.proteusframework.ui.miwt.component.Container;
 import net.proteusframework.ui.miwt.component.Label;
 import net.proteusframework.ui.miwt.component.composite.CustomCellRenderer;
 import net.proteusframework.ui.miwt.component.composite.editor.ComboBoxValueEditor;
-import net.proteusframework.ui.miwt.component.composite.editor.CompositeValueEditor;
+import net.proteusframework.ui.miwt.component.composite.editor.TemplateCompositeValueEditor;
+import net.proteusframework.ui.miwt.component.template.FileSystemTemplateDataSource;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
 import net.proteusframework.ui.miwt.util.CommonColumnText;
 
@@ -64,10 +65,9 @@ import static com.example.app.profile.ui.client.ClientValueEditorLOK.LABEL_LOGO;
     }
 )
 @Configurable
-public class ClientValueEditor extends CompositeValueEditor<Client>
+public class ClientValueEditor extends TemplateCompositeValueEditor<Client>
 {
     @Autowired private ClientConfig _clientConfig;
-    @Autowired private SelectedCompanyTermProvider _terms;
     @Autowired private AppUtil _appUtil;
 
     private VTCropPictureEditor _logoEditor;
@@ -77,9 +77,10 @@ public class ClientValueEditor extends CompositeValueEditor<Client>
      */
     public ClientValueEditor()
     {
-        super(Client.class);
+        super(Client.class, new FileSystemTemplateDataSource("profile/client/ClientValueEditor.xml"));
 
         addClassName("client-value-editor");
+        setComponentName("client-editor");
     }
 
     @Override
@@ -89,6 +90,7 @@ public class ClientValueEditor extends CompositeValueEditor<Client>
         _logoEditor = new VTCropPictureEditor(logoConfig);
         _logoEditor.addClassName("client-logo");
         _logoEditor.setDefaultResource(_appUtil.getDefaultResourceImage());
+        _logoEditor.setComponentName("client-logo");
 
         super.init();
 
@@ -96,26 +98,42 @@ public class ClientValueEditor extends CompositeValueEditor<Client>
         logoInstructions.addClassName(CSSUtil.CSS_INSTRUCTIONS);
         logoInstructions.withHTMLElement(HTMLElement.div);
 
-        add(of("prop logo", LABEL_LOGO(), _logoEditor, logoInstructions));
+        add(Container.of("prop logo", LABEL_LOGO(), _logoEditor, logoInstructions).withComponentName("client-logo-con"));
         CommonEditorFields.addNameEditor(this);
         addEditorForProperty(() -> {
-            final CompositeValueEditor<Location> editor = new CompositeValueEditor<>(Location.class);
-
+            final TemplateCompositeValueEditor<Location> editor = new TemplateCompositeValueEditor<Location>(Location.class,
+                new FileSystemTemplateDataSource("profile/client/ClientLocationValueEditor.xml"))
+            {
+                @Override
+                public void init()
+                {
+                    super.init();
+                    applyTemplate();
+                }
+            };
+            editor.addClassName("client-location").addClassName("location").addClassName("prop-group");
+            editor.setComponentName("client-location");
             editor.addEditorForProperty(() -> {
                 AddressValueEditorConfig cfg = new AddressValueEditorConfig();
-                return new AddressValueEditor(cfg);
+                AddressValueEditor addressValueEditor = new AddressValueEditor(cfg);
+                addressValueEditor.setComponentName("address-property");
+                return addressValueEditor;
             }, Location.ADDRESS_PROP);
 
             editor.addEditorForProperty(() -> {
                 EmailAddressValueEditorConfig cfg = new EmailAddressValueEditorConfig();
                 cfg.setRequiredFields();
-                return new EmailAddressValueEditor(cfg);
+                EmailAddressValueEditor emailAddressValueEditor = new EmailAddressValueEditor(cfg);
+                emailAddressValueEditor.setComponentName("email-property");
+                return emailAddressValueEditor;
             }, Location.EMAIL_ADDRESS_PROP);
 
             editor.addEditorForProperty(() -> {
                 PhoneNumberValueEditorConfig cfg = new PhoneNumberValueEditorConfig();
                 cfg.setRequiredFields();
-                return new PhoneNumberValueEditor(cfg);
+                PhoneNumberValueEditor phoneNumberValueEditor = new PhoneNumberValueEditor(cfg);
+                phoneNumberValueEditor.setComponentName("phone-property");
+                return phoneNumberValueEditor;
             }, Location.PHONE_NUMBER_PROP);
 
             return editor;
@@ -126,8 +144,11 @@ public class ClientValueEditor extends CompositeValueEditor<Client>
                 AppUtil.nullFirst(EnumSet.allOf(ClientStatus.class)), ClientStatus.PENDING);
             editor.setCellRenderer(new CustomCellRenderer(CommonButtonText.PLEASE_SELECT));
             editor.setRequiredValueValidator();
+            editor.setComponentName("status-property");
             return editor;
         }, Client.STATUS_PROP);
+
+        applyTemplate();
     }
 
     @Override

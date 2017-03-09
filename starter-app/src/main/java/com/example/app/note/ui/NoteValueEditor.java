@@ -17,8 +17,9 @@ import com.example.app.note.model.Note;
 import net.proteusframework.core.locale.TextSource;
 import net.proteusframework.core.locale.TextSources;
 import net.proteusframework.ui.miwt.component.Field;
-import net.proteusframework.ui.miwt.component.composite.editor.CompositeValueEditor;
+import net.proteusframework.ui.miwt.component.composite.editor.TemplateCompositeValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
+import net.proteusframework.ui.miwt.component.template.FileSystemTemplateDataSource;
 
 /**
  * ValueEditor for Note
@@ -26,7 +27,7 @@ import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
  * @author Alan Holt (aholt@venturetech.net)
  * @since 2/4/16 9:36 AM
  */
-public class NoteValueEditor extends CompositeValueEditor<Note>
+public class NoteValueEditor extends TemplateCompositeValueEditor<Note>
 {
     private boolean _treatEmptyAsValid;
     private TextSource _label;
@@ -36,7 +37,7 @@ public class NoteValueEditor extends CompositeValueEditor<Note>
      */
     public NoteValueEditor()
     {
-        super(Note.class);
+        super(Note.class, new FileSystemTemplateDataSource("note/NoteValueEditor.xml"));
 
         addClassName("note-val-editor");
     }
@@ -57,10 +58,11 @@ public class NoteValueEditor extends CompositeValueEditor<Note>
                 editor.setRequiredValueValidator();
             }
             editor.addClassName("note-content");
+            editor.setComponentName("note-content");
             return editor;
         }, Note::getContent, Note::setContent);
 
-
+        applyTemplate();
     }
 
     /**

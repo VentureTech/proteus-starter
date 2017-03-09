@@ -189,7 +189,7 @@ public class CommonEditorFields
             textEditor.setRequiredValueValidator();
             textEditor.addClassName("name");
             textEditor.getValueComponent().setMaxChars(255);
-            textEditor.setComponentName("property-name");
+            textEditor.setComponentName("name");
             return textEditor;
         }, "name");
     }
@@ -228,12 +228,13 @@ public class CommonEditorFields
      *
      * @param compositeValueEditor the composite value editor.
      */
-    public static void addRepositoryItemSourceEditor(CompositeValueEditor<? extends RepositoryItem> compositeValueEditor)
+    public static void addRepositoryItemSourceEditor(TemplateCompositeValueEditor<? extends RepositoryItem> compositeValueEditor)
     {
         compositeValueEditor.addEditorForProperty(() -> {
             TextEditor editor = new TextEditor(ResourceText.LABEL_SOURCE(), null);
             editor.setRequiredValueValidator();
             editor.addClassName("source");
+            editor.setComponentName("source");
             return editor;
         }, RepositoryItem.SOURCE_COLUMN_PROP);
     }
@@ -243,7 +244,7 @@ public class CommonEditorFields
      *
      * @param compositeValueEditor the composite value editor
      */
-    public static void addRepositoryItemStatusEditor(CompositeValueEditor<? extends RepositoryItem> compositeValueEditor)
+    public static void addRepositoryItemStatusEditor(TemplateCompositeValueEditor<? extends RepositoryItem> compositeValueEditor)
     {
         addRepositoryItemStatusEditor(compositeValueEditor, null);
     }
@@ -254,7 +255,7 @@ public class CommonEditorFields
      * @param compositeValueEditor the composite value editor
      * @param comparator comparator for
      */
-    public static void addRepositoryItemStatusEditor(CompositeValueEditor<? extends RepositoryItem> compositeValueEditor,
+    public static void addRepositoryItemStatusEditor(TemplateCompositeValueEditor<? extends RepositoryItem> compositeValueEditor,
         @Nullable Comparator<RepositoryItemStatus> comparator)
     {
         compositeValueEditor.addEditorForProperty(() -> {
@@ -264,6 +265,7 @@ public class CommonEditorFields
             editor.setCellRenderer(new CustomCellRenderer(CommonButtonText.PLEASE_SELECT));
             editor.setRequiredValueValidator();
             editor.addClassName("status");
+            editor.setComponentName("status");
             return editor;
         }, RepositoryItem.STATUS_COLUMN_PROP);
     }

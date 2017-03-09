@@ -24,6 +24,7 @@ import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
 import net.proteusframework.data.filesystem.FileEntity;
 import net.proteusframework.ui.miwt.component.composite.editor.ValueChooserDisplayHandler;
+import net.proteusframework.ui.miwt.component.template.FileSystemTemplateDataSource;
 
 /**
  * {@link ResourceValueEditor} for a {@link FileEntityResource}
@@ -50,11 +51,13 @@ public class FileEntityResourceEditor extends ResourceValueEditor<FileEntityReso
      */
     public FileEntityResourceEditor(@Nullable FileEntityResource value)
     {
-        super(FileEntityResource.class, value);
+        super(FileEntityResource.class, value,
+            new FileSystemTemplateDataSource("profile/resource/FileEntityResourceEditor.xml"));
         _fileField.setShowImage(true);
         _fileField.getDisplay().setDisplayClass("file-field");
         _fileField.addClassName("prop file");
         _fileField.setLabel(FileEntityResourceEditorLOK.FILE_LABEL());
+        _fileField.setComponentName("file-property");
     }
 
     @Override
@@ -70,6 +73,8 @@ public class FileEntityResourceEditor extends ResourceValueEditor<FileEntityReso
 
         addEditorForProperty(() -> _fileField,
             FileEntityResource.FILE_PROP);
+
+        applyTemplate();
     }
 
     /**

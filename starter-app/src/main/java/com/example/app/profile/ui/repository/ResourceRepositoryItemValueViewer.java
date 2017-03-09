@@ -37,6 +37,8 @@ import net.proteusframework.ui.miwt.component.Component;
 import net.proteusframework.ui.miwt.component.Container;
 import net.proteusframework.ui.miwt.component.ImageComponent;
 import net.proteusframework.ui.miwt.component.Label;
+import net.proteusframework.ui.miwt.component.template.FileSystemTemplateDataSource;
+import net.proteusframework.ui.miwt.component.template.TemplateContainer;
 
 import static net.proteusframework.core.StringFactory.isEmptyString;
 import static net.proteusframework.core.locale.TextSources.createText;
@@ -48,7 +50,7 @@ import static net.proteusframework.core.locale.TextSources.createText;
  * @since 12/11/15 3:21 PM
  */
 @Configurable
-public class ResourceRepositoryItemValueViewer extends Container
+public class ResourceRepositoryItemValueViewer extends TemplateContainer
 {
     /** Logger. */
     private static final Logger _logger = LogManager.getLogger(ResourceRepositoryItemValueViewer.class);
@@ -63,10 +65,11 @@ public class ResourceRepositoryItemValueViewer extends Container
      */
     public ResourceRepositoryItemValueViewer(@Nonnull ResourceRepositoryItem value)
     {
-        super();
+        super(new FileSystemTemplateDataSource("profile/repository/ResourceValueViewer.xml"));
         Preconditions.checkNotNull(value, "ResourceRepositoryItem was null.  This should not happen.");
         _value = value;
         addClassName("resource-viewer");
+        setComponentName("resource-viewer");
     }
 
     @Override
@@ -99,7 +102,7 @@ public class ResourceRepositoryItemValueViewer extends Container
         }
         resourceImage.setImageCaching(false);
         resourceImage.addClassName("resource-image");
-        final Container resourceImageField = of("resource-icon", resourceImage);
+        final Container resourceImageField = Container.of("resource-icon", resourceImage);
 
         final Label nameLabel = new Label(resource.getName());
         nameLabel.withHTMLElement(HTMLElement.h1);
@@ -119,17 +122,18 @@ public class ResourceRepositoryItemValueViewer extends Container
         final Label authorLabel = new Label(createText(resource.getAuthor()));
         authorLabel.withHTMLElement(HTMLElement.span);
         List<Component> citeList = new ArrayList<>();
-        if (hasSource) citeList.add(of("resource-source", ResourceText.LABEL_SOURCE(), sourceLabel));
-        if (hasAuthor) citeList.add(of("resource-author", ResourceText.LABEL_AUTHOR(), authorLabel));
+        if (hasSource) citeList.add(Container.of("resource-source", ResourceText.LABEL_SOURCE(), sourceLabel));
+        if (hasAuthor) citeList.add(Container.of("resource-author", ResourceText.LABEL_AUTHOR(), authorLabel));
 
-        add(nameLabel);
+        add(nameLabel.withComponentName("name"));
         if (resource.getImage() != null)
-            add(resourceImageField);
+            add(resourceImageField.withComponentName("resource-image"));
         if (!lc.isError(lc.getLocalizedText(resource.getDescription())))
-            add(descriptionLabel);
-        add(content);
+            add(descriptionLabel.withComponentName("description"));
+        add(content.withComponentName("resource-content"));
         if (!citeList.isEmpty())
-            add(of("resource-cite", citeList.toArray(new Component[citeList.size()])));
+            add(Container.of("resource-cite", citeList.toArray(new Component[citeList.size()]))
+                .withComponentName("resource-cite"));
     }
 
     /**

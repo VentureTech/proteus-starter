@@ -43,11 +43,12 @@ import net.proteusframework.ui.miwt.component.Component;
 import net.proteusframework.ui.miwt.component.ComponentImpl;
 import net.proteusframework.ui.miwt.component.composite.CustomCellRenderer;
 import net.proteusframework.ui.miwt.component.composite.editor.ComboBoxValueEditor;
-import net.proteusframework.ui.miwt.component.composite.editor.CompositeValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.ListComponentValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.LocalizedTextEditor;
+import net.proteusframework.ui.miwt.component.composite.editor.TemplateCompositeValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.ValueEditor;
+import net.proteusframework.ui.miwt.component.template.TemplateDataSource;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
 
 import static com.example.app.profile.model.resource.Resource.*;
@@ -79,7 +80,7 @@ import static com.i2rd.miwt.util.CSSUtil.CSS_INSTRUCTIONS;
             l10n = @L10N("Resource image is optional.  Optimal size for image is {0} x {1}."))
     }
 )
-public abstract class ResourceValueEditor<R extends Resource> extends CompositeValueEditor<R>
+public abstract class ResourceValueEditor<R extends Resource> extends TemplateCompositeValueEditor<R>
 {
     /** The classname for the Resource Picture Editor */
     public static final String PICTURE_EDITOR_CLASS_NAME = "resource-picture";
@@ -96,10 +97,11 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
      *
      * @param clazz the class of the resource for this editor
      * @param value the resource for this editor
+     * @param dataSource the template data source.
      */
-    public ResourceValueEditor(Class<R> clazz, @Nullable R value)
+    public ResourceValueEditor(Class<R> clazz, @Nullable R value, TemplateDataSource dataSource)
     {
-        super(clazz);
+        super(clazz, dataSource);
         setInternalValue(value);
         addClassName("resource");
     }
@@ -171,6 +173,7 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
             .map(FileEntityFileItem::new)
             .orElse(null));
         _resourcePictureEditor.setDefaultResource(_appUtil.getDefaultResourceImage());
+        _resourcePictureEditor.setComponentName("resource-picture-editor");
 
         super.init();
 
@@ -181,6 +184,7 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
         pictureInstructions.addClassName(CSS_INSTRUCTIONS);
         pictureInstructions.addClassName(PICTURE_EDITOR_CLASS_NAME);
         pictureInstructions.withHTMLElement(HTMLElement.div);
+        pictureInstructions.setComponentName("resource-picture-instructions");
 
         add(_resourcePictureEditor);
         add(pictureInstructions);
@@ -188,6 +192,7 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
         addEditorForProperty(() -> {
             LocalizedTextEditor e = new LocalizedTextEditor(LABEL_NAME(), null);
             e.setRequiredValueValidator();
+            e.setComponentName("name");
             return e;
         }, NAME_COLUMN_PROP);
 
@@ -195,12 +200,14 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
             LocalizedTextEditor editor = new LocalizedTextEditor(LABEL_DESCRIPTION(), null);
             editor.setDisplayHeight(5);
             editor.setDisplayWidth(40);
+            editor.setComponentName("description");
             return editor;
         }, DESCRIPTION_COLUMN_PROP);
 
         addEditorForProperty(() -> {
             TextEditor e = new TextEditor(LABEL_AUTHOR(), null);
             e.setRequiredValueValidator();
+            e.setComponentName("author-property");
             return e;
         }, AUTHOR_COLUMN_PROP);
 
@@ -209,6 +216,7 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
                 LABEL_IS_VISIBLE(), ResourceVisibility.getValuesForCombo(), null);
             e.setRequiredValueValidator();
             e.setCellRenderer(new CustomCellRenderer(CommonButtonText.PLEASE_SELECT));
+            e.setComponentName("visibility-property");
             return e;
         }, VISIBILITY_COLUMN_PROP);
 
@@ -223,6 +231,7 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
                 PLACEHOLDER_TAGS().getText(getLocaleContext()).toString());
             final ComponentImpl impl = (ComponentImpl) valueComponent;
             impl.setWidth(new PixelMetric(200));
+            editor.setComponentName("tags-property");
             return editor;
         }, TAGS_PROP);
 
@@ -234,6 +243,7 @@ public abstract class ResourceValueEditor<R extends Resource> extends CompositeV
                  rlsTypes, null);
             e.setCellRenderer(new CustomCellRenderer(CommonButtonText.PLEASE_SELECT));
             e.setRequiredValueValidator();
+            e.setComponentName("category-property");
             return e;
         }, CATEGORY_PROP);
 

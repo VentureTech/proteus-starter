@@ -30,6 +30,8 @@ import net.proteusframework.ui.miwt.component.Container;
 import net.proteusframework.ui.miwt.component.composite.editor.ComboBoxValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.LocalizedTextEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
+import net.proteusframework.ui.miwt.component.template.FileSystemTemplateDataSource;
+import net.proteusframework.ui.miwt.component.template.TemplateContainer;
 import net.proteusframework.ui.miwt.util.CommonColumnText;
 import net.proteusframework.ui.miwt.util.RendererEditorState;
 
@@ -40,7 +42,7 @@ import net.proteusframework.ui.miwt.util.RendererEditorState;
  * @since 1/13/17
  */
 @Configurable
-public class ClientValueViewer extends Container
+public class ClientValueViewer extends TemplateContainer
 {
     private static final String PROP_PAGE_REFRESHED = "page.refreshed";
 
@@ -55,8 +57,10 @@ public class ClientValueViewer extends Container
      */
     public ClientValueViewer(@Nonnull Client client)
     {
-        super();
+        super(new FileSystemTemplateDataSource("profile/client/ClientValueViewer.xml"));
         _client = client;
+        addClassName("client-value-viewer");
+        setComponentName("client-value-viewer");
     }
 
     /**
@@ -92,24 +96,29 @@ public class ClientValueViewer extends Container
         final LocalizedTextEditor nameField = new LocalizedTextEditor(ClientLOK.CLIENT_NAME_PROP_NAME(), client.getName());
         nameField.setEditable(false);
         nameField.addClassName("name");
+        nameField.setComponentName("name");
 
         final AddressCellRenderer addressRenderer = new AddressCellRenderer(primaryLoc.getAddress());
         final Container addressFields = Container.of("prop address", ClientLOK.ADDRESS_PROP_NAME(), addressRenderer);
+        addressFields.withComponentName("address");
 
         String email = primaryLoc.getEmailAddress() == null ? "" : primaryLoc.getEmailAddress().getEmail();
         final TextEditor emailField = new TextEditor(ClientLOK.EMAIL_ADDRESS_PROP_NAME(), email);
         emailField.setEditable(false);
         emailField.addClassName("email");
+        emailField.setComponentName("email");
 
         String phone = primaryLoc.getPhoneNumber() == null ? "" : primaryLoc.getPhoneNumber().toExternalForm();
         final TextEditor phoneField = new TextEditor(ClientLOK.PHONE_PROP_NAME(), phone);
         phoneField.setEditable(false);
         phoneField.addClassName("phone");
+        phoneField.setComponentName("phone");
 
         final ComboBoxValueEditor<ClientStatus> statusField = new ComboBoxValueEditor<>(CommonColumnText.STATUS,
             EnumSet.allOf(ClientStatus.class), client.getStatus());
         statusField.setEditable(false);
         statusField.addClassName("status");
+        statusField.setComponentName("status");
 
         add(nameField);
         add(addressFields);
@@ -133,5 +142,7 @@ public class ClientValueViewer extends Container
             phoneField.setValue(refreshPhone);
             statusField.setValue(refresh.getStatus());
         });
+
+        applyTemplate();
     }
 }

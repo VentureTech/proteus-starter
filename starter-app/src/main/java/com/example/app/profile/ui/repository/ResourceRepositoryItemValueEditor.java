@@ -39,7 +39,9 @@ import net.proteusframework.data.filesystem.FileSystemDAO;
 import net.proteusframework.data.filesystem.FileSystemEntity;
 import net.proteusframework.ui.miwt.MIWTException;
 import net.proteusframework.ui.miwt.component.composite.editor.CompositeValueEditor;
+import net.proteusframework.ui.miwt.component.composite.editor.TemplateCompositeValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.ValueEditor;
+import net.proteusframework.ui.miwt.component.template.FileSystemTemplateDataSource;
 
 /**
  * {@link CompositeValueEditor} for {@link ResourceRepositoryItem}
@@ -48,7 +50,7 @@ import net.proteusframework.ui.miwt.component.composite.editor.ValueEditor;
  * @since 12/11/15 10:11 AM
  */
 @Configurable
-public class ResourceRepositoryItemValueEditor extends CompositeValueEditor<ResourceRepositoryItem>
+public class ResourceRepositoryItemValueEditor extends TemplateCompositeValueEditor<ResourceRepositoryItem>
 {
 
     @Autowired
@@ -68,7 +70,8 @@ public class ResourceRepositoryItemValueEditor extends CompositeValueEditor<Reso
      */
     public ResourceRepositoryItemValueEditor()
     {
-        super(ResourceRepositoryItem.class);
+        super(ResourceRepositoryItem.class,
+            new FileSystemTemplateDataSource("profile/repository/ResourceValueEditor.xml"));
     }
 
     /**
@@ -140,6 +143,7 @@ public class ResourceRepositoryItemValueEditor extends CompositeValueEditor<Reso
             {
                 _resourceValueEditor = editor;
             }
+            _resourceValueEditor.withComponentName("resource-value-editor");
         }
         return _resourceValueEditor;
     }
@@ -228,5 +232,7 @@ public class ResourceRepositoryItemValueEditor extends CompositeValueEditor<Reso
 
         CommonEditorFields.addRepositoryItemSourceEditor(this);
         CommonEditorFields.addRepositoryItemStatusEditor(this);
+
+        applyTemplate();
     }
 }

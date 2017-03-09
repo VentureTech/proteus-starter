@@ -28,6 +28,8 @@ import net.proteusframework.ui.miwt.Image;
 import net.proteusframework.ui.miwt.component.Container;
 import net.proteusframework.ui.miwt.component.ImageComponent;
 import net.proteusframework.ui.miwt.component.Label;
+import net.proteusframework.ui.miwt.component.template.FileSystemTemplateDataSource;
+import net.proteusframework.ui.miwt.component.template.TemplateContainer;
 import net.proteusframework.ui.miwt.util.CommonColumnText;
 import net.proteusframework.users.model.Address;
 import net.proteusframework.users.model.PhoneNumber;
@@ -42,7 +44,7 @@ import static net.proteusframework.core.locale.TextSources.createText;
  * @since 6/28/16 10:15 AM
  */
 @Configurable
-public class CompanyValueViewer extends Container
+public class CompanyValueViewer extends TemplateContainer
 {
     @Autowired
     private EntityRetriever _er;
@@ -54,14 +56,22 @@ public class CompanyValueViewer extends Container
     /**
      * Instantiates a new company value viewer.
      * <br>
-     *     NOTE: Must set Company with {@link #setCompany(Company)} before initialization.
+     * NOTE: Must set Company with {@link #setCompany(Company)} before initialization.
      */
     public CompanyValueViewer()
     {
-        super();
+        super(new FileSystemTemplateDataSource("profile/company/CompanyValueViewer.xml"));
+        addClassName("company-value-viewer");
+        setComponentName("company-value-viewer");
     }
 
-    /**
+    @Override
+    public void init()
+    {
+        super.init();
+
+        setupUI();
+    }    /**
      * Gets company.
      *
      * @return the company
@@ -81,19 +91,13 @@ public class CompanyValueViewer extends Container
     {
         _company = company;
 
-        if(isInited())
+        if (isInited())
         {
             setupUI();
         }
     }
 
-    @Override
-    public void init()
-    {
-        super.init();
 
-        setupUI();
-    }
 
     private void setupUI()
     {
@@ -108,39 +112,45 @@ public class CompanyValueViewer extends Container
             : new Image(_labsUtil.getDefaultResourceImage()));
         emailLogoField.setWidth(new PixelMetric(200));
 
-        final Container nameCon = of("prop name", CommonColumnText.NAME, new Label(getCompany().getName()));
+        final Container nameCon = Container.of("prop name", CommonColumnText.NAME, new Label(getCompany().getName()));
 
         final Address address = Optional.ofNullable(getCompany().getPrimaryLocation())
             .map(Location::getAddress)
             .orElse(new Address());
-        final Container addressCon = of("prop address", CommonColumnText.ADDRESS, new AddressCellRenderer(address));
+        final Container addressCon = Container.of("prop address", CommonColumnText.ADDRESS, new AddressCellRenderer(address));
 
         final String phoneNumber = Optional.ofNullable(getCompany().getPrimaryLocation())
             .map(Location::getPhoneNumber)
             .map(PhoneNumber::toExternalForm).orElse("");
-        final Container phoneCon = of("prop phone", CommonColumnText.PHONE, new Label(createText(phoneNumber)));
+        final Container phoneCon = Container.of("prop phone", CommonColumnText.PHONE, new Label(createText(phoneNumber)));
 
-        final Container websiteCon = of("prop website", LABEL_WEBSITE(), new Label(createText(getCompany().getWebsiteLink())));
+        final Container websiteCon =
+            Container.of("prop website", LABEL_WEBSITE(), new Label(createText(getCompany().getWebsiteLink())));
 
-        final Container hostnameCon = of("prop hostname", LABEL_SUB_DOMAIN(),
+        final Container hostnameCon = Container.of("prop hostname", LABEL_SUB_DOMAIN(),
             new Label(createText(getCompany().getHostname().getName())));
 
-        final Container linkedInCon = of("prop linkedIn", LABEL_LINKEDIN(), new Label(createText(getCompany().getLinkedInLink())));
+        final Container linkedInCon =
+            Container.of("prop linkedIn", LABEL_LINKEDIN(), new Label(createText(getCompany().getLinkedInLink())));
 
-        final Container twitterCon = of("prop twitter", LABEL_TWITTER(), new Label(createText(getCompany().getTwitterLink())));
+        final Container twitterCon =
+            Container.of("prop twitter", LABEL_TWITTER(), new Label(createText(getCompany().getTwitterLink())));
 
-        final Container facebookCon = of("prop facebook", LABEL_FACEBOOK(), new Label(createText(getCompany().getFacebookLink())));
+        final Container facebookCon =
+            Container.of("prop facebook", LABEL_FACEBOOK(), new Label(createText(getCompany().getFacebookLink())));
 
-        add(of("logos",
-            of("prop", LABEL_WEB_LOGO(), logoField),
-            of("prop", LABEL_EMAIL_LOGO(), emailLogoField)));
-        add(nameCon);
-        add(addressCon);
-        add(phoneCon);
-        add(websiteCon);
-        add(hostnameCon);
-        add(linkedInCon);
-        add(twitterCon);
-        add(facebookCon);
+        add(Container.of("logos",
+            Container.of("prop", LABEL_WEB_LOGO(), logoField),
+            Container.of("prop", LABEL_EMAIL_LOGO(), emailLogoField)).withComponentName("logos"));
+        add(nameCon.withComponentName("name"));
+        add(addressCon.withComponentName("address"));
+        add(phoneCon.withComponentName("phone"));
+        add(websiteCon.withComponentName("website"));
+        add(hostnameCon.withComponentName("hostname"));
+        add(linkedInCon.withComponentName("linkedin"));
+        add(twitterCon.withComponentName("twitter"));
+        add(facebookCon.withComponentName("facebook"));
+
+        applyTemplate();
     }
 }

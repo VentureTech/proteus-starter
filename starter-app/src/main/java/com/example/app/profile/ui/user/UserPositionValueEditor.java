@@ -31,7 +31,9 @@ import net.proteusframework.ui.miwt.MIWTException;
 import net.proteusframework.ui.miwt.component.composite.editor.BooleanValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.CalendarValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.CompositeValueEditor;
+import net.proteusframework.ui.miwt.component.composite.editor.TemplateCompositeValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
+import net.proteusframework.ui.miwt.component.template.FileSystemTemplateDataSource;
 import net.proteusframework.ui.miwt.data.RelativeOffsetRange;
 
 import static com.example.app.profile.ui.user.UserPositionValueEditorLOK.*;
@@ -53,7 +55,7 @@ import static com.example.app.profile.ui.user.UserPositionValueEditorLOK.*;
     }
 )
 @Configurable
-public class UserPositionValueEditor extends CompositeValueEditor<UserPosition>
+public class UserPositionValueEditor extends TemplateCompositeValueEditor<UserPosition>
 {
     @Autowired
     private EntityRetriever _er;
@@ -67,7 +69,8 @@ public class UserPositionValueEditor extends CompositeValueEditor<UserPosition>
      */
     public UserPositionValueEditor(@Nonnull User user)
     {
-        super(UserPosition.class);
+        super(UserPosition.class,
+            new FileSystemTemplateDataSource("profile/user/UserPositionValueEditor.xml"));
 
         Preconditions.checkNotNull(user, "Given User was null, this should not happen.");
 
@@ -108,6 +111,7 @@ public class UserPositionValueEditor extends CompositeValueEditor<UserPosition>
         addEditorForProperty(() -> {
             TextEditor editor = new TextEditor(LABEL_TITLE(), null);
             editor.setRequiredValueValidator();
+            editor.setComponentName("position");
             return editor;
         }, UserPosition.POSITION_COLUMN_PROP);
 
@@ -115,6 +119,7 @@ public class UserPositionValueEditor extends CompositeValueEditor<UserPosition>
             final CalendarValueEditor editor = new CalendarValueEditor(LABEL_START_DATE(), null, new RelativeOffsetRange(70));
             editor.getValueComponent().setFixedTimeZone(AppUtil.UTC);
             editor.getValueComponent().setIncludeTime(false);
+            editor.setComponentName("start-date");
             return editor;
         }, UserPosition.START_DATE_COLUMN_PROP);
 
@@ -122,9 +127,16 @@ public class UserPositionValueEditor extends CompositeValueEditor<UserPosition>
             final CalendarValueEditor editor = new CalendarValueEditor(LABEL_END_DATE(), null, new RelativeOffsetRange(70));
             editor.getValueComponent().setFixedTimeZone(AppUtil.UTC);
             editor.getValueComponent().setIncludeTime(false);
+            editor.setComponentName("end-date");
             return editor;
         }, UserPosition.END_DATE_COLUMN_PROP);
 
-        addEditorForProperty(() -> new BooleanValueEditor(LABEL_CURRENT(), null), UserPosition.CURRENT_COLUMN_PROP);
+        addEditorForProperty(() -> {
+            BooleanValueEditor editor = new BooleanValueEditor(LABEL_CURRENT(), null);
+            editor.setComponentName("current-position");
+            return editor;
+        }, UserPosition.CURRENT_COLUMN_PROP);
+
+        applyTemplate();
     }
 }

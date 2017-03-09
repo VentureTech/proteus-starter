@@ -230,6 +230,7 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
             _showRemoveButton = showRemoveButton;
         }
     }
+
     protected final BooleanValueEditor _repeat = new BooleanValueEditor(LABEL_REPEAT(), null);
     protected final ComboBoxValueEditor<Integer> _repeatEvery = new ComboBoxValueEditor<>(LABEL_REPEAT_EVERY(),
         asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30),
@@ -276,6 +277,21 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
             default:
                 throw new AssertionError("Invalid DayOfWeek: " + dow);
         }
+    }
+
+    static void setDayMonthValue(Recur recur, @Nullable Object value)
+    {
+        if (value == null)
+            return;
+        if (Objects.equals(LAST_DAY_OF_MONTH(), value))
+        {
+            recur.getMonthDayList().add(-1);
+        }
+        else if (value instanceof Number)
+        {
+            final Number number = (Number) value;
+            recur.getMonthDayList().add(number.intValue());
+        }
     }    static DayOfWeek getDayOfWeek(WeekDay wd)
     {
         switch (wd.getDay())
@@ -299,26 +315,13 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
         }
     }
 
-    static void setDayMonthValue(Recur recur, @Nullable Object value)
-    {
-        if (value == null)
-            return;
-        if (Objects.equals(LAST_DAY_OF_MONTH(), value))
-        {
-            recur.getMonthDayList().add(-1);
-        }
-        else if (value instanceof Number)
-        {
-            final Number number = (Number) value;
-            recur.getMonthDayList().add(number.intValue());
-        }
-    }
-
     /**
      * Instantiates a new editor.
      */
     public ICal4jScheduleEditor()
     {
+        //super(new FileSystemTemplateDataSource("ICal4jScheduleEditor.xml"));
+        setComponentName("ICal4jScheduleEditor");
         _yearMonthDoWWoM.setVisible(false);
         _yearMonthDoWWoM.setShowRemoveButton(false);
         _yearMonthDoWWoM.getOnWeek().setValue(WeekOfMonth.FIRST);
@@ -337,6 +340,17 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
     public boolean isEditable()
     {
         return true;
+    }
+
+    @Override
+    public void setEditable(boolean b)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    private void addDayOfTheMonthToRecurCommit(Recur recur)
+    {
+        setDayMonthValue(recur, _dayOfMonth.commitValue());
     }    /**
      * Get boolean flag.  If true, this schedule editor will not display the "repeat" editor, and it will always be set to repeat
      *
@@ -347,10 +361,17 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
         return _isAlwaysRepeat;
     }
 
-    @Override
-    public void setEditable(boolean b)
+    private void addDayOfTheMonthToRecurUIValue(Level logErrorLevel, Recur recur)
     {
-        throw new UnsupportedOperationException();
+        setDayMonthValue(recur, _dayOfMonth.getUIValue(logErrorLevel));
+    }
+
+    private void addOnDayToRecurCommit(Recur recur)
+    {
+        final Collection<DayOfWeek> uiValue = _onDay.commitValue();
+        assert uiValue != null;
+        final WeekDayList dayList = recur.getDayList();
+        uiValue.stream().map(ICal4jScheduleEditor::getWeekDay).forEach(dayList::add);
     }    /**
      * Set boolean flag.  If true, this schedule editor will not display the "repeat" editor, and it will always be set to repeat
      *
@@ -361,14 +382,80 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
         _isAlwaysRepeat = isAlwaysRepeat;
     }
 
-    private void addDayOfTheMonthToRecurCommit(Recur recur)
+    private void addOnDayToRecurForUIValue(Level logErrorLevel, Recur recur)
     {
-        setDayMonthValue(recur, _dayOfMonth.commitValue());
+        final Collection<DayOfWeek> uiValue = _onDay.getUIValue(logErrorLevel);
+        assert uiValue != null;
+        final WeekDayList dayList = recur.getDayList();
+        uiValue.stream().map(ICal4jScheduleEditor::getWeekDay).forEach(dayList::add);
     }
 
-    private void addDayOfTheMonthToRecurUIValue(Level logErrorLevel, Recur recur)
+    private void commitMonth(Recur recur)
     {
-        setDayMonthValue(recur, _dayOfMonth.getUIValue(logErrorLevel));
+        final LocalizedObjectKey uiValue = _monthBy.commitValue();
+        assert uiValue != null;
+        final String symbolicName = uiValue.getSymbolicName();
+        switch (symbolicName)
+        {
+            case BY_DAY_OF_MONTH_SYMBOL:
+            {
+                addDayOfTheMonthToRecurCommit(recur);
+                break;
+            }
+            case BY_DAY_OF_WEEK_SYMBOL:
+            {
+                addOnDayToRecurCommit(recur);
+                break;
+            }
+            case BY_DAY_OF_WEEK_AND_WEEK_NO_SYMBOL:
+            {
+                for (DoWWoM tmp : _dayWeekEditors)
+                {
+                    final DayOfWeek dow = tmp.getOnDay().commitValue();
+                    if (dow == null) continue;
+
+                    final WeekDay weekDay = getWeekDay(dow);
+                    final WeekOfMonth weekOfMonth = tmp.getOnWeek().commitValue();
+                    assert weekOfMonth != null;
+                    recur.getDayList().add(new WeekDay(weekDay, weekOfMonth.getOffset()));
+                }
+                break;
+            }
+            default:
+                _logger.error("Unhandled by: " + symbolicName);
+                break;
+        }
+    }
+
+    private void commitYear(Recur recur)
+    {
+        final Month month = _month.commitValue();
+        if (month != null)
+            recur.getMonthList().add(month.getValue());
+        final LocalizedObjectKey by = _yearBy.commitValue();
+        assert by != null;
+        final String symbolicName = by.getSymbolicName();
+        switch (symbolicName)
+        {
+            case BY_DAY_OF_MONTH_SYMBOL:
+            {
+                addDayOfTheMonthToRecurCommit(recur);
+                break;
+            }
+            case BY_DAY_OF_WEEK_AND_WEEK_NO_SYMBOL:
+            {
+                final DayOfWeek dow = _yearMonthDoWWoM.getOnDay().commitValue();
+                assert dow != null;
+                final WeekDay weekDay = getWeekDay(dow);
+                final WeekOfMonth weekOfMonth = _yearMonthDoWWoM.getOnWeek().commitValue();
+                assert weekOfMonth != null;
+                recur.getDayList().add(new WeekDay(weekDay, weekOfMonth.getOffset()));
+                break;
+            }
+            default:
+                _logger.error("Unhandled by: " + symbolicName);
+                break;
+        }
     }    @Nullable
     @Override
     public ICal4jSchedule commitValue() throws MIWTException
@@ -419,25 +506,81 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
         return ical4jSchedule;
     }
 
-    private void addOnDayToRecurCommit(Recur recur)
+    private void getUIValueMonth(Level logErrorLevel, Recur recur)
     {
-        final Collection<DayOfWeek> uiValue = _onDay.commitValue();
+        final LocalizedObjectKey uiValue = _monthBy.getUIValue(logErrorLevel);
         assert uiValue != null;
-        final WeekDayList dayList = recur.getDayList();
-        uiValue.stream().map(ICal4jScheduleEditor::getWeekDay).forEach(dayList::add);
+        final String symbolicName = uiValue.getSymbolicName();
+        switch (symbolicName)
+        {
+            case BY_DAY_OF_MONTH_SYMBOL:
+            {
+                addDayOfTheMonthToRecurUIValue(logErrorLevel, recur);
+                break;
+            }
+            case BY_DAY_OF_WEEK_SYMBOL:
+            {
+                addOnDayToRecurForUIValue(logErrorLevel, recur);
+                break;
+            }
+            case BY_DAY_OF_WEEK_AND_WEEK_NO_SYMBOL:
+            {
+                for (DoWWoM tmp : _dayWeekEditors)
+                {
+                    final DayOfWeek dow = tmp.getOnDay().getUIValue(logErrorLevel);
+                    if (dow == null) continue;
+
+                    final WeekDay weekDay = getWeekDay(dow);
+                    final WeekOfMonth weekOfMonth = tmp.getOnWeek().getUIValue(logErrorLevel);
+                    assert weekOfMonth != null;
+                    recur.getDayList().add(new WeekDay(weekDay, weekOfMonth.getOffset()));
+                }
+                break;
+            }
+            default:
+                _logger.error("Unhandled by: " + symbolicName);
+                break;
+        }
+    }
+
+    private void getUIValueYear(Level logErrorLevel, Recur recur)
+    {
+        final Month month = _month.getUIValue(logErrorLevel);
+        if (month != null)
+            recur.getMonthList().add(month.getValue());
+        final LocalizedObjectKey by = _yearBy.getUIValue();
+        assert by != null;
+        final String symbolicName = by.getSymbolicName();
+        switch (symbolicName)
+        {
+            case BY_DAY_OF_MONTH_SYMBOL:
+            {
+                addDayOfTheMonthToRecurUIValue(logErrorLevel, recur);
+                break;
+            }
+            case BY_DAY_OF_WEEK_AND_WEEK_NO_SYMBOL:
+            {
+                final DayOfWeek dow = _yearMonthDoWWoM.getOnDay().getUIValue(logErrorLevel);
+                assert dow != null;
+                final WeekDay weekDay = getWeekDay(dow);
+                final WeekOfMonth weekOfMonth = _yearMonthDoWWoM.getOnWeek().getUIValue(logErrorLevel);
+                assert weekOfMonth != null;
+                recur.getDayList().add(new WeekDay(weekDay, weekOfMonth.getOffset()));
+                break;
+            }
+            default:
+                _logger.error("Unhandled by: " + symbolicName);
+                break;
+        }
     }    @Override
     public ModificationState getModificationState()
     {
         return AppUtil.getModificationStateForComponent(this);
     }
 
-    private void addOnDayToRecurForUIValue(Level logErrorLevel, Recur recur)
-    {
-        final Collection<DayOfWeek> uiValue = _onDay.getUIValue(logErrorLevel);
-        assert uiValue != null;
-        final WeekDayList dayList = recur.getDayList();
-        uiValue.stream().map(ICal4jScheduleEditor::getWeekDay).forEach(dayList::add);
-    }    @Nullable
+
+
+    @Nullable
     @Override
     public ICal4jSchedule getUIValue(Level logErrorLevel)
     {
@@ -486,78 +629,18 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
         return ical4jSchedule;
     }
 
-    private void commitMonth(Recur recur)
-    {
-        final LocalizedObjectKey uiValue = _monthBy.commitValue();
-        assert uiValue != null;
-        final String symbolicName = uiValue.getSymbolicName();
-        switch (symbolicName)
-        {
-            case BY_DAY_OF_MONTH_SYMBOL:
-            {
-                addDayOfTheMonthToRecurCommit(recur);
-                break;
-            }
-            case BY_DAY_OF_WEEK_SYMBOL:
-            {
-                addOnDayToRecurCommit(recur);
-                break;
-            }
-            case BY_DAY_OF_WEEK_AND_WEEK_NO_SYMBOL:
-            {
-                for (DoWWoM tmp : _dayWeekEditors)
-                {
-                    final DayOfWeek dow = tmp.getOnDay().commitValue();
-                    if (dow == null) continue;
 
-                    final WeekDay weekDay = getWeekDay(dow);
-                    final WeekOfMonth weekOfMonth = tmp.getOnWeek().commitValue();
-                    assert weekOfMonth != null;
-                    recur.getDayList().add(new WeekDay(weekDay, weekOfMonth.getOffset()));
-                }
-                break;
-            }
-            default:
-                _logger.error("Unhandled by: " + symbolicName);
-                break;
-        }
-    }    @Nullable
+
+    @Nullable
     @Override
     public ICal4jSchedule getValue()
     {
         return _value;
     }
 
-    private void commitYear(Recur recur)
-    {
-        final Month month = _month.commitValue();
-        if (month != null)
-            recur.getMonthList().add(month.getValue());
-        final LocalizedObjectKey by = _yearBy.commitValue();
-        assert by != null;
-        final String symbolicName = by.getSymbolicName();
-        switch (symbolicName)
-        {
-            case BY_DAY_OF_MONTH_SYMBOL:
-            {
-                addDayOfTheMonthToRecurCommit(recur);
-                break;
-            }
-            case BY_DAY_OF_WEEK_AND_WEEK_NO_SYMBOL:
-            {
-                final DayOfWeek dow = _yearMonthDoWWoM.getOnDay().commitValue();
-                assert dow != null;
-                final WeekDay weekDay = getWeekDay(dow);
-                final WeekOfMonth weekOfMonth = _yearMonthDoWWoM.getOnWeek().commitValue();
-                assert weekOfMonth != null;
-                recur.getDayList().add(new WeekDay(weekDay, weekOfMonth.getOffset()));
-                break;
-            }
-            default:
-                _logger.error("Unhandled by: " + symbolicName);
-                break;
-        }
-    }    @SuppressFBWarnings(value = "UC_USELESS_OBJECT_STACK", justification = "Avoid ConcurrentModificationException")
+
+
+    @SuppressFBWarnings(value = "UC_USELESS_OBJECT_STACK", justification = "Avoid ConcurrentModificationException")
     @Override
     public void setValue(@Nullable ICal4jSchedule value)
     {
@@ -674,47 +757,15 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
         }
     }
 
-    private void getUIValueMonth(Level logErrorLevel, Recur recur)
-    {
-        final LocalizedObjectKey uiValue = _monthBy.getUIValue(logErrorLevel);
-        assert uiValue != null;
-        final String symbolicName = uiValue.getSymbolicName();
-        switch (symbolicName)
-        {
-            case BY_DAY_OF_MONTH_SYMBOL:
-            {
-                addDayOfTheMonthToRecurUIValue(logErrorLevel, recur);
-                break;
-            }
-            case BY_DAY_OF_WEEK_SYMBOL:
-            {
-                addOnDayToRecurForUIValue(logErrorLevel, recur);
-                break;
-            }
-            case BY_DAY_OF_WEEK_AND_WEEK_NO_SYMBOL:
-            {
-                for (DoWWoM tmp : _dayWeekEditors)
-                {
-                    final DayOfWeek dow = tmp.getOnDay().getUIValue(logErrorLevel);
-                    if (dow == null) continue;
 
-                    final WeekDay weekDay = getWeekDay(dow);
-                    final WeekOfMonth weekOfMonth = tmp.getOnWeek().getUIValue(logErrorLevel);
-                    assert weekOfMonth != null;
-                    recur.getDayList().add(new WeekDay(weekDay, weekOfMonth.getOffset()));
-                }
-                break;
-            }
-            default:
-                _logger.error("Unhandled by: " + symbolicName);
-                break;
-        }
-    }    @Override
+
+    @Override
     public void init()
     {
         super.init();
 
-        final ListSelectionListener nextIntervalListener = ev -> {
+        final ListSelectionListener nextIntervalListener = ev ->
+        {
             final NextInterval uiValue = _next.getUIValue();
             assert uiValue != null;
             _repeatEveryUnit.setText(createText(uiValue.name() + 's'));
@@ -779,7 +830,8 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
         _next.getValueComponent().watch().getSelectionModel().addListSelectionListener(nextIntervalListener);
         _repeat.setSelected(true);
         _repeat.setVisible(!isAlwaysRepeat());
-        final ListSelectionListener monthByListener = ev -> {
+        final ListSelectionListener monthByListener = ev ->
+        {
             final LocalizedObjectKey by = _monthBy.getUIValue();
             assert by != null;
             final String symbolicName = by.getSymbolicName();
@@ -816,7 +868,8 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
             }
         };
         _monthBy.getValueComponent().watch().getSelectionModel().addListSelectionListener(monthByListener);
-        _yearBy.getValueComponent().watch().getSelectionModel().addListSelectionListener(ev -> {
+        _yearBy.getValueComponent().watch().getSelectionModel().addListSelectionListener(ev ->
+        {
             final LocalizedObjectKey by = _yearBy.getUIValue();
             assert by != null;
             final String symbolicName = by.getSymbolicName();
@@ -844,16 +897,16 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
             }
         });
 
-        add(_repeat);
-        add(of(_repeatEvery, _repeatEveryUnit));
-        add(_next);
-        add(_month);
-        add(_monthBy);
-        add(_yearBy);
-        add(_yearMonthDoWWoM);
-        add(_dowWoMWrapper);
-        add(_dayOfMonth);
-        add(_onDay);
+        add(_repeat.withComponentName("repeat-toggle"));
+        add(Container.of(_repeatEvery, _repeatEveryUnit).withComponentName("repeat-value"));
+        add(_next.withComponentName("frequency"));
+        add(_month.withComponentName("month"));
+        add(_monthBy.withComponentName("month-division"));
+        add(_yearBy.withComponentName("year-division"));
+        add(_yearMonthDoWWoM.withComponentName("year-dow-wom"));
+        add(_dowWoMWrapper.withComponentName("wrapper-dow-wom"));
+        add(_dayOfMonth.withComponentName("day-of-month"));
+        add(_onDay.withComponentName("day-of-week"));
 
         initDoWWoMWrapper();
 
@@ -872,13 +925,15 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
         _repeat.setHTMLElement(HTMLElement.span);
         _repeatEveryUnit.addClassName("repeat-unit");
 
-        _month.setCellRenderer(new CustomCellRenderer(EMPTY, input -> {
+        _month.setCellRenderer(new CustomCellRenderer(EMPTY, input ->
+        {
             Month m = (Month) input;
             assert m != null;
             return createText(m.getDisplayName(TextStyle.FULL, getLocaleContext().getLocale()));
         }));
 
-        _repeat.watch().addItemListener(ev -> {
+        _repeat.watch().addItemListener(ev ->
+        {
             final boolean selected = ev.getStateChange() == ItemEventType.STATE_SELECTED;
             if (!selected)
             {
@@ -914,38 +969,12 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
                 return Event.PRIORITY_SESSION;
             }
         });
+        //applyTemplate();
     }
 
-    private void getUIValueYear(Level logErrorLevel, Recur recur)
-    {
-        final Month month = _month.getUIValue(logErrorLevel);
-        if (month != null)
-            recur.getMonthList().add(month.getValue());
-        final LocalizedObjectKey by = _yearBy.getUIValue();
-        assert by != null;
-        final String symbolicName = by.getSymbolicName();
-        switch (symbolicName)
-        {
-            case BY_DAY_OF_MONTH_SYMBOL:
-            {
-                addDayOfTheMonthToRecurUIValue(logErrorLevel, recur);
-                break;
-            }
-            case BY_DAY_OF_WEEK_AND_WEEK_NO_SYMBOL:
-            {
-                final DayOfWeek dow = _yearMonthDoWWoM.getOnDay().getUIValue(logErrorLevel);
-                assert dow != null;
-                final WeekDay weekDay = getWeekDay(dow);
-                final WeekOfMonth weekOfMonth = _yearMonthDoWWoM.getOnWeek().getUIValue(logErrorLevel);
-                assert weekOfMonth != null;
-                recur.getDayList().add(new WeekDay(weekDay, weekOfMonth.getOffset()));
-                break;
-            }
-            default:
-                _logger.error("Unhandled by: " + symbolicName);
-                break;
-        }
-    }    private void hideNonRepeatComponents()
+
+
+    private void hideNonRepeatComponents()
     {
         if (!isAlwaysRepeat())
         {
@@ -962,29 +991,11 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
     }
 
 
-
-
-
     @Override
     public boolean validateUIValue(Notifiable notifiable)
     {
         return true;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private void initDoWWoMWrapper()
@@ -996,7 +1007,7 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
                 .withSpaceSeparator()
         );
         AppUtil.enableTooltip(addDayWeekContainer);
-        _dowWoMWrapper.add(of("actions", addDayWeekContainer).withHTMLElement(HTMLElement.span));
+        _dowWoMWrapper.add(Container.of("actions", addDayWeekContainer).withHTMLElement(HTMLElement.span));
         addDayWeekContainer.addActionListener(ev -> _dowWoMWrapper.add(new DoWWoM(_dayWeekEditors)));
     }
 

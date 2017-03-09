@@ -70,6 +70,8 @@ import net.proteusframework.ui.miwt.component.composite.MessageContainer;
 import net.proteusframework.ui.miwt.component.composite.editor.CheckboxValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.ComboBoxValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
+import net.proteusframework.ui.miwt.component.template.FileSystemTemplateDataSource;
+import net.proteusframework.ui.miwt.component.template.TemplateContainer;
 import net.proteusframework.ui.miwt.event.ActionListener;
 import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
@@ -117,7 +119,7 @@ import static net.proteusframework.ui.miwt.validation.RequiredValueValidator.cre
     }
 )
 @Configurable
-public class UserValueViewer extends Container
+public class UserValueViewer extends TemplateContainer
 {
     /** Logger. */
     private static final Logger _logger = LogManager.getLogger(UserValueViewer.class);
@@ -154,15 +156,24 @@ public class UserValueViewer extends Container
         }
     }
 
-    @Autowired private AppUtil _appUtil;
-    @Autowired private EntityRetriever _er;
-    @Autowired private UserDAO _userDAO;
-    @Autowired private ProfileDAO _profileDAO;
-    @Autowired private MembershipOperationProvider _mop;
-    @Autowired private PrincipalDAO _principalDAO;
-    @Autowired private SelectedCompanyTermProvider _terms;
-    @Autowired private MembershipTypeProvider _mtp;
-    @Autowired private ProfileUIService _uiService;
+    @Autowired
+    private AppUtil _appUtil;
+    @Autowired
+    private EntityRetriever _er;
+    @Autowired
+    private UserDAO _userDAO;
+    @Autowired
+    private ProfileDAO _profileDAO;
+    @Autowired
+    private MembershipOperationProvider _mop;
+    @Autowired
+    private PrincipalDAO _principalDAO;
+    @Autowired
+    private SelectedCompanyTermProvider _terms;
+    @Autowired
+    private MembershipTypeProvider _mtp;
+    @Autowired
+    private ProfileUIService _uiService;
 
     private boolean _adminMode = true;
     private User _user;
@@ -175,7 +186,8 @@ public class UserValueViewer extends Container
      */
     public UserValueViewer()
     {
-        super();
+        super(new FileSystemTemplateDataSource("profile/user/UserValueViewer.xml"));
+        setComponentName("user-value-viewer");
     }
 
     /**
@@ -201,7 +213,8 @@ public class UserValueViewer extends Container
         final PushButton cancel = CommonActions.CANCEL.push();
         ActionListener cancelAction = new Window.Closer();
         cancel.addActionListener(cancelAction);
-        save.addActionListener(ev -> {
+        save.addActionListener(ev ->
+        {
             dlgMessages.clearNotifications();
             boolean valid = newPassword.validateUIValue(dlgMessages);
             valid = confirmPassword.validateUIValue(dlgMessages) && valid;
@@ -215,7 +228,8 @@ public class UserValueViewer extends Container
 
                     if (!success)
                     {
-                        notifications.forEach(notification -> {
+                        notifications.forEach(notification ->
+                        {
                             notification.setSource(newPassword);
                             dlgMessages.sendNotification(notification);
                         });
@@ -234,19 +248,21 @@ public class UserValueViewer extends Container
             }
         });
 
-        dlg.add(of(HTMLElement.section, "prop-editor prop-wrapper",
+        dlg.add(Container.of(HTMLElement.section, "prop-editor prop-wrapper",
             dlgMessages,
-            of("prop-body", newPassword, confirmPassword),
-            of("prop-footer",
-                of("prop-footer-actions",
-                    of("persistence-actions actions bottom", save, cancel)
+            Container.of("prop-body", newPassword, confirmPassword),
+            Container.of("prop-footer",
+                Container.of("prop-footer-actions",
+                    Container.of("persistence-actions actions bottom", save, cancel)
                 )
             )
         ));
 
         getWindowManager().add(dlg);
         dlg.setVisible(true);
-    }    /**
+    }
+
+    /**
      * Get the User to view
      *
      * @return the User to view
@@ -273,19 +289,6 @@ public class UserValueViewer extends Container
             return new MessageContainer(35_000L);
         }
         return _notifiable;
-    }    /**
-     * Set the User to view
-     *
-     * @param user the User to view
-     */
-    public void setUser(@Nonnull User user)
-    {
-        _user = user;
-
-        if (isInited())
-        {
-            setupUI();
-        }
     }
 
     /**
@@ -299,45 +302,18 @@ public class UserValueViewer extends Container
     }
 
     /**
-     * Get boolean flag.  If true, the current user has the right permissions/roles to update the viewed User's password
+     * Set the User to view
      *
-     * @return boolean flag
+     * @param user the User to view
      */
-    public boolean canUpdatePassword()
+    public void setUser(@Nonnull User user)
     {
-        User currentUser = _userDAO.getAssertedCurrentUser();
-        final TimeZone timeZone = getSession().getTimeZone();
-        Profile profile = _uiService.getSelectedCompany();
-        return _profileDAO.canOperate(currentUser, profile, timeZone, _mop.changeUserPassword())
-               || Objects.equals(currentUser.getId(), getUser().getId());
-    }
+        _user = user;
 
-    @Override
-    public void init()
-    {
-        super.init();
-
-        setupUI();
-    }    /**
-     * Get boolean flag.  If true, this viewer is being displayed in admin mode
-     * <br>
-     * defaults to true.
-     *
-     * @return boolean flag
-     */
-    public boolean isAdminMode()
-    {
-        return _adminMode;
-    }
-
-    /**
-     * Set boolean flag.  If true, this viewer is being displayed in admin mode
-     *
-     * @param adminMode boolean flag
-     */
-    public void setAdminMode(boolean adminMode)
-    {
-        _adminMode = adminMode;
+        if (isInited())
+        {
+            setupUI();
+        }
     }
 
     private void setupUI()
@@ -368,7 +344,7 @@ public class UserValueViewer extends Container
         else
             userImage.setImage(new Image(_appUtil.getDefaultUserImage()));
         userImage.addClassName("image");
-        final Container userImageField = of("prop picture", userImage);
+        final Container userImageField = Container.of("prop picture", userImage);
 
         final TextEditor nameField = new TextEditor(LABEL_NAME(),
             NameCellRenderer.getFormattedString(getUser().getPrincipal().getContact().getName()));
@@ -437,7 +413,8 @@ public class UserValueViewer extends Container
                     Objects.equals(membershipType, _mtp.companyAdmin())
                 )
         );
-        loginLangingPage.setCellRenderer(new CustomCellRenderer(CommonButtonText.PLEASE_SELECT, input -> {
+        loginLangingPage.setCellRenderer(new CustomCellRenderer(CommonButtonText.PLEASE_SELECT, input ->
+        {
             Link link = (Link) input;
             assert link != null;
             return TextSources.createText(link.getAdditionalAttributes().get("label"));
@@ -457,27 +434,71 @@ public class UserValueViewer extends Container
         loginLangingPage.withHTMLElement(HTMLElement.section);
         loginLangingPage.setEditable(false);
 
-        add(userImageField);
-        add(nameField);
-        add(addressContainer);
-        add(emailField);
-        add(phoneField);
+        add(userImageField.withComponentName("user-image"));
+        add(nameField.withComponentName("name"));
+        add(addressContainer.withComponentName("address"));
+        add(emailField.withComponentName("email"));
+        add(phoneField.withComponentName("phone"));
         if (getUser().getSmsPhone() != null)
-            add(smsPhoneField);
-        add(timeZoneField);
+            add(smsPhoneField.withComponentName("sms"));
+        add(timeZoneField.withComponentName("timezone"));
         if (isAdminMode())
         {
-            add(coachingField);
+            add(coachingField.withComponentName("coaching"));
         }
-        add(contactPrefsField);
-        add(loginLangingPage);
+        add(contactPrefsField.withComponentName("contact-preference"));
+        add(loginLangingPage.withComponentName("login-landingpage"));
+
+        applyTemplate();
     }
-
-
 
     private static void setFieldVisibility(TextEditor field)
     {
         field.setVisible(!StringFactory.isEmptyString(field.getValue()));
+    }
+
+    /**
+     * Get boolean flag.  If true, this viewer is being displayed in admin mode
+     * <br>
+     * defaults to true.
+     *
+     * @return boolean flag
+     */
+    public boolean isAdminMode()
+    {
+        return _adminMode;
+    }
+
+    /**
+     * Set boolean flag.  If true, this viewer is being displayed in admin mode
+     *
+     * @param adminMode boolean flag
+     */
+    public void setAdminMode(boolean adminMode)
+    {
+        _adminMode = adminMode;
+    }
+
+    /**
+     * Get boolean flag.  If true, the current user has the right permissions/roles to update the viewed User's password
+     *
+     * @return boolean flag
+     */
+    public boolean canUpdatePassword()
+    {
+        User currentUser = _userDAO.getAssertedCurrentUser();
+        final TimeZone timeZone = getSession().getTimeZone();
+        Profile profile = _uiService.getSelectedCompany();
+        return _profileDAO.canOperate(currentUser, profile, timeZone, _mop.changeUserPassword())
+               || Objects.equals(currentUser.getId(), getUser().getId());
+    }
+
+    @Override
+    public void init()
+    {
+        super.init();
+
+        setupUI();
     }
 
 }

@@ -43,7 +43,7 @@ public class LocationValueEditor extends TemplateCompositeValueEditor<Location>
     public LocationValueEditor()
     {
         super(Location.class,
-            new FileSystemTemplateDataSource("LocationValueEditor.xml"));
+            new FileSystemTemplateDataSource("profile/location/LocationValueEditor.xml"));
         setComponentName("LocationValueEditor");
     }
 

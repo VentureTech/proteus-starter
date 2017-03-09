@@ -44,8 +44,10 @@ import net.proteusframework.ui.miwt.component.Container;
 import net.proteusframework.ui.miwt.component.Field;
 import net.proteusframework.ui.miwt.component.Label;
 import net.proteusframework.ui.miwt.component.composite.editor.CompositeValueEditor;
+import net.proteusframework.ui.miwt.component.composite.editor.TemplateCompositeValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.URLEditor;
+import net.proteusframework.ui.miwt.component.template.FileSystemTemplateDataSource;
 
 import static com.example.app.profile.ui.UIText.INSTRUCTIONS_PICTURE_EDITOR_FMT;
 import static com.example.app.profile.ui.company.CompanyValueEditorLOK.*;
@@ -84,7 +86,7 @@ import static net.proteusframework.core.locale.TextSources.createText;
     }
 )
 @Configurable
-public class CompanyValueEditor extends CompositeValueEditor<Company>
+public class CompanyValueEditor extends TemplateCompositeValueEditor<Company>
 {
     private static final Pattern HOSTNAME_VALIDITY_PATTERN1 = Pattern.compile("_| ");
     private static final Pattern HOSTNAME_VALIDITY_PATTERN2 = Pattern.compile("[^a-zA-Z\\-0-9]");
@@ -102,7 +104,8 @@ public class CompanyValueEditor extends CompositeValueEditor<Company>
      */
     public CompanyValueEditor()
     {
-        super(Company.class);
+        super(Company.class, new FileSystemTemplateDataSource("profile/company/CompanyValueEditor.xml"));
+        setComponentName("company-editor");
     }
 
     /**
@@ -134,11 +137,13 @@ public class CompanyValueEditor extends CompositeValueEditor<Company>
         VTCropPictureEditorConfig webLogoConfig = _companyConfig.companyWebLogoConfig();
         _webLogoEditor = new VTCropPictureEditor(webLogoConfig);
         _webLogoEditor.addClassName("company-web-logo");
+        _webLogoEditor.setComponentName("company-web-logo");
         _webLogoEditor.setDefaultResource(_appUtil.getDefaultResourceImage());
 
         VTCropPictureEditorConfig emailLogoConfig = _companyConfig.companyEmailLogoConfig();
         _emailLogoEditor = new VTCropPictureEditor(emailLogoConfig);
-        _emailLogoEditor.addClassName("company-web-logo");
+        _emailLogoEditor.addClassName("company-email-logo");
+        _emailLogoEditor.setComponentName("company-email-logo");
         _emailLogoEditor.setDefaultResource(_appUtil.getDefaultResourceImage());
 
         super.init();
@@ -155,26 +160,43 @@ public class CompanyValueEditor extends CompositeValueEditor<Company>
         emailLogoInstructions.addClassName(CSS_INSTRUCTIONS);
         emailLogoInstructions.withHTMLElement(HTMLElement.div);
 
-        add(of("logos",
-            of("prop", LABEL_WEB_LOGO(), _webLogoEditor, webLogoInstructions),
-            of("prop", LABEL_EMAIL_LOGO(), _emailLogoEditor, emailLogoInstructions)));
+        add(Container.of("logos",
+            Container.of("prop", LABEL_WEB_LOGO(), _webLogoEditor, webLogoInstructions),
+            Container.of("prop", LABEL_EMAIL_LOGO(), _emailLogoEditor, emailLogoInstructions))
+                .withComponentName("logos-property"));
         CommonEditorFields.addNameEditor(this);
         addEditorForProperty(() -> {
-            final CompositeValueEditor<Location> editor = new CompositeValueEditor<>(Location.class);
+            final TemplateCompositeValueEditor<Location> editor = new TemplateCompositeValueEditor<Location>(Location.class,
+                new FileSystemTemplateDataSource("profile/company/CompanyLocationValueEditor.xml")){
+                @Override
+                public void init()
+                {
+                    super.init();
+                    applyTemplate();
+                }
+            };
+            editor.addClassName("company-location").addClassName("location").addClassName("prop-group");
+            editor.setComponentName("company-location");
 
             editor.addEditorForProperty(() -> {
                 AddressValueEditorConfig cfg = new AddressValueEditorConfig();
-                return new AddressValueEditor(cfg);
+                AddressValueEditor addressValueEditor = new AddressValueEditor(cfg);
+                addressValueEditor.setComponentName("address-property");
+                return addressValueEditor;
             }, Location.ADDRESS_PROP);
 
 //            editor.addEditorForProperty(() -> {
 //                EmailAddressValueEditorConfig cfg = new EmailAddressValueEditorConfig();
-//                return new EmailAddressValueEditor(cfg);
+//            EmailAddressValueEditor emailAddressValueEditor = new EmailAddressValueEditor(cfg);
+//            emailAddressValueEditor.setComponentName("email-property");
+//            return emailAddressValueEditor;
 //            }, Location.EMAIL_ADDRESS_PROP);
 
             editor.addEditorForProperty(() -> {
                 PhoneNumberValueEditorConfig cfg = new PhoneNumberValueEditorConfig();
-                return new PhoneNumberValueEditor(cfg);
+                PhoneNumberValueEditor phoneNumberValueEditor = new PhoneNumberValueEditor(cfg);
+                phoneNumberValueEditor.setComponentName("phone-property");
+                return phoneNumberValueEditor;
             }, Location.PHONE_NUMBER_PROP);
 
             return editor;
@@ -183,6 +205,7 @@ public class CompanyValueEditor extends CompositeValueEditor<Company>
         addEditorForProperty(() -> {
             final URLEditor editor = new URLEditor(LABEL_WEBSITE(), null);
             editor.addClassName("website");
+            editor.setComponentName("website");
             return editor;
         },
             ce -> stringToURL(ce.getWebsiteLink(), null),
@@ -236,6 +259,7 @@ public class CompanyValueEditor extends CompositeValueEditor<Company>
                     inputInstructionsRef.set(inputInstructions);
                     customDomainInstructionsRef.set(customDomainInstructions);
                     superdomainLabelRef.set(superdomainNameLabel);
+                    editor.setComponentName("subdomain");
                     return editor;
                 },
                 ce ->
@@ -267,6 +291,7 @@ public class CompanyValueEditor extends CompositeValueEditor<Company>
         addEditorForProperty(() -> {
                 final URLEditor editor = new URLEditor(LABEL_LINKEDIN(), null);
                 editor.addClassName("linkedin");
+                editor.setComponentName("linkedin");
                 return editor;
             },
             company -> stringToURL(company.getLinkedInLink(), null),
@@ -276,6 +301,7 @@ public class CompanyValueEditor extends CompositeValueEditor<Company>
         addEditorForProperty(() -> {
             final URLEditor editor = new URLEditor(LABEL_TWITTER(), null);
             editor.addClassName("twitter");
+            editor.setComponentName("twitter");
             return editor;
         },
             company -> stringToURL(company.getTwitterLink(), null),
@@ -284,10 +310,13 @@ public class CompanyValueEditor extends CompositeValueEditor<Company>
         addEditorForProperty(() -> {
             final URLEditor editor = new URLEditor(LABEL_FACEBOOK(), null);
             editor.addClassName("facebook");
+            editor.setComponentName("facebook");
             return editor;
         },
             company -> stringToURL(company.getFacebookLink(), null),
             (company, url) -> company.setFacebookLink(urlToString(url)));
+
+        applyTemplate();
     }
 
     @Override
