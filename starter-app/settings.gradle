@@ -17,13 +17,18 @@ settings.gradle.projectsLoaded( {
     def hasLocalRepo = settings.hasProperty('local_repo')
     if(hasLocalRepo) {
         def repoHost = new URL(settings.getProperty('local_repo')).getHost()
+        def pingCommand = null
         if(new File('/bin/ping').canExecute())
+            pingCommand = '/bin/ping'
+        else if(new File('/sbin/ping').canExecute())
+            pingCommand = '/sbin/ping'
+        if(pingCommand)
         {
             def baseDir = settings.gradle.rootProject.rootDir
             def envp = System.getenv().collect({k, v -> "${k}=${v}"})
             def isMac = System.getProperty('os.name', '').toLowerCase().contains('mac')
-            def command = isMac ? ['/bin/ping', '-q', '-W', '250', '-c', '1', repoHost] :
-                ['/bin/ping', '-q', '-w', '0.25', '-c', '1', repoHost]
+            def command = isMac ? [pingCommand, '-q', '-W', '250', '-c', '1', repoHost] :
+                [pingCommand, '-q', '-w', '0.25', '-c', '1', repoHost]
             def process = command.execute(envp, baseDir)
             process.consumeProcessOutput(System.out, System.err)
             if(process.waitFor() != 0) {
