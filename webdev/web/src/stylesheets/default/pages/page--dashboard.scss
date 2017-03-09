@@ -1,0 +1,8 @@
+@import "../config/base-vars";
+@import "../../../../../bower_components/bootstrap/scss/mixins";
+
+.text {
+	+ .text {
+		margin-top: 2rem;
+	}
+}

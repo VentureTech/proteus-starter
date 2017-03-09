@@ -1,8 +1,8 @@
 var SIDE_BAR_CLOSED = "sidebar-closed";
 var SIDE_BAR_OPEN = "sidebar-open";
-if(!window.openSidebar) {
+/*if(!window.openSidebar) {
 	window.openSidebar = function(){};
-}
+}*/
 /** PUT THIS IN THE HTML AT THE TOP OF THE PAGE
  <script>
  var SIDE_BAR_CLOSED = "sidebar-closed";
@@ -22,22 +22,22 @@ if(!window.openSidebar) {
 }
  </script>
  */
-function responsiveView() {
+/*function responsiveView() {
 	var wSize = $(window).width();
 	//noinspection JSUnresolvedVariable - SIDE_BAR_OPEN defined in HTML document
 	if (sessionStorage[SIDE_BAR_OPEN] === undefined) {
 		//noinspection JSUnresolvedFunction - defined in HTML document
 		openSidebar(!(wSize <= 768));
 	}
-}
+}*/
 
 jQuery(function(){
 	var w = window, $w = $(w);
-	$w.on('load', responsiveView);
-	$('.fa-bars').click(function () {
-		var $body = $("#body-wrapper"), open = !$body.hasClass("sidebar-open");
+	//$w.on('load', responsiveView);
+	$('.hamburger').click(function () {
+		var $body = $("body"), open = !$body.hasClass("sidebar-open");
 		//noinspection JSUnresolvedFunction - defined in HTML document
-		openSidebar(open);
+		$body.toggleClass(SIDE_BAR_OPEN);
 	});
 
 	var $body = $("#body-wrapper");

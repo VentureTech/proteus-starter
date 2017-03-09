@@ -59,11 +59,25 @@ input[type=number]{
 	}
 	span.ctb {
 		display: block;
+
+		&.label-before {
+			label {
+				margin-right: 6px;
+			}
+		}
+
+		&.label-after {
+			label {
+				margin-left: 6px;
+			}
+		}
 	}
+
 	.prop > label {
 		display: block;
 		font-weight: 500;
 		user-select: none;
+		margin-bottom: .125rem;
 
 		&::after {
 			content: ':';
@@ -75,7 +89,9 @@ input[type=number]{
 		display: inline-block;
 		padding-right: 4px;
 	}
-	.prop > .val {
+
+	.prop > .val,
+	.prop .localizable .val {
 		display: inline-block;
 		font-weight: 300;
 	}
@@ -92,6 +108,7 @@ input[type=number]{
 	.prop {
 		margin-bottom: 1rem;
 		padding: 5px;
+		font-weight: 300;
 		> .actions, .selected-link {
 			.btn {
 				@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-xs, $btn-border-radius-sm);
@@ -126,13 +143,22 @@ input[type=number]{
 
 	.address > span {
 		display: block;
+		font-weight: 300;
 	}
 
 }
 
+.location-view {
+	.prop-body {
+		background-color: $color-white;
+		border: 1px solid $color-lighter-grey;
+		padding: 1rem;
+	}
+}
+
 .prop-editor {
-	background-color: #fff;
-	border: 1px solid #ddd;
+	background-color: $color-white;
+	border: 1px solid $color-lighter-grey;
 
 	.prop {
 		input[type=text],
@@ -154,35 +180,16 @@ input[type=number]{
 			padding-left: 1rem;
 		}
 	}
+
 	.miwt-calendar {
 		input[type=text] {
 			min-width:8rem;
 			max-width: 8rem;
 		}
 	}
-}
 
-.user-picture.mode-view {
-	max-width: 325px;
-	box-sizing: content-box;
-	img {
-		max-width: 325px;
-	}
-}
-
-.resource-picture.mode-view {
-	max-width: 350px;
-	box-sizing: content-box;
-}
-
-.picture-editor .actions.bottom {
-	text-align: center;
-}
-
-.prop.picture {
-	img {
-		border-radius: 100%;
-		max-height: 200px;
+	div.window.dialog & {
+		border: none;
 	}
 }
 
@@ -252,4 +259,37 @@ input[type=number]{
 		}
 	}
 
+}
+
+/* PICTURE EDITOR
+	 ========================================================================== */
+.user-picture.mode-view {
+	max-width: 325px;
+	box-sizing: content-box;
+	img {
+		max-width: 325px;
+	}
+}
+
+.resource-picture.mode-view {
+	max-width: 350px;
+	box-sizing: content-box;
+}
+
+.picture-editor {
+
+	.actions.bottom {
+		text-align: center;
+
+		.btn {
+				@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-border-radius-sm);
+		}
+	}
+}
+
+.prop.picture {
+	img {
+		border-radius: 100%;
+		max-height: 200px;
+	}
 }

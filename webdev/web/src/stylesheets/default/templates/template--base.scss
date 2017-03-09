@@ -32,12 +32,12 @@ body {
 
 #e-content {
 	flex: 1 0 auto;
-	min-height: calc(100vh - 90px);
+	min-height: calc(100vh - 128px);
 	padding-bottom: 3rem;
 }
 
 .main-content {
-	padding: 3rem 0 0;
+	padding: 3rem 1rem 0;
 	width: 100%;
 	max-width: 1280px;
 	margin: 0 auto;
@@ -56,6 +56,13 @@ h3, h4 {
 	color: #fff;
 }
 
+/*a:not(.file-name)[target="_blank"] {
+	&::after {
+		@include glyphAdd('\f08e', inherit, inherit);
+		padding-left: 5px;
+	}
+}*/
+
 .update-password-dialog {
 	width: 40rem !important;
 	.windowcontent {
@@ -65,13 +72,18 @@ h3, h4 {
 
 section {
 	> h1 {
-		margin: 10px 0;
+		margin: 10px 0 15px;
 		font-size: 2rem;
 	}
 	section > h1 {
 		font-size: 1.75rem;
 		margin: 10px 0;
 	}
+}
+
+img {
+	max-width: 100%;
+	height: auto;
 }
 
 .miwt-calendar {
@@ -113,6 +125,7 @@ section {
 	padding-bottom: .75rem;
 	color: $color-app-grey;
 	font-style: italic;
+	font-size: .9rem;
 }
 p.instructions {
 	padding-bottom: 0;
@@ -130,7 +143,85 @@ p.instructions {
 
 }
 
+/* Categories Management
+   ========================================================================== */
+.resource-tags-cats-management {
 
+	> div + div {
+		margin-top: 3rem;
+	}
+
+	.entity_actions {
+		float: right;
+		margin: -2.75rem 0 0;
+		@include clearfix();
+
+		.btn.action-add {
+			@include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
+		}
+	}
+
+	label {
+		display: block;
+		margin-bottom: .25rem;
+		font-size: 90%;
+
+		&.tbl {
+			@extend label;
+			display: inline-block;
+		}
+	}
+
+	input {
+		border: 1px solid #aaa;
+		padding: 6px 8px 5px;
+		font-size: .9rem;
+		line-height: 1;
+	}
+
+	.search_bar {
+		margin-bottom: 1.5rem;
+
+		.search_actions {
+			margin-left: 1rem;
+
+			.btn {
+				@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-border-radius-sm);
+			}
+		}
+	}
+
+	.property-editor {
+
+		input[type="text"] {
+			width: 100%;
+			max-width: 45%;
+		}
+
+		.prop {
+			margin-bottom: .75rem;
+		}
+
+		.ctb.label-before {
+			label {
+				margin-right: 6px;
+			}
+		}
+
+		.ctb.label-after {
+			label {
+				margin-left: 6px;
+			}
+		}
+	}
+}
+
+.edit-membership-type {
+	.actions {
+		text-align: right;
+		margin-bottom: 1rem;
+	}
+}
 
 .user-search {
 	.search-results {
@@ -195,7 +286,7 @@ and (orientation:portrait) {
 
 #footer {
 	display: block;
-	min-height: 4.625rem;
+	//min-height: 4.625rem;
 	height: auto;
 	margin-top: 0;
 	background-color: $color-app-light-grey;
@@ -212,6 +303,15 @@ and (orientation:portrait) {
 		p {
 			margin: 0;
 			font-size: .75rem;
+
+			+ p {
+				margin-top: .75rem;
+			}
+
+			img, svg {
+				max-width: 15rem;
+				height: auto;
+			}
 		}
 
 	}

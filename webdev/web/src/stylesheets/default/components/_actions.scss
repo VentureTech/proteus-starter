@@ -2,6 +2,10 @@
 @import "../../../../../bower_components/bootstrap/scss/mixins/buttons";
 @import "../../../../../bower_components/bootstrap/scss/buttons";
 
+.btn {
+	font-family: $font-roboto;
+}
+
 .actions .btn {
 	@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border);
 	cursor: pointer;
