@@ -1,0 +1,54 @@
+@import "../config/base-vars";
+@import "../../../../../bower_components/bootstrap/scss/mixins";
+
+.resource-repo-item-editor {
+	span.file-field {
+		display: block;
+
+		.actions .btn + .btn {
+			@include button-variant($color-app-red, $color-white, $color-app-red);
+		}
+	}
+}
+
+.resource-repo-item-viewer {
+
+	.prop-body {
+		border: 1px solid $color-lighter-grey;
+		background: $color-white;
+		padding: 1.5rem;
+	}
+
+	h1 + .resource-content {
+		margin-top: 1rem;
+	}
+
+	.resource-content {
+		display: block;
+		margin-bottom: 1rem;
+	}
+
+	.resource-action {
+		display: inline-block;
+		vertical-align: middle;
+
+		+ .resource-action {
+			margin-left: .5rem;
+		}
+
+		a.btn {
+			@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border);
+			@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-border-radius-sm);
+		}
+	}
+
+	label {
+		width: 5rem;
+		font-weight: 500;
+
+		&::after {
+			content: ':';
+			margin-right: 5px;
+		}
+	}
+}

@@ -1,47 +1,93 @@
 @import "../config/base-vars";
+@import "../../../../../bower_components/bootstrap/scss/mixins";
 
 .text-group {
-	padding-left: 1rem;
+	padding: .5rem;
+
 	&.actions {
 		text-align: center;
-		button {
+
+		 .btn {
 			display: block;
 			margin-top: 1rem;
+			@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-border-radius-sm);
+
+			+ .btn {
+				margin-left: 0;
+			}
 		}
 	}
+
 	&.last-text-change-record {
 		flex: 1 100%;
 		display: flex;
 		flex-wrap: wrap;
+		justify-content: space-between;
+		padding: 0;
+		margin-top: 1rem;
+		border: 1px solid $color-lighter-grey;
+
 		.prop {
 			padding-left: 1rem;
-			&:first-child {
-				padding-left: 0;
+			margin-bottom: 0;
+			font-size: .85rem;
+
+			&:last-of-type {
+				padding-right: 1rem;
 			}
 		}
+
 		.group-label {
 			flex: 1 100%;
-			font-size: 1.25rem;
-			font-weight: bold;
-			text-decoration: underline;
+			font-size: 1rem;
+			font-weight: 500;
+			padding: .5rem 1rem;
+			background: $color-lighter-grey;
 		}
 	}
+
+	&.current-text, &.updated-text {
+		max-width: 50%;
+
+		@include media-breakpoint-up(lg) {
+			max-width: 35%;
+		}
+
+		label {
+			font-weight: 500;
+		}
+	}
+}
+
+.prop-editor {
+	background: transparent;
+	border: none;
 }
 
 .prop-body {
 	display: flex;
 	flex-wrap: wrap;
-	align-items: center;
-	.text-group:first-child {
-		padding-left: 0;
+	background-color: $color-white;
+	border: 1px solid $color-lighter-grey;
+	justify-content: flex-start;
+	align-items: flex-start;
+	padding: 1.5rem;
+
+	@include media-breakpoint-up(lg) {
+		justify-content: center;
 	}
-	textarea {
-		min-width: 380px;
+
+	.actions {
+		align-self: center;
+	}
+
+	.text-group textarea {
+		width: 100%;
+		//min-width: 380px;
 		resize: both;
 		&[readonly] {
-			border: 1px dotted #ddd;
-			background-color: #eee;
+			border: 1px dotted $color-lighter-grey;
+			background-color: $color-lightest-grey;
 		}
 	}
 }
-
