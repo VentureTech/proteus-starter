@@ -25,6 +25,18 @@
     </Match>
 
     <Match>
+        <Source name="~.*\.kt"/>
+        <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+    </Match>
+    <Match>
+        <Source name="~.*\.kt"/>
+        <Bug pattern="BC_BAD_CAST_TO_ABSTRACT_COLLECTION"/>
+    </Match>
+    <Match>
+        <Source name="~.*\.kt"/>
+        <Bug pattern="SA_LOCAL_SELF_ASSIGNMENT"/>
+    </Match>
+    <Match>
         <!-- We currently don't rely on serialization working, so we'll ignore the error for now -->
         <Bug pattern="SE_BAD_FIELD"/>
     </Match>
