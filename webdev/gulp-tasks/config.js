@@ -10,12 +10,12 @@ gulp.task('config', function(cb) {
 });
 
 gulp.task('config:build', function(cb) {
-    runSequence('config:templates', cb);
+    runSequence('config:files', cb);
 });
 
-gulp.task('config:templates', function() {
-    return gulp.src('./web/src/config/templates/**/*')
-        .pipe(gulp.dest('./build/ConfigurationFiles/MIWT Templates'))
+gulp.task('config:files', function() {
+    return gulp.src('./web/src/config/**/*')
+        .pipe(gulp.dest('./build/ConfigurationFiles/'))
 });
 
 gulp.task('config:clean', function(cb) {
