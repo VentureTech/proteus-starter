@@ -38,13 +38,13 @@ import net.proteusframework.core.locale.annotation.L10N;
 @I18NFile(
     symbolPrefix = "com.example.app.profile.model.membership.MembershipTypeInfo",
     i18n = {
-        @I18N(symbol = "Name System Admin", l10n = @L10N("System Admin"))
+        @I18N(symbol = "Name Company Admin", l10n = @L10N("Company Admin"))
     }
 )
 public enum MembershipTypeInfo implements NamedObject
 {
     /** MembershipTypeInfo. */
-    SystemAdmin(MembershipTypeInfoLOK.NAME_SYSTEM_ADMIN(), "admin")
+    SystemAdmin(MembershipTypeInfoLOK.NAME_COMPANY_ADMIN(), "admin")
     //Additional Predefined MembershipTypes go here.
     ;
 
