@@ -18,7 +18,6 @@ import experimental.cms.dsl.*
 import net.proteusframework.cms.PageElementModelImpl
 import net.proteusframework.cms.component.ContentElement
 import net.proteusframework.email.EmailTemplate
-import net.proteusframework.email.config.ContentElementEmailConfig
 
 /**
  * Reset Password Content.
@@ -63,8 +62,9 @@ class ResetPassword(id: String): Identifiable(id), Content {
             val template: EmailTemplate? = helper.getEmailTemplate(emailTemplate)
             builder.emailTemplate = template
             val emailConfig = template?.emailConfig
-            if(emailConfig is ContentElementEmailConfig)
-                emailConfig.contentElement = contentElement
+// PF-1625
+//            if(emailConfig is ContentElementEmailConfig)
+//                emailConfig.contentElement = contentElement
         }
     }
 
