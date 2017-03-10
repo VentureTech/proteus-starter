@@ -44,8 +44,8 @@ open class ProfileBasicDSL : AppDefinition(DEFINITION_NAME, version = 1, siteId 
 
     val frontendRoleProgId = "frontend_user"
     val adminRoleProgId = "proteus_admin"
-    role("Frontend User", frontendRoleProgId, "Frontend User")
-    role("Proteus Admin", adminRoleProgId, "Proteus Admin")
+    role("Frontend User", frontendRoleProgId, "Frontend User", 4)
+    role("Proteus Admin", adminRoleProgId, "Proteus Admin", 4)
 
     storeSitePreference(AppUtil.PREF_KEY_PROFILE_SITE)
     systemPref(AppUtil.PREF_KEY_FRONTEND_ROLE, frontendRoleProgId)
