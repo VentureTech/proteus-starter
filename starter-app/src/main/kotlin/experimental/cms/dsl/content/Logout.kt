@@ -28,14 +28,19 @@ class Logout(id: String) : Identifiable(id), Content {
         const val DEFAULT_EXPRESSION = """
 <ul class="menu menu-t1 menubeanh user">
   <li class="mi mi-inactive mi-parent">
-      <div class="menuitemlabel"><span class="mil">${"$"}{users.current.name}</span></div>
+      <div class="menuitemlabel"><i class="fa fa-user-circle-o" aria-hidden="true"></i></div>
       <ul class="menu menu-t2 menubeanh">
+        <li class="mi mi-inactive current-user">
+          <div class="menuitemlabel">
+            <span class="mil">${"$"}{users.current.name}</span>
+          </div>
+        </li>
         <li class="mi mi-inactive my-profile">
-          <a class="menuitemlabel" href='${"$"}{links.getCMSLink("/account/my-profile").url}' title="My Profile">
+          <a href="${"$"}{links.getCMSLink("/account/my-profile").url}" class="menuitemlabel" title="My Profile">
             <span class="mil">My Profile</span></a>
         </li>
         <li class="mi mi-inactive logout-url">
-          <a class="menuitemlabel" href="/csarf" title="Logout">
+          <a href="/csarf" class="menuitemlabel" title="Logout">
             <span class="mil">Logout</span></a>
         </li>
       </ul>
