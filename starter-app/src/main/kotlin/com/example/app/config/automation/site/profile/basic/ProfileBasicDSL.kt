@@ -97,7 +97,10 @@ open class ProfileBasicDSL : AppDefinition(DEFINITION_NAME, version = 1, siteId 
         }.remove()
 
         content("Footer", Text("Global Footer")){
-            htmlContent = "<p>$appName | &copy; 2016</p>"
+            htmlContent = """<p>$appName | &copy; 2016</p>
+<p><em>Powered By:</em><br />
+<a href="http://www.venturetech.net/platform" target="_blank"><img alt="Proteus Platform" src="proteus-logo.svg"/></a>
+</p>"""
         }
     }
 
@@ -134,6 +137,7 @@ open class ProfileBasicDSL : AppDefinition(DEFINITION_NAME, version = 1, siteId 
             content(Logout("Logout")) {
                 htmlClass = "menu"
                 htmlId = "logout"
+
             }
         }
         content("Footer", "Global Footer")
