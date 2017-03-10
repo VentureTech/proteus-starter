@@ -46,11 +46,15 @@ import net.proteusframework.ui.miwt.MIWTException;
 import net.proteusframework.ui.miwt.component.Container;
 import net.proteusframework.ui.miwt.component.FileField;
 import net.proteusframework.ui.miwt.component.ImageComponent;
+import net.proteusframework.ui.miwt.component.Label;
 import net.proteusframework.ui.miwt.component.PushButton;
 import net.proteusframework.ui.miwt.component.composite.editor.ValueEditor;
 import net.proteusframework.ui.miwt.event.ActionEvent;
 import net.proteusframework.ui.miwt.event.ActionListener;
 import net.proteusframework.ui.miwt.util.CommonActions;
+
+import static com.example.app.support.ui.vtcrop.VTCropPictureEditorLOK.BUTTON_TEXT_CROP_IMAGE;
+import static com.example.app.support.ui.vtcrop.VTCropPictureEditorLOK.LABEL_FILE_CHOOSER;
 
 /**
  * UI for user to upload a picture.  The picture will be cropped according to the configuration determined by the
@@ -63,8 +67,13 @@ import net.proteusframework.ui.miwt.util.CommonActions;
  * @author Alan Holt (aholt@venturetech.net)
  */
 @SuppressWarnings("unused")
-@I18NFile(symbolPrefix = "com.example.app.support.ui.vtcrop.VTCropPictureEditor",
-    i18n = @I18N(symbol = "Button Text Crop Image", l10n = @L10N("Done Cropping")))
+@I18NFile(
+    symbolPrefix = "com.example.app.support.ui.vtcrop.VTCropPictureEditor",
+    i18n = {
+        @I18N(symbol = "Button Text Crop Image", l10n = @L10N("Crop And Upload")),
+        @I18N(symbol = "Label File Chooser", l10n = @L10N("Change The Image"))
+    }
+)
 @Configurable
 public class VTCropPictureEditor extends Container implements ValueEditor<FileItem>
 {
@@ -120,6 +129,7 @@ public class VTCropPictureEditor extends Container implements ValueEditor<FileIt
         _config = cfg;
 
         _picture.setImageCaching(false);
+        _fileField.addClassName("custom-file");
         _fileField.setAccept("image/*");
         _fileField.addPropertyChangeListener(FileField.PROP_FILE_ITEMS, evt -> {
             @SuppressWarnings("unchecked")
@@ -335,7 +345,11 @@ public class VTCropPictureEditor extends Container implements ValueEditor<FileIt
         // Create drop-zone container in case someone wants to use DnD and VTCrop with this.
         add(of("drop-zone", _picture));
 
-        add(of("crop-file", _fileField));
+        Label fileLabel = new Label(LABEL_FILE_CHOOSER());
+        fileLabel.setLabelFor(_fileField);
+        fileLabel.addClassName("custom-file");
+
+        add(of("crop-file", _fileField, fileLabel));
 
         _actionsCon.addClassName("actions bottom");
         add(_actionsCon);
@@ -391,7 +405,7 @@ public class VTCropPictureEditor extends Container implements ValueEditor<FileIt
         setBaseClass(true);
 
         _actionsCon.removeAllComponents();
-        _fileField.setVisible(false);
+        _fileField.getParent().setVisible(false);
 
         if (!_editable)
             return;
@@ -401,7 +415,7 @@ public class VTCropPictureEditor extends Container implements ValueEditor<FileIt
         saveAndCrop.addClassName("done-cropping");
         saveAndCrop.setLabel(getCropButtonText() != null
             ? getCropButtonText()
-            : VTCropPictureEditorLOK.BUTTON_TEXT_CROP_IMAGE());
+            : BUTTON_TEXT_CROP_IMAGE());
         saveAndCrop.setVisible(false);
         final PushButton cancel = CommonActions.CANCEL.push();
         cancel.setVisible(false);
@@ -435,7 +449,7 @@ public class VTCropPictureEditor extends Container implements ValueEditor<FileIt
         change.addActionListener(ev -> {
             setBaseClass(false);
 
-            _fileField.setVisible(true);
+            _fileField.getParent().setVisible(true);
 
             change.setVisible(false);
             remove.setVisible(false);
