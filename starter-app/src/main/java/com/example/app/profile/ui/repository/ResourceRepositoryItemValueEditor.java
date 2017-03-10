@@ -72,6 +72,7 @@ public class ResourceRepositoryItemValueEditor extends TemplateCompositeValueEdi
     {
         super(ResourceRepositoryItem.class,
             new FileSystemTemplateDataSource("profile/repository/ResourceValueEditor.xml"));
+        setComponentName("ResourceValueEditor");
     }
 
     /**

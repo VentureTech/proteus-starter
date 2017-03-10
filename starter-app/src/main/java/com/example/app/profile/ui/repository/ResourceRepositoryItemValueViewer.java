@@ -134,6 +134,8 @@ public class ResourceRepositoryItemValueViewer extends TemplateContainer
         if (!citeList.isEmpty())
             add(Container.of("resource-cite", citeList.toArray(new Component[citeList.size()]))
                 .withComponentName("resource-cite"));
+
+        applyTemplate();
     }
 
     /**
