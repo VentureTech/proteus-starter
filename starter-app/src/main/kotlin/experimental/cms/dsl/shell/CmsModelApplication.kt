@@ -82,6 +82,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.env.Environment
 import java.io.File
+import java.io.IOException
 import java.net.URL
 import java.util.*
 import java.util.prefs.Preferences
@@ -289,33 +290,38 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
 
     private fun resolveURLVariables(url: URL?, basic: String): URL? {
         if(url == null) return null
-        val urlString = url.toExternalForm()
-        if(urlString.contains("\${LATEST}")) {
-            val metaDataURL = URL(urlString.substring(0, urlString.indexOf("\${LATEST}")) + "maven-metadata.xml")
-            val connection = metaDataURL.openConnection()
-            if(url.host == ARTIFACTORY_HOST && basic.isNotBlank()) {
-                connection.setRequestProperty("Authorization", basic)
-            }
-            var version = ""
-            connection.inputStream.use { ins ->
-                val dbf = DocumentBuilderFactory.newInstance()
-                val db = dbf.newDocumentBuilder()
-                val doc = db.parse(ins)
-                val childNodes = doc.documentElement.childNodes
-                for(idx in IntRange(0, childNodes.length-1)) {
-                    val node = childNodes.item(idx)
-                    if(node.nodeName == "version"){
-                        version = node.textContent
-                        break
+        try {
+            val urlString = url.toExternalForm()
+            if (urlString.contains("\${LATEST}")) {
+                val metaDataURL = URL(urlString.substring(0, urlString.indexOf("\${LATEST}")) + "maven-metadata.xml")
+                val connection = metaDataURL.openConnection()
+                if (url.host == ARTIFACTORY_HOST && basic.isNotBlank()) {
+                    connection.setRequestProperty("Authorization", basic)
+                }
+                var version = ""
+                connection.inputStream.use { ins ->
+                    val dbf = DocumentBuilderFactory.newInstance()
+                    val db = dbf.newDocumentBuilder()
+                    val doc = db.parse(ins)
+                    val childNodes = doc.documentElement.childNodes
+                    for (idx in IntRange(0, childNodes.length - 1)) {
+                        val node = childNodes.item(idx)
+                        if (node.nodeName == "version") {
+                            version = node.textContent
+                            break
+                        }
                     }
                 }
-            }
 
-            if(version.isNotBlank()) {
-                return URL(urlString.replace("\${LATEST}", version))
+                if (version.isNotBlank()) {
+                    return URL(urlString.replace("\${LATEST}", version))
+                }
             }
+            return url
+        } catch(ioe: IOException) {
+            logger.error("Unable to retrieve variables.", ioe)
         }
-        return url
+        return null;
     }
 
     private fun createEmailTemplate(site: CmsSite, emailTemplateModel: experimental.cms.dsl.EmailTemplate<*>) {
