@@ -70,8 +70,6 @@ import net.proteusframework.ui.miwt.component.composite.MessageContainer;
 import net.proteusframework.ui.miwt.component.composite.editor.CheckboxValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.ComboBoxValueEditor;
 import net.proteusframework.ui.miwt.component.composite.editor.TextEditor;
-import net.proteusframework.ui.miwt.component.template.FileSystemTemplateDataSource;
-import net.proteusframework.ui.miwt.component.template.TemplateContainer;
 import net.proteusframework.ui.miwt.event.ActionListener;
 import net.proteusframework.ui.miwt.util.CommonActions;
 import net.proteusframework.ui.miwt.util.CommonButtonText;
@@ -119,7 +117,7 @@ import static net.proteusframework.ui.miwt.validation.RequiredValueValidator.cre
     }
 )
 @Configurable
-public class UserValueViewer extends TemplateContainer
+public class UserValueViewer extends Container
 {
     /** Logger. */
     private static final Logger _logger = LogManager.getLogger(UserValueViewer.class);
@@ -186,7 +184,7 @@ public class UserValueViewer extends TemplateContainer
      */
     public UserValueViewer()
     {
-        super(new FileSystemTemplateDataSource("profile/user/UserValueViewer.xml"));
+        super(/*new FileSystemTemplateDataSource("profile/user/UserValueViewer.xml")*/);
         setComponentName("user-value-viewer");
     }
 
@@ -449,7 +447,7 @@ public class UserValueViewer extends TemplateContainer
         add(contactPrefsField.withComponentName("contact-preference"));
         add(loginLangingPage.withComponentName("login-landingpage"));
 
-        applyTemplate();
+        //applyTemplate();
     }
 
     private static void setFieldVisibility(TextEditor field)
