@@ -25,9 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.HashMap;
 import java.util.Optional;
 
-import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelContainer;
-
 import net.proteusframework.cms.category.CmsCategory;
+import net.proteusframework.cms.component.miwt.impl.MIWTPageElementModelContainer;
 import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;

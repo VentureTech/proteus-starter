@@ -24,7 +24,6 @@ import com.i2rd.cms.backend.layout.BoxInformation
 import com.i2rd.cms.bean.DelegateElement
 import com.i2rd.cms.bean.ScriptingBeanPageElementModelFactory
 import com.i2rd.cms.bean.contentmodel.CmsModelDataSet
-import com.i2rd.cms.component.miwt.MIWTPageElementModelFactory
 import com.i2rd.cms.dao.CmsBackendDAO
 import com.i2rd.cms.dao.CmsSiteDefinitionDAO
 import com.i2rd.cms.editor.CmsEditorDAO
@@ -40,6 +39,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import experimental.cms.dsl.*
 import net.proteusframework.cms.*
 import net.proteusframework.cms.component.ContentElement
+import net.proteusframework.cms.component.miwt.MIWTPageElementModelFactory
 import net.proteusframework.cms.component.page.PageTemplate
 import net.proteusframework.cms.controller.LinkUtil
 import net.proteusframework.cms.dao.CmsFrontendDAO

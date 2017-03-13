@@ -30,10 +30,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.EnumSet;
 import java.util.Map;
 
-import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelContainer;
 import com.i2rd.hr.miwt.PhoneNumberCellRenderer;
 
 import net.proteusframework.cms.category.CmsCategory;
+import net.proteusframework.cms.component.miwt.impl.MIWTPageElementModelContainer;
 import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;

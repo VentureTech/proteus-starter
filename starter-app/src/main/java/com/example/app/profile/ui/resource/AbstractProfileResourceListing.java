@@ -43,8 +43,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelContainer;
-
+import net.proteusframework.cms.component.miwt.impl.MIWTPageElementModelContainer;
 import net.proteusframework.core.JunctionOperator;
 import net.proteusframework.core.Pair;
 import net.proteusframework.core.hibernate.dao.EntityRetriever;

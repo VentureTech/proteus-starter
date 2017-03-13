@@ -22,8 +22,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import java.util.function.BiConsumer;
 import java.util.function.UnaryOperator;
 
-import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelPropertyEditor;
-
+import net.proteusframework.cms.component.miwt.impl.MIWTPageElementModelPropertyEditor;
 import net.proteusframework.core.GloballyUniqueStringGenerator;
 import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.LocalizedObjectKey;

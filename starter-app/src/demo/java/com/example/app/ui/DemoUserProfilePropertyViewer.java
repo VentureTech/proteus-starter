@@ -16,9 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 
-import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelPropertyViewer;
-
 import net.proteusframework.cms.category.CmsCategory;
+import net.proteusframework.cms.component.miwt.impl.MIWTPageElementModelPropertyViewer;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;

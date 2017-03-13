@@ -47,9 +47,8 @@ import java.util.TimeZone;
 import java.util.UUID;
 import java.util.prefs.Preferences;
 
-import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelPropertyEditor;
-
 import net.proteusframework.cms.category.CmsCategory;
+import net.proteusframework.cms.component.miwt.impl.MIWTPageElementModelPropertyEditor;
 import net.proteusframework.core.hibernate.HibernateSessionHelper;
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.core.html.HTMLElement;

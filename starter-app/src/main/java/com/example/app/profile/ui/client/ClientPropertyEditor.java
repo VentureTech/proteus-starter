@@ -26,8 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 import java.util.Optional;
 
-import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelPropertyEditor;
-
+import net.proteusframework.cms.component.miwt.impl.MIWTPageElementModelPropertyEditor;
 import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.ConcatTextSource;
 import net.proteusframework.core.locale.TextSource;

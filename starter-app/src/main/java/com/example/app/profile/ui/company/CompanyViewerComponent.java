@@ -30,9 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelContainer;
-
 import net.proteusframework.cms.category.CmsCategory;
+import net.proteusframework.cms.component.miwt.impl.MIWTPageElementModelContainer;
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.ConcatTextSource;

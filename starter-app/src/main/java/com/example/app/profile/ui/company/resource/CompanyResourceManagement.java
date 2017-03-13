@@ -43,9 +43,8 @@ import java.util.Optional;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
-import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelContainer;
-
 import net.proteusframework.cms.category.CmsCategory;
+import net.proteusframework.cms.component.miwt.impl.MIWTPageElementModelContainer;
 import net.proteusframework.cms.label.Label;
 import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.ConcatTextSource;

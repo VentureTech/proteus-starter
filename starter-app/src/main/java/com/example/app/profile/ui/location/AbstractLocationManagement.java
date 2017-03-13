@@ -22,8 +22,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
-import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelContainer;
-
+import net.proteusframework.cms.component.miwt.impl.MIWTPageElementModelContainer;
 import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.TextSource;
 import net.proteusframework.ui.column.FixedValueColumn;

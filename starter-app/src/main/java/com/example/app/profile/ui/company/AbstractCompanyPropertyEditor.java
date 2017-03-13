@@ -29,8 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelPropertyEditor;
-
+import net.proteusframework.cms.component.miwt.impl.MIWTPageElementModelPropertyEditor;
 import net.proteusframework.cms.label.LabelDAO;
 import net.proteusframework.cms.label.LabelDomain;
 import net.proteusframework.cms.label.LabelDomainProvider;

@@ -21,8 +21,7 @@ import com.example.app.support.ui.Application;
 import com.example.app.support.ui.UIPreferences;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelContainer;
-
+import net.proteusframework.cms.component.miwt.impl.MIWTPageElementModelContainer;
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.ConcatTextSource;

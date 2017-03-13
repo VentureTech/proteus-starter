@@ -34,8 +34,7 @@ import java.util.Optional;
 import java.util.TimeZone;
 import java.util.function.Supplier;
 
-import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelPropertyEditor;
-
+import net.proteusframework.cms.component.miwt.impl.MIWTPageElementModelPropertyEditor;
 import net.proteusframework.core.hibernate.dao.EntityRetriever;
 import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.annotation.I18N;

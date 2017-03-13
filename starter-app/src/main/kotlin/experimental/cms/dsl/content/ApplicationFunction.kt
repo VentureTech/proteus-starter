@@ -11,7 +11,6 @@
 
 package experimental.cms.dsl.content
 
-import com.i2rd.cms.component.miwt.MIWTPageElementModel
 import com.i2rd.cms.visibility.VisibilityConditionInstance
 import experimental.cms.dsl.Content
 import experimental.cms.dsl.ContentHelper
@@ -19,6 +18,7 @@ import experimental.cms.dsl.ContentInstance
 import experimental.cms.dsl.Identifiable
 import net.proteusframework.cms.PageElementModelImpl
 import net.proteusframework.cms.component.ContentElement
+import net.proteusframework.cms.component.miwt.MIWTPageElementModel
 import net.proteusframework.ui.management.ApplicationFunction
 
 internal data class RegisteredLink(val functionName: String, val functionContext: String = "",

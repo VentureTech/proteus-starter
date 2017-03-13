@@ -15,8 +15,7 @@ import com.example.app.profile.model.location.Location;
 
 import javax.annotation.Nullable;
 
-import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelPropertyViewer;
-
+import net.proteusframework.cms.component.miwt.impl.MIWTPageElementModelPropertyViewer;
 import net.proteusframework.ui.management.nav.NavigationAction;
 
 /**

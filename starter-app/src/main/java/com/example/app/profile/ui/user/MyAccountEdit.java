@@ -25,9 +25,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import java.util.Objects;
 import java.util.prefs.Preferences;
 
-import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelPropertyEditor;
-
 import net.proteusframework.cms.category.CmsCategory;
+import net.proteusframework.cms.component.miwt.impl.MIWTPageElementModelPropertyEditor;
 import net.proteusframework.core.hibernate.HibernateSessionHelper;
 import net.proteusframework.core.html.HTMLElement;
 import net.proteusframework.core.locale.annotation.I18N;

@@ -16,11 +16,11 @@ import com.google.common.io.ByteSource
 import com.google.common.io.Files
 import com.i2rd.cms.backend.BackendConfig
 import com.i2rd.cms.bean.ScriptingBeanPageElementModelFactory
-import com.i2rd.cms.component.miwt.MIWTPageElementModelFactory
 import com.i2rd.lib.ILibraryType
 import com.i2rd.lib.Library
 import com.i2rd.lib.LibraryConfiguration
 import net.proteusframework.cms.CmsSite
+import net.proteusframework.cms.component.miwt.MIWTPageElementModelFactory
 import net.proteusframework.core.StringFactory.trimSlashes
 import net.proteusframework.core.html.Element
 import net.proteusframework.core.html.EntityUtil
