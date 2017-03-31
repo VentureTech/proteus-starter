@@ -98,9 +98,9 @@ open class ProfileBasicDSL : AppDefinition(DEFINITION_NAME, version = 1, siteId 
 
         content("Footer", Text("Global Footer")){
             htmlContent = """<p>$appName | &copy; 2016</p>
-<p><em>Powered By:</em><br />
+<p><em>Powered By:</em></p>
 <a href="http://www.venturetech.net/platform" target="_blank"><img alt="Proteus Platform" src="proteus-logo.svg"/></a>
-</p>"""
+"""
         }
     }
 
