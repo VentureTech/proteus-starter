@@ -1,28 +1,38 @@
 @import "../config/base-vars";
 @import "../../../../../bower_components/bootstrap/scss/mixins/buttons";
+
+
+.btn {
+	/* Define a default background color. */
+	@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border);
+}
+
 @import "../../../../../bower_components/bootstrap/scss/buttons";
 
 .btn {
 	font-family: $font-roboto;
 }
 
-.actions .btn {
-	@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border);
-	cursor: pointer;
+.actions {
+	margin-top: .4rem;
 
-	+ .btn {
-		margin-left: 4px;
+	.btn {
+		cursor: pointer;
+
+		+ .btn {
+			margin-left: 4px;
+		}
+
+		&.save, &.add, &.finish-button, &.save_exit, &.confirm, &.engagement-completed {
+			@include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
+		}
+
+		&.delete, &.remove, &.cancel, &.cancel-button, &.reschedule {
+			@include button-variant($color-app-red, $color-white, $color-app-red);
+		}
 	}
 
-	&.save, &.add, &.finish-button, &.save_exit, &.confirm, &.engagement-completed {
-		@include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
+	.action-column .btn {
+		@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-xs, $btn-border-radius-sm);
 	}
-
-	&.delete, &.remove, &.cancel, &.cancel-button, &.reschedule {
-		@include button-variant($color-app-red, $color-white, $color-app-red);
-	}
-}
-
-.action-column .btn {
-	@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-xs, $btn-border-radius-sm);
 }
