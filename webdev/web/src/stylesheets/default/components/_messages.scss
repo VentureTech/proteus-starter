@@ -33,18 +33,16 @@
 }
 
 div.message {
-	@include style-message-info;
-
-	&:before{
-		top:11px;
+	span {
+		margin-left: .5rem;
 	}
 
 	& + & {
 		margin-top: 5px;
 	}
 
-	&.error {
-		@include style-message-error;
+	&.info {
+		@include style-message-info;
 	}
 
 	&.success {
@@ -55,8 +53,8 @@ div.message {
 		@include style-message-warning;
 	}
 
-	&.warning {
-		@include style-message-warning;
+	&.error {
+		@include style-message-error;
 	}
 
 	p {

@@ -1,0 +1,42 @@
+@import "../config/base-vars";
+
+.callout {
+  border: 1px solid $color-light-grey;
+  padding: .75rem;
+  border-left-width: 5px;
+  border-radius: 3px;
+  margin-bottom: 1rem;
+  margin-top: 3rem;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  &.callout-success {
+    border-left-color: lighten($color-success-dark, 5%);
+    color: $color-success-dark;
+    background-color: lighten($color-success-light, 7%);
+  }
+
+  &.callout-info {
+    border-left-color: lighten($color-info-dark, 5%);
+    color: $color-info-dark;
+    background-color: lighten($color-info-light, 7%);
+  }
+
+  &.callout-warning {
+    border-left-color: lighten($color-warning-dark, 5%);
+    color: $color-warning-dark;
+    background-color: lighten($color-warning-light, 7%);
+  }
+
+  &.callout-error {
+    border-left-color: lighten($color-error-dark, 5%);
+    color: $color-error-dark;
+    background-color: lighten($color-error-light, 7%);
+  }
+}
