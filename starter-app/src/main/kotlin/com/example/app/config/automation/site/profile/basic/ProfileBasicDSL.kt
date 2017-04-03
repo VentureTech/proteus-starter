@@ -167,8 +167,6 @@ open class ProfileBasicDSL : AppDefinition(DEFINITION_NAME, version = 1, siteId 
             content(SocialLogin("Social Login")) {
                 htmlClass = "oneall-social-login"
                 landingPage("Dashboard")
-                scriptedRedirect("StarterSiteRedirectScript.groovy")
-                scriptedRedirectParam("Default Redirect Page", "/dashboard")
                 loginService(OneAllLoginService.SERVICE_IDENTIFIER)
                 provider("google")
                 mode(SocialLoginMode.Login)
