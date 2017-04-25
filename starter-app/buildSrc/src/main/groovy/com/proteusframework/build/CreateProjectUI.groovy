@@ -557,9 +557,16 @@ bower_components/
     def createDatabase(String dbName, String dbUser, ProjectModel model)
     {
         def envp = System.getenv().collect({k, v -> "${k}=${v}"})
-        def createUser = '/usr/bin/createuser'
-        def createDb = '/usr/bin/createdb'
-        def pgRestore = '/usr/bin/pg_restore'
+
+        def createUser = (new File('/usr/local/bin/createuser').canExecute()
+            ? '/usr/local/bin/createuser'
+            : '/usr/bin/createuser')
+        def createDb = (new File('/usr/local/bin/createdb').canExecute()
+            ? '/usr/local/bin/createdb'
+            : '/usr/bin/createdb')
+        def pgRestore = (new File('/usr/local/bin/pg_restore').canExecute()
+            ? '/usr/local/bin/pg_restore'
+            : '/usr/bin/pg_restore')
         def errors = []
         if(new File(createUser).canExecute()
             && new File(createDb).canExecute()
