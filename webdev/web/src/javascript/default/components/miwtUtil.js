@@ -42,21 +42,14 @@
         // prevents overriding previous submit_options by 'composition'
         var submit_options = this.submit_options || {};
         delete this.submit_options; // in case it's already a getter/setter
-        for(var i in options){
-            var option = submit_options[i];
-            submit_options[i] = extend(submit_options[i], options[i]);
-        }
         this.submit_options = submit_options;
 
         // prevents future overriding of these submit_options by 'composition'
         var wrapped = wrap(this.submit_options, function(oldVal, newVal){
-            var f,g,i,result={};
-            for(i in oldVal) result[i] = oldVal[i];
-            for(i in newVal){
-                g=newVal[i],f=result[i];
-                result[i] = extend(f,g);
+            for(var i in newVal){
+                oldVal[i] = extend(oldVal[i],newVal[i]);
             }
-            return result;
+            return oldVal;
         });
 
         Object.defineProperty(this, 'submit_options', {
@@ -64,6 +57,9 @@
             set: wrapped,
             configurable: true // allows deletion of submit_options
         });
+
+        // extend submit_options
+        this.submit_options = options;
     }
 
     // only try if jQuery exists
