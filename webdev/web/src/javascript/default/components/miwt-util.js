@@ -13,6 +13,8 @@
  window.$miwt(document.querySelector('.miwt-form'), {
   // miwt options
 })
+
+ 'this' is bound to form element within miwt option functions
  */
 (function($){
 
@@ -26,28 +28,29 @@
 
     // not really function composition
     function compose(f,g){
+        var _this = this;
         return function(){
-            f.apply(undefined, arguments);
-            return g.apply(undefined, arguments);
+            f.apply(_this, arguments);
+            return g.apply(_this, arguments);
         }
     }
 
     // composes functions or provides default to oldVal
     function extend(oldVal, newVal){
-        if(oldVal && oldVal instanceof Function) return compose(oldVal, newVal);
+        if(oldVal && oldVal instanceof Function) return compose.call(this, oldVal, newVal);
         else return newVal || oldVal;
     }
 
     function init(options){
         // prevents overriding previous submit_options by 'composition'
+        var _this = this;
         var submit_options = this.submit_options || {};
         delete this.submit_options; // in case it's already a getter/setter
-        this.submit_options = submit_options;
 
         // prevents future overriding of these submit_options by 'composition'
-        var wrapped = wrap(this.submit_options, function(oldVal, newVal){
+        var wrapped = wrap(submit_options, function(oldVal, newVal){
             for(var i in newVal){
-                oldVal[i] = extend(oldVal[i],newVal[i]);
+                oldVal[i] = extend.call(_this, oldVal[i], newVal[i]);
             }
             return oldVal;
         });
