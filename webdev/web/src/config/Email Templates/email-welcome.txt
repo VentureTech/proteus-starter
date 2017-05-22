@@ -1,0 +1,18 @@
+**************
+WELCOME!
+**************
+
+Hi ${(recipient.name.first)!''} ${(recipient.name.last)!''},
+
+You've been invited to {Platform Name}! All you need to do now is click the button below to complete the sign-up process.
+
+${(action_url!validation_default)!''}
+
+If you have any questions, don't hesitate to send us an email at support@proteus.co.
+
+Thank you,
+ProteusCMS
+
+You received this email from Proteus
+7120 South 29th St., Suite 100 | Lincoln, NE 68508 | 402.420.5024
+Questions? Email us at: support@proteus.co
