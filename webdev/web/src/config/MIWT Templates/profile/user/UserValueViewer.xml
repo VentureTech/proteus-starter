@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<miwt:container
+        xmlns:miwt="http://cms.i2rd.com/xsd/miwt-template"
+        xmlns="http://www.w3.org/1999/xhtml"
+        xsi:schemaLocation="
+    http://www.w3.org/1999/xhtml classpath:/com/i2rd/util/resources/xhtml1-i2rd.xsd
+    http://cms.i2rd.com/xsd/miwt-template classpath:/net/proteusframework/ui/miwt/component/template/TemplateContainer.xsd"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        id="user-value-viewer" element="div" class=""
+        path="profile/user/UserValueViewer.xml">
+    <div class="row user-con">
+        <div class="column left">
+            <miwt:component id="user-image" element="div" class="" />
+        </div>
+        <div class="column right">
+            <div class="row">
+                <miwt:component id="name" element="div" class="" />
+                <miwt:component id="email" element="div" class="" />
+            </div>
+            <div class="row">
+                <miwt:component id="address" element="div" class="" />
+                <miwt:component id="phone" element="div" class="" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="column">
+            <miwt:component id="coaching" element="div" class="" />
+            <miwt:component id="timezone" element="div" class="" />
+            <miwt:component id="login-landingpage" element="section" class="" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="column">
+            <miwt:component id="contact-preference" element="section" class="notification-pref" />
+        </div>
+    </div>
+</miwt:container>

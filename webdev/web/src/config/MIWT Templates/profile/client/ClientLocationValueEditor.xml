@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<miwt:container
+        xmlns:miwt="http://cms.i2rd.com/xsd/miwt-template"
+        xmlns="http://www.w3.org/1999/xhtml"
+        xsi:schemaLocation="
+    http://www.w3.org/1999/xhtml classpath:/com/i2rd/util/resources/xhtml1-i2rd.xsd
+    http://cms.i2rd.com/xsd/miwt-template classpath:/net/proteusframework/ui/miwt/component/template/TemplateContainer.xsd"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        id="client-location" element="div" class=""
+        path="profile/client/ClientLocationValueEditor.xml">
+    <miwt:component id="address-property" element="div" class="" />
+    <div class="row">
+        <miwt:component id="email-property" element="div" class="" />
+        <miwt:component id="phone-property" element="div" class="" />
+    </div>
+</miwt:container>
