@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome</title>
+    <style>
+        .ExternalClass {width:100%;} /* Forces Outlook.com to display emails at full width */
+
+        body {
+            background-color:#F1F2F4;
+            font-family:Arial,sans-serif;
+            font-size:14px;
+            line-height:20px;
+            color:#9699a6; /* fixme -- UPDATE MAIN TEXT COLOR */
+        }
+
+        table {
+            margin: 0 auto;
+            border: 0;
+            border-collapse: collapse;
+            border-spacing: 0 !important;
+        }
+
+        tr, td {
+            border: 0;
+            border-collapse: collapse;
+            border-spacing: 0 !important;
+        }
+
+        h1 {
+            font-family: Arial, sans-serif;
+            font-size: 30px;
+            color: #9699a6; /* fixme -- BRAND SECONDARY COLOR */
+            font-weight: bold;
+            margin: 10px 0 15px;
+            line-height: 1;
+        }
+
+        h2 {
+            color:#3288bd; /* fixme -- BRAND PRIMARY COLOR */
+            font-size:22px;
+            font-weight:bold;
+            margin:25px 0 0;
+            line-height: 30px;
+        }
+
+        a {
+            color: #3288bd; /* fixme -- BRAND PRIMARY COLOR */
+        }
+
+        a.button {
+            min-width: 140px;
+            display: inline-block;
+            padding: 5px 15px;
+            color: #ffffff;
+            text-transform: uppercase;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 5px;
+            background-color: #3288bd; /* fixme -- BRAND PRIMARY COLOR */
+            border-bottom: 3px solid #1a608a; /* fixme -- DARKENED BRAND PRIMARY COLOR */
+        }
+
+        table.preview {
+            background-color:#f1f2f4;
+            margin: 0 auto;
+            border: 0;
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 600px;
+            border-spacing: 0 !important;
+        }
+
+        table.preview td {
+            text-align: center;
+        }
+
+        table.preview td span {
+            width:100%;
+            max-width:600px;
+            margin:20px 0 0 0;
+            padding:15px 0 10px;
+            color:#9699a6;
+            font-family:Arial,sans-serif;
+            font-size:10px;
+            text-align: center;
+            line-height: 1;
+        }
+
+        table.email {
+            background-color:#ffffff;
+            margin: 0 auto;
+            border: 0;
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 600px;
+            border-spacing: 0 !important;
+        }
+
+        table.header {
+            margin: 0 auto;
+            border: 0;
+            border-collapse: collapse;
+            background-color: #3288bd; /* fixme -- BRAND PRIMARY COLOR */
+            width: 100%;
+            color: #ffffff;
+            border-spacing: 0 !important;
+            border-bottom: 5px solid #1a608a; /* fixme -- BRAND DARKENED COLOR */
+        }
+
+        table.header td {
+            border: 0;
+            border-collapse: collapse;
+            padding: 15px 20px 10px;
+            border-spacing: 0 !important;
+            text-align:center;
+        }
+
+        table.header td.logo img {
+            /* fixme -- UPDATE LOGO DIMENSIONS. RECOMMEND KEEPING 200px WIDTH AND UPDATING HEIGHT ACCORDINGLY */
+            width:200px;
+            height:60px;
+        }
+
+        table.content td,
+        table.footer td,
+        table.subfooter td {
+            padding: 10px;
+        }
+
+        table.header a,
+        table.footer a {
+            color: #ffffff;
+        }
+
+        table.header td.type,
+        table.footer td.visit {
+            text-align: right;
+        }
+
+        table.content {
+            background-color: #ffffff;
+        }
+
+        table.content p {
+            color:#9699a6;
+            font-size: 16px;
+            line-height:22px;
+        }
+
+        table.cta-con td.cta {
+            background-color:#3288bd;
+            border: 0;
+            border-collapse: collapse;
+            padding:0;
+            border-spacing: 0 !important;
+            text-align:center;
+            width:220px;
+            height:55px;
+            border-radius:5px;
+        }
+
+        table.cta-con td.cta p {
+            margin:0;
+            box-sizing:border-box;
+            width:100%;
+            height:55px;
+            display:inline-block;
+            color:#ffffff;
+            text-decoration: none;
+            font-weight:bold;
+            font-size:24px;
+            line-height:1;
+            border-radius: 5px;
+        }
+
+        table.cta-con td.cta p a {
+            text-decoration:none;
+            color:#ffffff;
+        }
+
+        table.cta-con td.cta p a span {
+            border-bottom:4px solid #1a608a;
+            display:block;
+            padding-top:15px;
+            width:100%;
+            height:36px;
+            border-radius: 5px;
+        }
+
+        table.cta-copy-con td.cta-copy {
+            padding:5px 0 0 0;
+            text-align:center;
+            width:380px;
+        }
+
+        table.cta-copy-con td.cta-copy p {
+            color:#9699a6;
+            font-size: 12px;
+            line-height:14px;
+            font-style:italic;
+        }
+
+        table.footer {
+            background-color: #9699a6; /* fixme -- FOOTER BACKGROUND COLOR */
+            width: 100%;
+            color: #ffffff;
+        }
+
+        table.footer p {
+            text-align: center;
+            display:block;
+            font-size:10px;
+            line-height:14px;
+            color:#ffffff;
+            margin: 10px 0 0;
+        }
+
+        table.footer td.social {
+            text-align: center;
+        }
+
+        table.footer td.social span {
+            display: inline-block;
+            list-style:none;
+            vertical-align:middle;
+            margin: 0 4px;
+        }
+
+    </style>
+</head>
+
+<body>
+<table class="preview" cellspacing="0">
+    <tr>
+        <td>
+            <span class="teaser-text">
+                <!-- fixme -- PREVIEW TEXT - BE SURE TO UPDATE PLATFORM/COMPANY NAME. -->
+                Welcome to {Platform Name} - we're happy to have you here. Complete your registration below.
+            </span>
+        </td>
+    </tr>
+</table>
+<table class="email" cellspacing="0">
+    <tr>
+        <td>
+
+            <!-- fixme -- UPDATE BRAND COLOR / DARKENED BRAND COLOR IN 'table.header' -->
+            <table class="header" cellspacing="0">
+                <tr>
+                    <td class="logo">
+
+                        <!-- fixme -- UPDATE LOGO, LOGO DIMENSIONS AND 'alt' tag. -->
+                        <img width="200" height="60" src="http://cms.proteus.co/_design/default/application-logo.png" alt="ProteusCMS">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <table class="content" cellspacing="0">
+                <tr>
+                    <td>
+                        <table class="intro">
+                            <tr>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td class="title">
+
+                                                <!-- fixme -- UPDATE 'h1' TO BRAND SECONDARY and VERBIAGE IF NECESSARY -->
+                                                <h1>
+                                                    WELCOME!
+                                                </h1>
+
+                                                <!-- fixme -- UPDATE 'h2' TO BRAND COLOR and VERBIAGE IF NECESSARY -->
+                                                <h2>
+                                                    Hi ${(recipient.name.first)!''} ${(recipient.name.last)!''},
+                                                </h2>
+
+                                                <!-- fixme -- UPDATE INTRO TEXT AS NECESSARY. Be sure to update Platform/Company Name AND EMAIL ADDRESS -->
+                                                <p>
+                                                    You've been invited to {Platform Name}! All you need to do now is click the button below to complete the sign-up process.
+                                                </p>
+
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table class="cta-con">
+                                        <tr>
+                                            <td width="164" style="padding:0; text-align:center; width:164px;">
+                                            </td>
+
+                                            <!-- fixme -- UPDATE 'td' BACKGROUND COLOR TO BRAND COLOR -->
+                                            <td class="cta" width="220" height="55">
+                                                <p>
+                                                    <a href="${action_url!validation_default}" target="_blank">
+
+                                                        <!-- fixme -- UPDATE 'span' BORDER-BOTTOM COLOR TO DARKENED BRAND COLOR -->
+                                                        <span>
+                                                            Let's Go!
+                                                        </span>
+                                                    </a>
+                                                </p>
+                                            </td>
+                                            <td width="164" style="padding:0; text-align:center; width:164px;">
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table class="cta-copy-con">
+                                        <tr>
+                                            <td width="89" style="padding:0; text-align:center; width:89px;">
+                                            </td>
+                                            <td class="cta-copy" width="380">
+                                                <p>
+                                                    <em>or copy and paste the following link into your browser:<br />
+
+                                                        <!-- fixme -- UPDATE LINK COLOR TO BRAND COLOR -->
+                                                        <a href="${action_url!validation_default}" target="_blank">${action_url!validation_default}</a>
+                                                    </em>
+                                                </p>
+                                            </td>
+                                            <td width="89" style="padding:0; text-align:center; width:89px;">
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <!-- fixme -- UPDATE PLATFORM/COMPANY SUPPORT EMAIL ADDRESS -->
+                                    <p>If you have any questions, don't hesitate to send us an email at <a href="mailto:support@proteus.co">support@proteus.co</a>.</p>
+                                    <p>Thank you,<br />
+                                        <!-- fixme -- UPDATE PLATFORM/COMPANY NAME -->
+                                        {Proteus}
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+
+            <!-- fixme -- UPDATE BACKGROUND COLOR OF 'table.footer' -->
+            <table class="footer" cellspacing="0">
+                <tr>
+                    <td>
+                        <p>
+                            <!-- fixme -- UPDATE PLATFORM/COMPANY NAME -->
+                            You received this email from {Proteus}<br />
+
+                            <!-- fixme -- UPDATE PLATFORM/COMPANY CONTACT INFORMATION -->
+                            7120 South 29th St., Suite 100 | Lincoln, NE 68508 | 402.420.5024<br />
+
+                            <!-- fixme -- UPDATE PLATFORM/COMPANY EMAIL ADDRESS -->
+                            Questions? <a href="{mailto:support@proteus.co}" target="_blank">{support@proteus.co}</a>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="social">
+
+                        <!-- fixme -- REMOVE ANY NON-APPLICABLE SOCIAL MEDIA LINKS -->
+                        <span>
+                            <!-- fixme -- UPDATE LinkedIn URL -->
+                            <a href="{linkedInURL}"><img src="http://cms.proteus.co/_design/default/icons/email-linkedin.png" alt="LinkedIn" /></a>
+                        </span>
+                        <span>
+                            <!-- fixme -- UPDATE Twitter URL -->
+                            <a href="{twitterURL}"><img src="http://cms.proteus.co/_design/default/icons/email-twitter.png" alt="Twitter" /></a>
+                        </span>
+                        <span>
+                            <!-- fixme -- UPDATE Facebook URL -->
+                            <a href="{facebookURL}"><img src="http://cms.proteus.co/_design/default/icons/email-facebook.png" alt="Facebook" /></a>
+                        </span>
+                        <span>
+                            <!-- fixme -- UPDATE Blog URL -->
+                            <a href="{blogURL}"><img src="http://cms.proteus.co/_design/default/icons/email-blog.png" alt="Blog" /></a>
+                        </span>
+                        <span>
+                            <!-- fixme -- UPDATE Instagram URL -->
+                            <a href="{instagramURL}"><img src="http://cms.proteus.co/_design/default/icons/email-instagram.png" alt="Instagram" /></a>
+                        </span>
+                        <span>
+                            <!-- fixme -- UPDATE Pinterest URL -->
+                            <a href="{pinterestURL}"><img src="http://cms.proteus.co/_design/default/icons/email-pinterest.png" alt="Pinterest" /></a>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
