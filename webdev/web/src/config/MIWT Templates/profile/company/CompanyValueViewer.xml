@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<miwt:container
+        xmlns:miwt="http://cms.i2rd.com/xsd/miwt-template"
+        xmlns="http://www.w3.org/1999/xhtml"
+        xsi:schemaLocation="
+    http://www.w3.org/1999/xhtml classpath:/com/i2rd/util/resources/xhtml1-i2rd.xsd
+    http://cms.i2rd.com/xsd/miwt-template classpath:/net/proteusframework/ui/miwt/component/template/TemplateContainer.xsd"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        id="company-value-viewer" element="div" class=""
+        path="profile/company/CompanyValueViewer.xml">
+
+    <div class="prop-column left">
+        <div class="row">
+            <miwt:component id="logos" element="div" class="" />
+        </div>
+    </div>
+
+    <div class="prop-column right">
+        <div class="row">
+            <miwt:component id="name" element="div" class="" />
+            <miwt:component id="address" element="div" class="" />
+            <miwt:component id="phone" element="div" class="" />
+        </div>
+        <div class="row">
+            <miwt:component id="website" element="div" class="" />
+            <miwt:component id="hostname" element="div" class="" />
+        </div>
+        <div class="row">
+            <miwt:component id="linkedin" element="div" class="" />
+            <miwt:component id="twitter" element="div" class="" />
+            <miwt:component id="facebook" element="div" class="" />
+        </div>
+    </div>
+</miwt:container>
