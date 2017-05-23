@@ -23,10 +23,9 @@ label.custom-file {
 	vertical-align: middle;
 	user-select: none;
 	border: $input-btn-border-width solid transparent;
-	@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-border-radius-sm);
-	@include transition($btn-transition);
-
-	@include button-variant($color-app-red, $color-white, $color-app-red);
+	@include button-size($btn-padding-y, $btn-padding-x, $font-default-size, $btn-border-radius);
+	@include button-variant($color-app-brand, $color-white, $color-app-brand);
+	text-transform: uppercase;
 
 	cursor: pointer;
 
