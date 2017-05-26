@@ -19,6 +19,9 @@ import com.i2rd.lib.LibraryConfiguration
 import experimental.cms.dsl.*
 import net.proteusframework.cms.PageElementModelImpl
 import net.proteusframework.cms.component.ContentElement
+import net.proteusframework.cms.login.social.ui.SocialLoginContentBuilder
+import net.proteusframework.cms.login.social.ui.SocialLoginElement
+import net.proteusframework.cms.login.social.ui.SocialLoginMode
 
 /**
  * Social Login DSL Content

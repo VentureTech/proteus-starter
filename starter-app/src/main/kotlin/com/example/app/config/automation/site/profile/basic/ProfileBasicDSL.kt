@@ -12,9 +12,7 @@
 package com.example.app.config.automation.site.profile.basic
 
 import com.example.app.config.ProjectInformation
-import com.example.app.login.oneall.service.OneAllLoginService
 import com.example.app.login.social.ui.SocialLogin
-import com.example.app.login.social.ui.SocialLoginMode
 import com.example.app.profile.ui.ApplicationFunctions.*
 import com.example.app.support.service.AppUtil
 import com.i2rd.cms.bean.ResetPasswordBean.AuthenticationMeans.EMAIL_ONLY
@@ -25,6 +23,8 @@ import experimental.cms.dsl.content.*
 import net.proteusframework.cms.component.page.PageProperties.Type.page
 import net.proteusframework.cms.component.page.PageProperties.Type.page_template
 import net.proteusframework.cms.component.page.layout.BoxDescriptor.*
+import net.proteusframework.cms.login.oneall.service.OneAllLoginService
+import net.proteusframework.cms.login.social.ui.SocialLoginMode
 import net.proteusframework.email.config.ContentElementEmailConfigType
 import net.proteusframework.users.model.AuthenticationMethodSecurityLevel.SHARED_IDENTIFIER
 import org.springframework.context.annotation.Profile

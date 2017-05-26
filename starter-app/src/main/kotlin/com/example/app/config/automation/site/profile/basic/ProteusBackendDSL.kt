@@ -12,13 +12,13 @@
 package com.example.app.config.automation.site.profile.basic
 
 import com.example.app.config.ProjectInformation
-import com.example.app.login.oneall.service.OneAllLoginService
 import com.example.app.login.social.ui.SocialLogin
-import com.example.app.login.social.ui.SocialLoginMode
 import experimental.cms.dsl.AppDefinition
 import experimental.cms.dsl.content.Composite
 import experimental.cms.dsl.content.HTML
 import experimental.cms.dsl.content.Text
+import net.proteusframework.cms.login.oneall.service.OneAllLoginService
+import net.proteusframework.cms.login.social.ui.SocialLoginMode
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
