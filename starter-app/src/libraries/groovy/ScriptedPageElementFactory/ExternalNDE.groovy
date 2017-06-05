@@ -57,16 +57,8 @@ class ExternalNDEEditor
     static final DEFAULT_MARKUP = '''\
 <ndes>
 <!--
-\tInclude external CSS or JavaScript as an NDE. Any number of urinde or stringnde
-\telements may appear here. Each urinde has a uri attribute, which may be any
-\tvalid URI, and a type attribute, which may be either CSS or JS.
-
-\tExamples:
-
-\t<urinde type="CSS" uri="//example.com/style.css" />
-\t<urinde type="JS" uri="//example.com/script.js" />
-
-\tThe stringnde element allows you to specify the link content directly.
+\tInclude external CSS or JavaScript as an NDE. Any number of stringnde elements
+\tmay appear here. 
 
 \tExample:
 
@@ -116,13 +108,14 @@ class ExternalNDEGenerator
             def ndesContent = builder.getProperty(ExternalNDEProperty.ndes)
             def document = Jsoup.parse(ndesContent)
             Elements ndes = document.select("urinde")
-            ndes.each {Element el ->
-                final url = resp.createURL()
-                url.absolute = true
-                final base = new URI(url.getURL(true))
-                final uri = base.resolve(el.attr('uri'))
-                NDEs << new URINDE(URI: uri, type: NDEType.valueOf(el.attr('type')))
-            }
+// See PF-1788
+//            ndes.each {Element el ->
+//                final url = resp.createURL()
+//                url.absolute = true
+//                final base = new URI(url.getURL(true))
+//                final uri = base.resolve(el.attr('uri'))
+//                NDEs << new URINDE(URI: uri, type: NDEType.valueOf(el.attr('type')))
+//            }
             ndes = document.select("stringnde")
             ndes.each {Element el ->
                 final sw = new StringWriter()
