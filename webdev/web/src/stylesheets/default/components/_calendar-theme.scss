@@ -1,0 +1,10 @@
+@import "../mixins/calendar";
+
+div.calendar {
+  @include calendar-theme(
+    $color-app-light-grey, //Primary color for calendar day number buttons & month/year heading
+    $color-app-brand, //Background color for day of week names, week numbers
+    $color-app-black, //Main font color throughout calendar (day numbers, etc.)
+    $color-white //Font color for day of week name and week numbers
+  );
+}
