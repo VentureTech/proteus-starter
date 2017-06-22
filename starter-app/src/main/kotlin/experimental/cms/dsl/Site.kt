@@ -12,6 +12,8 @@
 package experimental.cms.dsl
 
 import com.i2rd.cms.dao.CmsSiteDefinitionDAO
+import net.proteusframework.cms.component.page.PageProperties
+import net.proteusframework.cms.component.page.layout.BoxDescriptor
 import net.proteusframework.core.spring.ApplicationContextUtils
 import net.proteusframework.email.EmailConfigType
 import net.proteusframework.internet.http.RequestError
@@ -126,20 +128,37 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
     }
 
     private fun _populateModelBoxes(layout: Layout, cmsBox: net.proteusframework.cms.component.page.layout.Box) {
-        val box = Box(cmsBox.name, cmsBox.boxDescriptor, cmsBox.defaultContentArea, cmsBox.wrappingContainerCount,
-            cmsBox.cssName, cmsBox.styleClass)
+        val defaultContentArea: PageProperties.Type? = getDefaultContentArea(cmsBox)
+        val box = Box(cmsBox.name, cmsBox.boxDescriptor, defaultContentArea, cmsBox.wrappingContainerCount,
+            cmsBox.cssName?:"", cmsBox.styleClass?:"")
         layout.add(box)
         for(cmsChildBox in cmsBox.children) {
             _populateModelBoxes(box, cmsChildBox)
         }
     }
     private fun _populateModelBoxes(parent: Box, cmsBox: net.proteusframework.cms.component.page.layout.Box) {
-        val box = Box(cmsBox.name, cmsBox.boxDescriptor, cmsBox.defaultContentArea, cmsBox.wrappingContainerCount,
-            cmsBox.cssName, cmsBox.styleClass)
+        val defaultContentArea: PageProperties.Type? = getDefaultContentArea(cmsBox)
+        val box = Box(cmsBox.name, cmsBox.boxDescriptor, defaultContentArea, cmsBox.wrappingContainerCount,
+            cmsBox.cssName?:"", cmsBox.styleClass?:"")
         parent.add(box)
         for(cmsChildBox in cmsBox.children) {
             _populateModelBoxes(box, cmsChildBox)
         }
+    }
+
+    private fun getDefaultContentArea(cmsBox: net.proteusframework.cms.component.page.layout.Box): PageProperties.Type? {
+        val defaultContentArea: PageProperties.Type?
+        if (cmsBox.defaultContentArea == null) {
+            defaultContentArea = when (cmsBox.boxDescriptor) {
+                BoxDescriptor.HEADER -> PageProperties.Type.page_template
+                BoxDescriptor.FOOTER -> PageProperties.Type.page_template
+                BoxDescriptor.ENCLOSING -> null
+                else -> PageProperties.Type.page
+            }
+        } else {
+            defaultContentArea = cmsBox.defaultContentArea
+        }
+        return defaultContentArea
     }
 
     internal fun _getExistingTemplate(existingId: String): Template {
@@ -298,6 +317,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
         siteConstructedCallbacks.add({_ ->
             page.path = resolvePlaceholders(path)
             page.apply(init)
+            assert(page.template.id.isNotEmpty(), {"Must define a template"})
         })
         return page
     }
