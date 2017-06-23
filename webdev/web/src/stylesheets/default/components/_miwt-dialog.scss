@@ -75,13 +75,14 @@ div.window.dialog /*specificity*/ {
 		border-bottom-left-radius: $border-radius-lg;
 		border-bottom-right-radius: $border-radius-lg;
 		z-index: 502;
+
+		.prop-editor {
+			padding: 0;
+		}
 	}
 	.actions.bottom, .actions.top {
 		width: 100%;
 		text-align: right;
-		border-top: 1px #ccc solid;
-		padding: 20px 0 15px;
-		border-top: 1px solid $modal-footer-border-color;
 		@include clearfix(); // clear it in case folks use .pull-* classes on buttons
 
 		// Properly space out buttons
@@ -103,12 +104,13 @@ div.window.dialog /*specificity*/ {
 		border-top: none;
 		border-bottom: 1px solid $modal-footer-border-color;
 		padding: 0 0 15px;
+		margin: 0 0 1rem;
 	}
 
 	.actions.bottom {
-		padding-top: 1.5rem;
-		margin-top: 1.5rem;
 		border-top: 1px solid $color-lightest-grey;
+		margin: 1rem 0 0;
+		padding: 15px 0 0;
 	}
 
 	&::before {
@@ -380,6 +382,11 @@ div.window.dialog /*specificity*/ {
 
 			.prop {
 				text-align: left;
+				flex: 1 0 50%;
+
+				input {
+					width: 100%;
+				}
 			}
 		}
 	}
