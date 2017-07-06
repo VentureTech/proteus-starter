@@ -1,0 +1,292 @@
+/**
+ * Mixin to build out the calendar theme
+ * Created by djacobi on 6/12/17.
+ */
+
+@import "../config/base-vars";
+
+@function set-secondary-font-color($color) {
+  @if ($color == #fff) {
+    @return #a2a2a2;
+  } @else if (lightness($color) > 50) {
+    @return darken($color, 28%)
+  } @else {
+    @return lighten($color, 20%);
+  }
+}
+
+@mixin calendar-theme($bg-cal-color-primary, $bg-cal-color-secondary, $font-cal-color-primary, $font-cal-color-secondary) {
+  $bg-cal-color-tertiary: lighten($bg-cal-color-primary, 10%);
+
+  position: relative;
+  border: none;
+  font-size: 13px;
+  color: $font-cal-color-primary;
+  cursor: default;
+  background: $bg-cal-color-primary;
+  font-family: Arial, sans-serif;
+
+  table {
+    border: none;
+  }
+
+  /* Header part -- contains navigation buttons and day names. */
+  .button { /* "<<", "<", ">", ">>" buttons have this class */
+    text-align: center; /* They are the navigation buttons */
+    padding: 4px; /* Make the buttons seem like they're pressing */
+    cursor: pointer;
+    color: set-secondary-font-color($bg-cal-color-primary);
+  }
+
+  .nav {
+    background: lighten($bg-cal-color-secondary, 12%);
+    color: set-secondary-font-color(lighten($bg-cal-color-secondary, 12%));
+    position: relative;
+
+    &::after {
+      content: '';
+      display: block;
+      border-top: 4px solid set-secondary-font-color(lighten($bg-cal-color-secondary, 12%));
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+      position: absolute;
+      right: 4px;
+      bottom: 4px;
+    }
+  }
+
+  thead {
+
+    .title { /* This holds the current "month, year" */
+      font-weight: bold; /* Pressing it will take you to the current date */
+      text-align: center;
+      background: $bg-cal-color-tertiary;
+      color: set-secondary-font-color($bg-cal-color-tertiary);
+      padding: 4px;
+    }
+
+    .headrow { /* Row <TR> containing navigation buttons */
+      background: lighten($bg-cal-color-secondary, 12%);
+      color: $font-cal-color-primary;
+
+      .hilite {
+        background: $bg-cal-color-secondary;
+        color: set-secondary-font-color($bg-cal-color-secondary);
+      }
+
+      .button {
+        color: set-secondary-font-color(lighten($bg-cal-color-secondary, 12%));
+      }
+    }
+
+    .daynames { /* Row <TR> containing the day names */
+      background: $bg-cal-color-secondary;
+
+      .hilite {
+        background: lighten($bg-cal-color-secondary, 12%);
+        color: set-secondary-font-color(lighten($bg-cal-color-secondary, 12%));
+      }
+    }
+
+    .name { /* Cells <TD> containing the day names */
+      padding: 4px;
+      text-align: center;
+      color: $font-cal-color-secondary;
+    }
+
+    .weekend { /* How a weekend day name shows in header */
+      color: set-secondary-font-color($bg-cal-color-secondary);
+    }
+
+    .active { /* Active (pressed) buttons in header */
+      background-color: darken($bg-cal-color-secondary, 12%);
+      color: set-secondary-font-color(darken($bg-cal-color-secondary, 12%))
+    }
+  }
+
+  /* The body part -- contains all the days in month. */
+  tbody {
+
+    .rowhilite td {
+      background: $bg-cal-color-tertiary;
+
+      &.wn {
+        background: $bg-cal-color-secondary;
+      }
+
+      &.weekend {
+        color: set-secondary-font-color($bg-cal-color-primary);
+      }
+    }
+
+    td {
+      cursor: pointer;
+
+      &.day { /* Cells <TD> containing month days dates */
+        width: 32px;
+        color: $font-cal-color-primary;
+        text-align: center;
+        padding: 4px;
+
+        &.othermonth {
+          font-size: 80%;
+          background-color: $bg-cal-color-tertiary;
+          color: set-secondary-font-color($bg-cal-color-tertiary);
+
+          &.oweekend {
+            color: set-secondary-font-color($bg-cal-color-tertiary);
+          }
+        }
+      }
+
+      &.hilite { /* Hovered cells <TD> */
+        background: lighten($bg-cal-color-primary, 20%);
+        box-shadow: inset 0 0 5px rgba(0,0,0,0.65);
+        color: set-secondary-font-color(lighten($bg-cal-color-primary, 20%))
+      }
+
+      &.active { /* Active (pressed) cells <TD> */
+        background: darken($bg-cal-color-primary, 8%);
+        box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+      }
+
+      &.selected { /* Cell showing today date */
+        font-weight: bold;
+        background: $bg-cal-color-secondary;
+        color: set-secondary-font-color($bg-cal-color-secondary);
+
+        &.weekend {
+          @extend .selected;
+        }
+      }
+
+      &.wn { /* Week numbers */
+        padding: 2px 3px 2px 2px;
+        background: $bg-cal-color-secondary;
+        color: $font-cal-color-secondary;
+      }
+
+      &.weekend { /* Cells showing weekend days */
+        color: set-secondary-font-color($bg-cal-color-primary);
+
+        &.hilite {
+          color: set-secondary-font-color(lighten($bg-cal-color-primary, 20%));
+        }
+      }
+
+      &.today {
+        font-weight: bold;
+        background: lighten($bg-cal-color-secondary, 12%);
+        color: set-secondary-font-color(lighten($bg-cal-color-secondary, 12%));
+      }
+    }
+
+    .disabled {
+      color: #999;
+    }
+
+    .emptycell { /* Empty cells (the best is to hide them) */
+      visibility: hidden;
+    }
+
+    .emptyrow { /* Empty row (some months need less than 6 rows) */
+      display: none;
+    }
+  }
+
+  /* The footer part -- status bar and "Close" button */
+  tfoot {
+
+    .footrow { /* The <TR> in footer (only one right now) */
+      text-align: center;
+      background: lighten($bg-cal-color-secondary, 12%);
+      color: set-secondary-font-color(lighten($bg-cal-color-secondary, 12%));
+    }
+
+    .ttip { /* Tooltip (status bar) cell <TD> */
+      padding: 2px;
+      background: lighten($bg-cal-color-secondary, 12%);
+      color: set-secondary-font-color(lighten($bg-cal-color-secondary, 12%));
+    }
+
+    .hilite { /* Hover style for buttons in footer */
+      background: $bg-cal-color-secondary;
+    }
+
+    .active { /* Active (pressed) style for buttons in footer */
+      background: darken($bg-cal-color-secondary, 8%);
+    }
+  }
+
+  /* Combo boxes (menus that display months/years for direct selection) */
+  .combo {
+    position: absolute;
+    display: none;
+    top: 0;
+    left: 0;
+    width: 4em;
+    cursor: default;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.45);
+    background: lighten($bg-cal-color-secondary, 12%);
+    color: $font-cal-color-primary;
+    font-size: 11px;
+    z-index: 100;
+
+    .label,
+    .label-IEfix {
+      text-align: center;
+      padding: 4px;
+      border-radius: 0;
+      font-size: 100%;
+      line-height: 1.25;
+      width: 100%;
+    }
+
+    .label-IEfix {
+      width: 4em;
+    }
+
+    .hilite {
+      background: $bg-cal-color-secondary;
+    }
+
+    .active {
+      background: $bg-cal-color-secondary;
+      font-weight: bold;
+    }
+  }
+
+  /* ----- TIME */
+  td.time {
+    padding: 4px;
+    text-align: center;
+    background-color: lighten($bg-cal-color-secondary, 12%);
+
+    .hour,
+    .minute,
+    .ampm {
+      padding: 0 3px 0 4px;
+      font-weight: 600;
+      color: $font-cal-color-primary;
+    }
+
+    .ampm {
+      text-align: center;
+    }
+
+    .colon {
+      padding: 0px 2px 0px 3px;
+      font-weight: 600;
+    }
+
+    span.hilite {
+      background-color: $bg-cal-color-secondary;
+      color: $font-cal-color-primary;
+    }
+
+    span.active {
+      background-color: $bg-cal-color-primary;
+      color: $font-cal-color-primary;
+    }
+  }
+}

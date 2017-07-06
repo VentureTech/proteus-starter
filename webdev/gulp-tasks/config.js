@@ -19,7 +19,7 @@ gulp.task('config:build', function(cb) {
 });
 
 gulp.task('config:files', function() {
-    return gulp.src('./web/src/config/**/*')
+    gulp.src('./web/src/config/Email Templates/*')
         .pipe(inlineCss({
             applyStyleTags: true,
             applyLinkTags: true,
@@ -27,7 +27,10 @@ gulp.task('config:files', function() {
             removeLinkTags: false
         }))
         .pipe(removeHtmlComments())
-        .pipe(gulp.dest('./build/ConfigurationFiles/'));
+        .pipe(gulp.dest('./build/ConfigurationFiles/Email Templates/'));
+
+    gulp.src('./web/src/config/MIWT Templates/**')
+        .pipe(gulp.dest('./build/ConfigurationFiles/MIWT Templates/'));
 });
 
 gulp.task('config:clean', function(cb) {
