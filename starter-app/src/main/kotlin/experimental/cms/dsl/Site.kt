@@ -317,7 +317,6 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
         siteConstructedCallbacks.add({_ ->
             page.path = resolvePlaceholders(path)
             page.apply(init)
-            assert(page.template.id.isNotEmpty(), {"Must define a template"})
         })
         return page
     }
