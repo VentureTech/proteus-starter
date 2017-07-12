@@ -1,16 +1,10 @@
 @import "../config/base-vars";
 @import "../../../../../bower_components/bootstrap/scss/mixins/buttons";
-
+@import "../../../../../bower_components/bootstrap/scss/buttons";
 
 .btn {
 	/* Define a default background color. */
 	@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border);
-}
-
-@import "../../../../../bower_components/bootstrap/scss/buttons";
-
-.btn {
-	font-family: $font-roboto;
 }
 
 .actions {
