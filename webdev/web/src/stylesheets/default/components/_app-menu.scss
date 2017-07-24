@@ -6,7 +6,7 @@
 	width: 100%;
 	height: auto;
 	display: flex;
-	flex-flow: row wrap;
+	flex-flow: row nowrap;
 	box-shadow: 0 2px 2px rgba(0,0,0,0.1);
 
 	> div {
@@ -16,15 +16,15 @@
 	.logo-con {
 		flex: 1 0 100%;
 		justify-content: space-between;
-		margin-right: 2rem;
+		margin-right: .5rem;
 		padding: .75rem 0;
-		max-width: 10rem;
+		max-width: 7rem;
 
 		@include media-breakpoint-up(lg) {
+			margin-right: 1rem;
 			flex: 1 0 auto;
 			justify-content: flex-start;
 			max-width: 12rem;
-			margin-right: 1rem;
 		}
 
 		a {
@@ -60,7 +60,7 @@
 		overflow: hidden;
 
 		@include media-breakpoint-up(lg) {
-			flex: 2 1 75%;
+			flex: 2 1 60%;
 			align-items: center;
 			display: flex;
 			flex-flow: row nowrap;
@@ -387,18 +387,37 @@
 			width: 100%;
 			position: absolute;
 			left: 0;
+			transition: all .5s ease-out;
 
 			&.top {
 				top: 0;
+				transform: rotate(0);
+
+				.sidebar-open & {
+					transform: rotate(-45deg);
+					transform-origin: top right;
+				}
 			}
 
 			&.middle {
 				top: 50%;
 				margin-top: -2px;
+				opacity: 1;
+
+				.sidebar-open & {
+					opacity: 0;
+				}
 			}
 
 			&.bottom {
 				bottom: 0;
+				transform: rotate(0);
+
+				.sidebar-open & {
+					transform: rotate(45deg);
+					transform-origin: bottom right;
+					bottom: -3px;
+				}
 			}
 		}
 	}
@@ -472,7 +491,7 @@
 	left: 1rem;
 	top: .75rem;
 	font-size: .75rem;
-	width: 8.5rem !important;
+	width: 6rem !important;
 	color: transparent !important;
 	text-align: right;
 }
