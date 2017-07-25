@@ -8,29 +8,6 @@
   box-shadow: 3px 3px 10px transparentize($color-black, 0.55);
 }
 
-@mixin glyphAdd($html-entity, $size: 13px, $color: '') {
-  font-family: $font-glyph-lib;
-  content: $html-entity;
-  //	width: $size;
-  //	height: $size;
-  font-size: $size;
-  @if ($color != '') {
-    color: $color;
-  }
-  //background-color: $color-cloud-grey;
-  // generated from grunt task
-  display: inline-block;
-  vertical-align: middle;
-  line-height: 1;
-  font-weight: normal;
-  font-style: normal;
-  text-decoration: inherit;
-  text-transform: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 @mixin style-message($color-bg, $color-border, $color-text, $html-entity-icon: '') {
   background-color: $color-bg;
   border: 1px solid $color-border;
