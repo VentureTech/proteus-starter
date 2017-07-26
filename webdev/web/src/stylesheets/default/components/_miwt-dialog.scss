@@ -175,6 +175,10 @@ div.window.dialog /*specificity*/ {
 
 	}
 
+	.prop-body div.prop {
+		display: block;
+	}
+
 	.prop-group.time {
 		label.prop-group-title {
 			margin-bottom: -2.5rem;
