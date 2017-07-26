@@ -9,13 +9,14 @@ require('./gulp-tasks/styles');
 require('./gulp-tasks/javascript');
 require('./gulp-tasks/design');
 require('./gulp-tasks/favicons');
+require('./gulp-tasks/iconfont');
 require('./gulp-tasks/config');
 require('./gulp-tasks/artifact/zip');
 require('./gulp-tasks/artifact/publish');
 
 gulp.task('default', ['build']);
 
-gulp.task('build', ['styles', 'design', 'javascript', 'favicons', 'config']);
+gulp.task('build', ['styles', 'design', 'javascript', 'config']);
 gulp.task('clean', function(callback) {
     del(['./build/']).then(function(data) {
         callback();
