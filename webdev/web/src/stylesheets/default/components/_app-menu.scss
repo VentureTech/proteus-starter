@@ -180,14 +180,6 @@
 
 					> span {
 						align-self: center;
-						&::before {
-							font-family: $font-glyph-lib;
-							font-size: 1.75rem;
-							margin: -5px 8px 0 0;
-							display: inline-block;
-							vertical-align: middle;
-							font-weight: 200;
-						}
 					}
 				}
 
@@ -248,30 +240,6 @@
 
 					}
 
-				}
-
-				&.nav-dashboard a.menuitemlabel span::before {
-					content: '\f0e4';
-				}
-
-				&.nav-data a.menuitemlabel span::before {
-					content: '\f1e0';
-				}
-
-				&.nav-activity-log a.menuitemlabel span::before {
-					content: '\f126';
-				}
-
-				&.nav-validation-log a.menuitemlabel span::before {
-					content: '\f00c';
-				}
-
-				&.nav-config a.menuitemlabel span::before {
-					content: '\f1de';
-				}
-
-				&.nav-help a.menuitemlabel span::before {
-					content: '\f059';
 				}
 
 			}
