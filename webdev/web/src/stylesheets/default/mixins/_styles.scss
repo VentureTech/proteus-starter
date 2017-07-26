@@ -8,8 +8,8 @@
   box-shadow: 3px 3px 10px transparentize($color-black, 0.55);
 }
 
-@mixin glyphAdd($html-entity, $size: 13px, $color: '') {
-  font-family: $font-glyph-lib;
+@mixin glyphAdd($html-entity, $font-family: $font-glyph-lib, $size: 13px, $color: '') {
+  font-family: $font-family;
   content: $html-entity;
   //	width: $size;
   //	height: $size;
@@ -43,6 +43,7 @@
   @if ($html-entity-icon != '') {
     &:before {
       @include glyphAdd($html-entity-icon, $size: 18px, $color: $color-text);
+      vertical-align: baseline;
     }
   } @else {
     &:before {
