@@ -4,16 +4,22 @@
 
 /* ==========================================================================
    Basic Styles for Property Editor/Viewer
-   baiken@vipasolutions.com, sbenes
-   Updated July 25, 2014
+   baiken@vipasolutions.com, sbenes, djacobi
+   Updated June 23, 2017
    ========================================================================== */
+
+%maxWidth {
+	width: 100%;
+	max-width: 65rem;
+	margin: 0 auto;
+}
 
 /* Form Elements
    ========================================================================== */
 
 .prop-wrapper {
 	//max-width: 50rem;
-	max-width: 100%;
+	//max-width: 100%;
 
 	input,
 	textarea {
@@ -81,7 +87,7 @@ input[type=number]{
 
 		&::after {
 			content: ':';
-			padding-left: 3px;
+			padding-left: 1px;
 			display: inline-block;
 		}
 	}
@@ -134,6 +140,7 @@ input[type=number]{
 .prop-viewer,
 .prop-editor {
 	padding: 1rem;
+	@extend %maxWidth;
 }
 
 .prop-viewer {
@@ -156,77 +163,50 @@ input[type=number]{
 	}
 }
 
-/*.company-viewer {
-	max-width: 65rem;
-	width: 100%;
-	margin: 0 auto;
-
-	.prop-body > div {
-		display: flex;
-		flex-flow: row nowrap;
-	}
-
-	.prop-column.left {
-		flex: 1 0 35%;
-		max-width: 35%;
-
-		.prop {
-			text-align: center;
-
-			label {
-				text-align: left;
-			}
-		}
-	}
-
-	.prop-column.right {
-		flex: 1 0 62%;
-		margin-left: 1.5rem;
-		padding-left: 1.75rem;
-		border-left: 1px solid $color-lighter-grey;
-
-		.row {
-			display: flex;
-			flex-direction: row;
-			flex-wrap: nowrap;
-			justify-content: flex-start;
-
-			> .prop {
-				flex: 1 0 auto;
-				max-width: 33%;
-			}
-		}
-	}
-}*/
-
 .company-editor, .company-viewer,
 .client-editor, .client-viewer {
-	width: 100%;
-	max-width: 65rem;
-	margin: 0 auto;
 
 	.prop-body > div {
 		display: flex;
-		flex-flow: row nowrap;
+		flex-flow: column nowrap;
+
+		@include media-breakpoint-up(md) {
+			flex-flow: row nowrap;
+		}
 	}
 }
 
 .prop-column.left {
-	flex: 1 0 35%;
-	max-width: 35%;
+	flex: 1 0 100%;
+	max-width: 100%;
+
+	@include media-breakpoint-up(md) {
+		flex: 1 0 35%;
+		max-width: 35%;
+	}
 }
 
 .prop-column.right {
-	flex: 1 0 62%;
-	margin-left: 1.5rem;
-	padding-left: 1.75rem;
-	border-left: 1px solid $color-lighter-grey;
+	flex: 1 0 100%;
+	margin-left: 0;
+	padding-left: 0;
+
+	@include media-breakpoint-up(md) {
+		flex: 1 0 62%;
+		margin-left: 1.5rem;
+		padding-left: 1.75rem;
+		border-left: 1px solid $color-lighter-grey;
+	}
 
 	.row {
 		display: flex;
 		flex-direction: row;
-		flex-wrap: nowrap;
+		flex-wrap: wrap;
 		justify-content: flex-start;
+
+		@include media-breakpoint-up(md) {
+			flex-wrap: nowrap;
+		}
 
 		.prop-group {
 			width: 100%;
@@ -240,8 +220,7 @@ input[type=number]{
 
 			.address-line-1,
 			.address-line-2 {
-				flex: 1 0 auto;
-				width: 100%;
+				flex: 1 0 50%;
 			}
 
 			.city,
@@ -259,6 +238,9 @@ input[type=number]{
 		}
 
 		.prop {
+			@include media-breakpoint-down(sm) {
+				width: 100%;
+			}
 
 			input {
 				width: 100%;
@@ -282,8 +264,13 @@ input[type=number]{
 .company-viewer {
 
 	.prop-column.left {
-		flex: 1 0 35%;
-		max-width: 35%;
+		flex: 1 0 100%;
+		max-width: 100%;
+
+		@include media-breakpoint-up(md) {
+			flex: 1 0 35%;
+			max-width: 35%;
+		}
 
 		.prop {
 			text-align: center;
@@ -296,7 +283,34 @@ input[type=number]{
 
 	.prop-column.right {
 		.row > .prop {
-			flex: 1 0 33%;
+			flex: 1 0 100%;
+
+			@include media-breakpoint-up(md) {
+				flex: 1 0 33%;
+			}
+		}
+	}
+}
+
+.company-editor {
+	.prop.subdomain {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: flex-start;
+
+		label, .instructions-wrapper {
+			flex: 1 0 100%;
+			width: 100%;
+		}
+
+		input.val {
+			flex: 1 0 auto;
+			width: auto;
+		}
+
+		.super-domain-name {
+			flex: 0 1 auto;
+			padding-left: 2px;
 		}
 	}
 }
@@ -309,12 +323,75 @@ input[type=number]{
 	}
 }
 
+.location-view {
 
+	.row {
+		width: 100%;
+		display: flex;
+		flex-flow: row wrap;
+
+		.prop {
+			flex: 1 0 100%;
+
+			@include media-breakpoint-up(md) {
+				flex: 1 0 33%;
+			}
+		}
+	}
+}
+
+.location-editor {
+
+	.row {
+		width: 100%;
+		display: flex;
+		flex-flow: row wrap;
+
+		.prop {
+			input[type="text"],
+			input[type="email"],
+			input[type="tel"] {
+				width: 100%;
+			}
+		}
+
+		.prop-group.address {
+			width: 100%;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: flex-start;
+
+			.address-line-1,
+			.address-line-2 {
+				flex: 1 0 50%;
+			}
+
+			.city,
+			.state,
+			.postal-code {
+				flex: 1 0 33%;
+
+				span.select2-container {
+					width: 100% !important;
+				}
+			}
+		}
+
+		.prop.name,
+		.prop-group.email-address,
+		.prop-group.phone {
+			flex: 1 0 50%;
+		}
+	}
+}
+
+.miwt.company-viewer {
+	@extend %maxWidth;
+}
 
 .miwt.user-viewer {
-	width: 100%;
-	max-width: 65rem;
-	margin: 0 auto;
+	@extend %maxWidth;
 
 	.row {
 		display: flex;
