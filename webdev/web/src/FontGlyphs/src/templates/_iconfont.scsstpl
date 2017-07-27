@@ -1,0 +1,2 @@
+<% _.each(glyphs, function(glyph) { %>$html-entity-glyph-<%= glyph.name %>: "\<%= glyph.glyph %>";
+<% }); %>
