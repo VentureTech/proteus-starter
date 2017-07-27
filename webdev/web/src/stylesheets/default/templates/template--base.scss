@@ -1,4 +1,5 @@
 @import "../config/base-import";
+@import "../mixins/general-mixins";
 @import "../components/actions";
 @import "../components/messages";
 @import "../components/app-menu";
@@ -14,6 +15,8 @@
 @import "../components/file-chooser";
 @import "../components/img_crop";
 @import "../components/callout";
+@import "../components/calendar-theme";
+@include fontFace('GlyphLib', 'neptune-glyph-font');
 
 body {
 	background: $body-bg;
@@ -54,7 +57,7 @@ h3, h4 {
 }
 
 ::selection {
-	background: #FF6C60;
+	background: $color-app-brand;
 	color: #fff;
 }
 
