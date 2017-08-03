@@ -431,7 +431,8 @@ public class DemoUserProfile implements TimeAuditable
         if (_name != null ? !Objects.equals(_name, that._name) : that._name != null) return false;
         if (_phoneNumber != null ? !Objects.equals(_phoneNumber, that._phoneNumber) : that._phoneNumber != null) return false;
         if (_picture != null ? !Objects.equals(_picture, that._picture) : that._picture != null) return false;
-        if (_postalAddress != null ? !Objects.equals(_postalAddress, that._postalAddress) : that._postalAddress != null) return false;
+        if (_postalAddress != null ? !Objects.equals(_postalAddress, that._postalAddress) : that._postalAddress != null)
+            return false;
         if (_site != null ? !Objects.equals(_site, that._site) : that._site != null) return false;
 
         return !(_twitterLink != null ? !Objects.equals(_twitterLink.toString(), that._twitterLink.toString())
