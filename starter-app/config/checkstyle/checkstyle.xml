@@ -6,10 +6,6 @@
 <module name="Checker">
     <property name="severity" value="warning"/>
 
-    <module name="SuppressionCommentFilter"></module>
-    <module name="SuppressWithNearbyCommentFilter">
-        <property name="influenceFormat" value="1"/>
-    </module>
     <module name="SuppressionFilter">
         <property name="file" value="${basedir}/config/checkstyle/suppressions.xml"/>
     </module>
@@ -29,7 +25,10 @@
     </module>
      -->
     <module name="TreeWalker">
-
+        <module name="SuppressionCommentFilter"></module>
+        <module name="SuppressWithNearbyCommentFilter">
+            <property name="influenceFormat" value="1"/>
+        </module>
         <module name="FileContentsHolder"></module>
         <module name="SuppressWarningsHolder"></module>
         <module name="RegexpSinglelineJava">
