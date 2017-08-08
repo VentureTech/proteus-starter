@@ -29,12 +29,13 @@ import com.i2rd.cms.component.miwt.impl.MIWTPageElementModelContainer;
 
 import net.proteusframework.cms.category.CmsCategory;
 import net.proteusframework.core.html.HTMLElement;
+import net.proteusframework.core.locale.LocalizedObjectKey;
 import net.proteusframework.core.locale.annotation.I18N;
 import net.proteusframework.core.locale.annotation.I18NFile;
 import net.proteusframework.core.locale.annotation.L10N;
 import net.proteusframework.internet.http.Response;
 import net.proteusframework.ui.column.FixedValueColumn;
-import net.proteusframework.ui.column.PropertyColumn;
+import net.proteusframework.ui.column.FunctionColumn;
 import net.proteusframework.ui.management.ApplicationFunction;
 import net.proteusframework.ui.management.ParsedRequest;
 import net.proteusframework.ui.management.URLConfigPropertyConverter;
@@ -73,6 +74,7 @@ import static com.example.app.profile.ui.UIText.*;
 import static com.example.app.profile.ui.company.CompanyManagementLOK.*;
 import static com.example.app.profile.ui.company.CompanyValueEditorLOK.LABEL_WEBSITE;
 import static net.proteusframework.core.locale.TextSources.EMPTY;
+import static net.proteusframework.ui.miwt.component.composite.CustomCellRenderer.renderUsing;
 
 /**
  * UI for managing {@link Company}
@@ -276,14 +278,14 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
         SearchResultColumnImpl nameColumn;
         searchModel.getResultColumns().add(nameColumn = new SearchResultColumnImpl()
             .withName("name")
-            .withTableColumn(new PropertyColumn(Company.class, Company.NAME_COLUMN_PROP)
+            .withTableColumn(new FunctionColumn<>(Company.class, LocalizedObjectKey.class, Company::getName)
                 .withColumnName(CommonColumnText.NAME))
             .withOrderBy(new QLOrderByImpl("companyName")));
 
         searchModel.getResultColumns().add(new SearchResultColumnImpl()
             .withName("address")
             .withTableColumn(new FixedValueColumn().withColumnName(CommonColumnText.ADDRESS))
-            .withTableCellRenderer(new CustomCellRenderer(EMPTY, input -> {
+            .withTableCellRenderer(renderUsing(EMPTY, input -> {
                 Company company = (Company) input;
                 return Optional.ofNullable(company)
                     .map(Company::getPrimaryLocation)
@@ -294,12 +296,7 @@ public class CompanyManagement extends MIWTPageElementModelContainer implements 
         searchModel.getResultColumns().add(new SearchResultColumnImpl()
             .withName("website")
             .withTableColumn(new FixedValueColumn().withColumnName(LABEL_WEBSITE()))
-            .withTableCellRenderer(new CustomCellRenderer(EMPTY, input -> {
-                Company company = (Company) input;
-                return Optional.ofNullable(company)
-                    .map(Company::getWebsiteLink)
-                    .orElse("");
-            })));
+            .withTableCellRenderer(renderUsing(EMPTY, Company::getWebsiteLink)));
 
         searchModel.getResultColumns().add(new SearchResultColumnImpl()
             .withName("phone")
