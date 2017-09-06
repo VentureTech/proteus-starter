@@ -17,7 +17,7 @@
     "gulp-autoprefixer": "^3.1.0",
     "gulp-clean-css": "^2.0.8",
     "gulp-clip-empty-files": "^0.1.2",
-    "gulp-consolidate": "^0.2.0",
+    "gulp-consolidate": "0.1.x",
     "gulp-favicons": "^2.2.6",
     "gulp-flatten": "^0.3.0",
     "gulp-iconfont": "^9.0.0",
