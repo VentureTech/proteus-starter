@@ -8,22 +8,20 @@
   box-shadow: 3px 3px 10px transparentize($color-black, 0.55);
 }
 
-@mixin glyphAdd($html-entity, $size: 13px, $color: '') {
-  font-family: $font-glyph-lib;
+@mixin glyphAdd($html-entity, $size: 14px, $color: '', $glyph-font: $font-glyph-lib) {
   content: $html-entity;
-  //	width: $size;
-  //	height: $size;
-  font-size: $size;
+  font: {
+    family: $glyph-font;
+    size: $size;
+    weight: normal;
+    style: normal;
+  }
   @if ($color != '') {
     color: $color;
   }
-  //background-color: $color-cloud-grey;
-  // generated from grunt task
   display: inline-block;
   vertical-align: middle;
   line-height: 1;
-  font-weight: normal;
-  font-style: normal;
   text-decoration: inherit;
   text-transform: none;
   text-rendering: optimizeLegibility;
@@ -42,7 +40,8 @@
 
   @if ($html-entity-icon != '') {
     &:before {
-      @include glyphAdd($html-entity-icon, $size: 18px, $color: $color-text);
+      @include glyphAdd($html-entity-icon, 18px, $color-text);
+      vertical-align: baseline;
     }
   } @else {
     &:before {

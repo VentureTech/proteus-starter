@@ -1,3 +1,6 @@
+$path-design: '/_design/default';
+$path-fonts: $path-design + '/fonts';
+
 $color-app-brand: #1663cc;
 $color-app-yellow: #F9BB29;
 $color-app-blue: #488fb4;
@@ -26,7 +29,6 @@ $btn-secondary-border:           $brand-primary;
 $enable-shadows:                 true;
 
 @import "../../../../../bower_components/bootstrap/scss/variables";
-
 
 $menu-item-active: $color-app-red;
 $menu-item-inactive: $color-app-light-grey;
@@ -72,6 +74,7 @@ $bp-desktop-wide: (min-width: 1400px);
 $font-open-sans-bold: Open Sans Bold;
 
 $font-glyph-lib: FontAwesome;
+$font-neptune-glyph: Glyphlib;
 
 $html-entity-error: '\f057';
 $html-entity-info: '\f05a';
@@ -88,16 +91,18 @@ $html-entity-question: '\f059';
 
 $color-success-dark: #3c763d;
 $color-success-light: #dff0d8;
-$color-success-border: darken($color-success-light, 10%);
+$color-success-border: darken($color-success-light, 12%);
 
 $color-info-dark: #31708f;
 $color-info-light: #d9edf7;
-$color-info-border: darken($color-info-light, 10%);
+$color-info-border: darken($color-info-light, 12%);
 
 $color-warning-dark: #8a6d3b;
 $color-warning-light: #fcf8e3;
-$color-warning-border: darken($color-warning-light, 10%);
+$color-warning-border: darken($color-warning-light, 12%);
 
 $color-error-dark: #a94442;
 $color-error-light: #f2dede;
-$color-error-border: darken($color-error-light, 10%);
+$color-error-border: darken($color-error-light, 12%);
+
+@import "../config/font-glyph-entities"; //Neptune glyph library
