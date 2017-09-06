@@ -1,13 +1,23 @@
 @import "../config/base-vars";
 @import "../../../../../bower_components/bootstrap/scss/mixins/buttons";
-//@import "../../../../../bower_components/bootstrap/scss/buttons";
+
+
+.btn {
+	/* Define a default background color. */
+	@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border);
+}
+
+@import "../../../../../bower_components/bootstrap/scss/buttons";
+
+.btn {
+	font-family: $font-roboto;
+}
 
 .actions {
+	margin-top: .4rem;
 
 	.btn {
 		cursor: pointer;
-		font-family: $font-roboto;
-		@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border);
 
 		+ .btn {
 			margin-left: 4px;
@@ -19,10 +29,6 @@
 
 		&.delete, &.remove, &.cancel, &.cancel-button, &.reschedule {
 			@include button-variant($color-app-red, $color-white, $color-app-red);
-		}
-
-		&:hover {
-			text-decoration: none;
 		}
 	}
 
