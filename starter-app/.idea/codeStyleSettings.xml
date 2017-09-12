@@ -34,6 +34,7 @@
             <package name="com.proteusframework" withSubpackages="true" static="false" />
             <package name="org.proteusframework" withSubpackages="true" static="false" />
             <package name="net.proteusframework" withSubpackages="true" static="false" />
+            <package name="co.proteus" withSubpackages="true" static="false" />
             <emptyLine />
             <package name="" withSubpackages="true" static="true" />
           </value>
