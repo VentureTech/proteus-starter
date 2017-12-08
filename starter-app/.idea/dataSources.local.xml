@@ -8,7 +8,9 @@
       <case-sensitivity plain-identifiers="lower" quoted-identifiers="exact" />
       <secret-storage>master_key</secret-storage>
       <user-name>example_app-user</user-name>
+      <introspection-schemas>starter-app-dev:public</introspection-schemas>
       <resolve-scope>example_app_dev:*</resolve-scope>
+      <unqualified-resolve-schemas>example_app_dev:*</unqualified-resolve-schemas>
     </data-source>
   </component>
 </project>

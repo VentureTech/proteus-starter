@@ -23,7 +23,7 @@ import net.proteusframework.cms.component.editor.DelegatePurpose
 class Composite(id: String) : Identifiable(id), Content, DelegateContent {
     override val contentPurpose: MutableMap<Content, DelegatePurpose> = mutableMapOf()
 
-    override fun createInstance(helper: ContentHelper, existing: ContentElement?) = ContentInstance(existing?:CompositeBean())
+    override fun createInstance(helper: ContentHelper, existing: ContentElement?) = ContentInstance(existing?: CompositeBean())
 
     override var visibilityCondition: VisibilityConditionInstance? = null
     override val contentList = mutableListOf<Content>()

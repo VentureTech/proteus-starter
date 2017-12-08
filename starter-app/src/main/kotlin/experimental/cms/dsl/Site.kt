@@ -93,7 +93,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
 //        val content = siteDefinitionDAO.getSiteByDescription(id)?.let {siteDefinitionDAO.getContentElementByName(it, existingId)}
 //        if(content != null) return CreateContent(existingId)
         val predicate = createContentIdPredicate(existingId)
-        return children.flatMap(Page::contentList).filter(predicate).firstOrNull() ?:
+        return children.flatMap(Page::contentList).firstOrNull(predicate) ?:
             templates.flatMap(Template::contentList).filter(predicate).firstOrNull() ?:
             content.filter(predicate).firstOrNull()?:throw IllegalStateException("Content '$existingId' does not exist")
     }
@@ -130,7 +130,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
     private fun _populateModelBoxes(layout: Layout, cmsBox: net.proteusframework.cms.component.page.layout.Box) {
         val defaultContentArea: PageProperties.Type? = getDefaultContentArea(cmsBox)
         val box = Box(cmsBox.name, cmsBox.boxDescriptor, defaultContentArea, cmsBox.wrappingContainerCount,
-            cmsBox.cssName?:"", cmsBox.styleClass?:"")
+                cmsBox.cssName?:"", cmsBox.styleClass?:"")
         layout.add(box)
         for(cmsChildBox in cmsBox.children) {
             _populateModelBoxes(box, cmsChildBox)
@@ -317,6 +317,8 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
         siteConstructedCallbacks.add({_ ->
             page.path = resolvePlaceholders(path)
             page.apply(init)
+            // This cannot be re-enabled until the site constructed callbacks are queued/dequeued like an event processor
+            //assert(page.template.id.isNotEmpty(), {"Must define a template for page: $page"})
         })
         return page
     }

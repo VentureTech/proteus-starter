@@ -69,7 +69,7 @@ open class SiteDefinitionConverter : Converter<AppDefinition>, ApplicationContex
     override fun convertFromText(value: String?, targetType: Class<*>?, optionContext: String?): AppDefinition {
         if (!value.isNullOrBlank()) {
             try {
-                val definition = getAppDefinitionList().filter { sd -> sd.definitionName == value }.firstOrNull()
+                val definition = getAppDefinitionList().firstOrNull { sd -> sd.definitionName == value }
                 if(definition != null)
                     return definition
             }

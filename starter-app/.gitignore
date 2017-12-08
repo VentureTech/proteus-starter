@@ -1,23 +1,26 @@
-/bin/
 .gradle/
 .apt_generated/
 .apt_generated_tests/
-/build/gradle/
-/build/idea/
-/build/kotlin-build/
-/buildSrc/build/
-/compiletime-aspects/
-/runtime-aspects/
+build/gradle/
+build/idea/
+build/kotlin-build/
+buildSrc/build/
+compiletime-aspects/
+runtime-aspects/
 
+.idea/modules/
+.idea/dataSources/
 .idea/libraries/
 .idea/artifacts/
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/modules.xml
 
+hs_err_pid*.log
 atlassian-ide-plugin.xml
-
 spring-shell.log
 derby.log
 velocity.log
 proteus_ssh_host_key
+.DS_Store
+.directory

@@ -19,7 +19,6 @@ import experimental.cms.dsl.ContentInstance
 import experimental.cms.dsl.Identifiable
 import net.proteusframework.cms.PageElementModelImpl
 import net.proteusframework.cms.component.ContentElement
-import net.proteusframework.ui.management.ApplicationFunction
 
 /**
  * MIWT Content for a [MIWTPageElementModel]
@@ -37,9 +36,9 @@ open class MIWT(id: String, val miwtClass: Class<out MIWTPageElementModel>)
 
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
         if (existing != null) return ContentInstance(existing)
-        val pageElementModel = helper.getMIWTPageElementModelFactory().getVirtualComponents(helper.getCmsSite()).filter {
+        val pageElementModel = helper.getMIWTPageElementModelFactory().getVirtualComponents(helper.getCmsSite()).first {
             PageElementModelImpl.StandardIdentifier(it.identifier).virtualIdentifier == miwtClass.name
-        }.first()
+        }
         helper.assignToSite(pageElementModel.identifier)
 
         return ContentInstance(helper.getMIWTPageElementModelFactory().createInstance(pageElementModel))

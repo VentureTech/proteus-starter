@@ -51,7 +51,7 @@ class Logout(id: String) : Identifiable(id), Content {
     var logoutExpression = DEFAULT_EXPRESSION
 
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
-        val contentElement = existing?:LogoutBean()
+        val contentElement = existing?: LogoutBean()
         val builder = LogoutBeanContentBuilder()
         updateBuilder(helper, builder)
         return ContentInstance(contentElement, builder.content)

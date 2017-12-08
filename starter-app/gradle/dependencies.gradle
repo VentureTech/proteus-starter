@@ -33,8 +33,8 @@ if(compileLibraries) {
 
 compileKotlin {
     kotlinOptions {
-        apiVersion = "1.1"
-        languageVersion = "1.1"
+        apiVersion = "1.2"
+        languageVersion = "1.2"
         javaParameters = true
         jvmTarget = "1.8"
     }

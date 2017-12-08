@@ -321,7 +321,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         } catch(ioe: IOException) {
             logger.error("Unable to retrieve variables.", ioe)
         }
-        return null;
+        return null
     }
 
     private fun createEmailTemplate(site: CmsSite, emailTemplateModel: experimental.cms.dsl.EmailTemplate<*>) {
