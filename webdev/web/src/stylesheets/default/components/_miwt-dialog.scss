@@ -1,7 +1,7 @@
 @import "../config/base-vars";
-@import "../../../../../bower_components/bootstrap/scss/modal";
-@import "../../../../../bower_components/bootstrap/scss/mixins";
-@import "../../../../../bower_components/bootstrap/scss/mixins/buttons";
+@import "../../../../../node_modules/bootstrap-beta/scss/modal";
+@import "../../../../../node_modules/bootstrap-beta/scss/mixins";
+@import "../../../../../node_modules/bootstrap-beta/scss/mixins/buttons";
 
 div.window.dialog /*specificity*/ {
 	padding: 0;
@@ -269,7 +269,7 @@ div.window.dialog /*specificity*/ {
 			margin-right: .25rem;
 		}
 		.btn.delete {
-			@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $border-radius-sm);
+			@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $border-radius-sm);
 			margin-bottom: 1rem;
 		}
 		input[type="file"] {
@@ -316,7 +316,7 @@ div.window.dialog /*specificity*/ {
 				margin: 0;
 
 				.actions.search-actions .btn {
-					@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $border-radius-sm);
+					@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $border-radius-sm);
 				}
 
 			}

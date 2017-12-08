@@ -1,5 +1,5 @@
 @import "../config/base-vars";
-@import "../../../../../bower_components/bootstrap/scss/mixins";
+@import "../../../../../node_modules/bootstrap-beta/scss/mixins";
 
 .text-group {
 	padding: .5rem;
@@ -10,7 +10,7 @@
 		 .btn {
 			display: block;
 			margin-top: 1rem;
-			@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-border-radius-sm);
+			@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $btn-border-radius-sm);
 
 			+ .btn {
 				margin-left: 0;

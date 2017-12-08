@@ -191,7 +191,7 @@ p.instructions {
 			margin-left: 1rem;
 
 			.btn {
-				@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-border-radius-sm);
+				@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $btn-border-radius-sm);
 			}
 		}
 	}

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import com.i2rd.unit.test.BaseTest;
 import com.i2rd.unit.test.TestGroups;
 
 /**
@@ -29,7 +28,7 @@ import com.i2rd.unit.test.TestGroups;
  * @author Alan Holt (aholt@venturetech.net)
  * @since 4/11/16 10:36 AM
  */
-public class ArrayCollectorTest extends BaseTest
+public class ArrayCollectorTest
 {
     private static class TestCustomClass
     {

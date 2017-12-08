@@ -28,7 +28,8 @@ $btn-secondary-bg:               #fff;
 $btn-secondary-border:           $brand-primary;
 $enable-shadows:                 true;
 
-@import "../../../../../bower_components/bootstrap/scss/variables";
+@import '../../../../../node_modules/bootstrap-beta/scss/functions';
+@import "../../../../../node_modules/bootstrap-beta/scss/variables";
 
 $menu-item-active: $color-app-red;
 $menu-item-inactive: $color-app-light-grey;
@@ -105,4 +106,21 @@ $color-error-dark: #a94442;
 $color-error-light: #f2dede;
 $color-error-border: darken($color-error-light, 12%);
 
+$btn-size-line-height: 1;
+
 @import "../config/font-glyph-entities"; //Neptune glyph library
+
+//Bootstrap variables that have been removed in Bootstrap 4 beta 2
+$font-size-xs:   .75rem !default;
+$btn-padding-x-sm:               .5rem !default;
+$btn-padding-y-sm:               .25rem !default;
+$btn-padding-x:                  1rem !default;
+$btn-padding-y:                  .5rem !default;
+$spacer:   1rem !default;
+$spacer-x: $spacer !default;
+$spacer-y: $spacer !default;
+$font-family-serif:      Georgia, "Times New Roman", Times, serif !default;
+$cursor-disabled:                not-allowed !default;
+$pagination-active-border:             $brand-primary !default;
+$btn-line-height:                1.25 !default;
+$pagination-hover-border:              #ddd !default;

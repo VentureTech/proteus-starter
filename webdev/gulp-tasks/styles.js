@@ -47,7 +47,7 @@ gulp.task('styles:build', function() {
         ;
 });
 gulp.task('styles:vendor', function() {
-    return gulp.src(['./bower_components/select2/dist/css/select2.css'
+    return gulp.src(['./node_modules/select2/dist/css/select2.css'
     ])
         .pipe(clip())
         .pipe(gulp.dest('./build/Stylesheets/vendor'))

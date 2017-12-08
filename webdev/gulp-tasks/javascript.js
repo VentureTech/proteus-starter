@@ -41,11 +41,12 @@ gulp.task('javascript:build', function() {
         ;
 });
 gulp.task('javascript:vendor', function() {
-    return gulp.src(['./bower_components/jquery/dist/jquery.js',
-        './bower_components/tether/dist/js/tether.js',
-        './bower_components/select2/dist/js/select2.js',
-        './bower_components/select2/dist/js/**/i18n/*.js', // globing for directory creation
-        './bower_components/bootstrap/dist/js/bootstrap.js'
+    return gulp.src([
+        './node_modules/jquery/dist/query.js',
+        './node_modules/popper.js/dist/umd/popper.js',
+        './node_modules/select2/dist/js/select2.js',
+        './node_modules/select2/dist/js/**/i18n/*.js',
+        './node_modules/bootstrap-beta/dist/js/bootstrap.js'
     ])
         .pipe(clip())
         .pipe(gulp.dest('./build/Javascript/vendor'))

@@ -1,5 +1,5 @@
 @import "../config/base-vars";
-@import "../../../../../bower_components/bootstrap/scss/buttons";
+@import "../../../../../node_modules/bootstrap-beta/scss/buttons";
 
 /*
 	Component partial -	File chooser popup
@@ -37,7 +37,7 @@
 				display: inline-block;
 			}
 			.btn {
-				@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-border-radius-sm);
+				@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $btn-border-radius-sm);
 				margin-left: 3px;
 			}
 		}

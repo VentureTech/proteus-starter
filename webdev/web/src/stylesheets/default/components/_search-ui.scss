@@ -7,8 +7,8 @@
    ========================================================================== */
 @import "../config/base-vars";
 @import "../mixins/general-mixins";
-@import "../../../../../bower_components/bootstrap/scss/mixins/clearfix";
-@import "../../../../../bower_components/bootstrap/scss/mixins/buttons";
+@import "../../../../../node_modules/bootstrap-beta/scss/mixins/clearfix";
+@import "../../../../../node_modules/bootstrap-beta/scss/mixins/buttons";
 
 .search .entity-actions .menu-component,
 .search-wrapper .entity-actions .menu-component {
@@ -73,7 +73,7 @@
 	padding: 10px;
 
 	.btn {
-		@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-border-radius-sm);
+		@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $btn-border-radius-sm);
 	}
 }
 
