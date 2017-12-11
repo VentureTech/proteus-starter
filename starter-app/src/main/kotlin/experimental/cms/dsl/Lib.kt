@@ -320,5 +320,11 @@ enum class MetaType(val keyType: MetaInformation.KeyType) {
 }
 internal data class Meta(val name: String, val value: String, val type: MetaType)
 
-data class AppFunctionPage(val appFunctionName: String, val path: String, val htmlClassName: String,
-    val cssPaths: List<String> = listOf())
+data class AppFunctionPage(
+    val appFunctionName: String,
+    val path: String,
+    val htmlClassName: String,
+    val pageTitle: String = appFunctionName,
+    val cssPaths: List<String> = listOf(),
+    val javaScriptPaths: List<String> = listOf()
+)
