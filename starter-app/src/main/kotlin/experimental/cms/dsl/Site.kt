@@ -14,6 +14,7 @@ package experimental.cms.dsl
 import com.i2rd.cms.dao.CmsSiteDefinitionDAO
 import net.proteusframework.cms.component.page.PageProperties
 import net.proteusframework.cms.component.page.layout.BoxDescriptor
+import net.proteusframework.core.locale.LocalizedObjectKey
 import net.proteusframework.core.spring.ApplicationContextUtils
 import net.proteusframework.email.EmailConfigType
 import net.proteusframework.internet.http.RequestError
@@ -90,8 +91,9 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
      */
     internal fun getContentById(existingId: String): Content {
         // Need ContentElement.class => Content::class mapping
-//        val content = siteDefinitionDAO.getSiteByDescription(id)?.let {siteDefinitionDAO.getContentElementByName(it, existingId)}
-//        if(content != null) return CreateContent(existingId)
+        //        val content = siteDefinitionDAO.getSiteByDescription(id)?.let
+        // {siteDefinitionDAO.getContentElementByName(it, existingId)}
+        //        if(content != null) return CreateContent(existingId)
         val predicate = createContentIdPredicate(existingId)
         return children.flatMap(Page::contentList).firstOrNull(predicate) ?:
             templates.flatMap(Template::contentList).filter(predicate).firstOrNull() ?:
@@ -130,7 +132,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
     private fun _populateModelBoxes(layout: Layout, cmsBox: net.proteusframework.cms.component.page.layout.Box) {
         val defaultContentArea: PageProperties.Type? = getDefaultContentArea(cmsBox)
         val box = Box(cmsBox.name, cmsBox.boxDescriptor, defaultContentArea, cmsBox.wrappingContainerCount,
-                cmsBox.cssName?:"", cmsBox.styleClass?:"")
+            cmsBox.cssName?:"", cmsBox.styleClass?:"")
         layout.add(box)
         for(cmsChildBox in cmsBox.children) {
             _populateModelBoxes(box, cmsChildBox)
@@ -190,13 +192,18 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
      * @return the existing page if it exists.
      */
     fun getExistingPage(existingId: String): Page {
+        val dao = siteDefinitionDAO
         val existingPage = children.filter { it.id == existingId }.firstOrNull()?:let {
-            val page = siteDefinitionDAO.getSiteByDescription(id)?.let {
-                siteDefinitionDAO.getPageByName(it, existingId)
+            val page = dao.getSiteByDescription(id)?.let {
+                dao.getPageByName(it, existingId)
             }
-            if(page != null)
+            if(page != null) {
+                val existingTitle: LocalizedObjectKey? = page.persistedTitleKey
                 Page(existingId, this, page.primaryPath, Template(page.pageTemplate.name, this,
-                    _createExistingLayout(page.pageTemplate.layout)))
+                    _createExistingLayout(page.pageTemplate.layout))).apply {
+                    title = dao.getTransientLocalizedObjectKey(existingTitle).getText()[Locale.ENGLISH] ?: existingId
+                }
+            }
             else
                 null
         }
@@ -309,7 +316,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
 
     /**
      * Add a page to the site.
-     * @param id the identifier. Something like "User Management".
+     * @param id the identifier. Something like "User Management". This is the page name and is referred to as Notes in the UI.
      * @param path the page path. Page paths can contain spring environment variables like "\${folder.company}/users".
      */
     fun page(id: String, path: String, init: Page.() -> Unit): Page {
@@ -356,7 +363,8 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
     /**
      * Add a hostname to the site. The first hostname added becomes the default hostname.
      * @param address the web address like "www.example.com".
-     * @param existingWelcomePageId a reference to an existing page to use as the welcome / home page.
+     * @param existingWelcomePageId a reference to an existing page to use as the welcome / home page. This is the page name and
+     *   is referred to as Notes in the UI.
      */
     fun hostname(address: String, existingWelcomePageId: String) {
         siteConstructedCallbacks.add({site ->
@@ -483,5 +491,5 @@ abstract class AppDefinition(val definitionName: String, val version: Int, siteI
 
 internal fun getAppDefinitionDependency(appDefinition: AppDefinition) = if (appDefinition.dependency.isNullOrBlank())
     null else ApplicationContextUtils.getInstance().context?.getBeansOfType(AppDefinition::class.java)?.values?.filter {
-        it.definitionName == appDefinition.dependency
-    }?.firstOrNull()
+    it.definitionName == appDefinition.dependency
+}?.firstOrNull()

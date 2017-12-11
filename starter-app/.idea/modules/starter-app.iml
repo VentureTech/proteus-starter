@@ -18,7 +18,7 @@
           <file>file://$MODULE_DIR$/../../src/main/webapp/META-INF/resources/spring/selector-hostnames.spring.xml</file>
           <file>file://$MODULE_DIR$/../../src/main/java/com/example/app/config/ProjectConfig.java</file>
           <file>file://$MODULE_DIR$/../../src/main/resources/META-INF/spring/spring-shell-plugin.xml</file>
-          <file>jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.proteusframework/proteusframework/1.2.0-SNAPSHOT/a5f794c5df9895c872e079ce005915f7852ad998/proteusframework-1.2.0-SNAPSHOT.jar!/net/proteusframework/config/ProteusWebAppConfig.class</file>
+          <file>jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.proteusframework/proteusframework/1.3.4-SNAPSHOT/2a0e3adb91993b18ac28102252dad0332fa2435d/proteusframework-1.3.4-SNAPSHOT.jar!/net/proteusframework/config/ProteusWebAppConfig.class</file>
         </fileset>
       </configuration>
     </facet>
@@ -51,11 +51,11 @@
           <option name="pluginOptions">
             <array>
               <option value="plugin:org.jetbrains.kotlin.allopen:annotation=net.proteusframework.ui.management.ApplicationFunction" />
+              <option value="plugin:org.jetbrains.kotlin.allopen:annotation=org.springframework.boot.test.context.SpringBootTest" />
+              <option value="plugin:org.jetbrains.kotlin.allopen:annotation=org.springframework.cache.annotation.Cacheable" />
+              <option value="plugin:org.jetbrains.kotlin.allopen:annotation=org.springframework.scheduling.annotation.Async" />
               <option value="plugin:org.jetbrains.kotlin.allopen:annotation=org.springframework.stereotype.Component" />
               <option value="plugin:org.jetbrains.kotlin.allopen:annotation=org.springframework.transaction.annotation.Transactional" />
-              <option value="plugin:org.jetbrains.kotlin.allopen:annotation=org.springframework.scheduling.annotation.Async" />
-              <option value="plugin:org.jetbrains.kotlin.allopen:annotation=org.springframework.cache.annotation.Cacheable" />
-              <option value="plugin:org.jetbrains.kotlin.allopen:annotation=org.springframework.boot.test.context.SpringBootTest" />
               <option value="plugin:org.jetbrains.kotlin.noarg:annotation=javax.persistence.Entity" />
             </array>
           </option>
@@ -124,16 +124,16 @@
     <orderEntry type="library" name="Gradle: org.hibernate:hibernate-envers:4.3.11.Final" level="project" />
     <orderEntry type="library" name="Gradle: org.mnode.ical4j:ical4j:1.0.7" level="project" />
     <orderEntry type="library" name="Gradle: org.mnode.ical4j:ical4j-extensions:0.9.2" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-core:1.2.9" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-data:1.2.9" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-internet:1.2.9" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-ui:1.2.9" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-users:1.2.9" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-cms:1.2.9" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-communication:1.2.9" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-processes:1.2.9" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-management:1.2.9" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework:1.2.9" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-core:1.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-data:1.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-internet:1.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-ui:1.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-users:1.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-cms:1.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-communication:1.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-processes:1.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-management:1.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework:1.3.4-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-core:4.3.6.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-beans:4.3.6.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-jdbc:4.3.6.RELEASE" level="project" />
@@ -155,7 +155,7 @@
     <orderEntry type="library" name="Gradle: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" name="Gradle: backport-util-concurrent:backport-util-concurrent:3.1" level="project" />
     <orderEntry type="library" name="Gradle: org.aspectj:aspectjrt:1.8.10" level="project" />
-    <orderEntry type="library" name="Gradle: org.postgresql:postgresql:9.4.1212" level="project" />
+    <orderEntry type="library" name="Gradle: org.postgresql:postgresql:42.1.4" level="project" />
     <orderEntry type="library" name="Gradle: javax.mail:mail:1.5.0-b01" level="project" />
     <orderEntry type="library" name="Gradle: com.lmax:disruptor:3.3.2" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.logging.log4j:log4j-core:2.6.2" level="project" />
@@ -166,7 +166,7 @@
     <orderEntry type="library" name="Gradle: com.i2rd.spullara.cli-parser:cli-parser:1.1.1" level="project" />
     <orderEntry type="library" name="Gradle: javax.servlet:javax.servlet-api:3.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.findbugs:annotations:2.0.1" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.guava:guava:19.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.guava:guava:22.0" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.tomcat:tomcat-jdbc:7.0.82" level="project" />
     <orderEntry type="library" name="Gradle: com.ibm.icu:icu4j:58.2" level="project" />
     <orderEntry type="library" name="Gradle: com.i2rd.cowan.tagsoup:tagsoup:1.2.0" level="project" />
@@ -213,7 +213,7 @@
     <orderEntry type="library" name="Gradle: com.i2rd.jscalendar:jscalendar:1.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.i2rd.org.solinger:cracklib:0.5.3" level="project" />
     <orderEntry type="library" name="Gradle: org.mindrot:jbcrypt:0.3m" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.sshd:sshd-core:1.4.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.sshd:sshd-core:1.6.0" level="project" />
     <orderEntry type="library" name="Gradle: commons-math:commons-math:1.2" level="project" />
     <orderEntry type="library" name="Gradle: com.i2rd.parboiled:parboiled:0.9.7.2" level="project" />
     <orderEntry type="library" name="Gradle: net.sourceforge.cssparser:cssparser:0.9.20" level="project" />
@@ -224,7 +224,7 @@
     <orderEntry type="library" name="Gradle: com.i2rd:ckeditor:4.5.1" level="project" />
     <orderEntry type="library" name="Gradle: eu.medsea.mimeutil:mime-util:2.1.1" level="project" />
     <orderEntry type="library" name="Gradle: javax.annotation:jsr250-api:1.0" level="project" />
-    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-testing:1.2.9" level="project" />
+    <orderEntry type="library" name="Gradle: net.proteusframework:proteusframework-testing:1.3.4-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Gradle: org.eclipse.birt.runtime:org.eclipse.birt.runtime:4.6.0-20160607" level="project" />
     <orderEntry type="library" name="Gradle: org.eclipse.birt.runtime.3_7_1:Tidy:1" level="project" />
     <orderEntry type="library" name="Gradle: org.milyn:flute:1.3" level="project" />
@@ -242,6 +242,10 @@
     <orderEntry type="library" name="Gradle: org.jboss:jandex:1.1.0.Final" level="project" />
     <orderEntry type="library" name="Gradle: javax.activation:activation:1.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.logging.log4j:log4j-api:2.6.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.findbugs:jsr305:1.3.9" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.errorprone:error_prone_annotations:2.0.18" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.j2objc:j2objc-annotations:1.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.codehaus.mojo:animal-sniffer-annotations:1.14" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.tomcat:tomcat-juli:7.0.82" level="project" />
     <orderEntry type="library" name="Gradle: jline:jline:2.12" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-context-support:4.2.4.RELEASE" level="project" />
@@ -382,7 +386,7 @@
     <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-security:8.1.21.v20160908" level="project" />
     <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-io:8.1.21.v20160908" level="project" />
     <orderEntry type="library" name="Gradle: commons-logging:commons-logging:1.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.7" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.1" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-tx:4.3.6.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-expression:4.3.6.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.aspectj:aspectjweaver:1.8.13" level="project" />
@@ -391,12 +395,11 @@
     <orderEntry type="library" name="Gradle: com.google.api-client:google-api-client:1.22.0" level="project" />
     <orderEntry type="library" name="Gradle: com.google.oauth-client:google-oauth-client:1.22.0" level="project" />
     <orderEntry type="library" name="Gradle: com.google.http-client:google-http-client-gson:1.22.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.22" level="project" />
+    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.25" level="project" />
     <orderEntry type="library" name="Gradle: commons-codec:commons-codec:1.9" level="project" />
     <orderEntry type="library" name="Gradle: commons-collections:commons-collections:3.2.1" level="project" />
     <orderEntry type="library" name="Gradle: joda-time:joda-time:2.8.1" level="project" />
     <orderEntry type="library" name="Gradle: com.google.http-client:google-http-client:1.22.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.code.findbugs:jsr305:1.3.9" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: junit:junit:4.11" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.uncommons:reportng:1.1.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.apache.derby:derby:10.12.1.1" level="project" />

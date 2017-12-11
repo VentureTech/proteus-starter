@@ -29,13 +29,13 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Gradle: com.amazonaws:aws-java-sdk-sqs:1.11.245">
+      <library name="Gradle: com.amazonaws:aws-java-sdk-sqs:1.11.246">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-sqs/1.11.245/22d32cca9b96ef27aa7693c350120b32be7b59dc/aws-java-sdk-sqs-1.11.245.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-sqs/1.11.246/fe666d527b1879d0ab6cf681c4e37e059227e5af/aws-java-sdk-sqs-1.11.246.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-sqs/1.11.245/6f3250e8943a3738040a29fa797c5be0f2222c94/aws-java-sdk-sqs-1.11.245-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-sqs/1.11.246/dd14698af8311a8e41f66232268e35b26243f676/aws-java-sdk-sqs-1.11.246-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -62,24 +62,24 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Gradle: com.amazonaws:aws-java-sdk-core:1.11.245">
+      <library name="Gradle: com.amazonaws:aws-java-sdk-core:1.11.246">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-core/1.11.245/25271e127ce4d2091b91ab72057dfb63f5a3de17/aws-java-sdk-core-1.11.245.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-core/1.11.246/973e1d78575d424727ac466869ebc002e11b1f4e/aws-java-sdk-core-1.11.246.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-core/1.11.245/80e8f1b1a8abd647472385bea0a35883984420e6/aws-java-sdk-core-1.11.245-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-core/1.11.246/36d98abd63f07ee56c44fe5183d3f2b8e3afcda7/aws-java-sdk-core-1.11.246-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Gradle: com.amazonaws:jmespath-java:1.11.245">
+      <library name="Gradle: com.amazonaws:jmespath-java:1.11.246">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/jmespath-java/1.11.245/645278bb9d7c3bb61934c3aa889a9058539ff92c/jmespath-java-1.11.245.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/jmespath-java/1.11.246/9be104b805c07a4c5a9f7a9cb9af5914d7bdb027/jmespath-java-1.11.246.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/jmespath-java/1.11.245/93c245ac956ec0d585c32f38b45f2bb12ae6d8c/jmespath-java-1.11.245-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/jmespath-java/1.11.246/fbb735954fc37821b5757961b63251693f2a414e/jmespath-java-1.11.246-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
