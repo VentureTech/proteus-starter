@@ -62,7 +62,7 @@ open class CmsDSLShellCommands : AbstractShellCommands(), ApplicationContextAwar
         Database.connect(dataConfig.dataSource())
     }
 
-    @CliCommand(value = "experimental cms dsl list")
+    @CliCommand(value = ["experimental cms dsl list"])
     fun list(): Unit {
         val fmt = FriendlyDateFormat()
         val sdMap = mutableMapOf<String, AppDefinition>()
@@ -108,7 +108,7 @@ open class CmsDSLShellCommands : AbstractShellCommands(), ApplicationContextAwar
 
 
     @Suppress("IMPLICIT_CAST_TO_ANY")
-    @CliCommand(value = "experimental cms dsl apply")
+    @CliCommand(value = ["experimental cms dsl apply"])
     fun apply(@CliOption(key = arrayOf("definition"), mandatory = true) appDefinition: AppDefinition) {
         if (principalDAO.currentPrincipal == null) {
             shellLogger.warning("Please login first")

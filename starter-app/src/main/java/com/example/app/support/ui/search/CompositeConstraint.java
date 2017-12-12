@@ -385,6 +385,42 @@ public class CompositeConstraint implements SearchConstraint
         }
     }
 
+    @Nullable
+    @Override
+    public Object getValue(Component constraintComponent)
+    {
+        if (constraintComponent instanceof CompositeConstraintComponent)
+        {
+            CompositeConstraintComponent ccc = (CompositeConstraintComponent) constraintComponent;
+            List<Object> values = new ArrayList<>();
+            for (SearchConstraint searchConstraint : getConstraints())
+            {
+                Object value = searchConstraint.getValue(ccc.getConstraintComponent(searchConstraint));
+                values.add(value);
+            }
+            return values;
+        }
+        else return null;
+    }
+
+    @Override
+    public void setValue(Component constraintComponent, Object value)
+    {
+        if (constraintComponent instanceof CompositeConstraintComponent && value instanceof List<?>)
+        {
+            @SuppressWarnings("unchecked")
+            List<Object> values = (List<Object>) value;
+            CompositeConstraintComponent ccc = (CompositeConstraintComponent) constraintComponent;
+            int i = 0;
+            for (SearchConstraint searchConstraint : getConstraints())
+            {
+                Object toSet = values.get(i);
+                searchConstraint.setValue(ccc.getConstraintComponent(searchConstraint), toSet);
+                i++;
+            }
+        }
+    }
+
     @Override
     public boolean hasValue(@Nullable Component constraintComponent)
     {

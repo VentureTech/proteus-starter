@@ -367,7 +367,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
      *   is referred to as Notes in the UI.
      */
     fun hostname(address: String, existingWelcomePageId: String) {
-        siteConstructedCallbacks.add({site ->
+        siteConstructedCallbacks.add({ _ ->
             val page = getExistingPage(existingWelcomePageId)
             hostnames.add(Hostname(address, page))
         })

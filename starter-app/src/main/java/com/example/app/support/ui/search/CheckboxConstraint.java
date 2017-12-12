@@ -86,7 +86,7 @@ public class CheckboxConstraint extends SimpleConstraint
     }
 
     @Override
-    protected Object getValue(Component constraintComponent)
+    public Object getValue(Component constraintComponent)
     {
         if (constraintComponent instanceof Checkbox)
         {
@@ -96,7 +96,7 @@ public class CheckboxConstraint extends SimpleConstraint
     }
 
     @Override
-    protected void setValue(Component constraintComponent, Object value)
+    public void setValue(Component constraintComponent, Object value)
     {
         Boolean val = value != null && Objects.equals(value, getExpectedValue());
         if (constraintComponent instanceof Checkbox)

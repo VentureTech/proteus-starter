@@ -40,7 +40,7 @@ class TextEditor(id: String) : ApplicationFunction(id, functionName = TextEditor
      */
     fun symbolPrefix(prefix: String) = symbolPrefixList.add(prefix)
 
-    @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE",
+    @SuppressFBWarnings(value = ["NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"],
         justification = "FindBugs is Wrong")
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
         val contentInstance = super.createInstance(helper, existing)

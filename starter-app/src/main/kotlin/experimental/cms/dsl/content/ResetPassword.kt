@@ -61,7 +61,7 @@ class ResetPassword(id: String): Identifiable(id), Content {
         if(emailTemplate.isNotBlank()) {
             val template: EmailTemplate? = helper.getEmailTemplate(emailTemplate)
             builder.emailTemplate = template
-            val emailConfig = template?.emailConfig
+//            val emailConfig = template?.emailConfig
 // PF-1625
 //            if(emailConfig is ContentElementEmailConfig)
 //                emailConfig.contentElement = contentElement
