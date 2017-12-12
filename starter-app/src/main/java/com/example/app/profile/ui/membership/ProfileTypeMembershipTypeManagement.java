@@ -319,9 +319,8 @@ public class ProfileTypeMembershipTypeManagement extends Container
                 }
                 MembershipType mt = _profileDAO.mergeMembershipType(input);
                 if(pt.getMembershipTypeSet().stream()
-                       .map(MembershipType::getId)
-                       .filter(i -> Objects.equals(i, mt.getId()))
-                       .count() == 0)
+                    .map(MembershipType::getId)
+                    .noneMatch(i -> Objects.equals(i, mt.getId())))
                 {
                     pt.getMembershipTypeSet().add(mt);
                 }

@@ -158,9 +158,6 @@ public class HTMLGuide extends MIWTPageElementModelContainer
         addCategory(CmsCategory.UserManagement);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init()
     {

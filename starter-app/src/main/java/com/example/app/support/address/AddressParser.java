@@ -220,8 +220,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.example.app.support.address.AddressComponent.*;
-import static com.example.app.support.address.AddressComponent.LINE2;
-import static com.example.app.support.address.AddressComponent.NUMBER;
 import static com.example.app.support.address.AddressRegexLibrary.*;
 //CHECKSTYLE:OFF
 
