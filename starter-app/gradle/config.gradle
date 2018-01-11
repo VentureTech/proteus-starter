@@ -15,5 +15,5 @@ allOpen {
 }
 noArg {
     // Generates a hibernate/JPA no-arg constructor for classes with this annotation
-    annotation('javax.persistence.Entity')
+    // Example usage if you desire to use this: annotation('javax.persistence.Entity')
 }
