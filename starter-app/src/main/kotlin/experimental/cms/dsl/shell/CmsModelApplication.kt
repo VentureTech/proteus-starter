@@ -856,8 +856,9 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
 
     private fun createNDEs(site: CmsSite, type: NDEType, paths: List<String>, siteElement: Any): List<FactoryNDE> {
         val list = mutableListOf<FactoryNDE>()
-        val query = hsh.session.createQuery(
-            "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root AND fe.revision = false")
+        val queryString = """SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root
+ AND fe.revision = false AND fe.entityTrashed = false"""
+        val query = hsh.session.createQuery(queryString)
             .setParameter("root", currentWebRoot)
         for (path in paths) {
             @Suppress("UNCHECKED_CAST")
@@ -889,8 +890,9 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         if (exactPath != null)
             return LinkUtil.getCMSLink(exactPath.pageElement).uriAsString
 
-        val query = hsh.session.createQuery(
-            "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root AND fe.revision = false")
+        val queryString = """SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root
+ AND fe.revision = false AND fe.entityTrashed = false"""
+        val query = hsh.session.createQuery(queryString)
             .setParameter("root", currentWebRoot)
             .setParameter("path", "%" + link)
         @Suppress("UNCHECKED_CAST")
@@ -926,13 +928,13 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
 
     override fun findWebFileSystemEntity(path: String): FileSystemEntity? {
         val query1 = hsh.session.createQuery(
-            "SELECT fe FROM FileSystemEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root")
+            "SELECT fe FROM FileSystemEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root AND fe.entityTrashed=false")
             .setParameter("root", currentWebRoot)
             .setParameter("path", "/${currentWebRoot?.name}/${trimSlashes(path)}")
         val exactMatch = query1.uniqueResult() as FileSystemEntity?
         if(exactMatch != null) return exactMatch
         val query2 = hsh.session.createQuery(
-            "SELECT fe FROM FileSystemEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root")
+            "SELECT fe FROM FileSystemEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root AND fe.entityTrashed=false")
             .setParameter("root", currentWebRoot)
             .setParameter("path", "%" + path)
         @Suppress("UNCHECKED_CAST")
@@ -951,8 +953,9 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         if(libraries[libraryPath] == null) {
             val site = getCmsSite()
             val root = libraryDAO.librariesDirectory
-            val query = hsh.session.createQuery(
-                "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root AND fe.revision = false")
+            val queryString = """SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root
+ AND fe.revision = false AND fe.entityTrashed = false"""
+            val query = hsh.session.createQuery(queryString)
                 .setParameter("root", root)
                 .setParameter("path", "%" + libraryPath)
             @Suppress("UNCHECKED_CAST")
