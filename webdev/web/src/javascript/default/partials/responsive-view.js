@@ -1,5 +1,5 @@
-var SIDE_BAR_CLOSED = "sidebar-closed";
-var SIDE_BAR_OPEN = "sidebar-open";
+var SIDE_BAR_CLOSED = 'sidebar-closed'
+var SIDE_BAR_OPEN = 'sidebar-open'
 /*if(!window.openSidebar) {
 	window.openSidebar = function(){};
 }*/
@@ -31,31 +31,31 @@ var SIDE_BAR_OPEN = "sidebar-open";
 	}
 }*/
 
-jQuery(function(){
-	var w = window, $w = $(w);
+jQuery(function () {
+	var w = window, $w = $(w)
 	//$w.on('load', responsiveView);
 	$('.hamburger').click(function () {
-		var $body = $("body"), open = !$body.hasClass("sidebar-open");
+		var $body = $('body'), open = !$body.hasClass('sidebar-open')
 		//noinspection JSUnresolvedFunction - defined in HTML document
-		$body.toggleClass(SIDE_BAR_OPEN);
-	});
+		$body.toggleClass(SIDE_BAR_OPEN)
+	})
 
-	var $body = $("#body-wrapper");
-	if ($body.length === 0) return;
-	w.addEventListener("orientationchange", function () {
+	var $body = $('#body-wrapper')
+	if ($body.length === 0) return
+	w.addEventListener('orientationchange', function () {
 		if (w.orientation === 0) {
 			//noinspection JSUnresolvedFunction - defined in HTML document
-			openSidebar(false);
+			openSidebar(false)
 		}
-	}, false);
+	}, false)
 	//noinspection JSUnresolvedVariable - SIDE_BAR_OPEN defined in HTML document
 	if (w.orientation && w.orientation === 0 && sessionStorage[SIDE_BAR_CLOSED] === undefined) {
 		//noinspection JSUnresolvedFunction - defined in HTML document
-		openSidebar(false);
+		openSidebar(false)
 	}
 	//noinspection JSUnresolvedVariable - SIDE_BAR_CLOSED defined in HTML document
 	if ($w.width() < 600 && sessionStorage[SIDE_BAR_CLOSED] === undefined) {
 		//noinspection JSUnresolvedFunction - defined in HTML document
-		openSidebar(false);
+		openSidebar(false)
 	}
-});
+})

@@ -17,6 +17,7 @@
 @import "../partials/img_crop";
 @import "../partials/callout";
 @import "../partials/calendar-theme";
+
 @include fontFace('GlyphLib', 'neptune-glyph-font');
 
 body {
@@ -133,6 +134,7 @@ img {
 	font-style: italic;
 	font-size: .9rem;
 }
+
 p.instructions {
 	padding-bottom: 0;
 }
@@ -140,11 +142,15 @@ p.instructions {
 .prop-wrapper {
 
 	.prop.time {
-		.prop-group-title { margin-top: 0; }
+		.prop-group-title {
+			margin-top: 0;
+		}
 	}
 
 	.prop.timezone {
-		> label { margin-top: 15px; }
+		> label {
+			margin-top: 15px;
+		}
 	}
 
 }
@@ -256,8 +262,7 @@ div.calendar {
 	z-index: 1900 !important;
 }
 
-@media (max-width: 767px)
-and (orientation:portrait) {
+@media (max-width: 767px) and (orientation: portrait) {
 
 	.back-top {
 		display: block;

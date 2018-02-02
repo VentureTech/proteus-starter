@@ -17,16 +17,17 @@ body div.miwt-ajax-progress {
 		margin: 0;
 	}
 }
+
 .miwt-ajax-progress .progress-con:not(.progress-indeterminate) {
 	progress {
-		border:0;
+		border: 0;
 		@include gradient-striped();
 
 		appearance: none;
 		&::-webkit-progress-bar {
 			background-color: #eee;
 			@include border-radius($border-radius);
-			@include box-shadow(inset 0 .1rem .1rem rgba(0,0,0,.1));
+			@include box-shadow(inset 0 .1rem .1rem rgba(0, 0, 0, .1));
 		}
 
 		&::-moz-progress-bar {
@@ -42,21 +43,25 @@ body div.miwt-ajax-progress {
 		}
 	}
 }
+
 .dnd-source {
-	cursor:move;
-	cursor:grab;
-	cursor:-webkit-grab;
+	cursor: move;
+	cursor: grab;
+	cursor: -webkit-grab;
 }
+
 .dnd-active {
-	cursor:no-drop;
+	cursor: no-drop;
 	.dnd-source {
-		cursor:move;
-		cursor:grabbing;
-		cursor:-webkit-grabbing;
+		cursor: move;
+		cursor: grabbing;
+		cursor: -webkit-grabbing;
 	}
 	.dnd-target {
-		cursor:copy;
+		cursor: copy;
 	}
 }
 
-.miwt-config-wrapper{ z-index:1; }
+.miwt-config-wrapper {
+	z-index: 1;
+}

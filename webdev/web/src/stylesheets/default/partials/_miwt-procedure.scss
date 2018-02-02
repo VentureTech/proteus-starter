@@ -2,10 +2,9 @@
 @import "../../../../node_modules/bootstrap/scss/mixins";
 @import "../mixins/bootstrap-legacy-buttons";
 
-
 table.add-participant-plan {
 	//min-height: 20rem;
-	.miwt-procedure-card{
+	.miwt-procedure-card {
 
 	}
 	tr:first-of-type td { // Message Container
@@ -13,12 +12,12 @@ table.add-participant-plan {
 	}
 	td.miwt-procedure-card-con { // Main Procedure Content
 		vertical-align: top;
-		height:100%;
+		height: 100%;
 	}
-	td.procedure-navigation-bottom-con{
+	td.procedure-navigation-bottom-con {
 
 	}
-	table.procedure-navigation-bottom{
+	table.procedure-navigation-bottom {
 		td {
 			padding: 0 5px;
 

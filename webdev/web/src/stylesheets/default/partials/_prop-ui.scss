@@ -45,8 +45,9 @@
 	}
 
 }
-input[type=number]{
-	width:8ch;
+
+input[type=number] {
+	width: 8ch;
 }
 
 /* Content
@@ -126,7 +127,7 @@ input[type=number]{
 	}
 
 	.user-entry-required label:after,
-	.user-entry-required caption:after{
+	.user-entry-required caption:after {
 		content: "*";
 		color: #ff0000;
 	}
@@ -466,7 +467,7 @@ input[type=number]{
 
 	.miwt-calendar {
 		input[type=text] {
-			min-width:8rem;
+			min-width: 8rem;
 			max-width: 8rem;
 		}
 	}

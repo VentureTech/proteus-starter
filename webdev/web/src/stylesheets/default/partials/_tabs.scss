@@ -13,12 +13,13 @@
 			color: darken($brand-primary, 5%);
 		}
 	}
-	.back /*, .other */ {
+	.back /*, .other */
+	{
 		/*visibility: hidden;*/
-		padding:0;
-		border:none;
-		width:3rem;
-		height:2.275rem;
+		padding: 0;
+		border: none;
+		width: 3rem;
+		height: 2.275rem;
 		overflow: hidden;
 		color: #fff;
 		&:before {

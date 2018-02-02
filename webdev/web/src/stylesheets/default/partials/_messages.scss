@@ -16,12 +16,12 @@
 	}
 	.actionable-message {
 		display: flex;
-		.message-content{
-			flex:1;
+		.message-content {
+			flex: 1;
 		}
 		.message-actions {
-			flex:0;
-			margin:0 !important;
+			flex: 0;
+			margin: 0 !important;
 			text-align: inherit !important;
 			.btn {
 				@include button-size-legacy($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $btn-border-radius-sm);
@@ -140,7 +140,7 @@ div.has-error, span.has-error {
 			margin: 0 .25rem;
 		}
 
-		+.clock-period {
+		+ .clock-period {
 			margin-left: .35rem;
 		}
 

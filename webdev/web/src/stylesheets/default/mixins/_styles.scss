@@ -2,76 +2,76 @@
 * For collapsible content
 */
 @mixin style-popup-box($padding: 10px) {
-  padding: $padding;
-  background-color: $color-white;
-  border: 1px solid $color-cloud-grey;
-  box-shadow: 3px 3px 10px transparentize($color-black, 0.55);
+	padding: $padding;
+	background-color: $color-white;
+	border: 1px solid $color-cloud-grey;
+	box-shadow: 3px 3px 10px transparentize($color-black, 0.55);
 }
 
 @mixin glyphAdd($html-entity, $size: 14px, $color: '', $glyph-font: $font-glyph-lib) {
-  content: $html-entity;
-  font: {
-    family: $glyph-font;
-    size: $size;
-    weight: normal;
-    style: normal;
-  }
-  @if ($color != '') {
-    color: $color;
-  }
-  display: inline-block;
-  vertical-align: middle;
-  line-height: 1;
-  text-decoration: inherit;
-  text-transform: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	content: $html-entity;
+	font: {
+		family: $glyph-font;
+		size: $size;
+		weight: normal;
+		style: normal;
+	}
+	@if ($color != '') {
+		color: $color;
+	}
+	display: inline-block;
+	vertical-align: middle;
+	line-height: 1;
+	text-decoration: inherit;
+	text-transform: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 @mixin style-message($color-bg, $color-border, $color-text, $html-entity-icon: '') {
-  background-color: $color-bg;
-  border: 1px solid $color-border;
-  color: $color-text;
-  padding: 7px 7px 7px .75rem;
-  display: block;
-  font-family: $font-family-sans-serif;
-  text-align: left;
+	background-color: $color-bg;
+	border: 1px solid $color-border;
+	color: $color-text;
+	padding: 7px 7px 7px .75rem;
+	display: block;
+	font-family: $font-family-sans-serif;
+	text-align: left;
 
-  @if ($html-entity-icon != '') {
-    &:before {
-      @include glyphAdd($html-entity-icon, 18px, $color-text);
-      vertical-align: baseline;
-    }
-  } @else {
-    &:before {
-      display: none;
-    }
-  }
+	@if ($html-entity-icon != '') {
+		&:before {
+			@include glyphAdd($html-entity-icon, 18px, $color-text);
+			vertical-align: baseline;
+		}
+	} @else {
+		&:before {
+			display: none;
+		}
+	}
 
-  a {
-    color: $color-text;
-    margin-left: 2px;
-    font-family: $font-open-sans-bold;
+	a {
+		color: $color-text;
+		margin-left: 2px;
+		font-family: $font-open-sans-bold;
 
-    &:hover {
-      text-decoration: none;
-    }
-  }
+		&:hover {
+			text-decoration: none;
+		}
+	}
 }
 
 @mixin style-message-info($html-entity-icon: $html-entity-info) {
-  @include style-message($color-info-light, $color-info-border, $color-info-dark, $html-entity-icon);
+	@include style-message($color-info-light, $color-info-border, $color-info-dark, $html-entity-icon);
 }
 
 @mixin style-message-error($html-entity-icon: $html-entity-error) {
-  @include style-message($color-error-light, $color-error-border, $color-error-dark, $html-entity-icon);
+	@include style-message($color-error-light, $color-error-border, $color-error-dark, $html-entity-icon);
 }
 
 @mixin style-message-success($html-entity-icon: $html-entity-success) {
-  @include style-message($color-success-light, $color-success-border, $color-success-dark, $html-entity-icon);
+	@include style-message($color-success-light, $color-success-border, $color-success-dark, $html-entity-icon);
 }
 
 @mixin style-message-warning($html-entity-icon: $html-entity-warning) {
-  @include style-message($color-warning-light, $color-warning-border, $color-warning-dark, $html-entity-icon);
+	@include style-message($color-warning-light, $color-warning-border, $color-warning-dark, $html-entity-icon);
 }

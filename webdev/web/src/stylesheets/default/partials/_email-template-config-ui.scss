@@ -3,16 +3,18 @@
 
 .email-preview {
 	.preview-actions {
-		margin-top:-2.5rem!important;
+		margin-top: -2.5rem !important;
 		text-align: right;
 		margin-bottom: .65rem;
 		padding-right: 0 !important;
 	}
 }
+
 .prop-wrapper .recipients-wrapper > label {
 	display: inline-block;
 }
-.recipient > .btn.remove{
+
+.recipient > .btn.remove {
 	@include button-size-legacy($btn-padding-y-sm, $btn-padding-x-sm, $font-size-xs, $btn-size-line-height, $btn-border-radius);
 	margin-left: 2ch;
 	background: $color-white;
@@ -26,23 +28,26 @@
 		box-shadow: none;
 	}
 }
+
 span.et-user-variable {
 	border-bottom: 2px dotted darkgreen;
 }
-.email-preview-content{
+
+.email-preview-content {
 	background-color: $color-white;
 	border: 1px solid $color-app-light-grey;
 	margin-bottom: 5px;
-	padding:.75rem;
+	padding: .75rem;
 	resize: both;
 	height: 350px;
 	overflow: auto;
 }
+
 .selected-link > label {
 	font-weight: bold;
 }
 
-.recipient-editor-dialog{
+.recipient-editor-dialog {
 	width: 50rem !important;
 }
 
@@ -55,9 +60,9 @@ span.et-user-variable {
 	flex-wrap: wrap;
 	justify-content: space-between;
 	.variable-wrapper {
-		flex:1 0 20rem;
-		input[type=text]{
-			min-width: 20rem!important;
+		flex: 1 0 20rem;
+		input[type=text] {
+			min-width: 20rem !important;
 		}
 		a {
 			display: block;
@@ -69,9 +74,9 @@ span.et-user-variable {
 		}
 		.actions {
 			display: block;
-			padding-left: 0!important;
+			padding-left: 0 !important;
 		}
-		.selected-link{
+		.selected-link {
 			display: block;
 		}
 	}

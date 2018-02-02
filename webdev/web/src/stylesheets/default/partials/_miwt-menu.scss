@@ -36,8 +36,8 @@
 	li.menu {
 
 		ul.menu-items {
-			left:auto;
-			right:100%;
+			left: auto;
+			right: 100%;
 		}
 
 		a.menu-item,
@@ -48,7 +48,6 @@
 			color: inherit;
 			text-align: left;
 		}
-
 
 		&:hover {
 			background-color: $color-cloud-grey;

@@ -7,7 +7,6 @@
 	background-color: #f1f2f7;
 }
 
-
 .form-signin .title {
 	padding: .6rem 0 .3rem;
 	text-align: center;
@@ -22,11 +21,13 @@
 .form-signin .checkbox {
 	margin-bottom: 14px;
 }
+
 .form-signin .checkbox {
 	font-family: $font-family-sans-serif;
 	color: #b6b6b6;
 	font-weight: 300;
 }
+
 .form-signin .form-control {
 	position: relative;
 	font-size: 16px;
@@ -36,9 +37,11 @@
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
+
 .form-signin .form-control:focus {
 	z-index: 2;
 }
+
 .form-signin input[type="text"], .form-signin input[type="password"] {
 	padding-left: 5px;
 	border: 2px solid #71767c;
@@ -50,12 +53,11 @@
 	margin: 0;
 }
 
-
 .login-wrap {
 	padding: 20px;
 }
 
-.login-social-link  {
+.login-social-link {
 	display: inline-block;
 	margin-top: 20px;
 	margin-bottom: 15px;
@@ -80,31 +82,31 @@
 	background: #5193ea;
 	margin-right: 22px;
 	box-shadow: 0 4px #2775e2;
-	float:left;
+	float: left;
 }
 
 .login-social-link a.twitter {
 	background: #44ccfe;
 	box-shadow: 0 4px #2bb4e8;
-	float:left;
+	float: left;
 }
 
 #authentication {
 	background-color: #f1f2f7;
 }
 
-.form-signin .message-container{
+.form-signin .message-container {
 	margin-top: 10px;
 }
 
 .form-signin .retrieve-password p {
-	padding:0 0 1rem;
-	background-color:#fff;
-	font-size:.85rem;
-	margin:0;
+	padding: 0 0 1rem;
+	background-color: #fff;
+	font-size: .85rem;
+	margin: 0;
 	border-bottom-left-radius: .3rem;
-	border-bottom-right-radius:.3rem;
-	text-align:center;
+	border-bottom-right-radius: .3rem;
+	text-align: center;
 }
 
 .form-reset #retrieve-password {
@@ -227,7 +229,6 @@ header#main-header {
 		}
 	}
 }
-
 
 .retrieve-password-con .retrieve-password button:active, .retrieve-password-con .retrieve-password button.active,
 .open > .retrieve-password-con .retrieve-password button.dropdown-toggle {

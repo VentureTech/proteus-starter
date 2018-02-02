@@ -4,13 +4,14 @@
 @import "../../../../../node_modules/bootstrap/scss/mixins/buttons";
 @import "../mixins/bootstrap-legacy-buttons";
 
-div.window.dialog /*specificity*/ {
+div.window.dialog /*specificity*/
+{
 	padding: 0;
 	background-color: $modal-content-bg;
 	background-clip: padding-box;
 	border: 1px solid $modal-content-border-color;
 	border-radius: $border-radius-lg;
-	@include box-shadow(0 3px 9px rgba(0,0,0,.5));
+	@include box-shadow(0 3px 9px rgba(0, 0, 0, .5));
 	overflow: hidden;
 	// Remove focus outline from opened modal
 	outline: 0;
@@ -116,7 +117,7 @@ div.window.dialog /*specificity*/ {
 
 	&::before {
 		content: '';
-		background: rgba(42,53,66,0.9);
+		background: rgba(42, 53, 66, 0.9);
 		display: block;
 		height: 100%;
 		width: 100%;
@@ -422,7 +423,7 @@ div.window.dialog /*specificity*/ {
 	}
 }
 
-@media (min-width:1300px) {
+@media (min-width: 1300px) {
 	div.window.dialog:not(.activity-configurer-dialog) {
 		max-width: 65rem;
 	}

@@ -27,6 +27,7 @@ div.pager-top {
 	}
 
 }
+
 .pages .selected-page.page {
 	@include plain-hover-focus {
 		z-index: 2;
@@ -36,7 +37,6 @@ div.pager-top {
 		border-color: $pagination-active-border;
 	}
 }
-
 
 .pages .page,
 .mp-controls .control {
@@ -95,14 +95,14 @@ div.pager-top {
 	}
 }
 
-.pager .controls{
+.pager .controls {
 	display: inline-block;
 }
 
-.pager .next-controls{
-	margin-left:4px;
+.pager .next-controls {
+	margin-left: 4px;
 }
 
-.pager .prev-controls{
-	margin-right:4px;
+.pager .prev-controls {
+	margin-right: 4px;
 }

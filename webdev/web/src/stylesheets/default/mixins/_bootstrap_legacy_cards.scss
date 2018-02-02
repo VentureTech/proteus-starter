@@ -18,7 +18,7 @@
 @mixin card-inverse-legacy {
 	.card-header,
 	.card-footer {
-		border-bottom: $card-border-width solid rgba(255,255,255,.2);
+		border-bottom: $card-border-width solid rgba(255, 255, 255, .2);
 	}
 	.card-header,
 	.card-footer,
@@ -29,7 +29,7 @@
 	.card-link,
 	.card-text,
 	.card-blockquote > footer {
-		color: rgba(255,255,255,.65);
+		color: rgba(255, 255, 255, .65);
 	}
 	.card-link {
 		@include hover-focus {

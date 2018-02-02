@@ -7,12 +7,12 @@
 	flex-wrap: nowrap;
 
 	main {
-		flex:1;
+		flex: 1;
 	}
 }
 
 .sidebar-closed,
-#body-wrapper:not(.sidebar-open){
+#body-wrapper:not(.sidebar-open) {
 	#side-nav {
 		width: 55px;
 		overflow: hidden;
@@ -22,7 +22,7 @@
 			}
 
 			span.mil {
-				opacity:0;
+				opacity: 0;
 			}
 		}
 	}
@@ -35,12 +35,14 @@
 	min-height: calc(100vh - 68px); // minus header height
 	background: #2a3542;
 }
+
 .sidebar-open #main-content,
 .sidebar-open #side-nav,
 .sidebar-closed #main-content,
-.sidebar-closed #side-nav{
+.sidebar-closed #side-nav {
 	transition: all 0.5s ease;
 }
+
 .nav-collapse.collapse {
 	display: inline;
 }
@@ -61,7 +63,7 @@
 	display: inline-block;
 }
 
-#side-nav .menu .mi a.menuitemlabel{
+#side-nav .menu .mi a.menuitemlabel {
 	color: #e1e4e6;
 	text-decoration: none;
 	display: block;
@@ -72,22 +74,22 @@
 }
 
 #side-nav .menu .mi.mi-active a.menuitemlabel,
-#side-nav .menu .mi a.menuitemlabel:hover, 
+#side-nav .menu .mi a.menuitemlabel:hover,
 #side-nav .menu .mi a.menuitemlabel:focus {
 	background: #4f5a69;
 }
 
-
-#side-nav .menu .mi .menuitemlabel{
+#side-nav .menu .mi .menuitemlabel {
 	padding-right: 6px;
 }
 
 #side-nav .menu .mi a.menuitemlabel:hover:before,
 #side-nav .menu .mi a.menuitemlabel:focus:before,
-#side-nav .menu .mi-active a.menuitemlabel:before{
+#side-nav .menu .mi-active a.menuitemlabel:before {
 	//color: $menu-item-active;
 }
-#side-nav .menu .mi > .menuitemlabel:before{
+
+#side-nav .menu .mi > .menuitemlabel:before {
 	font-family: FontAwesome;
 	padding-right: .75rem;
 	min-width: 40px;
@@ -100,16 +102,18 @@
 #side-nav .menu .user-mgt > .menuitemlabel:before {
 	content: "\f007";
 }
+
 #side-nav .menu .company-mgt > .menuitemlabel:before {
 	content: "\f0f7";
 }
+
 #side-nav .menu .location-mgt > .menuitemlabel:before {
 	content: "\f14e";
 }
 
 @media (max-width: 767px) {
 	.sidebar-closed,
-	#body-wrapper:not(.sidebar-open){
+	#body-wrapper:not(.sidebar-open) {
 		#side-nav {
 			width: 0;
 			overflow: hidden;
@@ -121,9 +125,10 @@
 		}
 	}
 }
+
 @media (max-width: 767px) {
 	.sidebar-closed,
-	#body-wrapper:not(.sidebar-open){
+	#body-wrapper:not(.sidebar-open) {
 		#side-nav {
 			width: 0;
 			overflow: hidden;
