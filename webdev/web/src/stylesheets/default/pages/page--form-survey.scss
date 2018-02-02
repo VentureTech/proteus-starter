@@ -1,5 +1,6 @@
 @import "../config/base-import";
-@import "../components/actions";
+@import "../partials/actions";
+@import "../mixins/_bootstrap-legacy-buttons.scss";
 
 #body-wrapper {
 	display: flex;
@@ -134,11 +135,11 @@
 	}
 
 	.btn {
-		@include button-size($btn-padding-y, $btn-padding-x, $font-size-base, $btn-size-line-height, $border-radius-lg);
-		@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-primary-border);
+		@include button-size-legacy($btn-padding-y, $btn-padding-x, $font-size-base, $btn-size-line-height, $border-radius-lg);
+		@include button-variant-legacy($btn-secondary-color, $btn-secondary-bg, $btn-primary-border);
 
 		&.submit_button {
-			@include button-variant($color-white, $btn-primary-bg, $btn-primary-border);
+			@include button-variant-legacy($color-white, $btn-primary-bg, $btn-primary-border);
 		}
 
 		&.edit {
@@ -374,7 +375,7 @@
 		}
 
 		.btn {
-			@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $border-radius-sm);
+			@include button-size-legacy($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $border-radius-sm);
 		}
 
 	}

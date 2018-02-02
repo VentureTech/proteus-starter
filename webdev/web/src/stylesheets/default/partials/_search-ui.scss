@@ -7,14 +7,15 @@
    ========================================================================== */
 @import "../config/base-vars";
 @import "../mixins/general-mixins";
-@import "../../../../../node_modules/bootstrap-beta/scss/mixins/clearfix";
-@import "../../../../../node_modules/bootstrap-beta/scss/mixins/buttons";
+@import "../../../../../node_modules/bootstrap/scss/mixins/clearfix";
+@import "../../../../../node_modules/bootstrap/scss/mixins/buttons";
+@import "../mixins/bootstrap-legacy-buttons";
 
 .search .entity-actions .menu-component,
 .search-wrapper .entity-actions .menu-component {
 	margin-right: 25px;
 	@include bootstrapButton;
-	@include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
+	@include button-variant-legacy($btn-primary-color, $btn-primary-bg, $btn-primary-border);
 	padding: 0 !important;
 
 	> a.menu-item {
@@ -73,7 +74,7 @@
 	padding: 10px;
 
 	.btn {
-		@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $btn-border-radius-sm);
+		@include button-size-legacy($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $btn-border-radius-sm);
 	}
 }
 

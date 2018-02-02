@@ -1,6 +1,7 @@
 @import "../config/base-vars";
-@import "../../../../../node_modules/bootstrap-beta/scss/variables";
-@import "../../../../../node_modules/bootstrap-beta/scss/mixins";
+@import "../../../../../node_modules/bootstrap/scss/variables";
+@import "../../../../../node_modules/bootstrap/scss/mixins";
+@import "../mixins/_bootstrap-legacy-buttons.scss";
 
 .login-body {
 	background-color: #f1f2f7;
@@ -221,7 +222,7 @@ header#main-header {
 		padding: 0 3rem 2rem;
 
 		.btn {
-			@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border);
+			@include button-variant-legacy($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border);
 			margin: .5rem auto 0;
 		}
 	}

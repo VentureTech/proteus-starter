@@ -1,61 +1,63 @@
 /* Required. */
-//=require ../components/responsive-view.js 
-//=require ../components/select2.js 
-//=require ../components/error-messages.js 
-//=require ../components/charts.js 
-//=require ../components/data-download.js 
-//=require ../components/nav-highlight.js 
-//=require ../components/tooltips.js
-//=require ../components/custom-dropdown.js
+//=require ../partials/charts.js
+//=require ../partials/custom-dropdown.js
+//=require ../partials/data-download.js
+//=require ../partials/error-messages.js
+//=require ../partials/nav-highlight.js
+//=require ../partials/responsive-view.js
+//=require ../partials/select2.js
+//=require ../partials/tooltips.js
+//=require ../partials/popovers.js
 
 /* Bundle */
-//=require ../components/top-menu.js 
-
+//=require ../partials/top-menu.js
 
 // Note: openSidebar function is declared in the HTML of the page (header)
 jQuery(function () {
 
-	setupErrorMessages();
+	setupErrorMessages()
 
-	initSelect2();
+	initSelect2()
 
-	handleDataDownload();
+	handleDataDownload()
 
-	enableTooltips();
+	enableTooltips()
 
-	setupCharts();
+	enablePopovers()
 
-	navHighlight();
+	setupCharts()
 
-    setupCustomDropdowns();
+	navHighlight()
+
+	setupCustomDropdowns()
 
 	$('form.miwt-form').each(function (idx, form) {
 		//noinspection JSUnusedGlobalSymbols
 		form.submit_options = {
 			preProcessNode: function (data) {
-				destroySelect2(document.getElementById(data.refid));
-				return data.content;
+				destroySelect2(document.getElementById(data.refid))
+				return data.content
 			},
 			postProcessNode: function (data) {
 				$.each(data, function (idx, ctx) {
-					initSelect2(ctx);
-					handleDataDownload(ctx);
-					enableTooltips(ctx);
-					setupCharts(ctx);
-					navHighlight();
-                    setupCustomDropdowns(ctx);
-					if($(ctx).hasClass('message-container') || $(ctx).find('.message-container').length > 0)
-						errorMessageCleanup();
+					initSelect2(ctx)
+					handleDataDownload(ctx)
+					enableTooltips(ctx)
+					enablePopovers(ctx)
+					setupCharts(ctx)
+					navHighlight()
+					setupCustomDropdowns(ctx)
+					if ($(ctx).hasClass('message-container') || $(ctx).find('.message-container').length > 0)
+						errorMessageCleanup()
 					setTimeout(function () {
-						setupErrorMessages(ctx);
-					}, 1);
-				});
+						setupErrorMessages(ctx)
+					}, 1)
+				})
 			},
 			postUpdate: function () {
-				$(this).trigger('vs:miwt-post-update');
+				$(this).trigger('vs:miwt-post-update')
 			}
-		};
-	});
+		}
+	})
 
-
-});
+})

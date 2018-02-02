@@ -1,6 +1,7 @@
 @import "../config/base-vars";
-@import "../../../../../node_modules/bootstrap-beta/scss/mixins/buttons";
-@import "../../../../../node_modules/bootstrap-beta/scss/buttons";
+@import "../../../../../node_modules/bootstrap/scss/mixins/buttons";
+@import "../../../../../node_modules/bootstrap/scss/buttons";
+@import "../mixins/bootstrap-legacy-buttons";
 
 input.custom-file {
 	width: 0.1px;
@@ -23,8 +24,8 @@ label.custom-file {
 	vertical-align: middle;
 	user-select: none;
 	border: $input-btn-border-width solid transparent;
-	@include button-size($btn-padding-y, $btn-padding-x, $font-default-size, $btn-size-line-height, $btn-border-radius);
-	@include button-variant($color-app-brand, $color-white, $color-app-brand);
+	@include button-size-legacy($btn-padding-y, $btn-padding-x, $font-default-size, $btn-size-line-height, $btn-border-radius);
+	@include button-variant-legacy($color-app-brand, $color-white, $color-app-brand);
 	text-transform: uppercase;
 
 	cursor: pointer;

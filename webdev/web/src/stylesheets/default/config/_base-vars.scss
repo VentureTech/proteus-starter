@@ -1,126 +1,143 @@
-$path-design: '/_design/default';
-$path-fonts: $path-design + '/fonts';
+$path-design:                         '/_design/default';
+$path-fonts:                          $path-design + '/fonts';
 
-$color-app-brand: #1663cc;
-$color-app-yellow: #F9BB29;
-$color-app-blue: #488fb4;
-$color-app-light-blue: #4AB0D5;
-$color-app-cyan: #6CCAC9;
-$color-app-red: #EE695B;
-$color-app-black: #343940;
-$color-app-grey: #515B6B;
-$color-app-light-grey: #9699A6;
+$color-app-brand:                     #1663cc;
+$color-app-yellow:                    #F9BB29;
+$color-app-blue:                      #488fb4;
+$color-app-light-blue:                #4AB0D5;
+$color-app-cyan:                      #6CCAC9;
+$color-app-red:                       #EE695B;
+$color-app-black:                     #343940;
+$color-app-grey:                      #515B6B;
+$color-app-light-grey:                #9699A6;
 
-$app-page-bg: #F1F2F7;
+$app-page-bg:                         #F1F2F7;
 
-$body-bg: $app-page-bg;
-$brand-primary: $color-app-brand;
-$brand-danger: $color-app-red;
-$brand-warning: $color-app-yellow;
-$brand-info: $color-app-cyan;
+$body-bg:                             $app-page-bg;
+$brand-primary:                       $color-app-brand;
+$brand-success:                       #5cb85c !default;
+$brand-danger:                        $color-app-red;
+$brand-warning:                       $color-app-yellow;
+$brand-info:                          $color-app-cyan;
 
-$btn-primary-color:              #fff;
-$btn-primary-bg:                 $brand-primary;
-$btn-primary-border:             darken($brand-primary, 5%);
+$btn-primary-color:                   #fff;
+$btn-primary-bg:                      $brand-primary;
+$btn-primary-border:                  darken($brand-primary, 5%);
 
-$btn-secondary-color:            $brand-primary;
-$btn-secondary-bg:               #fff;
-$btn-secondary-border:           $brand-primary;
-$enable-shadows:                 true;
+$btn-secondary-color:                 $brand-primary;
+$btn-secondary-bg:                    #fff;
+$btn-secondary-border:                $brand-primary;
+$enable-shadows:                      true;
 
-@import '../../../../../node_modules/bootstrap-beta/scss/functions';
-@import "../../../../../node_modules/bootstrap-beta/scss/variables";
+$menu-item-active:                    $color-app-red;
+$menu-item-inactive:                  $color-app-light-grey;
 
-$menu-item-active: $color-app-red;
-$menu-item-inactive: $color-app-light-grey;
+$header-bg:                           #A8ABBA;
 
-$header-bg: #A8ABBA;
+$color-white:                         #fff;
+$color-black:                         #000;
 
-$color-white: #fff;
-$color-black: #000;
+$color-almost-white:                  #f7f7f7;
+$color-smokey-white:                  #f2f2f2;
+$color-cloud-grey:                    #e7e7e7;
+$color-lightest-grey:                 #eee;
+$color-lighter-grey:                  #ddd;
+$color-light-grey:                    #ccc;
+$color-grey:                          #aaa;
+$color-dark-grey:                     #999;
+$color-darker-grey:                   #777;
+$color-light-charcoal:                #555;
+$color-charcoal:                      #333;
 
-$color-almost-white: #f7f7f7;
-$color-smokey-white: #f2f2f2;
-$color-cloud-grey: #e7e7e7;
-$color-lightest-grey: #eee;
-$color-lighter-grey: #ddd;
-$color-light-grey: #ccc;
-$color-grey: #aaa;
-$color-dark-grey: #999;
-$color-darker-grey: #777;
-$color-light-charcoal: #555;
-$color-charcoal: #333;
+$color-cornsilk:                      cornsilk;
 
-$color-cornsilk: cornsilk;
+$theme-colors: (
+		"primary":                        $brand-primary,
+		"secondary":                      $color-white,
+		"success":                        $brand-success,
+		"info":                           $brand-info,
+		"warning":                        $brand-warning,
+		"danger":                         $brand-danger,
+		"light":                          $color-white,
+		"dark":                           $color-black
+);
 
-$font-monospace: monospace;
-$font-arial: $font-family-sans-serif;
-$font-open-sans: Open Sans, $font-arial;
-$font-roboto: "Roboto", $font-family-sans-serif;
+@import '../../../../../node_modules/bootstrap/scss/functions';
+@import "../../../../../node_modules/bootstrap/scss/variables";
 
-$font-default-color: $color-black;
-$font-default-size: 14px;
-$font-default-content-line-height: 1.4;
+$font-monospace:                      monospace;
+$font-arial:                          $font-family-sans-serif;
+$font-open-sans:                      Open Sans, $font-arial;
+$font-roboto:                         "Roboto", $font-family-sans-serif;
 
-$html-entity-nbsp: "\a0";
+$font-default-color:                  $color-black;
+$font-default-size:                   14px;
+$font-default-content-line-height:    1.4;
 
-$bp-mobile-landscape: (min-width: 480px);
-$bp-tablets-portrait: (min-width: 768px);
-$bp-tablets-only: (min-width: 768px) (min-width: 1024px);
-$bp-tablets-landscape: (min-width: 1024px);
-$bp-desktop: (min-width: 1280px);
-$bp-desktop-wide: (min-width: 1400px);
+$html-entity-nbsp:                    "\a0";
+
+$bp-mobile-landscape:                 (min-width: 480px);
+$bp-tablets-portrait:                 (min-width: 768px);
+$bp-tablets-only:                     (min-width: 768px) (min-width: 1024px);
+$bp-tablets-landscape:                (min-width: 1024px);
+$bp-desktop:                          (min-width: 1280px);
+$bp-desktop-wide:                     (min-width: 1400px);
 
 
-$font-open-sans-bold: Open Sans Bold;
+$font-open-sans-bold:                 Open Sans Bold;
 
-$font-glyph-lib: FontAwesome;
-$font-neptune-glyph: Glyphlib;
+$font-glyph-lib:                      FontAwesome;
+$font-neptune-glyph:                  Glyphlib;
 
-$html-entity-error: '\f057';
-$html-entity-info: '\f05a';
-$html-entity-success: '\f058';
-$html-entity-warning: '\f06a';
-$html-entity-fixme: '\f0ad';
-$html-entity-asterisk: '\f069';
-$html-entity-download: '\f019';
-$html-entity-refresh: '\f021';
-$html-entity-plus: '\f055';
-$html-entity-angle-double-left: '\f100';
-$html-entity-clock: '\f017';
-$html-entity-question: '\f059';
+$html-entity-error:                   '\f057';
+$html-entity-info:                    '\f05a';
+$html-entity-success:                 '\f058';
+$html-entity-warning:                 '\f06a';
+$html-entity-fixme:                   '\f0ad';
+$html-entity-asterisk:                '\f069';
+$html-entity-download:                '\f019';
+$html-entity-refresh:                 '\f021';
+$html-entity-plus:                    '\f055';
+$html-entity-angle-double-left:       '\f100';
+$html-entity-clock:                   '\f017';
+$html-entity-question:                '\f059';
 
-$color-success-dark: #3c763d;
-$color-success-light: #dff0d8;
-$color-success-border: darken($color-success-light, 12%);
+$color-success-dark:                  #3c763d;
+$color-success-light:                 #dff0d8;
+$color-success-border:                darken($color-success-light, 12%);
 
-$color-info-dark: #31708f;
-$color-info-light: #d9edf7;
-$color-info-border: darken($color-info-light, 12%);
+$color-info-dark:                     #31708f;
+$color-info-light:                    #d9edf7;
+$color-info-border:                   darken($color-info-light, 12%);
 
-$color-warning-dark: #8a6d3b;
-$color-warning-light: #fcf8e3;
-$color-warning-border: darken($color-warning-light, 12%);
+$color-warning-dark:                  #8a6d3b;
+$color-warning-light:                 #fcf8e3;
+$color-warning-border:                darken($color-warning-light, 12%);
 
-$color-error-dark: #a94442;
-$color-error-light: #f2dede;
-$color-error-border: darken($color-error-light, 12%);
+$color-error-dark:                    #a94442;
+$color-error-light:                   #f2dede;
+$color-error-border:                  darken($color-error-light, 12%);
 
-$btn-size-line-height: 1;
+$btn-size-line-height:                1;
 
 @import "../config/font-glyph-entities"; //Neptune glyph library
 
 //Bootstrap variables that have been removed in Bootstrap 4 beta 2
-$font-size-xs:   .75rem !default;
-$btn-padding-x-sm:               .5rem !default;
-$btn-padding-y-sm:               .25rem !default;
-$btn-padding-x:                  1rem !default;
-$btn-padding-y:                  .5rem !default;
-$spacer:   1rem !default;
-$spacer-x: $spacer !default;
-$spacer-y: $spacer !default;
-$font-family-serif:      Georgia, "Times New Roman", Times, serif !default;
-$cursor-disabled:                not-allowed !default;
-$pagination-active-border:             $brand-primary !default;
-$btn-line-height:                1.25 !default;
-$pagination-hover-border:              #ddd !default;
+$font-size-root:                      16px !default
+$btn-danger-bg:                       $brand-danger !default;
+$card-border-radius-inner:            $card-border-radius !default;
+$line-height:                         1.5 !default;
+$font-size-xs:                        .75rem !default;
+$btn-padding-x-sm:                    .5rem !default;
+$btn-padding-y-sm:                    .25rem !default;
+$btn-padding-x:                       1rem !default;
+$btn-padding-y:                       .5rem !default;
+$spacer:                              1rem !default;
+$spacer-x:                            $spacer !default;
+$spacer-y:                            $spacer !default;
+$font-family-serif:                   Georgia, "Times New Roman", Times, serif !default;
+$cursor-disabled:                     not-allowed !default;
+$pagination-active-border:            $brand-primary !default;
+$btn-line-height:                     1.25 !default;
+$pagination-hover-border:             #ddd !default;
+$card-link-hover-color:               #fff !default;

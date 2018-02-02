@@ -1,21 +1,22 @@
 @import "../config/base-import";
 @import "../mixins/general-mixins";
-@import "../components/actions";
-@import "../components/messages";
-@import "../components/app-menu";
-@import "../components/side-nav";
-@import "../components/miwt";
-@import "../components/miwt-tables";
-@import "../components/miwt-menu";
-@import "../components/miwt-dialog";
-@import "../components/tabs";
-@import "../components/search-ui";
-@import "../components/pager";
-@import "../components/prop-ui";
-@import "../components/file-chooser";
-@import "../components/img_crop";
-@import "../components/callout";
-@import "../components/calendar-theme";
+@import "../mixins/_bootstrap-legacy-buttons.scss";
+@import "../partials/actions";
+@import "../partials/messages";
+@import "../partials/app-menu";
+@import "../partials/side-nav";
+@import "../partials/miwt";
+@import "../partials/miwt-tables";
+@import "../partials/miwt-menu";
+@import "../partials/miwt-dialog";
+@import "../partials/tabs";
+@import "../partials/search-ui";
+@import "../partials/pager";
+@import "../partials/prop-ui";
+@import "../partials/file-chooser";
+@import "../partials/img_crop";
+@import "../partials/callout";
+@import "../partials/calendar-theme";
 @include fontFace('GlyphLib', 'neptune-glyph-font');
 
 body {
@@ -162,7 +163,7 @@ p.instructions {
 		@include clearfix();
 
 		.btn.action-add {
-			@include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
+			@include button-variant-legacy($btn-primary-color, $btn-primary-bg, $btn-primary-border);
 		}
 	}
 
@@ -191,7 +192,7 @@ p.instructions {
 			margin-left: 1rem;
 
 			.btn {
-				@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $btn-border-radius-sm);
+				@include button-size-legacy($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $btn-border-radius-sm);
 			}
 		}
 	}

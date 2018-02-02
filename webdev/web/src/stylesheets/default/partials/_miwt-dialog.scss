@@ -1,7 +1,8 @@
 @import "../config/base-vars";
-@import "../../../../../node_modules/bootstrap-beta/scss/modal";
-@import "../../../../../node_modules/bootstrap-beta/scss/mixins";
-@import "../../../../../node_modules/bootstrap-beta/scss/mixins/buttons";
+@import "../../../../../node_modules/bootstrap/scss/modal";
+@import "../../../../../node_modules/bootstrap/scss/mixins";
+@import "../../../../../node_modules/bootstrap/scss/mixins/buttons";
+@import "../mixins/bootstrap-legacy-buttons";
 
 div.window.dialog /*specificity*/ {
 	padding: 0;
@@ -228,7 +229,7 @@ div.window.dialog /*specificity*/ {
 
 	.search .entity-actions .menu-component,
 	.search-wrapper .entity-actions .menu-component {
-		@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border);
+		@include button-variant-legacy($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border);
 
 		> a.menu-item {
 			font-size: 12px;
@@ -269,7 +270,7 @@ div.window.dialog /*specificity*/ {
 			margin-right: .25rem;
 		}
 		.btn.delete {
-			@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $border-radius-sm);
+			@include button-size-legacy($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $border-radius-sm);
 			margin-bottom: 1rem;
 		}
 		input[type="file"] {
@@ -316,7 +317,7 @@ div.window.dialog /*specificity*/ {
 				margin: 0;
 
 				.actions.search-actions .btn {
-					@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $border-radius-sm);
+					@include button-size-legacy($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $border-radius-sm);
 				}
 
 			}
@@ -355,7 +356,7 @@ div.window.dialog /*specificity*/ {
 				margin-bottom: 0;
 
 				> .btn.done-action {
-					@include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
+					@include button-variant-legacy($btn-primary-color, $btn-primary-bg, $btn-primary-border);
 				}
 			}
 		}

@@ -15,5 +15,4 @@ function enableTooltips(ctx) {
 			trigger: 'hover'
 		});
 	}
-
 }

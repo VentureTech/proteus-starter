@@ -1,6 +1,6 @@
 @import "../config/base-vars";
-@import "../../../../../node_modules/bootstrap-beta/scss/mixins";
-@import "../../../../../node_modules/bootstrap-beta/scss/mixins/buttons";
+@import "../../../../../node_modules/bootstrap/scss/mixins";
+@import "../../../../../node_modules/bootstrap/scss/mixins/buttons";
 
 /**
 * Provide button look for MIWT MenuComponent
@@ -14,7 +14,7 @@
 	cursor: pointer;
 	user-select: none;
 	border: $input-btn-border-width solid transparent;
-	@include button-size($btn-padding-y, $btn-padding-x, $font-size-base, $btn-size-line-height, $btn-border-radius);
+	@include button-size-legacy($btn-padding-y, $btn-padding-x, $font-size-base, $btn-size-line-height, $btn-border-radius);
 	@include transition(all .2s ease-in-out);
 
 	&,

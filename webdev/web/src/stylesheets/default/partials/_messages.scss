@@ -1,7 +1,7 @@
 @import "../config/base-vars";
 @import "../mixins/styles";
-@import "../../../../../node_modules/bootstrap-beta/scss/mixins/buttons";
-@import "../../../../../node_modules/bootstrap-beta/scss/mixins/clearfix";
+@import "../../../../../node_modules/bootstrap/scss/mixins/buttons";
+@import "../../../../../node_modules/bootstrap/scss/mixins/clearfix";
 
 /*
 	Partial -	Messages
@@ -24,7 +24,7 @@
 			margin:0 !important;
 			text-align: inherit !important;
 			.btn {
-				@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $btn-border-radius-sm);
+				@include button-size-legacy($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-size-line-height, $btn-border-radius-sm);
 				font-size: .75rem;
 			}
 		}
