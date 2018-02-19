@@ -16,10 +16,13 @@ var SERVER_URL = process.env.publish_venturetech_url || process.env.publish_vent
     parsedGroup = projectInfo.group.replace('.', '/');
 
 var VERSION = `${projectInfo.version}`;
-if(projectInfo.versionStatus == "SNAPSHOT")
+var REPO_KEY = "release";
+if(projectInfo.versionStatus === "SNAPSHOT") {
     VERSION += "-SNAPSHOT";
-var PUBLISH_METADATA_URL = `${SERVER_URL}/vt-snapshot-local/${parsedGroup}/${projectInfo.name}`;
-var PUBLISH_URL = `${SERVER_URL}/vt-snapshot-local/${parsedGroup}/${projectInfo.name}/${VERSION}`;
+    REPO_KEY = "snapshot";
+}
+var PUBLISH_METADATA_URL = `${SERVER_URL}/vt-${REPO_KEY}-local/${parsedGroup}/${projectInfo.name}`;
+var PUBLISH_URL = `${SERVER_URL}/vt-${REPO_KEY}-local/${parsedGroup}/${projectInfo.name}/${VERSION}`;
 
 gulp.task('publish', ['zip', 'publish:maven-metadata'], function() {
     return stp(gulp.src(`./artifact/${projectInfo.name}-${VERSION}.zip`)
