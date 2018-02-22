@@ -8,6 +8,10 @@ version = new Version(app_version, project)
 group = app_group
 ext[Version.PROJECT_INFORMATION_PACKAGE] = 'com.example.app.config'
 
+afterEvaluate {
+    println "Project: $app_name $version"
+}
+
 // Kotlin Configuration
 allOpen {
     // Makes classes with this annotation open (spring is taken care of)
