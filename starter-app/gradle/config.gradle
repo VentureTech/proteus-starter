@@ -21,3 +21,9 @@ noArg {
     // Generates a hibernate/JPA no-arg constructor for classes with this annotation
     // Example usage if you desire to use this: annotation('javax.persistence.Entity')
 }
+
+
+kapt {
+    useBuildCache = true
+}
+

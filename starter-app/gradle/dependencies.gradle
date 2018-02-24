@@ -8,18 +8,6 @@ sourceSets {
     }
 }
 
-def demoExists = project.file('src/demo').exists()
-if(demoExists){
-    sourceSets {
-        demo
-    }
-    compileDemoJava {
-        options.incremental = true
-        options.compilerArgs << '-Xlint:all,-deprecation,-processing'
-        options.compilerArgs << '-parameters'
-    }
-}
-
 
 if(compileLibraries) {
     println 'Compiling Libraries Is Enabled'
@@ -52,10 +40,6 @@ compileTestJava { options.incremental = true }
 configurations {
     runtimeaspects { transitive = false }
     compiletimeaspects { transitive = false }
-    if(demoExists) {
-        demoCompile.extendsFrom compile
-        demoRuntime.extendsFrom compile
-    }
     if(compileLibraries) {
         librariesCompile.extendsFrom compile
         librariesRuntime.extendsFrom runtime
@@ -63,9 +47,6 @@ configurations {
 }
 dependencies {
 
-    if(demoExists) {
-        demoCompile sourceSets.main.output
-    }
     if(compileLibraries) {
         librariesCompile sourceSets.main.output
     }
