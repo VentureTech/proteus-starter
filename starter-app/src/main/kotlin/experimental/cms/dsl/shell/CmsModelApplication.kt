@@ -25,6 +25,7 @@ import com.i2rd.cms.bean.DelegateElement
 import com.i2rd.cms.bean.ScriptingBeanPageElementModelFactory
 import com.i2rd.cms.bean.contentmodel.CmsModelDataSet
 import com.i2rd.cms.component.miwt.MIWTPageElementModelFactory
+import com.i2rd.cms.component.simple.SimplePageElementModelFactory
 import com.i2rd.cms.dao.CmsBackendDAO
 import com.i2rd.cms.dao.CmsSiteDefinitionDAO
 import com.i2rd.cms.editor.CmsEditorDAO
@@ -110,6 +111,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
     lateinit var _backendConfig: BackendConfig
     @Autowired
     lateinit var _miwtPageElementModelFactory: MIWTPageElementModelFactory
+    @Autowired
+    lateinit var _simplePageElementModelFactory: SimplePageElementModelFactory
     @Autowired
     lateinit var _scriptingBeanPageElementModelFactory: ScriptingBeanPageElementModelFactory
     @Autowired(required = false)
@@ -440,10 +443,10 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             userRole.lastModUser = principalDAO.currentPrincipal
             userRole.sessionTimeout = role.sessionTimeout
             val name = getTransientLocalizedObjectKey(localeSource, userRole.name)?:
-                TransientLocalizedObjectKey(mutableMapOf())
+            TransientLocalizedObjectKey(mutableMapOf())
             name.text[site.primaryLocale] = role.name
             val description = getTransientLocalizedObjectKey(localeSource, userRole.description)?:
-                TransientLocalizedObjectKey(mutableMapOf())
+            TransientLocalizedObjectKey(mutableMapOf())
             description.text[site.primaryLocale] = role.description
             if(name.isModification(localeSource, true))
                 userRole.name = name
@@ -460,11 +463,11 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         val list = mutableListOf<CmsHostname>()
         for ((hnAddress, welcomePage) in siteModel.hostnames) {
             val address = environment.resolveRequiredPlaceholders(hnAddress).let d@{
-                    val pat1 = "_| ".toRegex()
-                    val pat2 = "[^a-zA-Z\\-0-9.]".toRegex()
+                val pat1 = "_| ".toRegex()
+                val pat2 = "[^a-zA-Z\\-0-9.]".toRegex()
 
-                    return@d it.replace(pat1, "-").replace(pat2, "").toLowerCase()
-                }
+                return@d it.replace(pat1, "-").replace(pat2, "").toLowerCase()
+            }
             var cmsHostname = cmsFrontendDAO.getSiteHostname(address)
             if (cmsHostname == null) {
                 logger.info("Creating CmsHostname: $address")
@@ -547,7 +550,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         page.pagePermission?.let {
             val programmaticName = resolvePlaceholders(it.programmaticName)
             var permission = pagePermissionCache[programmaticName] ?:
-                siteDefinitionDAO.getPagePermissionByProgrammaticName(site, programmaticName)
+            siteDefinitionDAO.getPagePermissionByProgrammaticName(site, programmaticName)
             if (permission == null) {
                 permission = PagePermission(programmaticName)
                 permission.siteId = site.id
@@ -561,7 +564,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             if(it.addToRole.isNotBlank()) {
                 val roleProgId = resolvePlaceholders(it.addToRole)
                 val userRole = roleCache[roleProgId] ?:
-                    session.createQuery("FROM Role WHERE programmaticName = " + ":programmaticName")
+                session.createQuery("FROM Role WHERE programmaticName = " + ":programmaticName")
                     .setParameter("programmaticName", roleProgId)
                     .uniqueResult() as Role? ?: throw IllegalArgumentException("Role does not exist: ${roleProgId}")
                 if(!userRole.permissions.contains(permission)) {
@@ -576,7 +579,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
 
         page.title.let {
             val title = getTransientLocalizedObjectKey(localeSource, cmsPage.persistedTitleKey)?:
-                TransientLocalizedObjectKey(mutableMapOf())
+            TransientLocalizedObjectKey(mutableMapOf())
             title.text[site.primaryLocale] = it
             cmsPage.persistedTitleKey = title
         }
@@ -584,7 +587,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         val authenticationPageModel = page.authenticationPage
         if (authenticationPageModel != null) {
             cmsPage.authorizationPage = (pageModelToCmsPage[authenticationPageModel] ?:
-                getOrCreatePagePass2(site, authenticationPageModel))
+            getOrCreatePagePass2(site, authenticationPageModel))
             cmsPage.touch()
         }
         return cmsPage
@@ -647,8 +650,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             contentElement.site = site
         var updateVisibilityCondition = content.visibilityCondition != null
         if(contentElement.visibilityCondition != null) {
-           updateVisibilityCondition = Hibernate.getClass(contentElement.visibilityCondition) !=
-               Hibernate.getClass(content.visibilityCondition)
+            updateVisibilityCondition = Hibernate.getClass(contentElement.visibilityCondition) !=
+                Hibernate.getClass(content.visibilityCondition)
             if(updateVisibilityCondition)
                 updateVisibilityCondition = !(contentElement.visibilityCondition?.configurationDataMap?.equals(content
                     .visibilityCondition?.configurationDataMap)?:false)
@@ -856,9 +859,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
 
     private fun createNDEs(site: CmsSite, type: NDEType, paths: List<String>, siteElement: Any): List<FactoryNDE> {
         val list = mutableListOf<FactoryNDE>()
-        val queryString = """SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root
- AND fe.revision = false AND fe.entityTrashed = false"""
-        val query = hsh.session.createQuery(queryString)
+        val query = hsh.session.createQuery(
+            "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root AND fe.revision = false")
             .setParameter("root", currentWebRoot)
         for (path in paths) {
             @Suppress("UNCHECKED_CAST")
@@ -890,9 +892,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         if (exactPath != null)
             return LinkUtil.getCMSLink(exactPath.pageElement).uriAsString
 
-        val queryString = """SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root
- AND fe.revision = false AND fe.entityTrashed = false"""
-        val query = hsh.session.createQuery(queryString)
+        val query = hsh.session.createQuery(
+            "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root AND fe.revision = false")
             .setParameter("root", currentWebRoot)
             .setParameter("path", "%" + link)
         @Suppress("UNCHECKED_CAST")
@@ -908,11 +909,13 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
     }
 
     override fun getCMSLink(page: Page): Link = LinkUtil.getCMSLink(pageModelToCmsPage[page] ?:
-        getOrCreatePagePass2(currentSite!!, page))
+    getOrCreatePagePass2(currentSite!!, page))
 
     override fun getBackendConfig(): BackendConfig = _backendConfig
 
     override fun getMIWTPageElementModelFactory() = _miwtPageElementModelFactory
+
+    override fun getSimplePageElementModelFactory(): SimplePageElementModelFactory = _simplePageElementModelFactory
 
     override fun getScriptingBeanPageElementModelFactory() = _scriptingBeanPageElementModelFactory
 
@@ -928,13 +931,13 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
 
     override fun findWebFileSystemEntity(path: String): FileSystemEntity? {
         val query1 = hsh.session.createQuery(
-            "SELECT fe FROM FileSystemEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root AND fe.entityTrashed=false")
+            "SELECT fe FROM FileSystemEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root")
             .setParameter("root", currentWebRoot)
             .setParameter("path", "/${currentWebRoot?.name}/${trimSlashes(path)}")
         val exactMatch = query1.uniqueResult() as FileSystemEntity?
         if(exactMatch != null) return exactMatch
         val query2 = hsh.session.createQuery(
-            "SELECT fe FROM FileSystemEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root AND fe.entityTrashed=false")
+            "SELECT fe FROM FileSystemEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root")
             .setParameter("root", currentWebRoot)
             .setParameter("path", "%" + path)
         @Suppress("UNCHECKED_CAST")
@@ -953,9 +956,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         if(libraries[libraryPath] == null) {
             val site = getCmsSite()
             val root = libraryDAO.librariesDirectory
-            val queryString = """SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root
- AND fe.revision = false AND fe.entityTrashed = false"""
-            val query = hsh.session.createQuery(queryString)
+            val query = hsh.session.createQuery(
+                "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root AND fe.revision = false")
                 .setParameter("root", root)
                 .setParameter("path", "%" + libraryPath)
             @Suppress("UNCHECKED_CAST")

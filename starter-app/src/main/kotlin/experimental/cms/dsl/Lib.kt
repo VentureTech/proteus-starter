@@ -17,6 +17,7 @@ import com.google.common.io.Files
 import com.i2rd.cms.backend.BackendConfig
 import com.i2rd.cms.bean.ScriptingBeanPageElementModelFactory
 import com.i2rd.cms.component.miwt.MIWTPageElementModelFactory
+import com.i2rd.cms.component.simple.SimplePageElementModelFactory
 import com.i2rd.lib.ILibraryType
 import com.i2rd.lib.Library
 import com.i2rd.lib.LibraryConfiguration
@@ -85,7 +86,7 @@ internal fun cleanPath(path: String): String = trimSlashes(path.replace('*', '/'
 interface PathCapable {
     /**
      * The path like "/admin/user-mgt". Wildcard paths end with a "*" like "/admin/user/edit/&#x2a;"
-    */
+     */
     var path: String
 
     /**
@@ -254,6 +255,8 @@ interface ContentHelper : PlaceholderHelper {
 
     fun getMIWTPageElementModelFactory(): MIWTPageElementModelFactory
 
+    fun getSimplePageElementModelFactory(): SimplePageElementModelFactory
+
     fun getScriptingBeanPageElementModelFactory(): ScriptingBeanPageElementModelFactory
 
     fun getApplicationFunctions(): List<Component>
@@ -327,4 +330,4 @@ data class AppFunctionPage(
     val pageTitle: String = appFunctionName,
     val cssPaths: List<String> = listOf(),
     val javaScriptPaths: List<String> = listOf()
-)
+                          )

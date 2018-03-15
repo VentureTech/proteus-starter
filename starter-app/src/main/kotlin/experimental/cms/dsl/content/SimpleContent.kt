@@ -11,7 +11,6 @@
 
 package experimental.cms.dsl.content
 
-import com.i2rd.cms.component.miwt.MIWTPageElementModel
 import com.i2rd.cms.visibility.VisibilityConditionInstance
 import experimental.cms.dsl.Content
 import experimental.cms.dsl.ContentHelper
@@ -19,12 +18,13 @@ import experimental.cms.dsl.ContentInstance
 import experimental.cms.dsl.Identifiable
 import net.proteusframework.cms.PageElementModelImpl
 import net.proteusframework.cms.component.ContentElement
+import net.proteusframework.cms.component.generator.Generator
 
 /**
- * MIWT Content for a [MIWTPageElementModel]
+ * Simple Content for a [SimpleContentElement]
  * @author Russ Tennant (russ@venturetech.net)
  */
-open class MIWT(id: String, val miwtClass: Class<out MIWTPageElementModel>)
+open class SimpleContent(id: String, val generator: Class<out Generator<*>>)
     : Identifiable(id), Content {
     override var visibilityCondition: VisibilityConditionInstance? = null
     override var path: String = ""
@@ -36,16 +36,16 @@ open class MIWT(id: String, val miwtClass: Class<out MIWTPageElementModel>)
 
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
         if (existing != null) return ContentInstance(existing)
-        val pageElementModel = helper.getMIWTPageElementModelFactory().getVirtualComponents(helper.getCmsSite()).first {
-            PageElementModelImpl.StandardIdentifier(it.identifier).virtualIdentifier == miwtClass.name
+        val pageElementModel = helper.getSimplePageElementModelFactory().getVirtualComponents(helper.getCmsSite()).first {
+            PageElementModelImpl.StandardIdentifier(it.identifier).virtualIdentifier == generator.name
         }
         helper.assignToSite(pageElementModel.identifier)
 
-        return ContentInstance(helper.getMIWTPageElementModelFactory().createInstance(pageElementModel))
+        return ContentInstance(helper.getSimplePageElementModelFactory().createInstance(pageElementModel))
     }
 
     override fun toString(): String {
-        return "MIWT(" +
+        return "SimpleContent(" +
             "htmlId='$htmlId'," +
             "htmlClass='$htmlClass'," +
             "cssPaths=$cssPaths," +
