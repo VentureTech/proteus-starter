@@ -80,7 +80,7 @@ interface DelegateContent : ContentContainer {
      */
     fun <T : Content> content(content: T, purpose: DelegatePurpose = DefaultDelegatePurpose.NONE, init: T.() -> Unit={}): T {
         contentList.add(content)
-        contentPurpose.put(content, purpose)
+        contentPurpose[content] = purpose
         content.parent = this
         return content.apply(init)
     }
@@ -93,7 +93,7 @@ interface DelegateContent : ContentContainer {
     fun content(existingContentId: String, purpose: DelegatePurpose = DefaultDelegatePurpose.NONE): Content {
         val contentById = _getSite(parent).getContentById(existingContentId)
         contentList.add(contentById)
-        contentPurpose.put(contentById, purpose)
+        contentPurpose[contentById] = purpose
         return contentById
     }
 }

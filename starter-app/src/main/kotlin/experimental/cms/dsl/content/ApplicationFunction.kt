@@ -34,7 +34,7 @@ open class ApplicationFunction(id: String, val functionName: String = id)
     override val javaScriptPaths = mutableListOf<String>()
     override var parent: Any? = null
 
-    internal var registeredLink = RegisteredLink(functionName)
+    private var registeredLink = RegisteredLink(functionName)
 
     fun registeredLink(functionContext: String = "", pathInfoPattern: String = "") {
         registeredLink = RegisteredLink(id, functionContext, pathInfoPattern)
@@ -57,13 +57,13 @@ open class ApplicationFunction(id: String, val functionName: String = id)
         helper.saveRegisteredLink(theLink)
 
         if (existing != null) return ContentInstance(existing)
-        val match = helper.getApplicationFunctions().filter {
+        val match = helper.getApplicationFunctions().first {
             val annotation = it.javaClass.getAnnotation(ApplicationFunction::class.java)
             annotation.name == functionName
-        }.first() as MIWTPageElementModel
-        val pageElementModel = helper.getMIWTPageElementModelFactory().getVirtualComponents(helper.getCmsSite()).filter {
+        } as MIWTPageElementModel
+        val pageElementModel = helper.getMIWTPageElementModelFactory().getVirtualComponents(helper.getCmsSite()).first {
             PageElementModelImpl.StandardIdentifier(it.identifier).virtualIdentifier == match.javaClass.name
-        }.first()
+        }
         helper.assignToSite(pageElementModel.identifier)
 
         return ContentInstance(helper.getMIWTPageElementModelFactory().createInstance(pageElementModel))

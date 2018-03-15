@@ -21,7 +21,7 @@ import net.proteusframework.cms.component.ContentElement
 import net.proteusframework.cms.component.generator.Generator
 
 /**
- * Simple Content for a [SimpleContentElement]
+ * Simple Content for a [com.i2rd.cms.component.simple.SimpleContentElement]
  * @author Russ Tennant (russ@venturetech.net)
  */
 open class SimpleContent(id: String, val generator: Class<out Generator<*>>)

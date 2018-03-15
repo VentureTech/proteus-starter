@@ -33,9 +33,10 @@ internal data class Hostname(val address: String, val welcomePage: Page)
 @SiteElementMarker
 class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableParent<Page>(id), ContentContainer, ResourceCapable {
 
-    companion object{
+    companion object {
         val logger = LogManager.getLogger(Site::class.java)!!
     }
+
     private var siteDefinitionDAO: CmsSiteDefinitionDAO = appDefinition.siteDefinitionDAO
     private var dependency: AppDefinition? = null
         get() = getAppDefinitionDependency(appDefinition)
@@ -95,25 +96,27 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
         // {siteDefinitionDAO.getContentElementByName(it, existingId)}
         //        if(content != null) return CreateContent(existingId)
         val predicate = createContentIdPredicate(existingId)
-        return children.flatMap(Page::contentList).firstOrNull(predicate) ?:
-            templates.flatMap(Template::contentList).filter(predicate).firstOrNull() ?:
-            content.filter(predicate).firstOrNull()?:throw IllegalStateException("Content '$existingId' does not exist")
+        return children.flatMap(Page::contentList)
+            .firstOrNull(predicate)
+            ?: templates.flatMap(Template::contentList).firstOrNull(predicate)
+            ?: content.firstOrNull(predicate)
+            ?: throw IllegalStateException("Content '$existingId' does not exist")
     }
 
     internal fun _getExistingLayout(existingId: String): Layout {
-        val existingLayout = layouts.filter({ it.id == existingId }).firstOrNull()?:let{
+        val existingLayout = layouts.firstOrNull({ it.id == existingId }) ?: let {
             val layout = siteDefinitionDAO.getSiteByDescription(id)?.let {
                 siteDefinitionDAO.getLayoutByName(it, existingId)
             }
             if (layout != null) _createExistingLayout(layout) else null
         }
-        return existingLayout?:let {
+        return existingLayout ?: let {
             val dep = dependency
-            if(dep != null) {
-                for(depSite in dep.getSites()) {
-                    try{
+            if (dep != null) {
+                for (depSite in dep.getSites()) {
+                    try {
                         return@let depSite._getExistingLayout(existingId)
-                    }catch (ignore: IllegalStateException) {
+                    } catch (ignore: IllegalStateException) {
                         logger.debug("Unable to find layout in site: $depSite.id", ignore)
                     }
                 }
@@ -122,9 +125,9 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
         }
     }
 
-    private  fun _createExistingLayout(layout: net.proteusframework.cms.component.page.layout.Layout)  : Layout {
+    private fun _createExistingLayout(layout: net.proteusframework.cms.component.page.layout.Layout): Layout {
         val existingLayout = Layout(layout.name, this)
-        for(cmsBox in layout.boxes)
+        for (cmsBox in layout.boxes)
             _populateModelBoxes(existingLayout, cmsBox)
         return existingLayout
     }
@@ -132,51 +135,51 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
     private fun _populateModelBoxes(layout: Layout, cmsBox: net.proteusframework.cms.component.page.layout.Box) {
         val defaultContentArea: PageProperties.Type? = getDefaultContentArea(cmsBox)
         val box = Box(cmsBox.name, cmsBox.boxDescriptor, defaultContentArea, cmsBox.wrappingContainerCount,
-            cmsBox.cssName?:"", cmsBox.styleClass?:"")
+            cmsBox.cssName ?: "", cmsBox.styleClass ?: "")
         layout.add(box)
-        for(cmsChildBox in cmsBox.children) {
+        for (cmsChildBox in cmsBox.children) {
             _populateModelBoxes(box, cmsChildBox)
         }
     }
+
     private fun _populateModelBoxes(parent: Box, cmsBox: net.proteusframework.cms.component.page.layout.Box) {
         val defaultContentArea: PageProperties.Type? = getDefaultContentArea(cmsBox)
         val box = Box(cmsBox.name, cmsBox.boxDescriptor, defaultContentArea, cmsBox.wrappingContainerCount,
-            cmsBox.cssName?:"", cmsBox.styleClass?:"")
+            cmsBox.cssName ?: "", cmsBox.styleClass ?: "")
         parent.add(box)
-        for(cmsChildBox in cmsBox.children) {
+        for (cmsChildBox in cmsBox.children) {
             _populateModelBoxes(box, cmsChildBox)
         }
     }
 
     private fun getDefaultContentArea(cmsBox: net.proteusframework.cms.component.page.layout.Box): PageProperties.Type? {
-        val defaultContentArea: PageProperties.Type?
-        if (cmsBox.defaultContentArea == null) {
-            defaultContentArea = when (cmsBox.boxDescriptor) {
-                BoxDescriptor.HEADER -> PageProperties.Type.page_template
-                BoxDescriptor.FOOTER -> PageProperties.Type.page_template
+        val defaultContentArea: PageProperties.Type? = if (cmsBox.defaultContentArea == null) {
+            when (cmsBox.boxDescriptor) {
+                BoxDescriptor.HEADER    -> PageProperties.Type.page_template
+                BoxDescriptor.FOOTER    -> PageProperties.Type.page_template
                 BoxDescriptor.ENCLOSING -> null
-                else -> PageProperties.Type.page
+                else                    -> PageProperties.Type.page
             }
         } else {
-            defaultContentArea = cmsBox.defaultContentArea
+            cmsBox.defaultContentArea
         }
         return defaultContentArea
     }
 
     internal fun _getExistingTemplate(existingId: String): Template {
-        val existingTemplate = templates.filter({ it.id == existingId }).firstOrNull()?:let{
+        val existingTemplate = templates.firstOrNull({ it.id == existingId }) ?: let {
             val template = siteDefinitionDAO.getSiteByDescription(id)?.let {
                 siteDefinitionDAO.getPageTemplateByName(it, existingId)
             }
             if (template != null) Template(existingId, this, _createExistingLayout(template.layout)) else null
         }
-        return existingTemplate?:let {
+        return existingTemplate ?: let {
             val dep = dependency
-            if(dep != null) {
-                for(depSite in dep.getSites()) {
-                    try{
+            if (dep != null) {
+                for (depSite in dep.getSites()) {
+                    try {
                         return@let depSite._getExistingTemplate(existingId)
-                    }catch (ignore: IllegalStateException) {
+                    } catch (ignore: IllegalStateException) {
                         logger.debug("Unable to find template in site: $depSite.id", ignore)
                     }
                 }
@@ -193,27 +196,26 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
      */
     fun getExistingPage(existingId: String): Page {
         val dao = siteDefinitionDAO
-        val existingPage = children.filter { it.id == existingId }.firstOrNull()?:let {
+        val existingPage = children.firstOrNull { it.id == existingId } ?: let {
             val page = dao.getSiteByDescription(id)?.let {
                 dao.getPageByName(it, existingId)
             }
-            if(page != null) {
+            if (page != null) {
                 val existingTitle: LocalizedObjectKey? = page.persistedTitleKey
                 Page(existingId, this, page.primaryPath, Template(page.pageTemplate.name, this,
                     _createExistingLayout(page.pageTemplate.layout))).apply {
                     title = dao.getTransientLocalizedObjectKey(existingTitle).getText()[Locale.ENGLISH] ?: existingId
                 }
-            }
-            else
+            } else
                 null
         }
-        return existingPage?:let {
+        return existingPage ?: let {
             val dep = dependency
-            if(dep != null) {
-                for(depSite in dep.getSites()) {
-                    try{
+            if (dep != null) {
+                for (depSite in dep.getSites()) {
+                    try {
                         return@let depSite.getExistingPage(existingId)
-                    }catch (ignore: IllegalStateException) {
+                    } catch (ignore: IllegalStateException) {
                         logger.debug("Unable to find page in site: $depSite.id", ignore)
                     }
                 }
@@ -227,7 +229,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
      * @param key the key. Must follow [java.util.prefs.Preferences] constraints like key length.
      */
     fun storeSitePreference(key: String) {
-        if(key.isBlank()) throw IllegalArgumentException("Key must be specified")
+        if (key.isBlank()) throw IllegalArgumentException("Key must be specified")
         sitePreferenceKey = key
     }
 
@@ -237,7 +239,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
      * @param value the value.
      */
     fun systemPref(key: String, value: String) {
-        if(key.isBlank()) throw IllegalArgumentException("Key must be specified")
+        if (key.isBlank()) throw IllegalArgumentException("Key must be specified")
         systemPreferences[key] = value
     }
 
@@ -259,7 +261,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
      * @param url the URL
      */
     fun webResources(url: URL) {
-        if(!url.path.endsWith(".zip")) throw IllegalArgumentException("Invalid URL: $url")
+        if (!url.path.endsWith(".zip")) throw IllegalArgumentException("Invalid URL: $url")
         webResources = url
     }
 
@@ -271,7 +273,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
      * @param url the URL
      */
     fun libraryResources(url: URL) {
-        if(!url.path.endsWith(".zip")) throw IllegalArgumentException("Invalid URL: $url")
+        if (!url.path.endsWith(".zip")) throw IllegalArgumentException("Invalid URL: $url")
         libraryResources = url
     }
 
@@ -297,7 +299,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
         })
         content.parent = this
         content.apply(init)
-        if(content.path.isNotBlank())
+        if (content.path.isNotBlank())
             content.path = resolvePlaceholders(content.path)
         return content
     }
@@ -321,7 +323,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
      */
     fun page(id: String, path: String, init: Page.() -> Unit): Page {
         val page = Page(id = id, site = this, path = path)
-        siteConstructedCallbacks.add({_ ->
+        siteConstructedCallbacks.add({ _ ->
             page.path = resolvePlaceholders(path)
             page.apply(init)
             // This cannot be re-enabled until the site constructed callbacks are queued/dequeued like an event processor
@@ -343,7 +345,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
      * @sample errorPageExample
      */
     fun errorPage(error: RequestError, page: Page) {
-        errorPages.put(error, page)
+        errorPages[error] = page
     }
 
     /**
@@ -380,7 +382,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
      * @param init the initialization block.
      */
     fun hostname(address: String, welcomePageId: String, init: Page.() -> Unit) {
-        val page = children.filter { it.id == welcomePageId }.firstOrNull() ?: Page(welcomePageId, this)
+        val page = children.firstOrNull { it.id == welcomePageId } ?: Page(welcomePageId, this)
         page.apply(init)
         if (page.path.isBlank()) throw IllegalStateException("Missing path")
         siteConstructedCallbacks.add({ _ ->
@@ -395,7 +397,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
      * @param programmaticName the programmatic name (must be unique). You will use this to assign email templates to Content.
      * @param init the initialization block.
      */
-    fun <T: EmailConfigType<*>>
+    fun <T : EmailConfigType<*>>
         emailTemplate(type: Class<T>, name: String, programmaticName: String, init: EmailTemplate<*>.() -> Unit = {}) {
         val emailTemplate = EmailTemplate<T>(type, name, programmaticName)
         emailTemplates.add(emailTemplate.apply(init))
@@ -418,7 +420,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
 private fun appDefinitionExample() {
     @Profile("automation")
     @Component
-    open class MyAppDefinition : AppDefinition("My Cool Application", version = 1) {
+    class MyAppDefinition : AppDefinition("My Cool Application", version = 1) {
         init {
             createSite("Cool Application") {
                 // ...
@@ -432,8 +434,9 @@ private fun appDefinitionExample() {
  *
  * @sample appDefinitionExample
  */
-abstract class AppDefinition(val definitionName: String, val version: Int, siteId: String, var dependency: String? = null,
-    val init: Site.() -> Unit){
+abstract class AppDefinition(
+    val definitionName: String, val version: Int, siteId: String, var dependency: String? = null,
+    val init: Site.() -> Unit) {
 
     companion object {
         internal val registeredSites = mutableMapOf<AppDefinition, MutableList<Site>>()
@@ -441,7 +444,7 @@ abstract class AppDefinition(val definitionName: String, val version: Int, siteI
 
     data class SiteToConstruct(val id: String, val init: Site.() -> Unit = {})
 
-    constructor(definitionName: String, version: Int): this(definitionName, version, "", null, {})
+    constructor(definitionName: String, version: Int) : this(definitionName, version, "", null, {})
 
     @Autowired
     @Qualifier("standalone")
@@ -453,7 +456,7 @@ abstract class AppDefinition(val definitionName: String, val version: Int, siteI
 
 
     init {
-        if(siteId.isNotBlank())
+        if (siteId.isNotBlank())
             sitesToConstruct.add(SiteToConstruct(siteId, init))
     }
 
@@ -466,7 +469,7 @@ abstract class AppDefinition(val definitionName: String, val version: Int, siteI
             registeredSites.getOrPut(this, { mutableListOf<Site>() }).add(site)
 
             val traverseCallbacks = site.siteConstructedCallbacks.toMutableList()
-            while(!traverseCallbacks.isEmpty()) {
+            while (!traverseCallbacks.isEmpty()) {
                 site.siteConstructedCallbacks.clear()
                 val callback = traverseCallbacks.removeAt(0)
                 callback.invoke(site)
@@ -489,7 +492,6 @@ abstract class AppDefinition(val definitionName: String, val version: Int, siteI
 
 }
 
-internal fun getAppDefinitionDependency(appDefinition: AppDefinition) = if (appDefinition.dependency.isNullOrBlank())
-    null else ApplicationContextUtils.getInstance().context?.getBeansOfType(AppDefinition::class.java)?.values?.filter {
-    it.definitionName == appDefinition.dependency
-}?.firstOrNull()
+internal fun getAppDefinitionDependency(appDefinition: AppDefinition) = if (appDefinition.dependency.isNullOrBlank()) null
+else ApplicationContextUtils.getInstance().context?.getBeansOfType(AppDefinition::class.java)?.values
+    ?.firstOrNull { it.definitionName == appDefinition.dependency }

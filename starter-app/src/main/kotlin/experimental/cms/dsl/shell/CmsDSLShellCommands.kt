@@ -35,7 +35,7 @@ open class CmsDSLShellCommands : AbstractShellCommands(), ApplicationContextAwar
 
     @Autowired
     lateinit var siteDefinitionDAO: CmsSiteDefinitionDAO
-    val _appDefinitionList = mutableListOf<AppDefinition>()
+    private val _appDefinitionList = mutableListOf<AppDefinition>()
     private lateinit var _applicationContext: ApplicationContext
 
     override fun setApplicationContext(applicationContext: ApplicationContext) {
@@ -63,11 +63,11 @@ open class CmsDSLShellCommands : AbstractShellCommands(), ApplicationContextAwar
     }
 
     @CliCommand(value = ["experimental cms dsl list"])
-    fun list(): Unit {
+    fun list() {
         val fmt = FriendlyDateFormat()
         val sdMap = mutableMapOf<String, AppDefinition>()
         try {
-            getAppDefinitionList().forEach { sdMap.put(it.definitionName, it) }
+            getAppDefinitionList().forEach { sdMap[it.definitionName] = it }
         } catch(e: UninitializedPropertyAccessException) {
             shellLogger.fine("There are no site definitions")
         }
@@ -109,7 +109,7 @@ open class CmsDSLShellCommands : AbstractShellCommands(), ApplicationContextAwar
 
     @Suppress("IMPLICIT_CAST_TO_ANY")
     @CliCommand(value = ["experimental cms dsl apply"])
-    fun apply(@CliOption(key = arrayOf("definition"), mandatory = true) appDefinition: AppDefinition) {
+    fun apply(@CliOption(key = ["definition"], mandatory = true) appDefinition: AppDefinition) {
         if (principalDAO.currentPrincipal == null) {
             shellLogger.warning("Please login first")
             return

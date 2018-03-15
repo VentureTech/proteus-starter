@@ -108,50 +108,50 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
     }
 
     @Autowired
-    lateinit var _backendConfig: BackendConfig
+    private lateinit var _backendConfig: BackendConfig
     @Autowired
-    lateinit var _miwtPageElementModelFactory: MIWTPageElementModelFactory
+    private lateinit var _miwtPageElementModelFactory: MIWTPageElementModelFactory
     @Autowired
-    lateinit var _simplePageElementModelFactory: SimplePageElementModelFactory
+    private lateinit var _simplePageElementModelFactory: SimplePageElementModelFactory
     @Autowired
-    lateinit var _scriptingBeanPageElementModelFactory: ScriptingBeanPageElementModelFactory
+    private lateinit var _scriptingBeanPageElementModelFactory: ScriptingBeanPageElementModelFactory
     @Autowired(required = false)
     @Qualifier("ApplicationFunction")
-    lateinit var _applicationFunctionComponents: List<Component>
+    private lateinit var _applicationFunctionComponents: List<Component>
 
     @Autowired
     lateinit var environment: Environment
     @Resource(name = HibernateSessionHelper.RESOURCE_NAME)
-    lateinit var hsh: HibernateSessionHelper
+    private lateinit var hsh: HibernateSessionHelper
     @Autowired
-    lateinit var fserf: FileSystemEntityResourceFactory
+    private lateinit var fserf: FileSystemEntityResourceFactory
     @Autowired
-    lateinit var siteDefinitionDAO: CmsSiteDefinitionDAO
+    private lateinit var siteDefinitionDAO: CmsSiteDefinitionDAO
     @Autowired
-    lateinit var cmsBackendDAO: CmsBackendDAO
+    private lateinit var cmsBackendDAO: CmsBackendDAO
     @Autowired
-    lateinit var cmsFrontendDAO: CmsFrontendDAO
+    private lateinit var cmsFrontendDAO: CmsFrontendDAO
     @Autowired
-    lateinit var principalDAO: PrincipalDAO
+    private lateinit var principalDAO: PrincipalDAO
     @Autowired
-    lateinit var contentElementDAO: CmsEditorDAO
+    private lateinit var contentElementDAO: CmsEditorDAO
     @Autowired
-    lateinit var pagePathDAO: PageElementPathDAO
+    private lateinit var pagePathDAO: PageElementPathDAO
     @Autowired
-    lateinit var fileSystemDAO: FileSystemDAO
+    private lateinit var fileSystemDAO: FileSystemDAO
     @Autowired
-    lateinit var libraryDAO: LibraryDAO
+    private lateinit var libraryDAO: LibraryDAO
     @Autowired
-    lateinit var applicationRegistry: ApplicationRegistry
+    private lateinit var applicationRegistry: ApplicationRegistry
     @Autowired
-    lateinit var registeredLinkDAO: RegisteredLinkDAO
+    private lateinit var registeredLinkDAO: RegisteredLinkDAO
     @Autowired
-    lateinit var emailTemplateDAO: EmailTemplateDAO
+    private lateinit var emailTemplateDAO: EmailTemplateDAO
     @Autowired
     @Qualifier("localeSource")
-    lateinit var localeSource: LocaleSource
+    private lateinit var localeSource: LocaleSource
     @Autowired
-    lateinit var fileManagerDAO: FileManagerDAO
+    private lateinit var fileManagerDAO: FileManagerDAO
 
     private val contentElementData = mutableMapOf<String, CmsModelDataSet>()
     private val pagePermissionCache = mutableMapOf<String, PagePermission>()
@@ -161,8 +161,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
     private val pagePaths = mutableMapOf<String, PageElementPath>()
     private val libraries = mutableMapOf<String, Library<*>>()
     private val libraryConfigurations = mutableMapOf<Library<*>, LibraryConfiguration<*>>()
-    var currentSite: CmsSite? = null
-    var currentWebRoot: DirectoryEntity? = null
+    private var currentSite: CmsSite? = null
+    private var currentWebRoot: DirectoryEntity? = null
 
     fun applyDefinition(appDefinition: AppDefinition) {
         appDefinition.getSites().forEach { siteModel ->
@@ -213,7 +213,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         val hostnames = getOrCreateHostnames(siteModel, site)
 
         siteModel.emailTemplates.forEach { createEmailTemplate(site, it) }
-        if(siteModel.emailTemplates.isNotEmpty())
+        if (siteModel.emailTemplates.isNotEmpty())
             session.flush()
 
         pageList.forEach { getOrCreatePagePass1(site, it) }
@@ -225,18 +225,18 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             logger.info("Creating Cms Content: ${content.id}. Adding To Site.")
             val contentElementList = mutableListOf(createContentInstance(content, site))
             saveContentElements(elements = contentElementList, hibernateUtil = hibernateUtil, site = site)
-            if (!content.path.isNullOrBlank()) {
+            if (!content.path.isBlank()) {
                 session.flush()
                 updatePageElementPath(contentElementList[0], content)
             }
         }
-        if(hostnames.isNotEmpty()) {
+        if (hostnames.isNotEmpty()) {
             val hostnamesString = StringBuilder()
             hostnamesString.append("Site Model Applied.  Hostnames:\n")
             hostnames.forEach { hostnamesString.append(it.name).append("\n") }
             logger.info(hostnamesString.toString())
         }
-        if(siteModel.errorPages.isNotEmpty()) {
+        if (siteModel.errorPages.isNotEmpty()) {
             siteModel.errorPages.entries.forEach {
                 site.errorPageMap[it.key] = getOrCreatePagePass1(site, it.value)
             }
@@ -251,26 +251,26 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         var basic = ""
         val home = System.getenv()["HOME"]
         val gradlePropertiesFile = File("$home/.gradle/gradle.properties")
-        if(gradlePropertiesFile.canRead()) {
+        if (gradlePropertiesFile.canRead()) {
             val properties = Properties()
             gradlePropertiesFile.inputStream().use { properties.load(it) }
             username = properties["repo_venturetech_username"] as String
             password = properties["repo_venturetech_password"] as String
         }
-        if(username.isNotBlank()) {
+        if (username.isNotBlank()) {
             val userPass = BaseEncoding.base64().encode("$username:$password".toByteArray())
             basic = "Basic $userPass"
         }
         val messages = mutableListOf<Message>()
         val webURL = resolveURLVariables(siteModel.webResources, basic)
         val libURL = resolveURLVariables(siteModel.libraryResources, basic)
-        for((dir, url) in mapOf(currentWebRoot to webURL, libraryDAO.librariesDirectory to libURL)) {
-            if(url == null) continue
+        for ((dir, url) in mapOf(currentWebRoot to webURL, libraryDAO.librariesDirectory to libURL)) {
+            if (url == null) continue
             val tempFile = createTempFile(suffix = ".zip")
             tempFile.deleteOnExit()
             logger.info("Downloading $url")
             val connection = url.openConnection()
-            if(url.host == ARTIFACTORY_HOST && basic.isNotBlank()) {
+            if (url.host == ARTIFACTORY_HOST && basic.isNotBlank()) {
                 connection.setRequestProperty("Authorization", basic)
             }
             connection.inputStream.use { ins ->
@@ -282,17 +282,17 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             val upload = UploadRequest(dir, dataSource, FileSystemEntityCreateMode.overwrite_ifmodified,
                 EnumSet.of(ZipFileOption.preserve_directories, ZipFileOption.unzip))
             fileManagerDAO.createFiles(dir, listOf(upload), messages)
-            if(!tempFile.delete()) logger.info("Unable to delete ${tempFile.absolutePath}")
+            if (!tempFile.delete()) logger.info("Unable to delete ${tempFile.absolutePath}")
         }
         val localeContext = LocaleContext(Locale.ENGLISH)
         localeContext.localeSource = localeSource
-        for(m in messages){
+        for (m in messages) {
             Notifications.log4jNotification(logger, m, localeContext)
         }
     }
 
     private fun resolveURLVariables(url: URL?, basic: String): URL? {
-        if(url == null) return null
+        if (url == null) return null
         try {
             val urlString = url.toExternalForm()
             if (urlString.contains("\${LATEST}")) {
@@ -321,22 +321,22 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
                 }
             }
             return url
-        } catch(ioe: IOException) {
+        } catch (ioe: IOException) {
             logger.error("Unable to retrieve variables.", ioe)
         }
         return null
     }
 
     private fun createEmailTemplate(site: CmsSite, emailTemplateModel: experimental.cms.dsl.EmailTemplate<*>) {
-        val emailTemplate = getEmailTemplate(emailTemplateModel.programmaticName)?:EmailTemplate(site)
+        val emailTemplate = getEmailTemplate(emailTemplateModel.programmaticName) ?: EmailTemplate(site)
         emailTemplate.name = emailTemplateModel.name
-        if(emailTemplate.emailConfig == null) {
+        if (emailTemplate.emailConfig == null) {
             @Suppress("UNCHECKED_CAST")
-            val etct = emailTemplateDAO.getEmailConfigTypeByType<EmailConfig,EmailConfigType<EmailConfig>>(
+            val etct = emailTemplateDAO.getEmailConfigTypeByType<EmailConfig, EmailConfigType<EmailConfig>>(
                 emailTemplateModel.type as Class<EmailConfigType<EmailConfig>>?)
             emailTemplate.emailConfig = etct.instantiateEmailConfig()
         }
-        if(emailTemplate.id == 0L) {
+        if (emailTemplate.id == 0L) {
             emailTemplate.programmaticName = emailTemplateModel.programmaticName
             emailTemplate.createUser = principalDAO.currentPrincipal
             emailTemplate.isApproved = true
@@ -365,8 +365,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
     private fun getOrCreateSite(appDefinition: AppDefinition, siteModel: Site): CmsSite {
         var cmsSite = siteDefinitionDAO.getSiteByDescription(siteModel.id)
         if (cmsSite == null && appDefinition.dependency != null) {
-            cmsSite = getAppDefinitionDependency(appDefinition)?.let depDef@{depDef ->
-                return@depDef depDef.getSites().firstOrNull({site -> site.id == siteModel.id})?.let site@{
+            cmsSite = getAppDefinitionDependency(appDefinition)?.let depDef@{ depDef ->
+                return@depDef depDef.getSites().firstOrNull({ site -> site.id == siteModel.id })?.let site@{
                     val depSite = getOrCreateSite(depDef, it)
                     getOrCreateHostnames(it, depSite)
                     return@site depSite
@@ -394,10 +394,9 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         createNDEs(cmsSite, cmsSite, siteModel)
 
         val miMap = cmsSite.metaInformation.associateBy { it.name }
-        for(meta in siteModel.meta)
-        {
+        for (meta in siteModel.meta) {
             var mi = miMap[meta.name]
-            if(mi == null){
+            if (mi == null) {
                 mi = MetaInformation(meta.type.keyType, meta.name, meta.value)
                 cmsSite.metaInformation.add(mi)
             } else {
@@ -407,7 +406,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         session.flush()
         val systemRoot = Preferences.systemRoot()
         var needsFlush = false
-        if(siteModel.sitePreferenceKey.isNotBlank()) {
+        if (siteModel.sitePreferenceKey.isNotBlank()) {
             systemRoot.putLong(siteModel.sitePreferenceKey, cmsSite.id)
             needsFlush = true
         }
@@ -415,20 +414,20 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             systemRoot.put(it.key, it.value)
             needsFlush = true
         }
-        if(needsFlush) systemRoot.flush()
+        if (needsFlush) systemRoot.flush()
         return cmsSite
     }
 
     private fun createRoles(siteModel: Site, site: CmsSite) {
-        if(siteModel.roles.isEmpty()) return
+        if (siteModel.roles.isEmpty()) return
         val client = session.createQuery("SELECT organization FROM Org2Site o2s WHERE o2s.site = :site")
             .setEntity("site", site)
             .uniqueResult() as Organization
         val query = session.createQuery("FROM Role WHERE programmaticName = :programmaticName")
-        for(role in siteModel.roles) {
+        for (role in siteModel.roles) {
             var userRole = query.setParameter("programmaticName", role.programmaticName)
                 .uniqueResult() as Role?
-            if(userRole == null) {
+            if (userRole == null) {
                 userRole = Role()
                 userRole.programmaticName = role.programmaticName
                 userRole.createTime = Date()
@@ -442,19 +441,18 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             userRole.lastModTime = Date()
             userRole.lastModUser = principalDAO.currentPrincipal
             userRole.sessionTimeout = role.sessionTimeout
-            val name = getTransientLocalizedObjectKey(localeSource, userRole.name)?:
-            TransientLocalizedObjectKey(mutableMapOf())
+            val name = getTransientLocalizedObjectKey(localeSource, userRole.name) ?: TransientLocalizedObjectKey(mutableMapOf())
             name.text[site.primaryLocale] = role.name
-            val description = getTransientLocalizedObjectKey(localeSource, userRole.description)?:
-            TransientLocalizedObjectKey(mutableMapOf())
+            val description =
+                getTransientLocalizedObjectKey(localeSource, userRole.description) ?: TransientLocalizedObjectKey(mutableMapOf())
             description.text[site.primaryLocale] = role.description
-            if(name.isModification(localeSource, true))
+            if (name.isModification(localeSource, true))
                 userRole.name = name
-            if(description.isModification(localeSource, true))
+            if (description.isModification(localeSource, true))
                 userRole.description = description
             session.saveOrUpdate(userRole)
 
-            roleCache[role.programmaticName]=userRole
+            roleCache[role.programmaticName] = userRole
         }
         session.flush()
     }
@@ -463,7 +461,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         val list = mutableListOf<CmsHostname>()
         for ((hnAddress, welcomePage) in siteModel.hostnames) {
             val address = environment.resolveRequiredPlaceholders(hnAddress).let d@{
-                val pat1 = "_| ".toRegex()
+                val pat1 = "[_ ]".toRegex()
                 val pat2 = "[^a-zA-Z\\-0-9.]".toRegex()
 
                 return@d it.replace(pat1, "-").replace(pat2, "").toLowerCase()
@@ -520,7 +518,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             cmsPage.persistedCssName = page.htmlId
             cmsPage
         })
-        layoutToBoxInformation.put(page.layout, BoxInformation(pass1.pageTemplate.layout))
+        layoutToBoxInformation[page.layout] = BoxInformation(pass1.pageTemplate.layout)
         return pass1
     }
 
@@ -534,7 +532,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             val box = boxInformation.getBoxByName(key.id).orElseThrow {
                 IllegalArgumentException("Missing Box: ${key.id}")
             }
-            val bbl = cmsPage.getBeanBoxList().filter { it.box == box }.first()
+            val bbl = cmsPage.beanBoxList.first { it.box == box }
             val contentList = valueList.filter { !page.contentToRemove.contains(it) }
             for (value in contentList) {
                 if (bbl.elements.filter { it.name == value.id }.none()) {
@@ -549,8 +547,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         }
         page.pagePermission?.let {
             val programmaticName = resolvePlaceholders(it.programmaticName)
-            var permission = pagePermissionCache[programmaticName] ?:
-            siteDefinitionDAO.getPagePermissionByProgrammaticName(site, programmaticName)
+            var permission = pagePermissionCache[programmaticName] ?: siteDefinitionDAO.getPagePermissionByProgrammaticName(site,
+                programmaticName)
             if (permission == null) {
                 permission = PagePermission(programmaticName)
                 permission.siteId = site.id
@@ -559,15 +557,15 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
                 permission.maximumSecurityLevel = it.maxAuthenticationMethodSecurityLevel
                 permission.credentialPolicyLevel = it.policyLevel
                 session.save(permission)
-                pagePermissionCache.put(programmaticName, permission)
+                pagePermissionCache[programmaticName] = permission
             }
-            if(it.addToRole.isNotBlank()) {
+            if (it.addToRole.isNotBlank()) {
                 val roleProgId = resolvePlaceholders(it.addToRole)
-                val userRole = roleCache[roleProgId] ?:
-                session.createQuery("FROM Role WHERE programmaticName = " + ":programmaticName")
-                    .setParameter("programmaticName", roleProgId)
-                    .uniqueResult() as Role? ?: throw IllegalArgumentException("Role does not exist: ${roleProgId}")
-                if(!userRole.permissions.contains(permission)) {
+                val userRole =
+                    roleCache[roleProgId] ?: session.createQuery("FROM Role WHERE programmaticName = " + ":programmaticName")
+                        .setParameter("programmaticName", roleProgId)
+                        .uniqueResult() as Role? ?: throw IllegalArgumentException("Role does not exist: ${roleProgId}")
+                if (!userRole.permissions.contains(permission)) {
                     userRole.permissions.add(permission)
                     session.saveOrUpdate(userRole)
                 }
@@ -578,16 +576,16 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         }
 
         page.title.let {
-            val title = getTransientLocalizedObjectKey(localeSource, cmsPage.persistedTitleKey)?:
-            TransientLocalizedObjectKey(mutableMapOf())
+            val title = getTransientLocalizedObjectKey(localeSource, cmsPage.persistedTitleKey) ?: TransientLocalizedObjectKey(
+                mutableMapOf())
             title.text[site.primaryLocale] = it
             cmsPage.persistedTitleKey = title
         }
 
         val authenticationPageModel = page.authenticationPage
         if (authenticationPageModel != null) {
-            cmsPage.authorizationPage = (pageModelToCmsPage[authenticationPageModel] ?:
-            getOrCreatePagePass2(site, authenticationPageModel))
+            cmsPage.authorizationPage =
+                (pageModelToCmsPage[authenticationPageModel] ?: getOrCreatePagePass2(site, authenticationPageModel))
             cmsPage.touch()
         }
         return cmsPage
@@ -621,7 +619,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
                 val ceDelegates = contentElement.delegates
                 if (content.contentToRemove.contains(child))
                     continue
-                val existingDelegate = ceDelegates.filter { it.delegate.name == child.id }.firstOrNull()
+                val existingDelegate = ceDelegates.firstOrNull { it.delegate.name == child.id }
                 if (existingDelegate == null) {
                     logger.info("Creating Cms Content: ${child.id}. Adding To Content: ${content.id}")
                     val delegate = createContentInstance(child, site)
@@ -635,7 +633,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         return contentElement
     }
 
-    private fun handleNewDataSet(instance: ContentInstance, content: Content, site: CmsSite): Unit {
+    private fun handleNewDataSet(instance: ContentInstance, content: Content, site: CmsSite) {
         val contentElement = instance.contentElement
         val now = Date()
         contentElement.lastModified = now
@@ -649,14 +647,14 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         if (contentElement.site == null)
             contentElement.site = site
         var updateVisibilityCondition = content.visibilityCondition != null
-        if(contentElement.visibilityCondition != null) {
+        if (contentElement.visibilityCondition != null) {
             updateVisibilityCondition = Hibernate.getClass(contentElement.visibilityCondition) !=
                 Hibernate.getClass(content.visibilityCondition)
-            if(updateVisibilityCondition)
+            if (updateVisibilityCondition)
                 updateVisibilityCondition = !(contentElement.visibilityCondition?.configurationDataMap?.equals(content
-                    .visibilityCondition?.configurationDataMap)?:false)
+                    .visibilityCondition?.configurationDataMap) ?: false)
         }
-        if(updateVisibilityCondition) {
+        if (updateVisibilityCondition) {
             val vc = content.visibilityCondition!!
             vc.lastModTime = now
             vc.lastModUser = currentPrincipal
@@ -666,7 +664,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         logger.info("Saving Cms Content: ${contentElement.name}")
         //session.saveOrUpdate(contentElement)
         val dataSet = instance.dataSet ?: return
-        contentElementData.put(contentElement.name, dataSet)
+        contentElementData[contentElement.name] = dataSet
         if (dataSet.locale == null)
             dataSet.locale = currentSite!!.primaryLocale
         dataSet.lastModUser = currentPrincipal
@@ -683,11 +681,11 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             return pagePaths[cleanPath]!!
         logger.info("Creating path: $cleanPath")
         val pep = pagePathDAO.createPageElementPathMapping(pageElement, cleanPath, pathInfo.isWildcard())
-        pagePaths.put(pep.path, pep)
+        pagePaths[pep.path] = pep
         return pep
     }
 
-    private fun updatePageElementPath(pageElement: PageElement, pathInfo: PathCapable): Unit {
+    private fun updatePageElementPath(pageElement: PageElement, pathInfo: PathCapable) {
         val path = pathInfo.getCleanPath()
         if (pageElement.primaryPageElementPath == null)
             pageElement.primaryPageElementPath = createPageElementPath(pageElement, pathInfo)
@@ -699,7 +697,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
                 pep.isWildcard = pathInfo.isWildcard()
                 pagePathDAO.savePageElementPath(pep)
             }
-            pagePaths.put(pep.path, pep)
+            pagePaths[pep.path] = pep
         }
     }
 
@@ -732,7 +730,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             val box = boxInformation!!.getBoxByName(key.id).orElseThrow {
                 IllegalArgumentException("Missing Box: ${key.id}")
             }
-            val bbl = pageTemplate.getBeanBoxList().filter { it.box == box }.first()
+            val bbl = pageTemplate.beanBoxList.first { it.box == box }
             for (value in contentList) {
                 if (bbl.elements.filter { it.name == value.id }.none()) {
                     logger.info("Creating Cms Content: ${value.id}. Adding To Box: ${bbl.box.name}")
@@ -763,7 +761,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         session.flush()
     }
 
-    private fun saveContentElements(elements: MutableList<ContentElement>,
+    private fun saveContentElements(
+        elements: MutableList<ContentElement>,
         hibernateUtil: HibernateUtil = HibernateUtil.getInstance(), site: CmsSite) {
         val it = elements.listIterator()
         while (it.hasNext()) {
@@ -785,7 +784,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         }
     }
 
-    private fun saveChildElements(child: ContentElement,
+    private fun saveChildElements(
+        child: ContentElement,
         hibernateUtil: HibernateUtil, site: CmsSite) {
         val dElements = mutableListOf<ContentElement>()
         for (de in child.delegates) {
@@ -810,11 +810,11 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             val boxInformation = BoxInformation(cmsLayout)
             val list = LinkedList<Box>()
             list.addAll(layout.children)
-            while(!list.isEmpty()) {
+            while (!list.isEmpty()) {
                 val box = list.remove()
                 list.addAll(box.children)
                 val cmsBox = boxInformation.getBoxByName(box.id)
-                if(cmsBox.isPresent) {
+                if (cmsBox.isPresent) {
                     updateCmsBox(box, cmsBox.get())
                 }
             }
@@ -832,25 +832,21 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             NDEUtil.addNDEToEntity(ndeLists, siteElement, nde,
                 ContentTypes.Text.html.contentType,
                 ContentTypes.Application.xhtml_xml.contentType
-                                  )
+            )
         }
         for (nde in jsNDEs) {
             NDEUtil.addNDEToEntity(ndeLists, siteElement, nde,
                 ContentTypes.Text.html.contentType,
                 ContentTypes.Application.xhtml_xml.contentType
-                                  )
+            )
         }
-        val comparator = Comparator<NDE> {e1, e2 ->
-            if(e1.type != e2.type) {
-                0
+        val comparator = Comparator<NDE> { e1, e2 ->
+            when {
+                e1.type != e2.type     -> 0
+                e1.type == NDEType.CSS -> cssNDEs.indexOf(e1).compareTo(cssNDEs.indexOf(e2))
+                e1.type == NDEType.JS  -> jsNDEs.indexOf(e1).compareTo(jsNDEs.indexOf(e2))
+                else                   -> 0
             }
-            else if(e1.type == NDEType.CSS) {
-                cssNDEs.indexOf(e1).compareTo(cssNDEs.indexOf(e2))
-            }
-            else if(e1.type == NDEType.JS) {
-                jsNDEs.indexOf(e1).compareTo(jsNDEs.indexOf(e2))
-            }
-            else 0
         }
         ndeLists.values.forEach {
             it.ndEs.sortWith(comparator)
@@ -864,7 +860,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             .setParameter("root", currentWebRoot)
         for (path in paths) {
             @Suppress("UNCHECKED_CAST")
-            val result: List<FileEntity> = query.setParameter("path", "%" + path).list() as List<FileEntity>
+            val result: List<FileEntity> = query.setParameter("path", "%$path").list() as List<FileEntity>
             if (result.size > 1) {
                 val resultPaths = result.map { it.path }.toString()
                 throw IllegalArgumentException("Multiple files match path: $path for site: ${site.id}: $resultPaths")
@@ -895,7 +891,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         val query = hsh.session.createQuery(
             "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root AND fe.revision = false")
             .setParameter("root", currentWebRoot)
-            .setParameter("path", "%" + link)
+            .setParameter("path", "%$link")
         @Suppress("UNCHECKED_CAST")
         val results: List<FileEntity> = query.list() as List<FileEntity>
         if (results.size > 1) {
@@ -908,8 +904,8 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
         return link
     }
 
-    override fun getCMSLink(page: Page): Link = LinkUtil.getCMSLink(pageModelToCmsPage[page] ?:
-    getOrCreatePagePass2(currentSite!!, page))
+    override fun getCMSLink(page: Page): Link =
+        LinkUtil.getCMSLink(pageModelToCmsPage[page] ?: getOrCreatePagePass2(currentSite!!, page))
 
     override fun getBackendConfig(): BackendConfig = _backendConfig
 
@@ -935,31 +931,31 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             .setParameter("root", currentWebRoot)
             .setParameter("path", "/${currentWebRoot?.name}/${trimSlashes(path)}")
         val exactMatch = query1.uniqueResult() as FileSystemEntity?
-        if(exactMatch != null) return exactMatch
+        if (exactMatch != null) return exactMatch
         val query2 = hsh.session.createQuery(
             "SELECT fe FROM FileSystemEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root")
             .setParameter("root", currentWebRoot)
-            .setParameter("path", "%" + path)
+            .setParameter("path", "%$path")
         @Suppress("UNCHECKED_CAST")
         val results: List<FileEntity> = query2.list() as List<FileEntity>
         if (results.size > 1) {
             val paths = results.map { it.path }.toString()
             throw IllegalArgumentException(
                 "Multiple files/directories match path: $path for site: ${getCmsSite().id}: $paths")
-        } else if(results.isNotEmpty()) {
+        } else if (results.isNotEmpty()) {
             return results[0]
         }
         return null
     }
 
     override fun createLibrary(libraryName: String, libraryPath: String, libraryType: String): Library<*>? {
-        if(libraries[libraryPath] == null) {
+        if (libraries[libraryPath] == null) {
             val site = getCmsSite()
             val root = libraryDAO.librariesDirectory
             val query = hsh.session.createQuery(
                 "SELECT fe FROM FileEntity fe WHERE getFilePath(fe.id) LIKE :path AND fe.root = :root AND fe.revision = false")
                 .setParameter("root", root)
-                .setParameter("path", "%" + libraryPath)
+                .setParameter("path", "%$libraryPath")
             @Suppress("UNCHECKED_CAST")
             val results: List<FileEntity> = query.list() as List<FileEntity>
             if (results.size > 1) {
@@ -972,13 +968,13 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
                     throw IllegalArgumentException("Multiple libraries match file link: $libraryPath for site: ${site.id}")
                 var library = libraryList.firstOrNull()
                 if (library == null) {
-                    val type = libraryDAO.libraryTypes.filter { it.getModelName() == libraryType }.first()
+                    val type = libraryDAO.libraryTypes.first { it.getModelName() == libraryType }
                     library = type.createLibrary()
                     library.getAssignments().add(site)
                     library.setFile(file)
                     library.setName(TransientLocalizedObjectKey(mapOf(Locale.ENGLISH to libraryName)))
                     libraryDAO.saveLibrary(library)
-                    libraries.put(libraryPath, library)
+                    libraries[libraryPath] = library
                 }
                 return library
             }
@@ -995,21 +991,21 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
             .setParameter("library", library)
         @Suppress("UNCHECKED_CAST")
         val results = query.list() as List<LibraryConfiguration<LT>>
-        if (results.size > 1) {
+        return if (results.size > 1) {
             throw IllegalArgumentException(
                 "Multiple LibraryConfigurations match library: ${library.id} for site: ${currentSite!!.id}")
         } else if (results.isNotEmpty()) {
-            return results[0]
+            results[0]
         } else {
             @Suppress("UNCHECKED_CAST")
-            return libraryConfigurations[library] as LibraryConfiguration<LT>?
+            libraryConfigurations[library] as LibraryConfiguration<LT>?
         }
 
     }
 
     override fun saveLibraryConfiguration(libraryConfiguration: LibraryConfiguration<*>) {
         libraryDAO.saveLibraryConfiguration(libraryConfiguration)
-        libraryConfigurations.put(libraryConfiguration.getLibrary(), libraryConfiguration)
+        libraryConfigurations[libraryConfiguration.getLibrary()] = libraryConfiguration
     }
 
     override fun resolvePlaceholders(template: String): String = environment.resolvePlaceholders(template)
@@ -1020,23 +1016,23 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
     override fun getRegisteredLink(functionName: String, functionContext: String): RegisteredLink? {
         val applicationFunctionByName = applicationRegistry.getApplicationFunctionByName(functionName)
         val applicationContextProvider = applicationRegistry.getApplicationContextProvider(applicationFunctionByName)
-        val fc = applicationContextProvider.getPossibleContexts(getCmsSite()).filter { it.name == functionContext }.firstOrNull()
-        val registeredLink = registeredLinkDAO.getRegisteredLink(getCmsSite(), applicationFunctionByName, fc)
-        return registeredLink
+        val fc = applicationContextProvider.getPossibleContexts(getCmsSite()).firstOrNull { it.name == functionContext }
+        return registeredLinkDAO.getRegisteredLink(getCmsSite(), applicationFunctionByName, fc)
     }
 
     override fun saveRegisteredLink(registeredLink: RegisteredLink) = registeredLinkDAO.saveRegisteredLink(registeredLink)
 
-    override fun <LT:ILibraryType<LT>> setScriptParameters(libraryConfiguration: LibraryConfiguration<LT>,
+    override fun <LT : ILibraryType<LT>> setScriptParameters(
+        libraryConfiguration: LibraryConfiguration<LT>,
         parameters: Multimap<String, Any>) {
-        val paramCopy = ArrayListMultimap.create<String,Any>()
+        val paramCopy = ArrayListMultimap.create<String, Any>()
         val library = libraryConfiguration.library
         val type = library.type
         val scriptParameters = type.getParameters(libraryConfiguration, libraryDAO, type.createContext())
-        for(entry in parameters.entries()) {
+        for (entry in parameters.entries()) {
             var value = entry.value
-            scriptParameters.find { it.name == entry.key }?. let {
-                when(it.dataDomain.dataType) {
+            scriptParameters.find { it.name == entry.key }?.let {
+                when (it.dataDomain.dataType) {
                     Link::class.java, FileEntity::class.java -> {
                         val ev = entry.value
                         if (ev is String) {
