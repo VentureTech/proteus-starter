@@ -112,8 +112,7 @@ dependencies {
 
     kapt "net.proteusframework:proteusframework-core:${version_proteus}"
     //    kapt FIXME : add the jpa metamodel generator here
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     compile "org.jetbrains.exposed:exposed:0.7.+"
 

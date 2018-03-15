@@ -16,7 +16,7 @@ jar {
 
 war {
     manifest = sharedManifest
-    classpath = jar.outputs.files + configurations.runtime
+    classpath = jar.outputs.files + configurations.default
     if(warTaskSpecified)
         classpath = classpath - configurations.providedRuntime
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE

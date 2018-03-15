@@ -77,7 +77,7 @@ task autoDeploy(type: com.proteusframework.build.DeployTask) {
 
 task wrapper(type: Wrapper) {
     group 'Build Setup'
-    gradleVersion = '3.3'
+    gradleVersion = '4.4.1'
 }
 
 
