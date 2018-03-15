@@ -589,8 +589,8 @@ bower_components/
             try
             {
                 def bootstrapdbFile = artifactory.downloadFile(artifactory.getArtifactoryCredentials(),
-                    new URL("https://repo.venturetech"
-                        + ".net/artifactory/vt-release-local/net/proteusframework/proteusframework-bootstrapdb/0.17"
+                    new URL("https://repo.proteus"
+                        + ".co/artifactory/vt-release-local/net/proteusframework/proteusframework-bootstrapdb/0.17"
                         + ".0/proteusframework-bootstrapdb-0.17.0-20160526182335.pgdump"), '.pgdump')
                 command = [pgRestore, '-x', '-O', '-Fc', '-d', dbName, bootstrapdbFile.absolutePath]
                 process = command.execute(envp, model.destinationDirectory)

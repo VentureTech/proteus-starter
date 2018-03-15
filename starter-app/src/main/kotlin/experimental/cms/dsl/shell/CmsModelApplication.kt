@@ -103,7 +103,7 @@ open class CmsModelApplication : DAOHelper(), ContentHelper {
 
     companion object {
         val logger = LogManager.getLogger(CmsModelApplication::class.java)!!
-        const val ARTIFACTORY_HOST = "repo.venturetech.net"
+        const val ARTIFACTORY_HOST = "repo.proteus.co"
     }
 
     @Autowired

@@ -37,9 +37,9 @@ private val appName = ProjectInformation.APPLICATION_NAME
 @Profile("automation")
 @Component
 open class ProfileBasicDSL : AppDefinition(DEFINITION_NAME, version = 1, siteId = SITE_FRONTEND, init = {
-    libraryResources(URL("https://repo.venturetech.net/artifactory/vt-snapshot-local/" +
+    libraryResources(URL("https://repo.proteus.co/artifactory/vt-snapshot-local/" +
         "com/example/starter-app/\${LATEST}/starter-app-\${LATEST}-libraries.zip"))
-    webResources(URL("https://repo.venturetech.net/artifactory/simple/vt-snapshot-local/" +
+    webResources(URL("https://repo.proteus.co/artifactory/simple/vt-snapshot-local/" +
         "com/example/starter-app-webdev/\${LATEST}/starter-app-webdev-\${LATEST}.zip"))
 
     val frontendRoleProgId = "frontend_user"

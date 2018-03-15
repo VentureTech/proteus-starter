@@ -23,7 +23,7 @@ import java.net.URL
 @Component
 open class ProfileBasicErrorPagesDSL :
     AppDefinition(DEFINITION_NAME, version = 1, siteId = SITE_FRONTEND, dependency = ProfileBasicDSL.DEFINITION_NAME, init = {
-        webResources(URL("https://repo.venturetech.net/artifactory/simple/vt-snapshot-local/" +
+        webResources(URL("https://repo.proteus.co/artifactory/simple/vt-snapshot-local/" +
             "com/example/starter-app-webdev/\${LATEST}/starter-app-webdev-\${LATEST}.zip"))
 
         template("Error") {
