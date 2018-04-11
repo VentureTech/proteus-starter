@@ -9,20 +9,15 @@
  * into with I2RD.
  */
 
-def repoUser, repoPassword, gradleOptions, version, isSnapshot = false;
+def repoUser, repoPassword, gradleOptions, version;
+
+// Note: these will never both be true but may both be false. isSnapshot will be true iff the branch is a snapshot branch and the
+// version is a snapshot version. isRelease will be true iff the branch is a release branch and the version is *not* a snapshot
+// version.
+def isSnapshot;
+def isRelease;
+
 def atUser=''
-
-try
-{
-    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '20',
-        numToKeepStr: '10')), [$class: 'ScannerJobProperty', doNotScan: false], disableConcurrentBuilds(),
-                [$class: 'GithubProjectProperty', displayName: 'Proteus Starter App', projectUrlStr: 'https://github' +
-                     '.com/VentureTech/proteus-starter/'], pipelineTriggers([[$class: 'GitHubPushTrigger']])])
-
-}
-catch(ignored) {
-    // Properties not supported for some job types
-}
 
 node('!master'){
     try
@@ -57,14 +52,18 @@ node('!master'){
 
     checkout scm
 
-    step([$class: 'GitHubSetCommitStatusBuilder', statusMessage: [content: 'Jenkins is building changes']])
     dir('starter-app') {
 
         String gradleProps = readFile('gradle.properties')
-        isSnapshot = !(env.BRANCH_NAME?.equals('master') || env.BRANCH_NAME?.startsWith('release/'))
+        isSnapshot = isSnapshotBranch(env.BRANCH_NAME, env.CHANGE_TARGET) &&
+            getAppVersion(gradleProps).endsWith('-SNAPSHOT')
+        isRelease = isSnapshotBranch(env.BRANCH_NAME, env.CHANGE_TARGET) &&
+            !getAppVersion(gradleProps).endsWith('-SNAPSHOT')
         def appVersion = getAppVersion(gradleProps).replace('-SNAPSHOT', '')
         def appName = getAppName(gradleProps)
-        echo "Building $appName $appVersion"
+        echo 'Building ' + appName + ' ' + appVersion +
+            (isSnapshot ? ' snapshot' : '') +
+            (isRelease ? ' release' : '')
         version = "${appVersion}.${currentBuild.number}${isSnapshot ? '-SNAPSHOT' : ''}"
         //noinspection LongLine
         gradleOptions= $/-Duser.timezone=Etc/UTC -Prepo_venturetech_username=$repoUser -Prepo_venturetech_password=$repoPassword -Papp_version=${version}/$
@@ -205,34 +204,36 @@ if (currentBuild.result == 'SUCCESS')
 {
     try
     {
-        stage('Publish') {
+        stage 'Publish'
+        if (isSnapshot || isRelease)
+        {
             timeout(time: 4, unit: 'HOURS') {
                 //noinspection LongLine
-                slackSend color: 'good',
-                    message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be published to the artifactory repo" +
-                        ".\n(<${env.JOB_URL}|Open>)"
-                //noinspection LongLine
-                def params = input id: 'Publish', message: 'Publish Artifacts To Repo Server', ok: 'Publish Artifacts',
-                        parameters: [[$class: 'StringParameterDefinition', defaultValue: 'rtennant', description: 'Username to ' +
-                            'publish artifacts', name: 'publish_venturetech_username'],
-                             [$class: 'PasswordParameterDefinition', defaultValue: '', description:  'Password' +
-                                 ' publish artifacts', name: 'publish_venturetech_password']]
-                node('!master') {
+                slackSend color: 'good', message: "${atUser}${env.JOB_NAME} ${currentBuild.displayName} can be published to the artifactory repo.\n(<${env.JOB_URL}|Open>)"
+
+                input id: 'Publish', message: "Publish Artifacts v${version} To Repo Server", ok: 'Publish Artifacts'
+                node {
                     def jdkHome = tool 'JDK 8'
                     unstash 'StarterAppFiles'
 
-
                     dir('starter-app') {
                         withEnv(["JAVA_HOME=$jdkHome", "GRADLE_OPTS=-Xmx2024m -Xms512m"]) {
-                            // Run the build
-                            ansiColor('css') {
-                                //noinspection LongLine
-                                echo "Publishing artifacts"
-                                //noinspection LongLine
-                                def additionalArgs = $/artifactoryPublish -Ppublish_venturetech_username=${
-                                    params.publish_venturetech_username
-                                } -Ppublish_venturetech_password=${params.publish_venturetech_password}/$
-                                sh "./gradlew $gradleOptions $additionalArgs"
+                            withCredentials([
+                                usernamePassword(
+                                    credentialsId: 'publish-venturetech-credentials',
+                                    usernameVariable: 'PUBLISH_VENTURETECH_USERNAME',
+                                    passwordVariable: 'PUBLISH_VENTURETECH_PASSWORD')]) {
+                                // Run the build
+                                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'css']) {
+                                    echo "Publishing artifacts"
+
+                                    // Note: do not use string interpolation here. These variables are from the environment.
+                                    final additionalArgs =
+                                        'artifactoryPublish ' +
+                                        '-Ppublish_venturetech_username="$PUBLISH_VENTURETECH_USERNAME" ' +
+                                        '-Ppublish_venturetech_password="$PUBLISH_VENTURETECH_PASSWORD"'
+                                    sh "./gradlew $gradleOptions $additionalArgs -Papp_version=$version"
+                                }
                             }
                         }
                     }
@@ -309,3 +310,35 @@ def getAppName(String text)
     return matcher ? matcher[0][1] : 'App'
 }
 
+/**
+ * Check if the commit is on or being merged to a snapshot branch.
+ *
+ * @param commitBranch the branch the commit is on
+ * @param targetBranch the branch the commit will be merged to if it is a pull request
+ *
+ * @return true if the commit is for a snapshot branch
+ */
+@NonCPS
+boolean isSnapshotBranch(final String commitBranch, final String targetBranch)
+{
+    final pullRequest = commitBranch.startsWith('PR-')
+    final branch = pullRequest? targetBranch : commitBranch
+
+    return branch?.startsWith('sprint/')
+}
+
+/**
+ * Check if the commit is on or being merged to a release branch.
+ *
+ * @param commitBranch the branch the commit is on
+ * @param targetBranch the branch the commit will be merged to if it is a pull request
+ *
+ * @return true if the commit is for a release branch
+ */
+@NonCPS
+boolean isReleaseBranch(final String name)
+{
+    final pullRequest = commitBranch.startsWith('PR-')
+    final branch = pullRequest? targetBranch : commitBranch
+    return branch == 'master' || branch?.startsWith('release/')
+}
