@@ -24,7 +24,6 @@ import net.proteusframework.cms.component.editor.DelegatePurpose
  * Script Type Enum.
  */
 enum class ScriptType(val modelName: String) {
-//    FreeMarker(FreeMarkerType.MODEL_NAME),
     ScriptedGenerator(ScriptGeneratorType.MODEL_NAME),
     ScriptedContent(ScriptedPageElementFactoryType.MODEL_NAME),
     LoginRedirect(ScriptableRedirectType.MODEL_NAME)
@@ -80,7 +79,7 @@ interface DelegateContent : ContentContainer {
      */
     fun <T : Content> content(content: T, purpose: DelegatePurpose = DefaultDelegatePurpose.NONE, init: T.() -> Unit={}): T {
         contentList.add(content)
-        contentPurpose[content] = purpose
+        contentPurpose.put(content, purpose)
         content.parent = this
         return content.apply(init)
     }
@@ -93,7 +92,7 @@ interface DelegateContent : ContentContainer {
     fun content(existingContentId: String, purpose: DelegatePurpose = DefaultDelegatePurpose.NONE): Content {
         val contentById = _getSite(parent).getContentById(existingContentId)
         contentList.add(contentById)
-        contentPurpose[contentById] = purpose
+        contentPurpose.put(contentById, purpose)
         return contentById
     }
 }

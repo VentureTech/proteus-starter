@@ -11,6 +11,7 @@
 
 package experimental.cms.dsl.content
 
+import com.i2rd.cms.bean.contentmodel.CmsModelDataSet
 import com.i2rd.cms.visibility.VisibilityConditionInstance
 import experimental.cms.dsl.Content
 import experimental.cms.dsl.ContentHelper
@@ -33,15 +34,17 @@ open class SimpleContent(id: String, val generator: Class<out Generator<*>>)
     override val cssPaths = mutableListOf<String>()
     override val javaScriptPaths = mutableListOf<String>()
     override var parent: Any? = null
+    var mds: CmsModelDataSet? = null
 
     override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
-        if (existing != null) return ContentInstance(existing)
-        val pageElementModel = helper.getSimplePageElementModelFactory().getVirtualComponents(helper.getCmsSite()).first {
-            PageElementModelImpl.StandardIdentifier(it.identifier).virtualIdentifier == generator.name
+        val contentElement = existing?:helper.run {
+            val model = getSimplePageElementModelFactory().getVirtualComponents(getCmsSite()).first {
+                PageElementModelImpl.StandardIdentifier(it.identifier).virtualIdentifier == generator.name
+            }
+            assignToSite(model.identifier)
+            getSimplePageElementModelFactory().createInstance(model)
         }
-        helper.assignToSite(pageElementModel.identifier)
-
-        return ContentInstance(helper.getSimplePageElementModelFactory().createInstance(pageElementModel))
+        return if(mds != null) ContentInstance(contentElement, mds) else ContentInstance(contentElement)
     }
 
     override fun toString(): String {

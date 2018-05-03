@@ -31,7 +31,7 @@ open class SiteDefinitionConverter : Converter<AppDefinition>, ApplicationContex
         val logger = LogManager.getLogger(SiteDefinitionConverter::class.java)!!
     }
 
-    private val _appDefinitionList = mutableListOf<AppDefinition>()
+    val _appDefinitionList = mutableListOf<AppDefinition>()
     private lateinit var _applicationContext: ApplicationContext
 
     override fun setApplicationContext(applicationContext: ApplicationContext) {

@@ -21,6 +21,7 @@ import com.i2rd.cms.component.simple.SimplePageElementModelFactory
 import com.i2rd.lib.ILibraryType
 import com.i2rd.lib.Library
 import com.i2rd.lib.LibraryConfiguration
+import experimental.cms.dsl.content.MIWT
 import net.proteusframework.cms.CmsSite
 import net.proteusframework.core.StringFactory.trimSlashes
 import net.proteusframework.core.html.Element
@@ -44,8 +45,7 @@ import java.util.*
 @DslMarker
 annotation class SiteElementMarker
 
-internal fun populateLayoutBoxes(
-    site: CmsSite, layout: Layout,
+internal fun populateLayoutBoxes(site: CmsSite, layout: Layout,
     cmsLayout: net.proteusframework.cms.component.page.layout.Layout) {
     for (box in layout.children) {
         val cmsBox = createCmsBox(box, site)
@@ -64,8 +64,7 @@ internal fun populateLayoutBoxes(site: CmsSite, parent: Box, cmsParent: net.prot
     }
 }
 
-internal fun createCmsBox(
-    box: Box,
+internal fun createCmsBox(box: Box,
     site: CmsSite): net.proteusframework.cms.component.page.layout.Box {
     val cmsBox = net.proteusframework.cms.component.page.layout.Box()
     cmsBox.site = site
@@ -73,7 +72,7 @@ internal fun createCmsBox(
     return cmsBox
 }
 
-internal fun updateCmsBox(boxModel: Box, cmsBox: net.proteusframework.cms.component.page.layout.Box) {
+internal fun updateCmsBox(boxModel: Box, cmsBox: net.proteusframework.cms.component.page.layout.Box){
     cmsBox.boxDescriptor = boxModel.boxType
     cmsBox.defaultContentArea = boxModel.defaultContentArea
     cmsBox.cssName = boxModel.htmlId
@@ -88,7 +87,7 @@ internal fun cleanPath(path: String): String = trimSlashes(path.replace('*', '/'
 interface PathCapable {
     /**
      * The path like "/admin/user-mgt". Wildcard paths end with a "*" like "/admin/user/edit/&#x2a;"
-     */
+    */
     var path: String
 
     /**
@@ -102,9 +101,7 @@ interface PathCapable {
     fun getCleanPath(): String = cleanPath(path)
 }
 
-open class Identifiable(
-    /** Internal Use. */
-    val id: String) {
+open class Identifiable(/** Internal Use. */val id: String) {
 
     override fun toString(): String {
         return "Identifiable(id='$id')"
@@ -127,7 +124,6 @@ open class Identifiable(
 open class IdentifiableParent<C>(id: String) : Identifiable(id) {
     /** Internal Use. */
     internal val children = mutableListOf<C>()
-
     /** Internal Use. */
     internal fun add(child: C): C = child.apply { children.add(this) }
 
@@ -152,7 +148,7 @@ internal class LinkTagConverter(val helper: ContentHelper) : TagListener<TagList
         for (att in ATTS) {
             val value = attributes.getValue(uri, att)
             if (!value.isNullOrBlank()) {
-                convertedAttributes[att] = helper.getInternalLink(value)
+                convertedAttributes.put(att, helper.getInternalLink(value))
                 break
             }
         }
@@ -293,13 +289,11 @@ interface ContentHelper : PlaceholderHelper {
     fun getEmailTemplate(programmaticName: String): EmailTemplate?
     fun getRegisteredLink(functionName: String, functionContext: String): RegisteredLink?
     fun saveRegisteredLink(registeredLink: RegisteredLink)
-    fun <LT : ILibraryType<LT>> setScriptParameters(
-        libraryConfiguration: LibraryConfiguration<LT>,
-        parameters: Multimap<String, Any>)
+    fun <LT:ILibraryType<LT>> setScriptParameters(libraryConfiguration: LibraryConfiguration<LT>, parameters: Multimap<String, Any>)
 }
 
 
-internal class FileDataSource(val jfile: java.io.File) : FileSystemEntityDataSource {
+internal class FileDataSource(val jfile: java.io.File): FileSystemEntityDataSource {
     override fun getLength(): Long = jfile.length()
 
     override fun getFile(): File? = jfile
@@ -328,7 +322,6 @@ enum class MetaType(val keyType: MetaInformation.KeyType) {
 
 
 }
-
 internal data class Meta(val name: String, val value: String, val type: MetaType)
 
 data class AppFunctionPage(
@@ -337,5 +330,7 @@ data class AppFunctionPage(
     val htmlClassName: String,
     val pageTitle: String = appFunctionName,
     val cssPaths: List<String> = listOf(),
-    val javaScriptPaths: List<String> = listOf()
+    val javaScriptPaths: List<String> = listOf(),
+    val pageName: String = appFunctionName,
+    val toRemove: List<Pair<String, MIWT>> = listOf()
 )

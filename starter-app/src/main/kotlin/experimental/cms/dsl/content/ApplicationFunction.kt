@@ -34,7 +34,7 @@ open class ApplicationFunction(id: String, val functionName: String = id)
     override val javaScriptPaths = mutableListOf<String>()
     override var parent: Any? = null
 
-    private var registeredLink = RegisteredLink(functionName)
+    internal var registeredLink = RegisteredLink(functionName)
 
     fun registeredLink(functionContext: String = "", pathInfoPattern: String = "") {
         registeredLink = RegisteredLink(id, functionContext, pathInfoPattern)

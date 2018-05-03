@@ -33,10 +33,9 @@ internal data class Hostname(val address: String, val welcomePage: Page)
 @SiteElementMarker
 class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableParent<Page>(id), ContentContainer, ResourceCapable {
 
-    companion object {
+    companion object{
         val logger = LogManager.getLogger(Site::class.java)!!
     }
-
     private var siteDefinitionDAO: CmsSiteDefinitionDAO = appDefinition.siteDefinitionDAO
     private var dependency: AppDefinition? = null
         get() = getAppDefinitionDependency(appDefinition)
@@ -92,15 +91,12 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
      */
     internal fun getContentById(existingId: String): Content {
         // Need ContentElement.class => Content::class mapping
-        //        val content = siteDefinitionDAO.getSiteByDescription(id)?.let
-        // {siteDefinitionDAO.getContentElementByName(it, existingId)}
-        //        if(content != null) return CreateContent(existingId)
+//        val content = siteDefinitionDAO.getSiteByDescription(id)?.let {siteDefinitionDAO.getContentElementByName(it, existingId)}
+//        if(content != null) return CreateContent(existingId)
         val predicate = createContentIdPredicate(existingId)
-        return children.flatMap(Page::contentList)
-            .firstOrNull(predicate)
+        return children.flatMap(Page::contentList).firstOrNull(predicate)
             ?: templates.flatMap(Template::contentList).firstOrNull(predicate)
-            ?: content.firstOrNull(predicate)
-            ?: throw IllegalStateException("Content '$existingId' does not exist")
+            ?: content.firstOrNull(predicate) ?: throw IllegalStateException("Content '$existingId' does not exist")
     }
 
     internal fun _getExistingLayout(existingId: String): Layout {
@@ -204,7 +200,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
                 val existingTitle: LocalizedObjectKey? = page.persistedTitleKey
                 Page(existingId, this, page.primaryPath, Template(page.pageTemplate.name, this,
                     _createExistingLayout(page.pageTemplate.layout))).apply {
-                    title = dao.getTransientLocalizedObjectKey(existingTitle).getText()[Locale.ENGLISH] ?: existingId
+                    title = dao.getTransientLocalizedObjectKey(existingTitle).text[Locale.ENGLISH] ?: existingId
                 }
             } else
                 null
@@ -369,7 +365,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
      *   is referred to as Notes in the UI.
      */
     fun hostname(address: String, existingWelcomePageId: String) {
-        siteConstructedCallbacks.add({ _ ->
+        siteConstructedCallbacks.add({
             val page = getExistingPage(existingWelcomePageId)
             hostnames.add(Hostname(address, page))
         })
@@ -420,7 +416,7 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
 private fun appDefinitionExample() {
     @Profile("automation")
     @Component
-    class MyAppDefinition : AppDefinition("My Cool Application", version = 1) {
+    open class MyAppDefinition : AppDefinition("My Cool Application", version = 1) {
         init {
             createSite("Cool Application") {
                 // ...
@@ -434,9 +430,8 @@ private fun appDefinitionExample() {
  *
  * @sample appDefinitionExample
  */
-abstract class AppDefinition(
-    val definitionName: String, val version: Int, siteId: String, var dependency: String? = null,
-    val init: Site.() -> Unit) {
+abstract class AppDefinition(val definitionName: String, val version: Int, siteId: String, var dependency: String? = null,
+    val init: Site.() -> Unit){
 
     companion object {
         internal val registeredSites = mutableMapOf<AppDefinition, MutableList<Site>>()
@@ -492,6 +487,7 @@ abstract class AppDefinition(
 
 }
 
-internal fun getAppDefinitionDependency(appDefinition: AppDefinition) = if (appDefinition.dependency.isNullOrBlank()) null
-else ApplicationContextUtils.getInstance().context?.getBeansOfType(AppDefinition::class.java)?.values
-    ?.firstOrNull { it.definitionName == appDefinition.dependency }
+internal fun getAppDefinitionDependency(appDefinition: AppDefinition) = if (appDefinition.dependency.isNullOrBlank())
+    null else ApplicationContextUtils.getInstance().context?.getBeansOfType(AppDefinition::class.java)?.values?.firstOrNull {
+    it.definitionName == appDefinition.dependency
+}

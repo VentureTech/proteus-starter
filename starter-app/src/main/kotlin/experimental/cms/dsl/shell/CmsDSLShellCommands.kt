@@ -35,7 +35,7 @@ open class CmsDSLShellCommands : AbstractShellCommands(), ApplicationContextAwar
 
     @Autowired
     lateinit var siteDefinitionDAO: CmsSiteDefinitionDAO
-    private val _appDefinitionList = mutableListOf<AppDefinition>()
+    val _appDefinitionList = mutableListOf<AppDefinition>()
     private lateinit var _applicationContext: ApplicationContext
 
     override fun setApplicationContext(applicationContext: ApplicationContext) {
@@ -63,11 +63,11 @@ open class CmsDSLShellCommands : AbstractShellCommands(), ApplicationContextAwar
     }
 
     @CliCommand(value = ["experimental cms dsl list"])
-    fun list() {
+    fun list(): Unit {
         val fmt = FriendlyDateFormat()
         val sdMap = mutableMapOf<String, AppDefinition>()
         try {
-            getAppDefinitionList().forEach { sdMap[it.definitionName] = it }
+            getAppDefinitionList().forEach { sdMap.put(it.definitionName, it) }
         } catch(e: UninitializedPropertyAccessException) {
             shellLogger.fine("There are no site definitions")
         }
@@ -106,6 +106,13 @@ open class CmsDSLShellCommands : AbstractShellCommands(), ApplicationContextAwar
         }
     }
 
+    @Suppress("IMPLICIT_CAST_TO_ANY")
+    @CliCommand(value = ["experimental cms dsl apply-all"])
+    fun applyAll() {
+        getAppDefinitionList().forEach {
+            apply(it)
+        }
+    }
 
     @Suppress("IMPLICIT_CAST_TO_ANY")
     @CliCommand(value = ["experimental cms dsl apply"])
