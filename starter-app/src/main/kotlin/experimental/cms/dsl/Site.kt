@@ -90,13 +90,16 @@ class Site(id: String, private val appDefinition: AppDefinition) : IdentifiableP
      * Get Content previously added to a site element by its identifier.
      */
     internal fun getContentById(existingId: String): Content {
-        // Need ContentElement.class => Content::class mapping
-//        val content = siteDefinitionDAO.getSiteByDescription(id)?.let {siteDefinitionDAO.getContentElementByName(it, existingId)}
-//        if(content != null) return CreateContent(existingId)
         val predicate = createContentIdPredicate(existingId)
-        return children.flatMap(Page::contentList).firstOrNull(predicate)
+        var found = (children.flatMap(Page::contentList).firstOrNull(predicate)
             ?: templates.flatMap(Template::contentList).firstOrNull(predicate)
-            ?: content.firstOrNull(predicate) ?: throw IllegalStateException("Content '$existingId' does not exist")
+            ?: content.firstOrNull(predicate))
+        if(found == null) {
+            val existing = siteDefinitionDAO.getSiteByDescription(id)?.
+                let {siteDefinitionDAO.getContentElementByName(it, existingId)}
+            if(existing != null) found = ExistingContent(existing)
+        }
+        return found ?: throw IllegalStateException("Content '$existingId' does not exist")
     }
 
     internal fun _getExistingLayout(existingId: String): Layout {
@@ -431,7 +434,7 @@ private fun appDefinitionExample() {
  * @sample appDefinitionExample
  */
 abstract class AppDefinition(val definitionName: String, val version: Int, siteId: String, var dependency: String? = null,
-    val init: Site.() -> Unit){
+                             val init: Site.() -> Unit){
 
     companion object {
         internal val registeredSites = mutableMapOf<AppDefinition, MutableList<Site>>()

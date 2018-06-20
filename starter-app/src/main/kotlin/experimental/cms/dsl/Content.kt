@@ -79,7 +79,7 @@ interface DelegateContent : ContentContainer {
      */
     fun <T : Content> content(content: T, purpose: DelegatePurpose = DefaultDelegatePurpose.NONE, init: T.() -> Unit={}): T {
         contentList.add(content)
-        contentPurpose.put(content, purpose)
+        contentPurpose[content] = purpose
         content.parent = this
         return content.apply(init)
     }
@@ -92,7 +92,7 @@ interface DelegateContent : ContentContainer {
     fun content(existingContentId: String, purpose: DelegatePurpose = DefaultDelegatePurpose.NONE): Content {
         val contentById = _getSite(parent).getContentById(existingContentId)
         contentList.add(contentById)
-        contentPurpose.put(contentById, purpose)
+        contentPurpose[contentById] = purpose
         return contentById
     }
 }
@@ -122,4 +122,17 @@ interface Content : HTMLIdentifier, HTMLClass, ResourceCapable, PathCapable {
     fun isModified(helper: ContentHelper, contentElement: ContentElement): Boolean = false
 }
 
+class ExistingContent(val contentElement: ContentElement) : Identifiable(contentElement.name), Content {
+    override fun createInstance(helper: ContentHelper, existing: ContentElement?): ContentInstance {
+        return ContentInstance(existing?:contentElement)
+    }
 
+    override var visibilityCondition: VisibilityConditionInstance? = contentElement.visibilityCondition
+    override var path: String = contentElement.primaryPageElementPath?.path?:""
+    override var htmlId: String = contentElement.cssName?:""
+    override var htmlClass: String = contentElement.styleClass?:""
+    override val cssPaths = mutableListOf<String>()
+    override val javaScriptPaths = mutableListOf<String>()
+    override var parent: Any? = null // FIXME : should check for parent
+
+}
