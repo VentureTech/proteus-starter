@@ -12,17 +12,17 @@
 package com.example.app.config.automation.site.profile.basic
 
 import com.example.app.config.ProjectInformation
-import com.example.app.login.social.ui.SocialLogin
-import experimental.cms.dsl.AppDefinition
-import experimental.cms.dsl.content.Composite
-import experimental.cms.dsl.content.HTML
-import experimental.cms.dsl.content.Text
 import net.proteusframework.cms.login.oneall.service.OneAllLoginService
 import net.proteusframework.cms.login.social.ui.SocialLoginMode
+import net.proteusframework.dsl.AppDefinition
+import net.proteusframework.dsl.content.Composite
+import net.proteusframework.dsl.content.HTML
+import net.proteusframework.dsl.content.SocialLogin
+import net.proteusframework.dsl.content.Text
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
-private val appName = ProjectInformation.APPLICATION_NAME
+private const val appName = ProjectInformation.APPLICATION_NAME
 
 @Profile("automation")
 @Component

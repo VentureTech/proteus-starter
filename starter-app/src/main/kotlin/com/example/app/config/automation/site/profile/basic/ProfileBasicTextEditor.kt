@@ -13,8 +13,8 @@ package com.example.app.config.automation.site.profile.basic
 
 import com.example.app.config.ProjectInformation
 import com.example.app.config.automation.site.profile.basic.ProfileBasicDSL.Companion.SITE_FRONTEND
-import experimental.cms.dsl.AppDefinition
-import experimental.cms.dsl.content.TextEditor
+import net.proteusframework.dsl.AppDefinition
+import net.proteusframework.dsl.content.TextEditor
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 

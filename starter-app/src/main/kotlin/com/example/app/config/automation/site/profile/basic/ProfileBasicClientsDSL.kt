@@ -13,9 +13,9 @@ package com.example.app.config.automation.site.profile.basic
 
 import com.example.app.config.automation.site.profile.basic.ProfileBasicDSL.Companion.SITE_FRONTEND
 import com.example.app.profile.ui.ApplicationFunctions.Client
-import experimental.cms.dsl.AppDefinition
-import experimental.cms.dsl.AppFunctionPage
-import experimental.cms.dsl.content.ApplicationFunction
+import net.proteusframework.dsl.AppDefinition
+import net.proteusframework.dsl.AppFunctionPage
+import net.proteusframework.dsl.content.ApplicationFunction
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 

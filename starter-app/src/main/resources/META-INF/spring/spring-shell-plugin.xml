@@ -16,12 +16,8 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
        default-lazy-init="true">
 
-    <bean class="experimental.cms.dsl.shell.CmsDSLShellCommands"/>
     <bean class="com.example.app.config.ProjectShellCommands"/>
     <bean class="com.example.app.config.ShellCommandsUtil"/>
-    <bean class="experimental.cms.dsl.shell.SiteDefinitionConverter"/>
-    <bean class="experimental.cms.dsl.shell.CmsModelApplication"/>
-    <bean class="experimental.cms.dsl.shell.PlaceholderHelperImpl" lazy-init="false"/>
 
     <context:component-scan base-package="com.example.app.config.automation.site"/>
 

@@ -12,26 +12,25 @@
 package com.example.app.config.automation.site.profile.basic
 
 import com.example.app.config.ProjectInformation
-import com.example.app.login.social.ui.SocialLogin
 import com.example.app.profile.ui.ApplicationFunctions.*
 import com.example.app.support.service.AppUtil
 import com.i2rd.cms.bean.ResetPasswordBean.AuthenticationMeans.EMAIL_ONLY
 import com.i2rd.cms.visibility.AuthenticationCondition
-import experimental.cms.dsl.AppDefinition
-import experimental.cms.dsl.AppFunctionPage
-import experimental.cms.dsl.content.*
 import net.proteusframework.cms.component.page.PageProperties.Type.page
 import net.proteusframework.cms.component.page.PageProperties.Type.page_template
 import net.proteusframework.cms.component.page.layout.BoxDescriptor.*
 import net.proteusframework.cms.login.oneall.service.OneAllLoginService
 import net.proteusframework.cms.login.social.ui.SocialLoginMode
+import net.proteusframework.dsl.AppDefinition
+import net.proteusframework.dsl.AppFunctionPage
+import net.proteusframework.dsl.content.*
 import net.proteusframework.email.config.ContentElementEmailConfigType
 import net.proteusframework.users.model.AuthenticationMethodSecurityLevel.SHARED_IDENTIFIER
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import java.net.URL
 
-private val appName = ProjectInformation.APPLICATION_NAME
+private const val appName = ProjectInformation.APPLICATION_NAME
 
 
 @Profile("automation")
@@ -263,7 +262,7 @@ match an existing user account, then an email message will be sent with addition
 }) {
     companion object {
         internal const val DEFINITION_NAME = "Profile Basic"
-        val SITE_FRONTEND = "$appName Frontend"
+        const val SITE_FRONTEND = "$appName Frontend"
     }
 }
 
