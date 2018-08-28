@@ -22,13 +22,19 @@ settings.gradle.projectsLoaded( {
             pingCommand = '/bin/ping'
         else if(new File('/sbin/ping').canExecute())
             pingCommand = '/sbin/ping'
+        else if(new File('C:\\Windows\\System32\\ping.exe').canExecute())
+            pingCommand = 'C:\\Windows\\System32\\ping.exe'
         if(pingCommand)
         {
             def baseDir = settings.gradle.rootProject.rootDir
             def envp = System.getenv().collect({k, v -> "${k}=${v}"})
-            def isMac = System.getProperty('os.name', '').toLowerCase().contains('mac')
-            def command = isMac ? [pingCommand, '-q', '-W', '250', '-c', '1', repoHost] :
-                [pingCommand, '-q', '-w', '0.25', '-c', '1', repoHost]
+            def osName = System.getProperty('os.name', '').toLowerCase()
+            def isMac = osName.contains('mac')
+            def isWindows = osName.contains('windows')
+            def command
+            if (isMac) command = [pingCommand, '-q', '-W', '250', '-c', '1', repoHost]
+            else if (isWindows) command = [pingCommand, '-n', '1', repoHost]
+            else command = [pingCommand, '-q', '-w', '0.25', '-c', '1', repoHost]
             def process = command.execute(envp, baseDir)
             process.consumeProcessOutput(System.out, System.err)
             if(process.waitFor() != 0) {
