@@ -24,7 +24,7 @@ for /F "tokens=* USEBACKQ" %%F IN (`dir %cd%\build\libs\exploded\*.war /b/s`) DO
 set PROPERTIES="file:///%ROOT%/src/main/webapp/META-INF/resources/contexts/development.properties"
 set WEAVER=-javaagent:runtime-aspects/aspectjweaver.jar -javaagent:runtime-aspects/spring-instrument.jar
 
-%JAVA_HOME%/bin/java -Dspring.config=%CONFIG_CLASS% ^
+"%JAVA_HOME%/bin/java" -Dspring.config=%CONFIG_CLASS% ^
   -Djava.io.tmpdir="%TEMP%\%PROJECT_NAME%\shell" ^
   -Dspring.properties=%PROPERTIES% ^
   -Xverify:none ^
