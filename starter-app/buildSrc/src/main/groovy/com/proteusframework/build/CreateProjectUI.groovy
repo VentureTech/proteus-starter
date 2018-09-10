@@ -437,24 +437,26 @@ derby.log
             new File(baseDir, ".idea/${slash}modules${slash}starter-app_libraries.iml")
                 .renameTo(new File(baseDir, ".idea/${slash}modules${slash}${model.appName}_libraries.iml"))
 
-            def gradleScript = new File(baseDir, 'gradlew').absolutePath
+            def osName = System.getProperty('os.name', '').toLowerCase()
+            def gradleScript = new File(baseDir, getGradlewFileName(osName)).absolutePath
             def command = [gradleScript, '-Dorg.gradle.daemon=false']
             def envp = System.getenv().collect({k, v -> "${k}=${v}"})
             def process = command.execute(envp, baseDir)
             process.consumeProcessOutput(System.out, System.err)
             process.waitFor()
-            if(new File('/usr/bin/git').canExecute()){
-                command = ['/usr/bin/git', 'init']
+            def gitPath = getGitPath(osName)
+            if(new File(gitPath).canExecute()){
+                command = [gitPath, 'init']
                 process = command.execute(envp, baseDir)
                 process.consumeProcessOutput(System.out, System.err)
                 process.waitFor()
 
-                command = ['/usr/bin/git', 'add', '-A']
+                command = [gitPath, 'add', '-A']
                 process = command.execute(envp, baseDir)
                 process.consumeProcessOutput(System.out, System.err)
                 process.waitFor()
 
-                command = ['/usr/bin/git', 'commit', '-m', "Created project, ${model.appName}, from starter-app", '.']
+                command = [gitPath, 'commit', '-m', "Created project, ${model.appName}, from starter-app", '.']
                 process = command.execute(envp, baseDir)
                 process.consumeProcessOutput(System.out, System.err)
                 process.waitFor()
@@ -522,18 +524,18 @@ bower_components/
                     .replaceAll('starter-app', model.appName),
                 'UTF-8'
             )
-            if(new File('/usr/bin/git').canExecute()){
-                command = ['/usr/bin/git', 'init']
+            if(new File(gitPath).canExecute()){
+                command = [gitPath, 'init']
                 process = command.execute(envp, webdevBaseDir)
                 process.consumeProcessOutput(System.out, System.err)
                 process.waitFor()
 
-                command = ['/usr/bin/git', 'add', '-A']
+                command = [gitPath, 'add', '-A']
                 process = command.execute(envp, webdevBaseDir)
                 process.consumeProcessOutput(System.out, System.err)
                 process.waitFor()
 
-                command = ['/usr/bin/git', 'commit', '-m', "Created project, ${model.appName}-webdev, from webdev", '.']
+                command = [gitPath, 'commit', '-m', "Created project, ${model.appName}-webdev, from webdev", '.']
                 process = command.execute(envp, webdevBaseDir)
                 process.consumeProcessOutput(System.out, System.err)
                 process.waitFor()
@@ -554,20 +556,64 @@ bower_components/
         return new String(baos.toByteArray(), StandardCharsets.UTF_8)
     }
 
+    String getGitPath(String osName) {
+        if (osName.contains('windows')) {
+            def userProfile = System.getenv("USERPROFILE") ?: ''
+            def scoopGitDir = "${userProfile}\\scoop\\apps\\git\\current\\cmd"
+            return getExecutablePath("${scoopGitDir}\\git.exe", "C:\\Program Files\\git\\cmd\\git.exe")
+        } else {
+            return getExecutablePath("/usr/bin/git", "/usr/local/bin/git")
+        }
+    }
+
+    String getGradlewFileName(String osName) {
+        if (osName.contains('windows')) return 'gradlew.bat'
+        else return 'gradlew'
+    }
+
+    String getExecutablePath(String expectedPath, String fallbackPath) {
+        return (new File(expectedPath).canExecute()
+            ? expectedPath
+            : fallbackPath
+        )
+    }
+
+    String getUnixPGExecutablePath(String executable) {
+        return getExecutablePath("/usr/local/bin/$executable", "/usr/bin/$executable")
+    }
+
+    String getWindowsPGExecutablePath(String executable, String scoopPath) {
+        return getExecutablePath("${scoopPath}\\${executable}.exe", "C:\\Program Files\\postgresql\\bin\\${executable}.exe")
+    }
+
+    Map<String, String> getPGExecutables(String osName) {
+        def executables = [:]
+        if (osName.contains('windows')) {
+            def userProfile = System.getenv("USERPROFILE") ?: ''
+            def scoopPGDir = "${userProfile}\\scoop\\apps\\postgresql\\current\\bin"
+
+            executables['createuser'] = getWindowsPGExecutablePath('createuser', scoopPGDir)
+            executables['createdb'] = getWindowsPGExecutablePath('createdb', scoopPGDir)
+            executables['pg_restore'] = getWindowsPGExecutablePath('pg_restore', scoopPGDir)
+        } else {
+            executables['createuser'] = getUnixPGExecutablePath('createuser')
+            executables['createdb'] = getUnixPGExecutablePath('createdb')
+            executables['pg_restore'] = getUnixPGExecutablePath('pg_restore')
+        }
+        return executables as Map<String, String>
+    }
+
     def createDatabase(String dbName, String dbUser, ProjectModel model)
     {
         def envp = System.getenv().collect({k, v -> "${k}=${v}"})
+        def osName = System.getProperty('os.name', '').toLowerCase()
+        def pgExecutables = getPGExecutables(osName)
 
-        def createUser = (new File('/usr/local/bin/createuser').canExecute()
-            ? '/usr/local/bin/createuser'
-            : '/usr/bin/createuser')
-        def createDb = (new File('/usr/local/bin/createdb').canExecute()
-            ? '/usr/local/bin/createdb'
-            : '/usr/bin/createdb')
-        def pgRestore = (new File('/usr/local/bin/pg_restore').canExecute()
-            ? '/usr/local/bin/pg_restore'
-            : '/usr/bin/pg_restore')
+        def createUser = pgExecutables['createuser']
+        def createDb = pgExecutables['createdb']
+        def pgRestore = pgExecutables['pg_restore']
         def errors = []
+
         if(new File(createUser).canExecute()
             && new File(createDb).canExecute()
             && new File(pgRestore).canExecute()) {
