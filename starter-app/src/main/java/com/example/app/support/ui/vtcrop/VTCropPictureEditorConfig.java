@@ -11,7 +11,6 @@
 
 package com.example.app.support.ui.vtcrop;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -77,8 +76,7 @@ public class VTCropPictureEditorConfig
      *
      * @author Alan Holt (aholt@venturetech.net)
      */
-    @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-    @SuppressWarnings("ParameterHidesMemberVariable")
+    @SuppressWarnings({"ParameterHidesMemberVariable", "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"})
     public static class ImageScaleOption
     {
         /** json mapping */

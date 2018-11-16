@@ -11,8 +11,6 @@
 
 package com.example.app.config;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -125,13 +123,24 @@ public class ProjectConfig implements ApplicationListener<ContextRefreshedEvent>
         return "com.example.app.profile";
     }
 
+    /**
+     * Scan com.example for HBM XML files.
+     *
+     * @return bean.
+     */
+    @Bean()
+    @LocationQualifier(orm_location)
+    public String ormLocationApp()
+    {
+        return "classpath*:com/example/app/**/*.hbm.xml";
+    }
 
     /**
      * Example to test if weaving is working.
      *
      * @param event the event.
      */
-    @SuppressFBWarnings("DM_EXIT")
+    @SuppressWarnings("DM_EXIT")
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event)
     {
@@ -153,30 +162,6 @@ public class ProjectConfig implements ApplicationListener<ContextRefreshedEvent>
             System.exit(1);
         }
 
-    }
-
-    /**
-     * Scan com.example for HBM XML files.
-     *
-     * @return bean.
-     */
-    @Bean()
-    @LocationQualifier(orm_location)
-    public String ormLocationSchedule()
-    {
-        return "classpath*:com/example/app/model/schedule/**/*.hbm.xml";
-    }
-
-    /**
-     * Scan com.example for HBM XML files.
-     *
-     * @return bean.
-     */
-    @Bean
-    @LocationQualifier(orm_location)
-    public  String ormLocationSocialLogin()
-    {
-        return "classpath*:com/example/app/login/social/ui/**/*.hbm.xml";
     }
 
     /**

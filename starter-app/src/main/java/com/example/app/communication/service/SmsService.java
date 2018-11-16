@@ -11,7 +11,6 @@
 
 package com.example.app.communication.service;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -115,7 +114,7 @@ public class SmsService
  *
  * @author Alan Holt (aholt@venturetech.net)
  */
-@SuppressFBWarnings(value = "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD", justification = "JSON Object")
+@SuppressWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD") // JSON Object
 class TropoRequest
 {
     public String action;
@@ -129,8 +128,7 @@ class TropoRequest
  *
  * @author Alan Holt (aholt@venturetech.net)
  */
-@SuppressFBWarnings(value = "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD", justification = "JSON Object")
-@SuppressWarnings({"InstanceVariableNamingConvention", "CanBeFinal"})
+@SuppressWarnings({"InstanceVariableNamingConvention", "CanBeFinal", "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"}) // JSON Object
 class TropoResponse
 {
     public Boolean success;

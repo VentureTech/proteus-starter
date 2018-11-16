@@ -11,7 +11,6 @@
 
 package com.example.app.config.automation
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import net.proteusframework.core.automation.DataConversion
 import net.proteusframework.core.automation.SQLDataConversion
 import net.proteusframework.core.automation.TaskQualifier
@@ -27,8 +26,7 @@ import org.springframework.context.annotation.Profile
 @Profile(["automation", "com.example.app.demo.1"])
 @Configuration
 @Lazy
-@SuppressFBWarnings(['SE_NO_SERIALVERSIONID', 'LI_LAZY_INIT_STATIC', 'MS_SHOULD_BE_FINAL'])
-@SuppressWarnings("LongLine")
+@SuppressWarnings(['SE_NO_SERIALVERSIONID', 'LI_LAZY_INIT_STATIC', 'MS_SHOULD_BE_FINAL', 'LongLine'])
 class ProjectDataConversion1
 {
     /** IDENTIFIER constant for LDP data conversions */
