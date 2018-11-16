@@ -17,6 +17,7 @@ import com.example.app.kotlin.toTextSource
 import com.example.app.kprofile.model.membership.operation.MembershipOperationDataType
 import com.example.app.profile.model.ProfileDAO
 import com.example.app.profile.model.membership.MembershipOperation
+import com.example.app.profile.model.user.UserDAO
 import com.example.app.profile.ui.visibility.MembershipOperationVisibilityConditionText
 import com.i2rd.cms.visibility.StandardVisibilityConditionEditor
 import com.i2rd.cms.visibility.VisibilityConditionEditor
@@ -46,22 +47,20 @@ import org.springframework.stereotype.Component
 @Configurable
 class MembershipOperationVisibilityCondition : VisibilityConditionInstance() {
     companion object {
-        const val FIELD_FETCHER = "ProfileFetcher"
-        const val FIELD_FETCH_ENTRY = "ProfileFetchEntry"
+        const val FIELD_CHECKER = "MembershipOperationChecker"
         const val FIELD_MEMBERSHIP_OPERATION = "MembershipOperation"
     }
 
     // Can't put these in the constructor because apparently a VisibilityCondition needs to have a no-arg constructor.
     @Autowired
-    lateinit var fetchers: List<ProfileFetcher>
+    lateinit var checkers: List<MembershipOperationChecker>
     @Autowired
     lateinit var profileDAO: ProfileDAO
+    @Autowired
+    lateinit var userDAO: UserDAO
 
-    val profileFetcherDataType: ProfileFetcherDataType by lazy {
-        ProfileFetcherDataType(fetchers)
-    }
-    val profileFetchEntryDataType: ProfileFetchEntryDataType by lazy {
-        ProfileFetchEntryDataType(fetchers)
+    val membershipOperationCheckerDataType: MembershipOperationCheckerDataType by lazy {
+        MembershipOperationCheckerDataType(checkers)
     }
     val membershipOperationDataType: MembershipOperationDataType by lazy {
         MembershipOperationDataType(profileDAO)
@@ -69,49 +68,20 @@ class MembershipOperationVisibilityCondition : VisibilityConditionInstance() {
 
     inner class Editor : StandardVisibilityConditionEditor() {
 
-        private val fetcherEditor: ComboBoxValueEditor<ProfileFetcher?>? by lazy {
-            ComboBoxValueEditor(
-                "Fetcher".toTextSource(),
-                fetchers.nullFirst(),
-                if (fetchers.size <= 1) fetchers.firstOrNull() else null
-            ).apply {
-                cellRenderer { it?.displayName ?: "Please Select" }
-                isVisible = fetchers.size > 1
-            }
-        }
-
-        private fun getSelectedFetcher(
-            defaultFetcher: ProfileFetcher? = null
-        ): ProfileFetcher? = fetcherEditor?.uiValue ?: defaultFetcher
-
-        private fun getFetchEntryOptions(
-            defaultFetcher: ProfileFetcher? = null
-        ): List<ProfileFetchEntryRelationship?> =
-            (getSelectedFetcher(defaultFetcher)?.run { entries.map { it.toRelationship(this) } } ?: listOf()).nullFirst()
-
-        private val selectedFetchEntry: ProfileFetchEntryRelationship?
-            get () = fetchEntryEditor.uiValue
+        private val selectedChecker: MembershipOperationChecker?
+            get () = if (checkers.size <= 1) checkers.firstOrNull() else operationCheckerEditor.uiValue
 
         private val membershipOperationOptions: List<MembershipOperation?>
-            get () = (selectedFetchEntry?.fetchEntry?.fetchOperations() ?: listOf()).nullFirst()
+            get () = (selectedChecker?.fetchOperations() ?: listOf()).nullFirst()
 
-        private val fetchEntryEditor: ComboBoxValueEditor<ProfileFetchEntryRelationship?> by lazy {
+        private val operationCheckerEditor: ComboBoxValueEditor<MembershipOperationChecker?> by lazy {
             ComboBoxValueEditor(
                 "Profile(s)".toTextSource(),
-                getFetchEntryOptions(fetchers.firstOrNull()),
+                checkers.nullFirst(),
                 null
             ).apply {
-                cellRenderer { it?.fetchEntry?.displayName ?: "Please Select" }
-                fetcherEditor?.let {
-                    it.valueComponent.addActionListener { _ ->
-                        val options = getFetchEntryOptions()
-                        setOptions(options)
-                        value = (options.find { o ->
-                            o?.fetchEntry?.programmaticName == value?.fetchEntry?.programmaticName
-                        } ?: if (options.size <= 1) options.firstOrNull() else null)
-                        isVisible = options.size > 1
-                    }
-                }
+                cellRenderer { it?.displayName ?: "Please Select" }
+                isVisible = checkers.size > 1
             }
         }
 
@@ -122,18 +92,18 @@ class MembershipOperationVisibilityCondition : VisibilityConditionInstance() {
                 null
             ).apply {
                 cellRenderer { it?.name ?: CommonButtonText.PLEASE_SELECT }
-                fetchEntryEditor.valueComponent.addActionListener { _ ->
+                operationCheckerEditor.valueComponent.addActionListener {
                     val options = membershipOperationOptions
                     setOptions(options)
                     if (value !in options) value = null
+                    else valueComponent.selectedObject = value
                 }
             }
         }
 
         override fun createUIElement(field: ModelField): ValueEditor<*>? =
             when (field.programmaticName) {
-                FIELD_FETCHER              -> fetcherEditor
-                FIELD_FETCH_ENTRY          -> fetchEntryEditor
+                FIELD_CHECKER              -> operationCheckerEditor
                 FIELD_MEMBERSHIP_OPERATION -> mopEditor
                 else                       -> null
             }
@@ -145,11 +115,8 @@ class MembershipOperationVisibilityCondition : VisibilityConditionInstance() {
         "Visibility Condition for checking a membership operation on one or more profiles".toTextSource()
 
     override fun getConfiguration() = ModelDefinition().apply {
-        addField(FIELD_FETCHER, profileFetcherDataType).apply {
-            label = MembershipOperationVisibilityConditionText.LABEL_FIELD_FETCHER()
-        }
-        addField(FIELD_FETCH_ENTRY, profileFetchEntryDataType).apply {
-            label = MembershipOperationVisibilityConditionText.LABEL_FIELD_FETCHENTRY()
+        addField(FIELD_CHECKER, membershipOperationCheckerDataType).apply {
+            label = MembershipOperationVisibilityConditionText.LABEL_FIELD_CHECKER()
         }
         addField(FIELD_MEMBERSHIP_OPERATION, membershipOperationDataType).apply {
             label = MembershipOperationVisibilityConditionText.LABEL_FIELD_MEMBERSHIP_OPERATION()
@@ -162,38 +129,26 @@ class MembershipOperationVisibilityCondition : VisibilityConditionInstance() {
         getCacheableBuilder(instance, request).setScope(if (request.principal == null) Scope.APPLICATION else Scope.SESSION)
             .setExpireTime(0).makeCacheable()
 
-    private fun getConfiguredFetcher(instance: VisibilityConditionInstance) =
-        when {
-            fetchers.size <= 1 -> fetchers.firstOrNull()
-            else               -> instance.configurationDataMap.let { map ->
-                map[FIELD_FETCHER].let {
-                    fetchers.find { f -> f.programmaticName == (it as ProfileFetcher?)?.programmaticName }
-                }
-            }
-        }
-
-    private fun getConfiguredFetchEntry(
-        instance: VisibilityConditionInstance,
-        fetcher: ProfileFetcher?
+    private fun getConfiguredChecker(
+        instance: VisibilityConditionInstance
     ) =
         when {
-            fetcher == null           -> null
-            fetcher.entries.size <= 1 -> fetcher.entries.firstOrNull()
-            else                      -> instance.configurationDataMap.let { map ->
-                map[FIELD_FETCH_ENTRY].let {
-                    fetcher.getEntry((it as ProfileFetchEntryRelationship?)?.fetchEntry?.programmaticName)
+            checkers.size <= 1 -> checkers.firstOrNull()
+            else               -> instance.configurationDataMap.let { map ->
+                map[FIELD_CHECKER]?.let {
+                    it as MembershipOperationChecker
                 }
             }
         }
 
     private fun getConfiguredMembershipOperation(
         instance: VisibilityConditionInstance,
-        fetchEntry: ProfileFetchEntry?
+        checker: MembershipOperationChecker?
     ) =
-        when (fetchEntry) {
+        when (checker) {
             null -> null
             else -> {
-                val operations = fetchEntry.fetchOperations()
+                val operations = checker.fetchOperations()
                 when {
                     operations.size <= 1 -> operations.firstOrNull()
                     else                 -> instance.configurationDataMap.let { map ->
@@ -210,24 +165,22 @@ class MembershipOperationVisibilityCondition : VisibilityConditionInstance() {
     private fun getConfiguredInfo(
         instance: VisibilityConditionInstance
     ) =
-        getConfiguredFetcher(instance)?.let { fetcher ->
-            getConfiguredFetchEntry(instance, fetcher)?.let { fetchEntry ->
-                getConfiguredMembershipOperation(instance, fetchEntry)?.let { mo ->
-                    Triple(fetcher, fetchEntry, mo)
-                }
+        getConfiguredChecker(instance)?.let { checker ->
+            getConfiguredMembershipOperation(instance, checker)?.let { mo ->
+                checker to mo
             }
         }
 
     override fun isVisible(instance: VisibilityConditionInstance, request: CmsRequest<PageElement>): Boolean {
-        return getConfiguredInfo(instance)?.let { (fetcher, fetchEntry, mop) ->
-            fetcher.checkPermissions(request, fetchEntry, mop)
+        return getConfiguredInfo(instance)?.let { (checker, op) ->
+            checker.checkPermissions(request, op, profileDAO, userDAO)
         } ?: false
     }
 
     override fun renderConfiguredDescription(instance: VisibilityConditionInstance, chain: VisibilityConditionRenderChain) {
         chain.appendable.apply {
-            append(getConfiguredInfo(instance)?.let { (_, fetchEntry, mop) ->
-                fetchEntry.getDescription(mop, chain.localeContext)
+            append(getConfiguredInfo(instance)?.let { (checker, op) ->
+                checker.getDescription(op, chain.localeContext)
             } ?: "Not Configured")
         }
     }

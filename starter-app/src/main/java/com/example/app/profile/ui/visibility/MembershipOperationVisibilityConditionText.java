@@ -27,8 +27,7 @@ import net.proteusframework.core.locale.annotation.L10N;
 @I18NFile(
     symbolPrefix = "com.example.app.profile.ui.visibility.MembershipOperationVisibilityConditionText",
     i18n = {
-        @I18N(symbol = "Label Field Fetcher", l10n = @L10N("Profile Fetcher")),
-        @I18N(symbol = "Label Field FetchEntry", l10n = @L10N("Fetch Entry")),
+        @I18N(symbol = "Label Field Checker", l10n = @L10N("Membership Operation Checker")),
         @I18N(symbol = "Label Field Membership Operation", l10n = @L10N("Membership Operation"))
     }
 )
@@ -37,23 +36,13 @@ public class MembershipOperationVisibilityConditionText
     private MembershipOperationVisibilityConditionText() {}
 
     /**
-     * Label profile fetcher localized object key.
+     * Label field checker localized object key.
      *
      * @return the localized object key
      */
-    public static LocalizedObjectKey LABEL_FIELD_FETCHER()
+    public static LocalizedObjectKey LABEL_FIELD_CHECKER()
     {
-        return MembershipOperationVisibilityConditionTextLOK.LABEL_FIELD_FETCHER();
-    }
-
-    /**
-     * Label field fetchentry localized object key.
-     *
-     * @return the localized object key
-     */
-    public static LocalizedObjectKey LABEL_FIELD_FETCHENTRY()
-    {
-        return MembershipOperationVisibilityConditionTextLOK.LABEL_FIELD_FETCHENTRY();
+        return MembershipOperationVisibilityConditionTextLOK.LABEL_FIELD_CHECKER();
     }
 
     /**
@@ -66,3 +55,4 @@ public class MembershipOperationVisibilityConditionText
         return MembershipOperationVisibilityConditionTextLOK.LABEL_FIELD_MEMBERSHIP_OPERATION();
     }
 }
+
