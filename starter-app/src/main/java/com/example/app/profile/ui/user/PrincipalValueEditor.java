@@ -11,8 +11,6 @@
 
 package com.example.app.profile.ui.user;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 import com.example.app.support.ui.contact.ContactValueEditor;
 import com.example.app.support.ui.contact.ContactValueEditor.ContactValueEditorConfig;
 import org.apache.logging.log4j.Level;
@@ -166,8 +164,7 @@ public class PrincipalValueEditor extends CompositeValueEditor<Principal>
                          * @see NotificationSourceSetter#defaultSourceSetter()
                          * @param notificationSourceSetter the notification source setter
                          */
-                        @SuppressFBWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS",
-                            justification = "Called via reflection")
+                        @SuppressWarnings("UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS") // Called via reflection
                         public void setNotificationSourceSetter(
                             @Nullable NotificationSourceSetter<Validator> notificationSourceSetter)
                         {

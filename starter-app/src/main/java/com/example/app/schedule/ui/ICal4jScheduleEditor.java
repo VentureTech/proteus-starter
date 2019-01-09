@@ -11,7 +11,6 @@
 
 package com.example.app.schedule.ui;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.fortuna.ical4j.model.NumberList;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.WeekDay;
@@ -640,7 +639,7 @@ public class ICal4jScheduleEditor extends Container implements ValueEditor<ICal4
 
 
 
-    @SuppressFBWarnings(value = "UC_USELESS_OBJECT_STACK", justification = "Avoid ConcurrentModificationException")
+    @SuppressWarnings("UC_USELESS_OBJECT_STACK") // Avoid ConcurrentModificationException
     @Override
     public void setValue(@Nullable ICal4jSchedule value)
     {

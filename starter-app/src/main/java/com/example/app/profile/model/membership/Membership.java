@@ -11,8 +11,6 @@
 
 package com.example.app.profile.model.membership;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 import com.example.app.config.ProjectCacheRegions;
 import com.example.app.config.ProjectConfig;
 import com.example.app.profile.model.Profile;
@@ -231,7 +229,7 @@ public class Membership extends AbstractAuditableEntity<Integer> implements Name
         return Objects.hash(super.hashCode(), getMembershipType(), getUser(), getProfile());
     }
 
-    @SuppressFBWarnings("NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION")
+    @SuppressWarnings("NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION")
     @Override
     public boolean equals(@Nullable Object o)
     {

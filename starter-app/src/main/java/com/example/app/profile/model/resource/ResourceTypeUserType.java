@@ -11,8 +11,6 @@
 
 package com.example.app.profile.model.resource;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 import com.example.app.profile.service.resource.ResourceTypeService;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
@@ -95,7 +93,7 @@ public class ResourceTypeUserType implements UserType
 
     @Override
     @Nullable
-    @SuppressFBWarnings(value = "DLS_DEAD_LOCAL_STORE", justification = "written for update later.")
+    @SuppressWarnings("DLS_DEAD_LOCAL_STORE") // written for update later
     public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
         throws HibernateException, SQLException
     {
