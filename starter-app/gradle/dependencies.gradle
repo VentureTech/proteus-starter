@@ -117,6 +117,15 @@ dependencies {
     implementation "org.jetbrains.exposed:exposed:0.10.+"
     implementation('net.proteusframework:proteus-dsl:1.0')
 
+    implementation "io.arrow-kt:arrow-core:$version_arrow"
+    implementation "io.arrow-kt:arrow-annotations:$version_arrow"
+    implementation "io.arrow-kt:arrow-typeclasses:$version_arrow"
+    implementation "io.arrow-kt:arrow-syntax:$version_arrow"
+
+    implementation "net.proteusframework:proteus-kotlin:$version_proteus_kotlin"
+
+    implementation 'co.proteus:url-shortener-sdk:1.0.0'
+
     testCompile "net.proteusframework:proteusframework-core:${version_proteus}"
     testCompile "net.proteusframework:proteusframework-testing:${version_proteus}"
     testCompile 'org.testng:testng:6.8.13'
