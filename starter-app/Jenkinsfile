@@ -103,7 +103,6 @@ stage('Tests') {
                     }
                 }
                 junit(allowEmptyResults: true, healthScaleFactor: 2.0, keepLongStdio: true,
-                    testDataPublishers: [[$class: 'ClaimTestDataPublisher']],
                     testResults: '**/build/gradle/test-results/**/TEST*.xml')
 
             }
@@ -183,9 +182,6 @@ node {
 
             step([$class : 'AnalysisPublisher', canComputeNew: true, defaultEncoding: '',
                   healthy: '', pmdActivated: false, unHealthy: ''])
-
-            //step([$class: 'GitHubCommitStatusSetter', errorHandlers: [[$class: 'ShallowAnyErrorHandler']]])
-
         }
     }
     stage('Libraries') {

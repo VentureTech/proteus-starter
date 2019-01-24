@@ -33,7 +33,7 @@ settings.gradle.projectsLoaded( {
             def isWindows = osName.contains('windows')
             def command
             if (isMac) command = [pingCommand, '-q', '-W', '250', '-c', '1', repoHost]
-            else if (isWindows) command = [pingCommand, '-n', '1', repoHost]
+            else if (isWindows) command = [pingCommand, '-w', '250', '-n', '1', repoHost]
             else command = [pingCommand, '-q', '-w', '0.25', '-c', '1', repoHost]
             def process = command.execute(envp, baseDir)
             process.consumeProcessOutput(System.out, System.err)
