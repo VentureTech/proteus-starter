@@ -11,22 +11,18 @@
 
 package com.example.app.ksupport
 
-import arrow.core.Either
+import arrow.core.Try
 import arrow.syntax.function.pipe
 import co.proteus.url_shortener.sdk.URLShortener
-import com.example.app.kotlin.ApplicationError
-import com.example.app.kotlin.flatTryRailway
 import com.example.app.kotlin.lazyLogger
-import com.example.app.kotlin.toApplicationError
 import com.google.common.util.concurrent.RateLimiter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.net.URL
 
-class URLShortenMaxTriesReachedError(val url: String) : ApplicationError {
-    override val msg: String
-        get() = "Failed to shorten url: $url.  Max tries reached."
-}
+class URLShortenMaxTriesReachedError(val url: String) : Exception(
+    "Failed to shorten url: $url.  Max tries reached."
+)
 
 /**
  * Wraps [URLShortener] in a rate limiter and a retry loop.
@@ -42,7 +38,7 @@ class URLShortenerService(
 
     private fun createShortener(): URLShortener = URLShortener(key)
 
-    fun createShortenedURL(url: String): Either<ApplicationError, String> = flatTryRailway { tryShorten(url) }
+    fun createShortenedURL(url: String): Try<String> = tryShorten(url)
 
     @Suppress("UnstableApiUsage")
     private tailrec fun tryShorten(
@@ -51,15 +47,13 @@ class URLShortenerService(
         shortener: URLShortener = createShortener(),
         maxTries: Int = 5,
         currentTry: Int = 0,
-        lastError: ApplicationError? = null
-    ): Either<ApplicationError, String> {
+        lastError: Throwable? = null
+    ): Try<String> {
         if (currentTry >= maxTries) {
-            return Either.left(
-                lastError ?: URLShortenMaxTriesReachedError(toShorten)
-            )
+            return Try.raise(lastError ?: URLShortenMaxTriesReachedError(toShorten))
         } else {
             val exceptionReceived: Exception = try {
-                return URL(toShorten).pipe(shortener::shorten).shortURL.pipe(Either.Companion::right)
+                return URL(toShorten).pipe(shortener::shorten).shortURL.pipe(Try.Companion::just)
             } catch (e: Exception) {
                 logger.error("Error occurred attempting to shorten URL: $toShorten.  Shortener will attempt " +
                     "${maxTries - currentTry} more times to shorten before giving up.", e)
@@ -74,7 +68,7 @@ class URLShortenerService(
                 shortener,
                 maxTries,
                 currentTry + 1,
-                exceptionReceived.toApplicationError()
+                exceptionReceived
             )
         }
     }
