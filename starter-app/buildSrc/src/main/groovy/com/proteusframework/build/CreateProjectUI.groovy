@@ -37,7 +37,7 @@ class CreateProjectUI
     def logger = LoggerFactory.getLogger("build")
     def swing = new SwingBuilder()
     def model = new ProjectModel()
-    def skipDirs = ['.git', '.apt_generated', '.apt_generated_tests', 'demo'] as Set
+    def skipDirs = ['.git', '.apt_generated', '.apt_generated_tests'] as Set
     def skipFiles = ['CreateProjectUI.groovy'] as Set
     CompletableFuture<ProjectModel> _future = new CompletableFuture<>()
     Project project
@@ -77,10 +77,6 @@ class CreateProjectUI
                         label('Artifact/Project Name: ')
                         widget(new PlaceholderTextField(), id: 'app_name', placeholder: 'labs',
                             columns: 20)
-                    }
-                    hbox {
-                        label('Copy Demo Code: ')
-                        checkBox(id: 'copy_demo')
                         hglue()
                     }
                     hbox {
@@ -158,7 +154,6 @@ class CreateProjectUI
                 }
                 bean(model, appGroup: bind {app_group.text})
                 bean(model, appName: bind {app_name.text})
-                bean(model, copyDemo: bind {copy_demo.selected})
                 bean(model, createDB: bind {create_db_chk.selected})
             }
         }
@@ -173,7 +168,7 @@ Synchronize gradle settings.
 Install a database snapshot.
 Update the db.url & db.username in default.properties if needed.
 Run the "App with LTW".
-To run the demo code, you will need to update your ProjectConfig.'''
+'''
     }
 
     def validate()
@@ -292,7 +287,6 @@ To run the demo code, you will need to update your ProjectConfig.'''
 
         println "appGroup = ${model.appGroup}"
         println "appName = ${model.appName}"
-        println "copyDemo = ${model.copyDemo}"
         println "destinationDirectory = ${model.destinationDirectory}"
         println "sourceProjectDir = ${project.projectDir}"
         println "package name = ${packageName}"
@@ -333,10 +327,6 @@ To run the demo code, you will need to update your ProjectConfig.'''
                     include 'gradle/**/*'
                     include 'scripts/**/*'
                     include 'src/libraries/**/*'
-                    if (model.copyDemo)
-                    {
-                        include 'src/demo/**/*'
-                    }
                     include 'starter-app.iml'
                     include '.idea/modules/starter-app.iml'
                     include 'gradle*'
@@ -425,11 +415,6 @@ derby.log
                 'UTF-8'
             )
 
-            def demoIML = new File(baseDir, ".idea/${slash}modules${slash}starter-app_demo.iml")
-            if(!model.copyDemo)
-                demoIML.delete()
-            else
-                demoIML.renameTo(new File(baseDir, ".idea/${slash}modules${slash}${model.appName}_demo.iml"))
             new File(baseDir, ".idea/${slash}modules${slash}starter-app_main.iml")
                 .renameTo(new File(baseDir, ".idea/${slash}modules${slash}${model.appName}_main.iml"))
             new File(baseDir, ".idea/${slash}modules${slash}starter-app_test.iml")

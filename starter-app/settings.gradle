@@ -10,7 +10,6 @@ def props = [
 
 
 settings.rootProject.name = "${app_name}"
-
 settings.gradle.projectsLoaded( {
     props.each({it.test(settings)})
 
@@ -52,7 +51,14 @@ settings.gradle.projectsLoaded( {
         plugins.any({it.class.name == 'JetGradlePlugin'})
     settings.gradle.rootProject.ext.isEclipse = System.getProperties().containsKey('eclipse.product')
     settings.gradle.rootProject.ext.compileLibraries = settings.hasProperty('compile_libraries') ||
-        settings.gradle.rootProject.ext.isIDEA;
+        settings.gradle.rootProject.ext.isIDEA
     
 })
 
+buildCache {
+    local(DirectoryBuildCache) {
+        directory = new File(rootDir, 'build-cache')
+        removeUnusedEntriesAfterDays = 30
+        enabled = true
+    }
+}

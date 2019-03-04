@@ -21,7 +21,6 @@ class ProjectModel
 {
     @Bindable String appGroup
     @Bindable String appName
-    @Bindable boolean copyDemo
     @Bindable File destinationDirectory
     @Bindable boolean createDB
 }

@@ -8,19 +8,6 @@ sourceSets {
     }
 }
 
-def demoExists = project.file('src/demo').exists()
-if(demoExists){
-    sourceSets {
-        demo
-    }
-    compileDemoJava {
-        options.incremental = true
-        options.compilerArgs << '-Xlint:all,-deprecation,-processing'
-        options.compilerArgs << '-parameters'
-    }
-}
-
-
 if(compileLibraries) {
     println 'Compiling Libraries Is Enabled'
     sourceSets {
@@ -52,20 +39,13 @@ compileTestJava { options.incremental = true }
 configurations {
     runtimeaspects { transitive = false }
     compiletimeaspects { transitive = false }
-    if(demoExists) {
-        demoCompile.extendsFrom compile
-        demoRuntime.extendsFrom compile
-    }
     if(compileLibraries) {
         librariesCompile.extendsFrom compile
         librariesRuntime.extendsFrom runtime
     }
 }
 dependencies {
-
-    if(demoExists) {
-        demoCompile sourceSets.main.output
-    }
+    
     if(compileLibraries) {
         librariesCompile sourceSets.main.output
     }
@@ -125,17 +105,17 @@ dependencies {
     implementation "net.proteusframework:proteus-kotlin:$version_proteus_kotlin"
 
     implementation 'co.proteus:url-shortener-sdk:1.0.0'
-
-    testCompile "net.proteusframework:proteusframework-core:${version_proteus}"
-    testCompile "net.proteusframework:proteusframework-testing:${version_proteus}"
-    testCompile 'org.testng:testng:6.8.13'
-    testCompile 'junit:junit:4.11'
-    testCompile('org.uncommons:reportng:1.1.2') {
+    
+    testImplementation "net.proteusframework:proteusframework-core:${version_proteus}"
+    testImplementation "net.proteusframework:proteusframework-testing:${version_proteus}"
+    testImplementation 'org.testng:testng:6.8.13'
+    testImplementation 'junit:junit:4.11'
+    testImplementation('org.uncommons:reportng:1.1.2') {
         exclude group: "org.testng", module: "testng"
     }
-    testCompile 'org.apache.derby:derby:10.12.1.1'
+    testImplementation 'org.apache.derby:derby:10.12.1.1'
     testRuntime 'com.google.inject:guice:4.0'
-    testCompile 'org.jetbrains.spek:spek-api:1.0.89'
+    testImplementation 'org.jetbrains.spek:spek-api:1.0.89'
     testRuntime 'org.jetbrains.spek:spek-junit-platform-engine:1.0.89'
 
     // These are for the war plugin
@@ -153,33 +133,44 @@ def canBeResolved(configuration){
     configuration.metaClass.respondsTo(configuration, "isCanBeResolved") ?
         configuration.isCanBeResolved() : true
 }
-task createDependencyFile() {
-    group = 'Build'
-    doFirst {
-        def dependencyFile = file("dependencies.txt")
-        def pw = dependencyFile.newPrintWriter()
-        configurations.all.collect {
-            if(canBeResolved(it)) it.resolvedConfiguration.getResolvedArtifacts()
-            else []
-        }.flatten().collect {it.moduleVersion.id}.unique().sort(false){"${it.group}:${it.name}"}forEach{pw.println(it)}
-        pw.close()
-        try{
-            def root = file('../.git').exists() ? file('..') : file('.')
-            def grgit = Grgit.open(root)
-            def path = root == project.rootDir ? dependencyFile.name : "${project.rootDir.name}/${dependencyFile.name}"
-            if(isIDEA)
-                grgit.add(patterns: [path] as Set, update: false)
-            else
-                grgit.commit(message: 'Updating dependencies.txt', paths: [path] as Set)
 
-        }catch(ignore){
-            if(!ignore.message.toLowerCase().contains("no changes"))
-                ignore.printStackTrace()
-        }
+def createDependencyFile() {
+    def dependencyFile = file("dependencies.txt")
+    def pw = dependencyFile.newPrintWriter()
+    configurations.all.collect {
+        if(canBeResolved(it)) it.resolvedConfiguration.getResolvedArtifacts()
+        else []
+    }.flatten().collect {it.moduleVersion.id}.unique().sort(false){"${it.group}:${it.name}"}forEach{pw.println(it)}
+    pw.close()
+    try{
+        def root = file('../.git').exists() ? file('..') : file('.')
+        def grgit = Grgit.open(dir: root)
+        def path = root == project.rootDir ? dependencyFile.name : "${project.rootDir.name}/${dependencyFile.name}"
+        if(isIDEA)
+            grgit.add(patterns: [path] as Set, update: false)
+        else
+            grgit.commit(message: 'Updating dependencies.txt', paths: [path] as Set)
+
+    }catch(ignore){
+        if(!ignore.message.toLowerCase().contains("no changes"))
+            ignore.printStackTrace()
     }
 }
-if(isIDEA) {
-    afterEvaluate {
-        createDependencyFile.execute()
+
+tasks.register("createDependencyFile") {
+    group = 'Build'
+    doFirst {
+        createDependencyFile()
     }
+}
+
+if(isIDEA){
+    afterEvaluate { 
+        createDependencyFile()
+    }
+}
+
+// https://docs.gradle.org/current/userguide/dependency_locking.html
+dependencyLocking {
+    lockAllConfigurations()
 }

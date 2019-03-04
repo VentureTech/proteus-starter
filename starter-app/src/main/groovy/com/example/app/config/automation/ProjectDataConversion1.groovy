@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Profile
  * Version 1 data conversions.
  * @author Russ Tennant (russ@i2rd.com)
  */
-@Profile(["automation", "com.example.app.demo.1"])
+@Profile(["automation", "com.example.app.1"])
 @Configuration
 @Lazy
 @SuppressWarnings(['SE_NO_SERIALVERSIONID', 'LI_LAZY_INIT_STATIC', 'MS_SHOULD_BE_FINAL', 'LongLine'])

@@ -37,7 +37,7 @@ public class GitInfo
         GitInfo gitInfo = new GitInfo()
         project.ext.gitinfo = gitInfo
         try{
-            def repo = project.file('../.git').exists() ? Grgit.open(project.file('..')) : Grgit.open()
+            def repo = project.file('../.git').exists() ? Grgit.open(dir: project.file('..')) : Grgit.open()
             def branch = repo.branch.current
             def commit = repo.head()
 

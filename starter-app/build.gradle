@@ -20,10 +20,10 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'org.ajoberstar:gradle-git:1.3.0'
+        classpath "org.ajoberstar.grgit:grgit-core:3.0.0"
         // aspectj-weave plugin for our use of Spring @Configurable
         classpath 'com.i2rd:gradle-aspectj-weave:1.3',
-            'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1'
+            'org.jfrog.buildinfo:build-info-extractor-gradle:4.9.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-noarg:$kotlin_version"
@@ -32,6 +32,12 @@ buildscript {
     }
 
 }
+
+plugins {
+    id "com.dorongold.task-tree" version "1.3.1"
+}
+
+
 repositories {
 //    mavenLocal()
     if(hasLocalRepo){ maven { url = local_repo } }
@@ -79,10 +85,9 @@ task autoDeploy(type: com.proteusframework.build.DeployTask) {
     secret ="${findProperty('aws_secret')?:'MISSING_SECRET'}"
 }
 
-task wrapper(type: Wrapper) {
-    group 'Build Setup'
-    gradleVersion = '4.4.1'
-}
+//dependencyLocking {
+//    lockAllConfigurations()
+//}
 
 
 

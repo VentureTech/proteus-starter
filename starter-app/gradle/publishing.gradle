@@ -1,29 +1,6 @@
-artifactoryPublish.doFirst({createDependencyFile.execute()})
 
 publishing {
     publications {
-
-        ivyPub(IvyPublication) {
-            from components.java
-
-            artifact(sourceJar) {
-                type "sources"
-                conf "runtime"
-            }
-            artifact(javadocJar) {
-                type "javadoc"
-                conf "runtime"
-            }
-            artifact(librariesZip) {
-                type "libraries"
-                conf "runtime"
-            }
-            components.web.usages.each { usage ->
-                usage.artifacts.each {
-                    artifact(it)
-                }
-            }
-        }
         mavenPub(MavenPublication) {
             from components.java
 
@@ -44,6 +21,9 @@ publishing {
         }
     }
 }
+
+artifactoryPublish.dependsOn createDependencyFile
+
 artifactoryPublish.doFirst {
     if ("${publish_venturetech_username}".trim().isEmpty()) println "Missing property: publish_venturetech_username"
     if ("${publish_venturetech_password}".trim().isEmpty()) println "Missing property: publish_venturetech_password"
@@ -58,7 +38,7 @@ artifactory {
             password = publish_venturetech_password
         }
         defaults {
-            publications('ivyPub','mavenPub')
+            publications('mavenPub')
             properties = [
                 'status'      : version.status, 'release.status': version.status,
                 'build.status': version.status, 'commit': gitinfo.commit,

@@ -11,8 +11,12 @@ task createCompiletimeAspectsLibs(type: Copy) {
     into "compiletime-aspects"
     rename { "${it.substring(0, it.lastIndexOf('-'))}.jar" }
 }
+
+tasks.getByName("assemble").finalizedBy createCompiletimeAspectsLibs 
+tasks.getByName("assemble").finalizedBy createRuntimeAspectsLibs
+
+gradle.startParameter.taskNames << "createRuntimeAspectsLibs"
+gradle.startParameter.taskNames << "createCompiletimeAspectsLibs"
 gradle.projectsEvaluated {
-    createRuntimeAspectsLibs.execute()
-    createCompiletimeAspectsLibs.execute()
     version.generateProjectInformationClass()
 }

@@ -1,6 +1,6 @@
 
 // We will selectively enable code analysis
-[Checkstyle, FindBugs].each {
+[Checkstyle].each {
     tasks.withType(it) {
         ignoreFailures = true
         enabled = false
@@ -8,23 +8,6 @@
 }
 checkstyle {
     toolVersion = "${version_checkstyle}"
-}
-
-findbugs {
-    toolVersion = "${version_findbugs}"
-}
-
-findbugsMain {
-    enabled = true
-    excludeFilter = new File("${rootProject.projectDir}/config/findbugs/exclude.xml")
-    reports {
-        xml.enabled = true
-        html.enabled = false
-    }
-    classes = classes.filter {
-        def skip = it.path.endsWith('.xml') || it.path.endsWith('.kotlin_module')
-        !skip
-    }
 }
 
 checkstyleMain {
