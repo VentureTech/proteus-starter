@@ -38,6 +38,7 @@ com.google.errorprone:error_prone_annotations:2.2.0
 com.google.guava:failureaccess:1.0.1
 com.google.guava:guava:22.0
 com.google.guava:guava:27.0.1-jre
+com.google.guava:guava:16.0.1
 com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
 com.google.http-client:google-http-client:1.22.0
 com.google.http-client:google-http-client-gson:1.22.0
@@ -127,7 +128,6 @@ net.proteusframework:proteusframework-ui:1.5.0-SNAPSHOT
 net.proteusframework:proteusframework-users:1.5.0-SNAPSHOT
 net.sf.ehcache:ehcache:2.8.5
 net.sourceforge.cssparser:cssparser:0.9.20
-net.sourceforge.cssparser:cssparser:0.9.14
 net.sourceforge.htmlunit:htmlunit:2.15
 net.sourceforge.htmlunit:htmlunit-core-js:2.15
 net.sourceforge.nekohtml:nekohtml:1.9.21
@@ -266,9 +266,7 @@ org.eclipse.jetty:jetty-annotations:8.1.21.v20160908
 org.eclipse.jetty:jetty-client:8.1.21.v20160908
 org.eclipse.jetty:jetty-continuation:8.1.21.v20160908
 org.eclipse.jetty:jetty-http:8.1.21.v20160908
-org.eclipse.jetty:jetty-http:8.1.15.v20140411
 org.eclipse.jetty:jetty-io:8.1.21.v20160908
-org.eclipse.jetty:jetty-io:8.1.15.v20140411
 org.eclipse.jetty:jetty-jmx:8.1.21.v20160908
 org.eclipse.jetty:jetty-jndi:8.1.21.v20160908
 org.eclipse.jetty:jetty-jsp:8.1.21.v20160908
@@ -278,7 +276,6 @@ org.eclipse.jetty:jetty-server:8.1.21.v20160908
 org.eclipse.jetty:jetty-servlet:8.1.21.v20160908
 org.eclipse.jetty:jetty-servlets:8.1.21.v20160908
 org.eclipse.jetty:jetty-util:8.1.21.v20160908
-org.eclipse.jetty:jetty-util:8.1.15.v20140411
 org.eclipse.jetty:jetty-webapp:8.1.21.v20160908
 org.eclipse.jetty:jetty-websocket:8.1.15.v20140411
 org.eclipse.jetty:jetty-xml:8.1.21.v20160908
