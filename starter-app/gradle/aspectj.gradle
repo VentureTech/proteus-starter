@@ -1,11 +1,11 @@
 
-task createRuntimeAspectsLibs(type: Copy) {
+tasks.register('createRuntimeAspectsLibs', Copy) {
     group 'AspectJ'
     from configurations.runtimeaspects
     into "runtime-aspects"
     rename { "${it.substring(0, it.lastIndexOf('-'))}.jar" }
 }
-task createCompiletimeAspectsLibs(type: Copy) {
+tasks.register('createCompiletimeAspectsLibs', Copy) {
     group 'AspectJ'
     from configurations.compiletimeaspects
     into "compiletime-aspects"
@@ -15,8 +15,6 @@ task createCompiletimeAspectsLibs(type: Copy) {
 tasks.getByName("assemble").finalizedBy createCompiletimeAspectsLibs 
 tasks.getByName("assemble").finalizedBy createRuntimeAspectsLibs
 
-gradle.startParameter.taskNames << "createRuntimeAspectsLibs"
-gradle.startParameter.taskNames << "createCompiletimeAspectsLibs"
 gradle.projectsEvaluated {
     version.generateProjectInformationClass()
 }

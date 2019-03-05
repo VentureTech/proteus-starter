@@ -8,8 +8,6 @@ apply plugin: "kotlin-noarg"
 apply plugin: "kotlin-jpa"
 apply plugin: 'java'
 apply plugin: 'groovy'
-// doesn't currently work
-//apply plugin: 'aspectj-weave'
 
 // Intellij IDEA
 apply plugin: 'idea'
