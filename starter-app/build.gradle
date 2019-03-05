@@ -22,8 +22,7 @@ buildscript {
     dependencies {
         classpath "org.ajoberstar.grgit:grgit-core:3.0.0"
         // aspectj-weave plugin for our use of Spring @Configurable
-        classpath 'com.i2rd:gradle-aspectj-weave:1.3',
-            'org.jfrog.buildinfo:build-info-extractor-gradle:4.9.3'
+        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:4.9.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-noarg:$kotlin_version"
@@ -77,18 +76,13 @@ apply from: 'gradle/publishing.gradle'
 apply from: 'gradle/analysis.gradle'
 apply from: 'gradle/idea.gradle'
 
-task createProject(type: com.proteusframework.build.CreateProjectTask)
+tasks.register('createProject', com.proteusframework.build.CreateProjectTask)
 
-task autoDeploy(type: com.proteusframework.build.DeployTask) {
+tasks.register('autoDeploy', com.proteusframework.build.DeployTask) {
     group = 'Publishing'
     id = "${findProperty('aws_id')?:'MISSING_ID'}"
     secret ="${findProperty('aws_secret')?:'MISSING_SECRET'}"
 }
-
-//dependencyLocking {
-//    lockAllConfigurations()
-//}
-
 
 
 //noinspection GroovyAssignabilityCheck
